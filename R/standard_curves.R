@@ -1,3 +1,5 @@
+library(ggplot2)
+
 #' PLot standard curves of plate or list of plates
 #'
 #'
@@ -7,10 +9,11 @@
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Net MFI`
 #' @param file_path where to save the output plot. If `NULL` the plot is displayed, `NULL` by default
 #' @param decreasing_dilution_order If `TRUE` the dilutions are plotted in decreasing order, `TRUE` by default
+#' @param log_scale Which elements on the plot should be displayed in log scale. By default c("dilutions"). If `NULL` no log scale is used, if "all" or c("dilutions", "MFI") all elements are displayed in log scale.
 #' @param verbose If `TRUE` print messages, `TRUE` by default
 #'
 #' @export
-plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Median", file_path = NULL, decreasing_dilution_order = TRUE, verbose = TRUE) {
+plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Median", file_path = NULL, decreasing_dilution_order = TRUE, log_scale = c("dilutions"), verbose = TRUE) {
 
   if (inherits(plates, "Plate")) { # an instance of Plate
     plates <- list(plates)
@@ -22,6 +25,12 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
     if (!inherits(plate, "Plate")){
       stop("plates object should be a plate or a list of plates")
     }
+  }
+
+  # check if log_scale is a character vector and contains element from set
+  available_log_scale_values <- c("all", "dilutions", "MFI")
+  if (!is.null(log_scale) && !all(log_scale %in% available_log_scale_values)){
+    stop("log_scale should be a character vector containing elements from set: ", paste(available_log_scale_values, collapse = ", "))
   }
 
   dilutions_numeric_base <- NULL
@@ -42,11 +51,23 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
       )
     }
 
-    standard_curves <- plate$get_sample_by_type("POSITIVE CONTROL")
+    standard_curves <- plate$get_sample_by_type("STANDARD CURVE")
+    if (length(standard_curves) == 0){
+      verbose_cat(
+        "(",
+        color_codes$red_start,
+        "WARNING",
+        color_codes$red_end,
+        ")",
+        "\nNo standard curve samples found in the plate\nUsing positive control samples",
+        verbose = verbose
+      )
+      standard_curves <- plate$get_sample_by_type("POSITIVE CONTROL")
+    }
     if (is.null(standard_curve_num_samples)) {
       standard_curve_num_samples = length(standard_curves)
     } else if (standard_curve_num_samples != length(standard_curves)) {
-      stop("Inconsistent number of positive control samples accross plates")
+      stop("Inconsistent number of positive control or standard curve samples accross plates")
     }
 
     if (!antibody_name %in% plate$analyte_names){
@@ -57,7 +78,7 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
     dilutions <- sapply(standard_curves, function(sample) sample$sample_type$character_dilution_factor)
     dilutions_numeric <- sapply(standard_curves, function(sample) sample$sample_type$dilution_factor)
     # sort values according to dilutions
-    sorted_order <- order(dilutions_numeric, decreasing = decreasing_dilution_order)
+    sorted_order <- order(dilutions_numeric)
 
     # Sort the vectors according to the sorted order of the reference vector
     dilutions_numeric <- dilutions_numeric[sorted_order]
@@ -81,12 +102,6 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
 
   }
 
-  if (!is.null(file_path)){
-    if (grepl("\\.pdf$", file_path, ignore.case = TRUE))
-      pdf(file  = file_path)
-    else
-      png(filename = file_path)
-  }
 
   plot_name <- paste0("Standard curve for analyte: ", antibody_name)
 
@@ -98,22 +113,80 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
 
   par(mfrow=c(1,1))
 
-  plot(log(dilutions_numeric), log(standard_curve_values_list[[1]]), type = "o", lwd=2, main=plot_name, xlab="dilutions", ylab = paste0("log(", data_type, ")"), col=colors[[1]],axes=F,bty='L', pch=19,
-       ylim = c(min(log(unlist(standard_curve_values_list))), max(log(unlist(standard_curve_values_list)))))
-  if (length(plates) > 1) {
-    for (i in 2:length(plates)) {
-      lines(log(dilutions_numeric), log(standard_curve_values_list[[i]]), type = "o", lwd = 2, col = colors[[i]])
+  log_if_needed_mfi <- function(x) {
+    if ("MFI" %in% log_scale || "all" %in% log_scale) {
+      return(log(x))
     }
+    return(x)
   }
-  axis(1,at=c(log(dilutions_numeric),max(log(dilutions_numeric))+1),labels=c(dilutions,""),cex.axis=0.9)
-  axis(2,cex.axis=0.9)
 
-  legend("topleft", legend = paste("Plate", 1:length(plates)), col = colors, lty = 1, lwd = 2)
+  log_if_needed_dilutions <- function(x) {
+    if ("dilutions" %in% log_scale || "all" %in% log_scale) {
+      return(log(x))
+    }
+    return(x)
+  }
 
-  if (!is.null(file_path))
-    dev.off()
+  # Determine if x and y axes need to be log-scaled
+  x_log_scale <- "dilutions" %in% log_scale || "all" %in% log_scale
+  y_log_scale <- "MFI" %in% log_scale || "all" %in% log_scale
+
+  plot_data <- data.frame()
+
+
+  for (i in 1:length(plates)) {
+    temp_data <- data.frame(
+      dilutions = log_if_needed_dilutions(dilutions_numeric),
+      mfi = log_if_needed_mfi(standard_curve_values_list[[i]]),
+      plate = as.factor(paste("Plate", i)),
+      colors = colors[[i]]
+    )
+    plot_data <- rbind(plot_data, temp_data)
+  }
+
+  # Generate x and y labels
+  xlab <- ifelse(x_log_scale, "log(dilutions)", "dilutions")
+  ylab <- ifelse(y_log_scale, paste0("log(", data_type, ")"), data_type)
+
+  x_ticks <- c(log_if_needed_dilutions(dilutions_numeric), max(log_if_needed_dilutions(dilutions_numeric)) + 1)
+  x_labels <- c(dilutions, "")
+
+  p <- ggplot(plot_data, aes(x = dilutions, y = mfi, color = plate)) +
+    geom_line(size = 1.2) +
+    geom_point(size = 3) +
+    scale_color_manual(values = colors) +
+    labs(title = plot_name, x = xlab, y = ylab) +
+    scale_x_continuous(breaks = x_ticks, labels = x_labels, trans = if (decreasing_dilution_order) "reverse" else "identity") +
+    scale_y_continuous() +
+    theme(axis.line = element_line(colour = "black"),
+          axis.text.x = element_text(size = 9),
+          axis.text.y = element_text(size = 9))
+
+
+  if (!is.null(file_path)){
+    ggsave(file_path, plot = p, width = 10, height = 7, units = "in", dpi = 300)
+  } else {
+    print(p)
+  }
+
 
 
 }
 
+
+verbose_cat <- function(..., verbose = TRUE) {
+  if (verbose) {
+    cat(..., sep = "")
+  }
+}
+
+color_codes <-
+  list(
+    yellow_start = "\033[33m",
+    yellow_end = "\033[39m",
+    red_start = "\033[31m",
+    red_end = "\033[39m",
+    green_start = "\033[32m",
+    green_end = "\033[39m"
+  )
 

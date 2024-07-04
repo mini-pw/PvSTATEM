@@ -276,8 +276,9 @@ SampleLocation$parse_sample_location = function(location_string) {
 #' A type of the sample.
 #' The possible sample types are:
 #' 1. (`"BLANK"`)\cr - background sample used for testing
-#' 3. (`"POSITIVE CONTROL"`)\cr -
-#' 4. (`"NEGATIVE CONTROL"`)\cr -
+#' 2. (`"STANDARD CURVE"`)\cr - a sample used to create a standard curve
+#' 3. (`"POSITIVE CONTROL"`)\cr - a positive control sample used for testing
+#' 4. (`"NEGATIVE CONTROL"`)\cr - a negative control sample used for testing
 #' 5. (`"TEST"`)\cr - the actual sample used for testing
 #'
 #' @field dilution_factor A numeric value that represents the dilution factor of the sample. Used only in the case of control samples
@@ -374,6 +375,7 @@ SampleType$valid_sample_types <-
   c("BLANK",
     "TEST",
     "NEGATIVE CONTROL",
+    "STANDARD CURVE",
     "POSITIVE CONTROL")
 
 #'
@@ -393,9 +395,12 @@ SampleType$validate_dilution_factor = function(sample_type, dilution_factor) {
   if (sample_type == "POSITIVE CONTROL" && is.na(dilution_factor)) {
     stop("Positive control samples must have a dilution factor")
   }
-  if (sample_type != "POSITIVE CONTROL" &&
+  if (sample_type == "STANDARD CURVE" && is.na(dilution_factor)) {
+    stop("Standard curve samples must have a dilution factor")
+  }
+  if (sample_type %in% c("POSITIVE CONTROL", "STANDARD CURVE")  &&
       !is.na(dilution_factor)) {
-    stop("Only positive control samples should have a dilution factor")
+    stop("Only positive control or standard curve samples should have a dilution factor")
   }
 
 }
@@ -405,6 +410,7 @@ SampleType$validate_dilution_factor = function(sample_type, dilution_factor) {
 #'
 #' It parses the names as follows:
 #' If `sample_name` or `sample_name_loc` equals to `BLANK`, `B` or starts with letter `B`, then SampleType equals to `BLANK`
+#' If `sample_name` or `sample_name_loc` equals to `STANDARD CURVE`, `SC`, `S` or equals to `1/\d+`, `S_1/d+`, `S 1\d+` or `S1\d+` then SampleType equals to `STANDARD CURVE`
 #' If `sample_name` or `sample_name_loc` equals to `NEGATIVE CONTROL`, `N`, or starts with `N` or `NEG`, then SampleType equals to `NEGATIVE CONTROL`
 #' If `sample_name` or `sample_name_loc` contains substring `1/\d+` SampleType equals to `POSITIVE CONTROL`
 #' otherwise, the returned SampleType is `TEST`
@@ -436,6 +442,28 @@ SampleType$parse_sample_type = function(sample_name,
     return(SampleType$new("BLANK"))
   }
 
+  standard_curve_types <- c("STANDARD CURVE", "SC", "S") # CP3 - tanzania, PRISM - uganda, Brefet - gambia, NIBSC 10/198
+  standard_curve_pattern <- "^(S_|S|S\\s|)(1/\\d+)$"
+  standard_curve_loc_pattern <- "(1/\\d+)"
+  if (sample_name %in% standard_curve_types ||
+      grepl(standard_curve_pattern, sample_name) ||
+      grepl(standard_curve_loc_pattern, sample_name_loc)) {
+    dilution_factor_pattern <- "1/\\d+"
+    match <- ""
+    if (!is.null(sample_name_loc) && sample_name_loc != "" || !is.na(sample_name_loc) && sample_name_loc != "") {
+      match <- regmatches(sample_name_loc, regexpr(dilution_factor_pattern, sample_name_loc))
+    } else {
+      match <- regmatches(sample_name, regexpr(dilution_factor_pattern, sample_name))
+    }
+    dilution_factor <- eval(parse(text = match))
+
+    if (is.null(dilution_factor)) {
+      dilution_factor = NA # this value needs to be updated later
+    }
+
+    return(SampleType$new("STANDARD CURVE", dilution_factor = dilution_factor, validate_dilution = FALSE))
+  }
+
   negative_types <- c("NEGATIVE CONTROL", "N")
   negative_pattern <-
     "^(N..|.*\\bNEG\\b)" # check if it starts with N or contains NEG string
@@ -446,12 +474,11 @@ SampleType$parse_sample_type = function(sample_name,
     return(SampleType$new("NEGATIVE CONTROL"))
   }
 
-  #standard_curve_types <- c("STANDARD CURVE", "SC", "S", "CP3") # CP3 - tanzania, PRISM - uganda, Brefet - gambia, NIBSC 10/198
-  #standard_curve_pattern <- "^(S_|S|S\\s|CP.+)(1/\\d+)$"
+
+
   positive_control_pattern <- c("^(P.+|POS.+|CP.+)(1/\\d+)$")
-  positive_control_loc_pattern <- c("(1/\\d+)")
   if (grepl(positive_control_pattern, sample_name) ||
-      grepl(positive_control_loc_pattern, sample_name_loc)) {
+      grepl(positive_control_pattern, sample_name_loc)) {
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
     if (!is.null(sample_name_loc) && sample_name_loc != "" || !is.na(sample_name_loc) && sample_name_loc != "") {
