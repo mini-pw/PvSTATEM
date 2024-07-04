@@ -666,6 +666,9 @@ Plate <- R6Class(
     #' @field audit_logs a list containing audit logs read from Luminex file
     audit_logs = list(),
 
+    #' @field plate_name - plate name obtained from filename
+    plate_name = "",
+
 
     #' @description
     #' creates a new `Plate` object
@@ -688,13 +691,15 @@ Plate <- R6Class(
                           samples = list(),
                           batch_info = list(),
                           calibration_info = list(),
-                          audit_logs = list()) {
+                          audit_logs = list(),
+                          plate_name = "") {
       # check for valid input
       self$analytes <- analytes
       self$samples <- samples
       self$batch_info <- batch_info
       self$calibration_info <- calibration_info
       self$audit_logs <- audit_logs
+      self$plate_name <- plate_name
 
     },
 
@@ -739,7 +744,7 @@ Plate <- R6Class(
 
       cat(
         "Summary of the plate generated on ", as.character(self$examination_date),
-        "\nwith batch name '", plate$batch_name, "':\n",
+        "\nwith name '", plate$plate_name, "':\n",
         "Total number of samples: ",
         self$number_of_samples,
         "\n",

@@ -138,7 +138,7 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
     temp_data <- data.frame(
       dilutions = log_if_needed_dilutions(dilutions_numeric),
       mfi = log_if_needed_mfi(standard_curve_values_list[[i]]),
-      plate = as.factor(paste("Plate", i)),
+      plate = plates[[i]]$plate_name,
       colors = colors[[i]]
     )
     plot_data <- rbind(plot_data, temp_data)
@@ -151,6 +151,19 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
   x_ticks <- c(log_if_needed_dilutions(dilutions_numeric), max(log_if_needed_dilutions(dilutions_numeric)) + 1)
   x_labels <- c(dilutions, "")
 
+  legend_position <- c(0.8, 0.2)  # Automatically position the legend
+  if (decreasing_dilution_order) {
+    if (x_log_scale && !y_log_scale)
+      legend_position <- c(0.8, 0.8)
+    else
+      legend_position <- c(0.2, 0.2)
+  } else {
+    if (x_log_scale && !y_log_scale)
+      legend_position <- c(0.2, 0.8)
+    else
+      legend_position <- c(0.8, 0.2)
+  }
+
   p <- ggplot(plot_data, aes(x = dilutions, y = mfi, color = plate)) +
     geom_line(size = 1.2) +
     geom_point(size = 3) +
@@ -158,9 +171,13 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
     labs(title = plot_name, x = xlab, y = ylab) +
     scale_x_continuous(breaks = x_ticks, labels = x_labels, trans = if (decreasing_dilution_order) "reverse" else "identity") +
     scale_y_continuous() +
+    theme_minimal() +
     theme(axis.line = element_line(colour = "black"),
           axis.text.x = element_text(size = 9),
-          axis.text.y = element_text(size = 9))
+          axis.text.y = element_text(size = 9),
+          legend.position = legend_position,  # Automatically position the legend
+          legend.background = element_rect(fill = "white", color = "black"))
+
 
 
   if (!is.null(file_path)){
