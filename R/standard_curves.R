@@ -13,7 +13,7 @@ library(ggplot2)
 #' @param verbose If `TRUE` print messages, `TRUE` by default
 #'
 #' @export
-plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Median", file_path = NULL, decreasing_dilution_order = TRUE, log_scale = c("dilutions"), verbose = TRUE) {
+plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Median", file_path = NULL, decreasing_dilution_order = TRUE, log_scale = c("all"), verbose = TRUE) {
 
   if (inherits(plates, "Plate")) { # an instance of Plate
     plates <- list(plates)
