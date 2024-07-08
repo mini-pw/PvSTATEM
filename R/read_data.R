@@ -9,6 +9,7 @@
 #' @param check_plate if TRUE veryfies the plate - checks the consistency etc.
 #' @param verbose if TRUE, print out the progress of the function
 #' @param colorize if TRUE, colorize the output
+#' @param ... additional arguments passed down
 #'
 #' @examples
 #' plate_file <- system.file("extdata", "random.csv", package = "PvSTATEM")
