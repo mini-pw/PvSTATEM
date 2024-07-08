@@ -372,11 +372,13 @@ SampleType <- R6Class(
 #' Possible types for the samples
 #'
 SampleType$valid_sample_types <-
-  c("BLANK",
+  c(
+    "BLANK",
     "TEST",
     "NEGATIVE CONTROL",
     "STANDARD CURVE",
-    "POSITIVE CONTROL")
+    "POSITIVE CONTROL"
+  )
 #'
 #' @description
 #' Validates the sample type using five possible values: `"BLANK"`, `"POSITIVE CONTROL"`, `"NEGATIVE CONTROL"`, `"TEST"`.
@@ -396,8 +398,8 @@ SampleType$validate_dilution_factor <- function(sample_type, dilution_factor) {
   if (sample_type == "STANDARD CURVE" && is.na(dilution_factor)) {
     stop("Standard curve samples must have a dilution factor")
   }
-  if (sample_type %in% c("POSITIVE CONTROL", "STANDARD CURVE")  &&
-      !is.na(dilution_factor)) {
+  if (sample_type %in% c("POSITIVE CONTROL", "STANDARD CURVE") &&
+    !is.na(dilution_factor)) {
     stop("Only positive control or standard curve samples should have a dilution factor")
   }
 }
@@ -443,8 +445,8 @@ SampleType$parse_sample_type <- function(sample_name,
   standard_curve_pattern <- "^(S_|S|S\\s|)(1/\\d+)$"
   standard_curve_loc_pattern <- "(1/\\d+)"
   if (sample_name %in% standard_curve_types ||
-      grepl(standard_curve_pattern, sample_name) ||
-      grepl(standard_curve_loc_pattern, sample_name_loc)) {
+    grepl(standard_curve_pattern, sample_name) ||
+    grepl(standard_curve_loc_pattern, sample_name_loc)) {
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
     if (!is.null(sample_name_loc) && sample_name_loc != "" || !is.na(sample_name_loc) && sample_name_loc != "") {
@@ -455,7 +457,7 @@ SampleType$parse_sample_type <- function(sample_name,
     dilution_factor <- eval(parse(text = match))
 
     if (is.null(dilution_factor)) {
-      dilution_factor = NA # this value needs to be updated later
+      dilution_factor <- NA # this value needs to be updated later
     }
 
     return(SampleType$new("STANDARD CURVE", dilution_factor = dilution_factor, validate_dilution = FALSE))
@@ -475,7 +477,7 @@ SampleType$parse_sample_type <- function(sample_name,
 
   positive_control_pattern <- c("^(P.+|POS.+|CP.+)(1/\\d+)$")
   if (grepl(positive_control_pattern, sample_name) ||
-      grepl(positive_control_pattern, sample_name_loc)) {
+    grepl(positive_control_pattern, sample_name_loc)) {
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
     if (!is.null(sample_name_loc) && sample_name_loc != "" || !is.na(sample_name_loc) && sample_name_loc != "") {
@@ -698,7 +700,6 @@ Plate <- R6Class(
       self$calibration_info <- calibration_info
       self$audit_logs <- audit_logs
       self$plate_name <- plate_name
-
     },
     print = function(...) {
       cat(

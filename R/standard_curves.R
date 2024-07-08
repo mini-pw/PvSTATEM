@@ -12,8 +12,10 @@ library(ggplot2)
 #' @param log_scale Which elements on the plot should be displayed in log scale. By default c("dilutions"). If `NULL` no log scale is used, if "all" or c("dilutions", "MFI") all elements are displayed in log scale.
 #' @param verbose If `TRUE` print messages, `TRUE` by default
 #'
+#' @import ggplot2
+#'
 #' @export
-plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Median", file_path = NULL, decreasing_dilution_order = TRUE, log_scale = c("all"), verbose = TRUE) {
+plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Median", file_path = NULL, decreasing_dilution_order = TRUE, log_scale = c("all"), verbose = TRUE) {
   if (inherits(plates, "Plate")) { # an instance of Plate
     plates <- list(plates)
   }
@@ -28,7 +30,7 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
 
   # check if log_scale is a character vector and contains element from set
   available_log_scale_values <- c("all", "dilutions", "MFI")
-  if (!is.null(log_scale) && !all(log_scale %in% available_log_scale_values)){
+  if (!is.null(log_scale) && !all(log_scale %in% available_log_scale_values)) {
     stop("log_scale should be a character vector containing elements from set: ", paste(available_log_scale_values, collapse = ", "))
   }
 
@@ -51,7 +53,7 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
     }
 
     standard_curves <- plate$get_sample_by_type("STANDARD CURVE")
-    if (length(standard_curves) == 0){
+    if (length(standard_curves) == 0) {
       verbose_cat(
         "(",
         color_codes$red_start,
@@ -147,17 +149,19 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
   x_ticks <- c(log_if_needed_dilutions(dilutions_numeric), max(log_if_needed_dilutions(dilutions_numeric)) + 1)
   x_labels <- c(dilutions, "")
 
-  legend_position <- c(0.8, 0.2)  # Automatically position the legend
+  legend_position <- c(0.8, 0.2) # Automatically position the legend
   if (decreasing_dilution_order) {
-    if (x_log_scale && !y_log_scale)
+    if (x_log_scale && !y_log_scale) {
       legend_position <- c(0.8, 0.8)
-    else
+    } else {
       legend_position <- c(0.2, 0.2)
+    }
   } else {
-    if (x_log_scale && !y_log_scale)
+    if (x_log_scale && !y_log_scale) {
       legend_position <- c(0.2, 0.8)
-    else
+    } else {
       legend_position <- c(0.8, 0.2)
+    }
   }
 
   p <- ggplot(plot_data, aes(x = dilutions, y = mfi, color = plate)) +
@@ -168,22 +172,21 @@ plot_standard_curve_antibody = function(plates, antibody_name, data_type = "Medi
     scale_x_continuous(breaks = x_ticks, labels = x_labels, trans = if (decreasing_dilution_order) "reverse" else "identity") +
     scale_y_continuous() +
     theme_minimal() +
-    theme(axis.line = element_line(colour = "black"),
-          axis.text.x = element_text(size = 9),
-          axis.text.y = element_text(size = 9),
-          legend.position = legend_position,  # Automatically position the legend
-          legend.background = element_rect(fill = "white", color = "black"))
+    theme(
+      axis.line = element_line(colour = "black"),
+      axis.text.x = element_text(size = 9),
+      axis.text.y = element_text(size = 9),
+      legend.position = legend_position, # Automatically position the legend
+      legend.background = element_rect(fill = "white", color = "black")
+    )
 
 
 
-  if (!is.null(file_path)){
+  if (!is.null(file_path)) {
     ggsave(file_path, plot = p, width = 10, height = 7, units = "in", dpi = 300)
   } else {
     print(p)
   }
-
-
-
 }
 
 

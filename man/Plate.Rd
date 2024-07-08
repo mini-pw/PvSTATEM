@@ -27,6 +27,10 @@ A class to represent the luminex plate. It contains information about the sample
 \item{\code{calibration_info}}{a list containing calibration logs read from Luminex file}
 
 \item{\code{audit_logs}}{a list containing audit logs read from Luminex file}
+
+\item{\code{plate_name}}{\itemize{
+\item plate name obtained from filename
+}}
 }
 \if{html}{\out{</div>}}
 }
@@ -84,7 +88,8 @@ creates a new \code{Plate} object
   samples = list(),
   batch_info = list(),
   calibration_info = list(),
-  audit_logs = list()
+  audit_logs = list(),
+  plate_name = ""
 )}\if{html}{\out{</div>}}
 }
 
