@@ -24,7 +24,7 @@ The basic functionality of the `PvSTATEM` package is reading raw MBA data. To pr
 ```{r}
 library(PvSTATEM)
 
-plate_filepath <- system.file("extdata", "artificial_plate.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+plate_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
 
 plate <- read_data(plate_filepath) # read the data
@@ -72,6 +72,4 @@ plot_standard_curve_antibody(plate, antibody_name = "AMA1")
 plate$blank_adjustment()
 
 plot_standard_curve_antibody(plate, antibody_name = "AMA1")
-
-
 ```

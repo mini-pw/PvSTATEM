@@ -12,7 +12,7 @@ analyte id of given name
 A class to represent the luminex plate. It contains information about the samples and analytes that were examined on the plate as well as some additional metadata and batch info
 }
 \examples{
-#TODO
+# TODO
 
 }
 \section{Public fields}{

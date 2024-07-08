@@ -1,10 +1,11 @@
 Package: PvSTATEM
 Type: Package
 Title: Reading, quality control and preprocessin of MBA assay data
+Description: Reading, quality control and preprocessin of MBA assay data
 Version: 0.0.1
 Authors@R: person("Tymoteusz", "Kwiecinski", email = "tymoteuszkwiecinski@gmail.com", role = c("aut", "cre"))
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports:
     dplyr,
     R6,
@@ -12,6 +13,10 @@ Imports:
     readxl,
     RColorBrewer
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
-Config/testthat/edition: 3
+Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)
+License: BSD 3
+VignetteBuilder: knitr

@@ -7,8 +7,10 @@
 plot_standard_curve_antibody(
   plates,
   antibody_name,
-  data_type = "Net MFI",
-  file_path = NULL
+  data_type = "Median",
+  file_path = NULL,
+  decreasing_dilution_order = TRUE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -19,6 +21,10 @@ plot_standard_curve_antibody(
 \item{data_type}{Data type of the value we want to plot - the same datatype as in the plate file. By default equals to \verb{Net MFI}}
 
 \item{file_path}{where to save the output plot. If \code{NULL} the plot is displayed, \code{NULL} by default}
+
+\item{decreasing_dilution_order}{If \code{TRUE} the dilutions are plotted in decreasing order, \code{TRUE} by default}
+
+\item{verbose}{If \code{TRUE} print messages, \code{TRUE} by default}
 }
 \description{
 PLot standard curves of plate or list of plates
