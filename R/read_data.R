@@ -98,6 +98,11 @@ read_data <- function(file_path,
       )    }
   }
 
+  # add name from filepath
+  filename_without_extension <- sub("\\.[^.]*$", "", basename(file_path))
+
+  results_plate$plate_name <- filename_without_extension
+
   return(results_plate)
 
 }
