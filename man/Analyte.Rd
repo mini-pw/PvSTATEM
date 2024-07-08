@@ -7,7 +7,6 @@
 Analyte class is an object that gathers information about one specific Analyte on the Luminex plate
 }
 \examples{
-library(PvSTATEM)
 etramp <- Analyte$new(id = 73, analyte_name = "Etramp5_ag1", bead_count = 50)
 print(etramp)
 

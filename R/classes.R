@@ -51,6 +51,7 @@ get_join_value <- function(x, y) {
 #' etramp <- Analyte$new(id = 73, analyte_name = "Etramp5_ag1", bead_count = 50)
 #' print(etramp)
 #'
+#' @export
 Analyte <- R6Class(
   "Analyte",
   list(
@@ -168,6 +169,8 @@ Analyte <- R6Class(
 #'
 #' sample_location <- SampleLocation$parse_sample_location("65(1,F5)")
 #' sample_location$location_name
+#'
+#' @export
 SampleLocation <- R6Class(
   "SampleLocation",
   public = list(
@@ -278,6 +281,8 @@ SampleLocation$parse_sample_location <- function(location_string) {
 #'
 #' @field dilution_factor A numeric value that represents the dilution factor of the sample. Used only in the case of control samples
 #'
+#'
+#' @export
 SampleType <- R6Class(
   "SampleType",
   public = list(
@@ -473,6 +478,8 @@ SampleType$parse_sample_type <- function(sample_name,
 #' A class to represent the sample. It contains all the necessary information about the sample
 #' @examples
 #' # TODO
+#'
+#' @export
 Sample <- R6Class(
   "Sample",
   list(

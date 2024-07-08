@@ -8,6 +8,7 @@ A class to represent the sample. It contains all the necessary information about
 }
 \examples{
 # TODO
+
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

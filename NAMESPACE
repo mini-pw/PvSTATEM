@@ -2,5 +2,8 @@
 
 export(Analyte)
 export(Plate)
+export(Sample)
+export(SampleLocation)
+export(SampleType)
 export(plot_standard_curve_antibody)
 export(read_data)
