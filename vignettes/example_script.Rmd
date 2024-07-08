@@ -28,14 +28,11 @@ plate_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM", mus
 
 
 plate <- read_data(plate_filepath) # read the data
-
 ```
 
 After the plate is successfully loaded, we can look into some basic information about the plate.
 
 ```{r}
-
-
 plate$summary()
 
 plate$get_sample(1)
@@ -50,7 +47,6 @@ plate$analyte_names
 ## Warnings
 Our scripts are designed to catch potential errors in the data. If there are any warnings, they will be stored in the `warnings` field of the plate object. The warnings can be accessed by the `$warnings` field of the plate object or by the `$warnings` field of the sample object.
 
-```{r}
 ```{r}
 ## warnings ----------------------------------------------------------------
 

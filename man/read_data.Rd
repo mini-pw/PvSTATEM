@@ -8,9 +8,9 @@ read_data(
   file_path,
   layout_file_path = NULL,
   check_plate = TRUE,
-  ...,
   verbose = TRUE,
-  colorize = !isTRUE(getOption("knitr.in.progress"))
+  colorize = !isTRUE(getOption("knitr.in.progress")),
+  ...
 )
 }
 \arguments{

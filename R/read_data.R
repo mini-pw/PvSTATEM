@@ -18,9 +18,9 @@
 read_data <- function(file_path,
                       layout_file_path = NULL,
                       check_plate = TRUE,
-                      ...,
                       verbose = TRUE,
-                      colorize = !isTRUE(getOption("knitr.in.progress"))) {
+                      colorize = !isTRUE(getOption("knitr.in.progress")),
+                      ...) {
   # firstly we read the raw csv file as a dataframe
   # data <- read.csv(filepath, header = FALSE, sep = ",", stringsAsFactors = FALSE)
 
