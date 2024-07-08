@@ -1,7 +1,7 @@
 library(R6)
 
 
-verify_numeric_join = function(x, y) {
+verify_numeric_join <- function(x, y) {
   # check if two numeric values are equal
   if (is.na(x) || is.na(y)) {
     return(TRUE)
@@ -9,7 +9,7 @@ verify_numeric_join = function(x, y) {
   return(x == y)
 }
 
-verify_character_join = function(x, y) {
+verify_character_join <- function(x, y) {
   # check if two character values are equal
   if (is.null(x) || is.null(y)) {
     return(TRUE)
@@ -17,7 +17,7 @@ verify_character_join = function(x, y) {
   return(x == y)
 }
 
-get_join_value = function(x, y) {
+get_join_value <- function(x, y) {
   if (is.na(x) || is.null(x)) {
     return(y)
   }
@@ -48,9 +48,10 @@ get_join_value = function(x, y) {
 #' @field units Units of the analyte in which the results are expressed
 #'
 #' @examples
-#' etramp <- Analyte$new(id = 73, analyte_name = "Etramp5_ag1", bead_count=50)
+#' etramp <- Analyte$new(id = 73, analyte_name = "Etramp5_ag1", bead_count = 50)
 #' print(etramp)
 #'
+#' @export
 Analyte <- R6Class(
   "Analyte",
   list(
@@ -86,14 +87,14 @@ Analyte <- R6Class(
       stopifnot(length(id) == 1 && is.numeric(id))
 
       stopifnot(length(analyte_name) == 1 &&
-                  is.character(analyte_name))
+        is.character(analyte_name))
       stopifnot(length(bead_count) == 1 &&
-                  (is.na(bead_count) || is.numeric(bead_count)))
+        (is.na(bead_count) || is.numeric(bead_count)))
       stopifnot(length(analysis_type) == 0 ||
-                  (is.character(analysis_type) &&
-                     length(analysis_type) == 1))
+        (is.character(analysis_type) &&
+          length(analysis_type) == 1))
       stopifnot(length(units) == 0 ||
-                  (is.character(units) && length(units) == 1))
+        (is.character(units) && length(units) == 1))
 
       self$id <- id
       self$analyte_name <- analyte_name
@@ -144,7 +145,6 @@ Analyte <- R6Class(
         get_join_value(self$analysis_type, new_analyte$analysis_type)
       self$units <- get_join_value(self$units, new_analyte$units)
     }
-
   )
 )
 
@@ -169,6 +169,8 @@ Analyte <- R6Class(
 #'
 #' sample_location <- SampleLocation$parse_sample_location("65(1,F5)")
 #' sample_location$location_name
+#'
+#' @export
 SampleLocation <- R6Class(
   "SampleLocation",
   public = list(
@@ -188,7 +190,6 @@ SampleLocation <- R6Class(
 
       self$col <- col
       self$row <- row
-
     },
 
     #' @description
@@ -206,14 +207,13 @@ SampleLocation <- R6Class(
       # join the data of two samples
 
       if (!verify_numeric_join(self$row, new_location$row) ||
-          !verify_numeric_join(self$col, new_location$col)) {
+        !verify_numeric_join(self$col, new_location$col)) {
         stop("Cannot join samples of different locations")
       }
 
       self$col <- get_join_value(self$col, new_location$col)
       self$row <- get_join_value(self$row, new_location$row)
     }
-
   ),
   active = list(
     #' @description
@@ -224,7 +224,7 @@ SampleLocation <- R6Class(
 
     #' @description
     #' Returns the location of the sample in the format `(row_letter, column)`
-    location_name  = function() {
+    location_name = function() {
       return(paste0("(", self$row_letter, ", ", self$col, ")"))
     }
   )
@@ -239,17 +239,16 @@ SampleLocation <- R6Class(
 #'
 #' @returns New SampleLocation object with parsed location information.
 #'
-SampleLocation$parse_sample_location = function(location_string) {
+SampleLocation$parse_sample_location <- function(location_string) {
   cleaned_string <- gsub("\\\"", "", location_string)
   cleaned_string <- unlist(strsplit(cleaned_string, "[()]"))
 
-  if (length(cleaned_string) > 1){
+  if (length(cleaned_string) > 1) {
     id <- as.numeric(cleaned_string[1])
     cleaned_string <- unlist(strsplit(cleaned_string[2], "[;,]"))
     plate_id <- as.numeric(cleaned_string[1])
     location <- cleaned_string[2]
-  }
-  else{
+  } else {
     cleaned_string <- unlist(strsplit(cleaned_string[1], "[;,]"))
     plate_id <- as.numeric(cleaned_string[1])
     location <- cleaned_string[2]
@@ -283,6 +282,8 @@ SampleLocation$parse_sample_location = function(location_string) {
 #'
 #' @field dilution_factor A numeric value that represents the dilution factor of the sample. Used only in the case of control samples
 #'
+#'
+#' @export
 SampleType <- R6Class(
   "SampleType",
   public = list(
@@ -302,24 +303,23 @@ SampleType <- R6Class(
       # for now there should passed a sample type only
       # check for valid input
       stopifnot(length(sample_type) == 1 &&
-                  is.character(sample_type))
+        is.character(sample_type))
       stopifnot(length(dilution_factor) == 1 &&
-                  (is.na(dilution_factor) ||
-                     is.numeric(dilution_factor)))
+        (is.na(dilution_factor) ||
+          is.numeric(dilution_factor)))
 
       SampleType$validate_sample_type(sample_type)
 
       # allow for lazy loading - dont verify the dilution factor after creation, but wait until checks
-      if (validate_dilution){
+      if (validate_dilution) {
         SampleType$validate_dilution_factor(sample_type, dilution_factor)
-        private$is_validated = TRUE
-      }else {
-        private$is_validated = FALSE
+        private$is_validated <- TRUE
+      } else {
+        private$is_validated <- FALSE
       }
 
       self$sample_type <- sample_type
       self$dilution_factor <- dilution_factor
-
     },
 
     #' @description
@@ -372,18 +372,18 @@ SampleType <- R6Class(
 #' Possible types for the samples
 #'
 SampleType$valid_sample_types <-
-  c("BLANK",
+  c(
+    "BLANK",
     "TEST",
     "NEGATIVE CONTROL",
     "STANDARD CURVE",
-    "POSITIVE CONTROL")
-
+    "POSITIVE CONTROL"
+  )
 #'
 #' @description
 #' Validates the sample type using five possible values: `"BLANK"`, `"POSITIVE CONTROL"`, `"NEGATIVE CONTROL"`, `"TEST"`.
 #'
-SampleType$validate_sample_type = function(sample_type) {
-
+SampleType$validate_sample_type <- function(sample_type) {
   if (!(sample_type %in% SampleType$valid_sample_types)) {
     stop("Invalid sample type")
   }
@@ -391,18 +391,17 @@ SampleType$validate_sample_type = function(sample_type) {
 
 #' @description
 #' Validates the dilution factor based on the sample type
-SampleType$validate_dilution_factor = function(sample_type, dilution_factor) {
+SampleType$validate_dilution_factor <- function(sample_type, dilution_factor) {
   if (sample_type == "POSITIVE CONTROL" && is.na(dilution_factor)) {
     stop("Positive control samples must have a dilution factor")
   }
   if (sample_type == "STANDARD CURVE" && is.na(dilution_factor)) {
     stop("Standard curve samples must have a dilution factor")
   }
-  if (sample_type %in% c("POSITIVE CONTROL", "STANDARD CURVE")  &&
-      !is.na(dilution_factor)) {
+  if (sample_type %in% c("POSITIVE CONTROL", "STANDARD CURVE") &&
+    !is.na(dilution_factor)) {
     stop("Only positive control or standard curve samples should have a dilution factor")
   }
-
 }
 
 #' @description
@@ -426,9 +425,9 @@ SampleType$validate_dilution_factor = function(sample_type, dilution_factor) {
 #'
 #' @param dilution_factor (`numeric(1)`)\cr
 #' The dilution factor of the sample from the base luminex file. This parameter is ignored for now
-SampleType$parse_sample_type = function(sample_name,
-                                        sample_name_loc = "",
-                                        dilution_factor = 1) {
+SampleType$parse_sample_type <- function(sample_name,
+                                         sample_name_loc = "",
+                                         dilution_factor = 1) {
   if (is.null(sample_name_loc) || is.na(sample_name_loc)) {
     sample_name_loc <- ""
   }
@@ -437,8 +436,8 @@ SampleType$parse_sample_type = function(sample_name,
   blank_pattern <- "^B..$"
 
   if (sample_name %in% blank_types ||
-      grepl(blank_pattern, sample_name) ||
-      grepl(blank_pattern, sample_name_loc)) {
+    grepl(blank_pattern, sample_name) ||
+    grepl(blank_pattern, sample_name_loc)) {
     return(SampleType$new("BLANK"))
   }
 
@@ -446,8 +445,8 @@ SampleType$parse_sample_type = function(sample_name,
   standard_curve_pattern <- "^(S_|S|S\\s|)(1/\\d+)$"
   standard_curve_loc_pattern <- "(1/\\d+)"
   if (sample_name %in% standard_curve_types ||
-      grepl(standard_curve_pattern, sample_name) ||
-      grepl(standard_curve_loc_pattern, sample_name_loc)) {
+    grepl(standard_curve_pattern, sample_name) ||
+    grepl(standard_curve_loc_pattern, sample_name_loc)) {
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
     if (!is.null(sample_name_loc) && sample_name_loc != "" || !is.na(sample_name_loc) && sample_name_loc != "") {
@@ -458,7 +457,7 @@ SampleType$parse_sample_type = function(sample_name,
     dilution_factor <- eval(parse(text = match))
 
     if (is.null(dilution_factor)) {
-      dilution_factor = NA # this value needs to be updated later
+      dilution_factor <- NA # this value needs to be updated later
     }
 
     return(SampleType$new("STANDARD CURVE", dilution_factor = dilution_factor, validate_dilution = FALSE))
@@ -469,8 +468,8 @@ SampleType$parse_sample_type = function(sample_name,
     "^(N..|.*\\bNEG\\b)" # check if it starts with N or contains NEG string
 
   if (sample_name %in% negative_types ||
-      grepl(negative_pattern, sample_name) ||
-      grepl(negative_pattern, sample_name_loc)) {
+    grepl(negative_pattern, sample_name) ||
+    grepl(negative_pattern, sample_name_loc)) {
     return(SampleType$new("NEGATIVE CONTROL"))
   }
 
@@ -478,7 +477,7 @@ SampleType$parse_sample_type = function(sample_name,
 
   positive_control_pattern <- c("^(P.+|POS.+|CP.+)(1/\\d+)$")
   if (grepl(positive_control_pattern, sample_name) ||
-      grepl(positive_control_pattern, sample_name_loc)) {
+    grepl(positive_control_pattern, sample_name_loc)) {
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
     if (!is.null(sample_name_loc) && sample_name_loc != "" || !is.na(sample_name_loc) && sample_name_loc != "") {
@@ -489,7 +488,7 @@ SampleType$parse_sample_type = function(sample_name,
     dilution_factor <- eval(parse(text = match))
 
     if (is.null(dilution_factor)) {
-      dilution_factor = NA # this value needs to be updated later
+      dilution_factor <- NA # this value needs to be updated later
     }
     return(SampleType$new("POSITIVE CONTROL", dilution_factor = dilution_factor, validate_dilution = FALSE))
   }
@@ -504,7 +503,9 @@ SampleType$parse_sample_type = function(sample_name,
 #' @description
 #' A class to represent the sample. It contains all the necessary information about the sample
 #' @examples
-#' #TODO
+#' # TODO
+#'
+#' @export
 Sample <- R6Class(
   "Sample",
   list(
@@ -558,17 +559,17 @@ Sample <- R6Class(
                           sample_type = NULL,
                           sample_location = NULL,
                           warnings = list(),
-                          errors= list(),
+                          errors = list(),
                           data = data.frame()) {
       # check for valid input
       stopifnot(length(id) == 1 && is.numeric(id))
       stopifnot(length(sample_name) == 1 &&
-                  is.character(sample_name))
+        is.character(sample_name))
 
       stopifnot(is.null(sample_type) ||
-                  "SampleType" %in% class(sample_type))
+        "SampleType" %in% class(sample_type))
       stopifnot(is.null(sample_location) ||
-                  "SampleLocation" %in% class(sample_location))
+        "SampleLocation" %in% class(sample_location))
       stopifnot(is.data.frame(data))
 
       self$id <- id
@@ -631,7 +632,6 @@ Sample <- R6Class(
 
       self$data <- dplyr::bind_rows(self$data, new_sample$data)
     }
-
   )
 )
 
@@ -644,7 +644,7 @@ Sample <- R6Class(
 #'
 #'
 #' @examples
-#' #TODO
+#' # TODO
 #'
 #' @export
 Plate <- R6Class(
@@ -700,9 +700,7 @@ Plate <- R6Class(
       self$calibration_info <- calibration_info
       self$audit_logs <- audit_logs
       self$plate_name <- plate_name
-
     },
-
     print = function(...) {
       cat(
         "Plate with",
@@ -721,14 +719,13 @@ Plate <- R6Class(
     #'
     #' @param include_names If `include_names` parameter is `TRUE`, apart from count of control samples, provides also their names.By default `FALSE`
     summary = function(..., include_names = FALSE) {
-
       positive_control_samples_list <- self$get_sample_by_type("POSITIVE CONTROL")
       negative_control_samples_list <- self$get_sample_by_type("NEGATIVE CONTROL")
 
       blank_samples_num <-
         length(self$get_sample_by_type("BLANK"))
       positive_control_num <- length(positive_control_samples_list)
-      negative_control_num <-length(negative_control_samples_list)
+      negative_control_num <- length(negative_control_samples_list)
 
 
       positive_control_names <- ""
@@ -757,7 +754,6 @@ Plate <- R6Class(
         "Number of negative control samples: ",
         negative_control_num,
         negative_control_names, "\n",
-
         sep = ""
       )
 
@@ -765,8 +761,8 @@ Plate <- R6Class(
     },
 
     #' @description
-        #' function adds block of information to the current plate
-        #'
+    #' function adds block of information to the current plate
+    #'
     #'
     #' the analysis type should be added after the analysis, otherwise there is no enough information about samples
     add_results_block = function(data_type, parsed_block) {
@@ -775,17 +771,17 @@ Plate <- R6Class(
         return(0)
       }
       if (data_type == "Audit Logs") {
-        self$audit_logs = parsed_block
+        self$audit_logs <- parsed_block
         return(0)
       }
       if (data_type == "Warnings/Errors") {
         # warnings should be at the end of the file, thus we assume that there exists samples in given locations
-        for (warning in parsed_block){
+        for (warning in parsed_block) {
           location <- SampleLocation$parse_sample_location(warning$Location)
           sample <- self$get_sample(location)
-          if (warning$Status == "Warning"){
+          if (warning$Status == "Warning") {
             sample$warnings <- c(sample$warnings, warning$Message)
-          } else if (warning$Status == "Error"){
+          } else if (warning$Status == "Error") {
             sample$errors <- c(sample$errors, warning$Message)
           }
         }
@@ -798,8 +794,9 @@ Plate <- R6Class(
           new_samples <- parsed_block
           for (i in seq_along(new_samples)) {
             new_sample <- new_samples[[i]]
-            if (new_sample$id %in% sapply(self$samples, function(x)
-              x$id)) {
+            if (new_sample$id %in% sapply(self$samples, function(x) {
+              x$id
+            })) {
               # add new data to the existing sample
               self$samples[[new_sample$id]]$join(new_sample)
             } else {
@@ -817,8 +814,9 @@ Plate <- R6Class(
         new_analytes <- parsed_block
         for (i in seq_along(new_analytes)) {
           new_analyte <- new_analytes[[i]]
-          if (new_analyte$id %in% sapply(self$analytes, function(x)
-            x$id)) {
+          if (new_analyte$id %in% sapply(self$analytes, function(x) {
+            x$id
+          })) {
             # add new data to the existing sample
             self$analytes[[as.character(new_analyte$id)]]$join(new_analyte)
           } else {
@@ -826,23 +824,23 @@ Plate <- R6Class(
           }
         }
         return(0)
-
       }
       if (data_type == "analyte_types") {
         parsed_block <- Filter(Negate(is.null), parsed_block)
 
-        if (length(self$analytes) == 0 || length(parsed_block))
-          return(0) # nothing to add
+        if (length(self$analytes) == 0 || length(parsed_block)) {
+          return(0)
+        } # nothing to add
 
         for (analyte_name in names(parsed_block)) {
           analyte_type <- parsed_block[[analyte_name]]
 
           analyte_id <- self$get_analyte_id(analyte_name)
-          if(length(analyte_id) > 0)
+          if (length(analyte_id) > 0) {
             self$analytes[[analyte_id]]$analysis_type <- analyte_type
+          }
         }
         return(0)
-
       }
     },
 
@@ -866,9 +864,9 @@ Plate <- R6Class(
     #' @description
     #' checks analyte consistency - verifies if all of the analytes contained within the samples are listed in the `analytes` list of the plate object
     check_analyte_consistency = function() {
-      additional_column_names = c("Total Events")
+      additional_column_names <- c("Total Events")
 
-      is_consistent = TRUE
+      is_consistent <- TRUE
 
       analytes_in_plate <- self$analyte_names
 
@@ -892,7 +890,7 @@ Plate <- R6Class(
           sample$warnings <- append(sample$warnings, warning_message)
 
           # Raise an error
-          is_consistent = FALSE
+          is_consistent <- FALSE
           # stop("Error: There are analytes in the sample not defined in the plate.")
         }
       }
@@ -906,16 +904,15 @@ Plate <- R6Class(
     #' @param min_events_per_bead lower bound of acceptable number of events. By default equals to `min_events_per_bead` parameter saved in the plate object
     #'
     check_beads_number = function(min_events_per_bead = self$min_events_per_bead) {
-
       below_min_list <- list()
 
-      below_min_flag = FALSE
+      below_min_flag <- FALSE
 
       for (sample in self$samples) {
-        if("Count" %in% row.names(sample$data)){ #TODO there should be option for lowercase
+        if ("Count" %in% row.names(sample$data)) { # TODO there should be option for lowercase
           below_min <- which(sample$data["Count", ] < min_events_per_bead, arr.ind = TRUE)
-          if(length(below_min) > 0) {
-            below_min_analytes <- names(sample$data["Count", ] )[below_min[, "col"]]
+          if (length(below_min) > 0) {
+            below_min_analytes <- names(sample$data["Count", ])[below_min[, "col"]]
             new_warnings <- paste0("An analyte ", below_min_analytes, " did not reach the specified count in the given sample")
             sample$warnings <- c(sample$warnings, new_warnings)
           }
@@ -928,25 +925,27 @@ Plate <- R6Class(
     #'
     #' @param sample sample name or its id
     #' @returns sample object of given sample name or id
-   get_sample = function(sample) {
+    get_sample = function(sample) {
       # get the sample by its name, id or location
-      if ("SampleLocation" %in% class(sample)){
+      if ("SampleLocation" %in% class(sample)) {
         sample <-
-          which(sapply(self$samples, function(x)
-            x$sample_location$location_name) == sample$location_name)
-      }
-      else if (is.numeric(sample)) {
+          which(sapply(self$samples, function(x) {
+            x$sample_location$location_name
+          }) == sample$location_name)
+      } else if (is.numeric(sample)) {
         if (sample < 0 || sample > plate$number_of_samples) {
           stop("Sample ID out of range")
         }
       } else {
         sample <-
-          which(sapply(self$samples, function(x)
-            x$sample_name) == sample)
+          which(sapply(self$samples, function(x) {
+            x$sample_name
+          }) == sample)
 
         sample_by_loc <-
-          which(sapply(self$samples, function(x)
-            x$sample_location$location_name) == sample)
+          which(sapply(self$samples, function(x) {
+            x$sample_location$location_name
+          }) == sample)
 
         sample <- c(sample, sample_by_loc)
 
@@ -957,43 +956,43 @@ Plate <- R6Class(
       return(self$samples[[sample]])
     },
 
-   #' @description
-      #' Function returns list of samples filtered by the type
-      #'
-      #' @param sample_type type of the sample to be filtered. Possible values are:
-      #' SampleType$valid_sample_types
-      #'
-      #'
-      #' @param exclude If `FALSE` returns list of samples with given `sample_type`,
-      #' otherwise returns all samples except for the specified `sample_type`
-      #'
-   get_sample_by_type = function(sample_type, exclude = FALSE) {
-     stopifnot(sample_type %in% SampleType$valid_sample_types)
+    #' @description
+    #' Function returns list of samples filtered by the type
+    #'
+    #' @param sample_type type of the sample to be filtered. Possible values are:
+    #' SampleType$valid_sample_types
+    #'
+    #'
+    #' @param exclude If `FALSE` returns list of samples with given `sample_type`,
+    #' otherwise returns all samples except for the specified `sample_type`
+    #'
+    get_sample_by_type = function(sample_type, exclude = FALSE) {
+      stopifnot(sample_type %in% SampleType$valid_sample_types)
 
-     samples_by_type <- list()
-     for (sample in self$samples) {
-       if (sample$sample_type$sample_type == sample_type && !exclude){
-           samples_by_type = append(samples_by_type, sample)
-       } else if (sample$sample_type$sample_type != sample_type && exclude) {
-         samples_by_type = append(samples_by_type, sample)
-       }
-     }
+      samples_by_type <- list()
+      for (sample in self$samples) {
+        if (sample$sample_type$sample_type == sample_type && !exclude) {
+          samples_by_type <- append(samples_by_type, sample)
+        } else if (sample$sample_type$sample_type != sample_type && exclude) {
+          samples_by_type <- append(samples_by_type, sample)
+        }
+      }
 
-     return(samples_by_type)
-   },
+      return(samples_by_type)
+    },
 
     #'
     #' @returns  analyte id of given name
     get_analyte_id = function(analyte_name) {
       analyte_id <-
-        which(sapply(self$analytes, function(x)
-          x$analyte_name) == analyte_name)
-
+        which(sapply(self$analytes, function(x) {
+          x$analyte_name
+        }) == analyte_name)
     },
 
     #' @description
-        #' Function returns data for a specific analyte and sample.
-        #'
+    #' Function returns data for a specific analyte and sample.
+    #'
     #' @param analyte An analyte name or its id of which data we want to extract
     #'
     #' @param sample sample name or id
@@ -1025,7 +1024,7 @@ Plate <- R6Class(
       if (is.null(data_type)) {
         return(sample$data[analyte_name])
       } else {
-        if (! data_type %in% row.names(sample$data[analyte_name])){
+        if (!data_type %in% row.names(sample$data[analyte_name])) {
           stop(paste0("Incorrect value for `data_type`: ", data_type))
         }
         return(sample$data[data_type, analyte_name])
@@ -1035,96 +1034,89 @@ Plate <- R6Class(
       return(sample)
     },
 
-   #' @description
-   #' Function adjusts the values of test samples substracting values from BLANK samples to remove background light
-   #' In short it substracts the values from data in all samples, except from Blanks. It does not substract values from
-   #' `Count` values
-   #'
-   #' @param method How the values of different blanks should be aggregated. By default `avg`. For now it is the only available method
-   #' @param inplace Whether the method should produce new plate with adjusted values or not, By default `TRUE` - operates on the current plate.
-   blank_adjustment = function(method = "avg", inplace = "TRUE") {
-     if (private$blank_already_adjusted) {
-       stop("Blank values have been already adjusted in this plate, if you want to try doing it using different method consider reversing this process")
-     }
+    #' @description
+    #' Function adjusts the values of test samples substracting values from BLANK samples to remove background light
+    #' In short it substracts the values from data in all samples, except from Blanks. It does not substract values from
+    #' `Count` values
+    #'
+    #' @param method How the values of different blanks should be aggregated. By default `avg`. For now it is the only available method
+    #' @param inplace Whether the method should produce new plate with adjusted values or not, By default `TRUE` - operates on the current plate.
+    blank_adjustment = function(method = "avg", inplace = "TRUE") {
+      if (private$blank_already_adjusted) {
+        stop("Blank values have been already adjusted in this plate, if you want to try doing it using different method consider reversing this process")
+      }
 
-     private$blank_already_adjusted = TRUE
-     available_methods = c("avg")
-     if (!method %in% available_methods){
-       stop(paste0(method, "not available for now, consider using one of the following: ", available_methods))
-     }
+      private$blank_already_adjusted <- TRUE
+      available_methods <- c("avg")
+      if (!method %in% available_methods) {
+        stop(paste0(method, "not available for now, consider using one of the following: ", available_methods))
+      }
 
-     if (inplace == FALSE){
-       newplate <- self$copy()
-     }
-     else {
-       newplate <- self
-     }
+      if (inplace == FALSE) {
+        newplate <- self$copy()
+      } else {
+        newplate <- self
+      }
 
-     blank_samples <- self$get_sample_by_type("BLANK") # these values will be substracted
-     non_blank_samples <- self$get_sample_by_type("BLANK", exclude = TRUE) # from these values
+      blank_samples <- self$get_sample_by_type("BLANK") # these values will be substracted
+      non_blank_samples <- self$get_sample_by_type("BLANK", exclude = TRUE) # from these values
 
-     # aggregate blank values
+      # aggregate blank values
 
-     if (method == "avg"){
-       agg_dataframe <- NULL
-       for (sample in blank_samples){
-         if (is.null(agg_dataframe)){
-           agg_dataframe <- sample$data
-         }
-         else {
-           agg_dataframe <- agg_dataframe + sample$data
-         }
-       }
-       if ("Count" %in% rownames(agg_dataframe)){
-         agg_dataframe["Count", ] = 0 # count row is ommited
-       }
-       if ("Total Events" %in% colnames(agg_dataframe)){
-         agg_dataframe["Total Events"] = 0
-       }
+      if (method == "avg") {
+        agg_dataframe <- NULL
+        for (sample in blank_samples) {
+          if (is.null(agg_dataframe)) {
+            agg_dataframe <- sample$data
+          } else {
+            agg_dataframe <- agg_dataframe + sample$data
+          }
+        }
+        if ("Count" %in% rownames(agg_dataframe)) {
+          agg_dataframe["Count", ] <- 0 # count row is ommited
+        }
+        if ("Total Events" %in% colnames(agg_dataframe)) {
+          agg_dataframe["Total Events"] <- 0
+        }
 
-       agg_dataframe = agg_dataframe / length(blank_samples) # average the results
+        agg_dataframe <- agg_dataframe / length(blank_samples) # average the results
 
 
-       for (sample in non_blank_samples){
-         sample$data = sample$data - agg_dataframe # substract the aggregated values
-       }
+        for (sample in non_blank_samples) {
+          sample$data <- sample$data - agg_dataframe # substract the aggregated values
+        }
+      }
+    },
 
 
-     }
+    #' @description
+    #' Function verifies if there are any MFI values below zero after blank removal
+    check_MFI_after_adjustment = function() {
+      if (!self$check_if_blanks_already_adjusted) {
+        stop("Consider adjusting the blanks first")
+      }
 
-   },
+      below_zero_list <- list()
 
+      below_zero_flag <- FALSE
 
-   #' @description
-      #' Function verifies if there are any MFI values below zero after blank removal
-   check_MFI_after_adjustment = function() {
-     if (!self$check_if_blanks_already_adjusted){
-       stop("Consider adjusting the blanks first")
-     }
+      for (sample in self$get_sample_by_type("BLANK", exclude = TRUE)) {
+        below_min <- which(sample$data < 0, arr.ind = TRUE)
+        if (length(below_min) > 0) {
+          below_min_analytes <- names(sample$data)[below_min[, "col"]]
+          new_warnings <- paste0("An analyte ", below_min_analytes, " has value below 0 after blank adjustment")
+          sample$warnings <- c(sample$warnings, new_warnings)
+        }
+      }
 
-     below_zero_list <- list()
-
-     below_zero_flag = FALSE
-
-     for (sample in self$get_sample_by_type("BLANK", exclude = TRUE)) {
-       below_min <- which(sample$data < 0, arr.ind = TRUE)
-       if(length(below_min) > 0) {
-         below_min_analytes <- names(sample$data)[below_min[, "col"]]
-         new_warnings <- paste0("An analyte ", below_min_analytes, " has value below 0 after blank adjustment")
-         sample$warnings <- c(sample$warnings, new_warnings)
-
-       }
-     }
-
-     return(below_zero_flag)
-
-   },
+      return(below_zero_flag)
+    },
 
 
-   #' @description performs copy of the plate
-   copy = function() {
-     stop("Not implemented yet")
-   }
+    #' @description performs copy of the plate
+    copy = function() {
+      stop("Not implemented yet")
+    }
   ),
   private = list(
     blank_already_adjusted = FALSE
@@ -1160,7 +1152,7 @@ Plate <- R6Class(
 
     #' @field batch_name Metdata: batch name
     batch_name = function() {
-      if (!is.null(self$batch_info$batch_name) && !is.na(self$batch_info$batch_name)){
+      if (!is.null(self$batch_info$batch_name) && !is.na(self$batch_info$batch_name)) {
         return(self$batch_info$batch_name)
       }
       return("___")
@@ -1168,13 +1160,13 @@ Plate <- R6Class(
 
     #' @field min_events_per_bead minimal number of events that is valid for one bead - sample and analyte
     min_events_per_bead = function() {
-      if  (is.null(self$batch_info$min_events_per_bead)){
+      if (is.null(self$batch_info$min_events_per_bead)) {
         return(50)
       }
       return(self$batch_info$min_events_per_bead)
     },
     #' @field check_if_blanks_already_adjusted flag that specifies if the blanks were already adjusted and its MFI values subtracted from remaining samples
-    check_if_blanks_already_adjusted = function(){
+    check_if_blanks_already_adjusted = function() {
       return(private$blank_already_adjusted)
     },
 
