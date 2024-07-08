@@ -10,7 +10,7 @@ plot_standard_curve_antibody(
   data_type = "Median",
   file_path = NULL,
   decreasing_dilution_order = TRUE,
-  log_scale = c("dilutions"),
+  log_scale = c("all"),
   verbose = TRUE
 )
 }
