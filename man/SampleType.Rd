@@ -13,8 +13,9 @@ SampleType defines the type of the sample and the dilution factor
 The possible sample types are:
 \enumerate{
 \item (\code{"BLANK"})\cr - background sample used for testing
-\item (\code{"POSITIVE CONTROL"})\cr -
-\item (\code{"NEGATIVE CONTROL"})\cr -
+\item (\code{"STANDARD CURVE"})\cr - a sample used to create a standard curve
+\item (\code{"POSITIVE CONTROL"})\cr - a positive control sample used for testing
+\item (\code{"NEGATIVE CONTROL"})\cr - a negative control sample used for testing
 \item (\code{"TEST"})\cr - the actual sample used for testing
 }}
 

@@ -10,6 +10,7 @@ plot_standard_curve_antibody(
   data_type = "Median",
   file_path = NULL,
   decreasing_dilution_order = TRUE,
+  log_scale = c("dilutions"),
   verbose = TRUE
 )
 }
@@ -23,6 +24,8 @@ plot_standard_curve_antibody(
 \item{file_path}{where to save the output plot. If \code{NULL} the plot is displayed, \code{NULL} by default}
 
 \item{decreasing_dilution_order}{If \code{TRUE} the dilutions are plotted in decreasing order, \code{TRUE} by default}
+
+\item{log_scale}{Which elements on the plot should be displayed in log scale. By default c("dilutions"). If \code{NULL} no log scale is used, if "all" or c("dilutions", "MFI") all elements are displayed in log scale.}
 
 \item{verbose}{If \code{TRUE} print messages, \code{TRUE} by default}
 }
