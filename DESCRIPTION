@@ -10,12 +10,12 @@ Imports:
     dplyr,
     R6,
     tools,
-    qpdf,
     readxl,
     RColorBrewer,
     knitr,
     rmarkdown,
-    ggplot2
+    ggplot2,
+    nplr,
 Suggests:
     testthat (>= 3.0.0)
 Config/testfhat/edition: 3

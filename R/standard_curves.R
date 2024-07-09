@@ -40,31 +40,8 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
   standard_curve_values_list <- list()
 
   for (plate in plates) {
-    if (!plate$check_if_blanks_already_adjusted) {
-      verbose_cat(
-        "(",
-        color_codes$red_start,
-        "WARNING",
-        color_codes$red_end,
-        ")",
-        "\nBlank values not adjusted - Consider adjusting the blank values using function `plate$blank_adjustment`\n",
-        verbose = verbose
-      )
-    }
+    standard_curves <- plate$standard_curve
 
-    standard_curves <- plate$get_sample_by_type("STANDARD CURVE")
-    if (length(standard_curves) == 0) {
-      verbose_cat(
-        "(",
-        color_codes$red_start,
-        "WARNING",
-        color_codes$red_end,
-        ")",
-        "\nNo standard curve samples found in the plate\nUsing positive control samples",
-        verbose = verbose
-      )
-      standard_curves <- plate$get_sample_by_type("POSITIVE CONTROL")
-    }
     if (is.null(standard_curve_num_samples)) {
       standard_curve_num_samples <- length(standard_curves)
     } else if (standard_curve_num_samples != length(standard_curves)) {
@@ -75,16 +52,9 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
       stop("Antibody ", antibody_name, " not present in the plate")
     }
 
-
     dilutions <- sapply(standard_curves, function(sample) sample$sample_type$character_dilution_factor)
     dilutions_numeric <- sapply(standard_curves, function(sample) sample$sample_type$dilution_factor)
-    # sort values according to dilutions
-    sorted_order <- order(dilutions_numeric)
 
-    # Sort the vectors according to the sorted order of the reference vector
-    dilutions_numeric <- dilutions_numeric[sorted_order]
-    dilutions <- dilutions[sorted_order]
-    standard_curves <- standard_curves[sorted_order]
 
     if (is.null(dilutions_numeric_base)) {
       dilutions_numeric_base <- dilutions_numeric
@@ -187,10 +157,48 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
   } else {
     print(p)
   }
+  return(p)
 }
 
 
 create_standard_curve_model_antibody = function(plate, antibody_name, data_type = "Median", verbose = TRUE) {
+
+  # get standard curve values of certain antibody
+
+  standard_curves <- plate$standard_curve
+  dilutions <- sapply(standard_curves, function(sample) sample$sample_type$character_dilution_factor)
+  dilutions_numeric <- sapply(standard_curves, function(sample) sample$sample_type$dilution_factor)
+  curve_values <- sapply(standard_curves, function(sample) sample$data[data_type, antibody_name])
+
+  # fit the model
+
+  fit.data <- data.frame("MFI"=curve_values,"dilutions"=dilutions_numeric)
+
+  # try catch this later
+  if (length(standard_curves) >= 5) {
+    model <- nplr::nplr(x = dilutions_numeric, y = curve_values, npars = 5)
+
+    #sample_concentrations$dilution <- nplr::getEstimates(model, sample_concentrations$MFI, B = 1e4, conf.level = .95)$y
+
+  } else {
+    verbose_cat(
+      "(",
+      color_codes$red_start,
+      "WARNING",
+      color_codes$red_end,
+      ")",
+      "\n Using less than 5 samples to fit logistic modelFor now using the basic nplr method to fit the logistic model - should be modified in the future",
+      verbose = private$verbose
+    )
+    model <- nplr::nplr(x = dilutions_numeric, y = curve_values, npars = length(standard_curves))
+
+    #sample_concentrations$dilution <- nplr::getEstimates(model, sample_concentrations$MFI, B = 1e4, conf.level = .95)$y
+  }
+  return(model)
+
+}
+
+predict_dilutions = function(plate, model, antibody_name, data_type = "Median", verbose = TRUE) {
   sample_concentrations <- data.frame(matrix(nrow=nrow(data), ncol=4))
   colnames(sample_concentrations) <- c("Location",  "Sample", "MFI", "dilution")
 
@@ -201,60 +209,44 @@ create_standard_curve_model_antibody = function(plate, antibody_name, data_type 
   sample_concentrations$MFI <- sapply(1:plate$number_of_samples, function(i) plate$samples[[i]]$data[data_type, antibody_name])
 
 
-  # get standard curve values of certain antibody
-
-  standard_curves <- plate$get_sample_by_type("STANDARD CURVE")
-  if (length(standard_curves) == 0){
-    verbose_cat(
-      "(",
-      color_codes$red_start,
-      "WARNING",
-      color_codes$red_end,
-      ")",
-      "\nNo standard curve samples found in the plate\nUsing positive control samples",
-      verbose = verbose
-    )
-    standard_curves <- plate$get_sample_by_type("POSITIVE CONTROL")
+  if (inherits(model, "nplr")) {
+    sample_concentrations$dilution <- nplr::getEstimates(model, sample_concentrations$MFI, B = 1e4, conf.level = .95)$x
+  } else {
+    stop("For now model should be an instance of nplr, other options not implemented yet")
   }
 
-
-  #if (!antibody_name %in% plate$analyte_names){
-  #stop("Antibody ", antibody_name, " not present in the plate")
-  #}
-
-
-  dilutions <- sapply(standard_curves, function(sample) sample$sample_type$character_dilution_factor)
-  dilutions_numeric <- sapply(standard_curves, function(sample) sample$sample_type$dilution_factor)
-  # sort values according to dilutions
-  sorted_order <- order(dilutions_numeric)
-
-  # Sort the vectors according to the sorted order of the reference vector
-  dilutions_numeric <- dilutions_numeric[sorted_order]
-  dilutions <- dilutions[sorted_order]
-  standard_curves <- standard_curves[sorted_order]
-
-
-  curve_values <- sapply(standard_curves, function(sample) sample$data[data_type, antibody_name])
-
-  if (any(is.na(curve_values))){
-    stop(data_type, " not present in the dataframe")
-  }
-
-  max_curve_value <- max(curve_values)
-
-
-  # fit the model
-
-  fit.data <- data.frame("MFI"=curve_values,"dilutions"=dilutions_numeric)
-
-  # try catch this later
-
-  model <- nplr::nplr(x = dilutions_numeric, y = curve_values, npars = 5) # welcome open research functino
-
-  sample_concentrations$dilution <- nplr::getEstimates(model, sample_concentrations$MFI, B = 1e4, conf.level = .95)$y
-
-  return(sample_concentrations)
 }
+
+plot_standard_curve_antibody_with_model = function(plate, antibody_name, model, data_type = "Median", decreasing_dilution_order = TRUE, log_scale = c("all"), verbose = TRUE) {
+  p <- plot_standard_curve_antibody(plate, antibody_name = antibody_name, data_type = data_type, decreasing_dilution_order = decreasing_dilution_order, log_scale = log_scale, verbose = verbose)
+  p$layers[[1]] <- NULL
+
+  curve_values <- sapply(plate$standard_curve, function(sample) sample$data[data_type, antibody_name])
+
+  y <- seq(0, max(curve_values), length.out = 100)
+
+  estimates <- nplr::getEstimates(model, y, B = 1e4, conf.level = .95)
+
+
+  log_if_needed_mfi <- function(x) {
+    if ("MFI" %in% log_scale || "all" %in% log_scale) {
+      return(log(x))
+    }
+    return(x)
+  }
+
+  log_if_needed_dilutions <- function(x) {
+    if ("dilutions" %in% log_scale || "all" %in% log_scale) {
+      return(log(x))
+    }
+    return(x)
+  }
+
+  # add line to the plot
+  p + geom_line(aes(x = log_if_needed_dilutions(x), y = log_if_needed_mfi(y)), color = "red", data = estimates, size = 0.8)
+
+  }
+
 
 
 verbose_cat <- function(..., verbose = TRUE) {
