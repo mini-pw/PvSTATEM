@@ -1,0 +1,2 @@
+
+1. In ideal world curve would be linear in the direction of high concentration, but hardware has limits so it plateaus? So if we know hardware limitations we have additional information that helps us fit the curve. And if that is so, is it constant between plates?
