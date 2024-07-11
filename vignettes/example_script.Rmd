@@ -7,6 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Simple example of basic PvSTATEM package pre-release version functionalities}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{ggplot2}
 ---
 
 ```{r setup, include=FALSE}
@@ -24,18 +25,15 @@ The basic functionality of the `PvSTATEM` package is reading raw MBA data. To pr
 ```{r}
 library(PvSTATEM)
 
-plate_filepath <- system.file("extdata", "artificial_plate.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+plate_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
 
 plate <- read_data(plate_filepath) # read the data
-
 ```
 
 After the plate is successfully loaded, we can look into some basic information about the plate.
 
 ```{r}
-
-
 plate$summary()
 
 plate$get_sample(1)
@@ -50,7 +48,6 @@ plate$analyte_names
 ## Warnings
 Our scripts are designed to catch potential errors in the data. If there are any warnings, they will be stored in the `warnings` field of the plate object. The warnings can be accessed by the `$warnings` field of the plate object or by the `$warnings` field of the sample object.
 
-```{r}
 ```{r}
 ## warnings ----------------------------------------------------------------
 
@@ -72,6 +69,4 @@ plot_standard_curve_antibody(plate, antibody_name = "AMA1")
 plate$blank_adjustment()
 
 plot_standard_curve_antibody(plate, antibody_name = "AMA1")
-
-
 ```
