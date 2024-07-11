@@ -1,11 +1,18 @@
 # PvSTATEM - an R package for automated analysis of serological data
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 <span style="color:red">*pre-release* version </span>
+
 ## Overview
 This package is a simple tool, which handles the raw data of various formats, produced in Multiplex Bead Assay (MBA). In short, it reads the unstructured, raw data from e.g. Luminex device and output normalized and well-structured data which can be later used in more advanced, downstream analysis.
 
 The package is in pre-release version, thus it lacks most of the functionalities. It is planned to be released by the end of September 2024.
 
 The package includes 3 main steps of preprocessing the data:
+
 1. data reading and manipulation
 2. quality control
 3. data normalization

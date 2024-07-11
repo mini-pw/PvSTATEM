@@ -87,14 +87,14 @@ Analyte <- R6Class(
       stopifnot(length(id) == 1 && is.numeric(id))
 
       stopifnot(length(analyte_name) == 1 &&
-                  is.character(analyte_name))
+        is.character(analyte_name))
       stopifnot(length(bead_count) == 1 &&
-                  (is.na(bead_count) || is.numeric(bead_count)))
+        (is.na(bead_count) || is.numeric(bead_count)))
       stopifnot(length(analysis_type) == 0 ||
-                  (is.character(analysis_type) &&
-                     length(analysis_type) == 1))
+        (is.character(analysis_type) &&
+          length(analysis_type) == 1))
       stopifnot(length(units) == 0 ||
-                  (is.character(units) && length(units) == 1))
+        (is.character(units) && length(units) == 1))
 
       self$id <- id
       self$analyte_name <- analyte_name
@@ -207,7 +207,7 @@ SampleLocation <- R6Class(
       # join the data of two samples
 
       if (!verify_numeric_join(self$row, new_location$row) ||
-          !verify_numeric_join(self$col, new_location$col)) {
+        !verify_numeric_join(self$col, new_location$col)) {
         stop("Cannot join samples of different locations")
       }
 
@@ -303,10 +303,10 @@ SampleType <- R6Class(
       # for now there should passed a sample type only
       # check for valid input
       stopifnot(length(sample_type) == 1 &&
-                  is.character(sample_type))
+        is.character(sample_type))
       stopifnot(length(dilution_factor) == 1 &&
-                  (is.na(dilution_factor) ||
-                     is.numeric(dilution_factor)))
+        (is.na(dilution_factor) ||
+          is.numeric(dilution_factor)))
 
       SampleType$validate_sample_type(sample_type)
 
@@ -399,7 +399,7 @@ SampleType$validate_dilution_factor <- function(sample_type, dilution_factor) {
     stop("Standard curve samples must have a dilution factor")
   }
   if (sample_type %in% c("POSITIVE CONTROL", "STANDARD CURVE") &&
-      !is.na(dilution_factor)) {
+    !is.na(dilution_factor)) {
     stop("Only positive control or standard curve samples should have a dilution factor")
   }
 }
@@ -468,6 +468,37 @@ SampleType$parse_sample_type <- function(sample_name,
   }
 
   if (sample_type %in% c("STANDARD CURVE", "POSITIVE CONTROL", "NEGATIVE CONTROL")) {
+    dilution_factor_pattern <- "1/\\d+"
+    match <- ""
+    if (!is.null(sample_name_loc) && sample_name_loc != "" || !is.na(sample_name_loc) && sample_name_loc != "") {
+      match <- regmatches(sample_name_loc, regexpr(dilution_factor_pattern, sample_name_loc))
+    } else {
+      match <- regmatches(sample_name, regexpr(dilution_factor_pattern, sample_name))
+    }
+    dilution_factor <- eval(parse(text = match))
+
+    if (is.null(dilution_factor)) {
+      dilution_factor <- NA # this value needs to be updated later
+    }
+
+    return(SampleType$new("STANDARD CURVE", dilution_factor = dilution_factor, validate_dilution = FALSE))
+  }
+
+  negative_types <- c("NEGATIVE CONTROL", "N")
+  negative_pattern <-
+    "^(N..|.*\\bNEG\\b)" # check if it starts with N or contains NEG string
+
+  if (sample_name %in% negative_types ||
+    grepl(negative_pattern, sample_name) ||
+    grepl(negative_pattern, sample_name_loc)) {
+    return(SampleType$new("NEGATIVE CONTROL"))
+  }
+
+
+
+  positive_control_pattern <- c("^(P.+|POS.+|CP.+)(1/\\d+)$")
+  if (grepl(positive_control_pattern, sample_name) ||
+    grepl(positive_control_pattern, sample_name_loc)) {
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
     if (!is.null(sample_name_loc) && sample_name_loc != "" || !is.na(sample_name_loc) && sample_name_loc != "") {
@@ -553,12 +584,12 @@ Sample <- R6Class(
       # check for valid input
       stopifnot(length(id) == 1 && is.numeric(id))
       stopifnot(length(sample_name) == 1 &&
-                  is.character(sample_name))
+        is.character(sample_name))
 
       stopifnot(is.null(sample_type) ||
-                  "SampleType" %in% class(sample_type))
+        "SampleType" %in% class(sample_type))
       stopifnot(is.null(sample_location) ||
-                  "SampleLocation" %in% class(sample_location))
+        "SampleLocation" %in% class(sample_location))
       stopifnot(is.data.frame(data))
 
       self$id <- id

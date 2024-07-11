@@ -7,7 +7,7 @@
 Analyte class is an object that gathers information about one specific Analyte on the Luminex plate
 }
 \examples{
-etramp <- Analyte$new(id = 73, analyte_name = "Etramp5_ag1", bead_count=50)
+etramp <- Analyte$new(id = 73, analyte_name = "Etramp5_ag1", bead_count = 50)
 print(etramp)
 
 }

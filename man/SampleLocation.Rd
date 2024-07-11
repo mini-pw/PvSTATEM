@@ -15,6 +15,7 @@ sample_location$location_name
 
 sample_location <- SampleLocation$parse_sample_location("65(1,F5)")
 sample_location$location_name
+
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
