@@ -25,10 +25,11 @@ The basic functionality of the `PvSTATEM` package is reading raw MBA data. To pr
 ```{r}
 library(PvSTATEM)
 
-plate_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+plate_filepath <- system.file("extdata", "covid_oise/Covid_Oise_9plex_plate1_IgG_20210222_20210222_142449.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
+layout_filepath <- system.file("extdata", "covid_oise/covid_oise_IgG_plate1.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
-plate <- read_data(plate_filepath) # read the data
+plate <- read_data(plate_filepath, layout_file_path = layout_filepath) # read the data
 ```
 
 After the plate is successfully loaded, we can look into some basic information about the plate.
@@ -37,7 +38,7 @@ After the plate is successfully loaded, we can look into some basic information 
 plate$summary()
 
 plate$get_sample(1)
-plate$get_sample_by_type("POSITIVE CONTROL")[[1]]
+plate$get_sample_by_type("STANDARD CURVE")[[1]]
 
 plate$sample_names
 plate$analyte_names
@@ -55,18 +56,33 @@ plate$warnings
 
 plate$get_sample(1)$warnings
 
-plate$get(analyte = "AMA1", sample = 1)
+plate$get(analyte = "spike", sample = 1)
 
-plate$get_sample_by_type("POSITIVE CONTROL")[[1]]$warnings
+plate$get_sample_by_type("STANDARD CURVE")[[1]]$warnings
 ```
 
 
 
 ## simple standard curve plotting
 ```{r}
-plot_standard_curve_antibody(plate, antibody_name = "AMA1")
+plot_standard_curve_antibody(plate, antibody_name = "spike_6P_IPP")
 
 plate$blank_adjustment()
 
-plot_standard_curve_antibody(plate, antibody_name = "AMA1")
+plot_standard_curve_antibody(plate, antibody_name = "spike_6P_IPP")
+
 ```
+
+```{r}
+model <- create_standard_curve_model_antibody(plate, antibody_name = "spike_6P_IPP")
+
+plot_standard_curve_antibody_with_model(plate, antibody_name = "spike_6P_IPP", model)
+```
+
+```{r}
+
+
+```
+
+
+

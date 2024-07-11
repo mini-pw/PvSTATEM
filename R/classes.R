@@ -60,7 +60,6 @@ Analyte <- R6Class(
     bead_count = NA,
     analysis_type = NULL,
     units = NULL,
-    standard_curve = NULL,
 
     #' @description
     #' Creates a new instance of the `Analyte` class
@@ -79,14 +78,12 @@ Analyte <- R6Class(
     #' @param units (`character(1)`)\cr
     #' Units of the analyte in which the results are expressed
     #'
-    #' @param standard_curve (`numeric`)\cr
-    #' The standard curve of the analyte
     #'
     initialize = function(id,
                           analyte_name,
                           bead_count = NA,
                           analysis_type = NULL,
-                          units = NULL, standard_curve=NULL) {
+                          units = NULL) {
       # check for valid input
       stopifnot(length(id) == 1 && is.numeric(id))
 
@@ -105,7 +102,6 @@ Analyte <- R6Class(
       self$bead_count <- bead_count
       self$analysis_type <- analysis_type
       self$units <- units
-      self$standard_curve <- standard_curve
     },
 
     #' @description
@@ -1050,6 +1046,7 @@ Plate <- R6Class(
         stop("Blank values have been already adjusted in this plate, if you want to try doing it using different method consider reversing this process")
       }
 
+      private$standard_curve_private <- NULL
       private$blank_already_adjusted <- TRUE
       available_methods <- c("avg")
       if (!method %in% available_methods) {
@@ -1124,7 +1121,8 @@ Plate <- R6Class(
   ),
   private = list(
     blank_already_adjusted = FALSE,
-    verbose = TRUE
+    verbose = TRUE,
+    standard_curve_private = NULL
   ),
   active = list(
     #' @field number_of_samples number of samples stored in the current plate
@@ -1188,6 +1186,10 @@ Plate <- R6Class(
     },
 
     standard_curve = function() {
+      if (! is.null(private$standard_curve_private)) {
+        return(private$standard_curve_private)
+      }
+
       if (!plate$check_if_blanks_already_adjusted) {
         verbose_cat(
           "(",
@@ -1224,6 +1226,7 @@ Plate <- R6Class(
       dilutions_numeric <- dilutions_numeric[sorted_order]
       dilutions <- dilutions[sorted_order]
       standard_curves <- standard_curves[sorted_order]
+      private$standard_curve_private <- standard_curves
       return(standard_curves)
     }
   )

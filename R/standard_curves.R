@@ -49,7 +49,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
     }
 
     if (!antibody_name %in% plate$analyte_names) {
-      stop("Antibody ", antibody_name, " not present in the plate")
+      #stop("Antibody ", antibody_name, " not present in the plate")
     }
 
     dilutions <- sapply(standard_curves, function(sample) sample$sample_type$character_dilution_factor)
@@ -161,6 +161,8 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 }
 
 
+#' create model for standard curve of a certain antibody
+#' @export
 create_standard_curve_model_antibody = function(plate, antibody_name, data_type = "Median", verbose = TRUE) {
 
   # get standard curve values of certain antibody
@@ -197,7 +199,8 @@ create_standard_curve_model_antibody = function(plate, antibody_name, data_type 
   return(model)
 
 }
-
+#' predict dilutions using fitted model
+#' @export
 predict_dilutions = function(plate, model, antibody_name, data_type = "Median", verbose = TRUE) {
   sample_concentrations <- data.frame(matrix(nrow=nrow(data), ncol=4))
   colnames(sample_concentrations) <- c("Location",  "Sample", "MFI", "dilution")
@@ -217,6 +220,8 @@ predict_dilutions = function(plate, model, antibody_name, data_type = "Median", 
 
 }
 
+#' plot standard curve of a certain antibody with fitted model
+#' @export
 plot_standard_curve_antibody_with_model = function(plate, antibody_name, model, data_type = "Median", decreasing_dilution_order = TRUE, log_scale = c("all"), verbose = TRUE) {
   p <- plot_standard_curve_antibody(plate, antibody_name = antibody_name, data_type = data_type, decreasing_dilution_order = decreasing_dilution_order, log_scale = log_scale, verbose = verbose)
   p$layers[[1]] <- NULL
