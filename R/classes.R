@@ -754,13 +754,19 @@ Plate <- R6Class(
       standard_curve_names <- ""
 
       if (include_names) {
-        positive_control_names <- paste(sapply(positive_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
-        negative_control_names <- paste(sapply(negative_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
-        standard_curve_names <- paste(sapply(standard_curve_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+        if (positive_control_num > 0) {
+          positive_control_names <- paste(sapply(positive_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+          positive_control_names <- paste0("\nSample names: ", positive_control_names)
+        }
 
-        positive_control_names <- paste0("\nSample names: ", positive_control_names)
-        negative_control_names <- paste0("\nSample names: ", negative_control_names)
-        standard_curve_names <- paste0("\nSample names: ", standard_curve_names)
+        if (negative_control_num > 0) {
+          negative_control_names <- paste(sapply(negative_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+          negative_control_names <- paste0("\nSample names: ", negative_control_names)
+        }
+        if (standard_curve_num > 0) {
+          standard_curve_names <- paste(sapply(standard_curve_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+          standard_curve_names <- paste0("\nSample names: ", standard_curve_names)
+        }
       }
 
       cat(
