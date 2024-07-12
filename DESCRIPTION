@@ -29,6 +29,7 @@ Imports:
     rmarkdown,
     ggplot2,
     nplr,
+    readr,
     stringr
 Suggests:
     testthat (>= 3.0.0),
