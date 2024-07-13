@@ -42,6 +42,7 @@ is_the_end_of_csv_section <- function(line) {
 
 skip_blanks <- function(index, lines) {
   while (is_line_blank(lines[index])) {
+    names(lines)[index] <- "BLANK"
     index <- index + 1
   }
   list(NULL, index, lines)
@@ -53,9 +54,11 @@ skip_blanks <- function(index, lines) {
 check_and_skip <- function(regex) {
   function(index, lines) {
     read_values <- vectorize_csv_line(lines[index])
-    if (!stringr::str_detect(read_values[1], regex)) {
+    match <- stringr::str_match(read_values[1], regex)
+    if (is.na(match[1])) {
       stop(paste0("Could not match the regex: `", regex, "` at the line:", index))
     }
+    names(lines)[index] <- paste0("CH: ", regex)
     list(NULL, index + 1, lines)
   }
 }
@@ -69,6 +72,7 @@ key_value_parser <- function(key_regex, check_length = TRUE) {
     if (!stringr::str_detect(read_values[1], key_regex)) {
       stop(paste0("No key matching: `", key_regex, "` found at line:", index))
     }
+    names(lines)[index] <- paste0("KV: ", read_values[1])
     output_list <- list()
     output_list[read_values[1]] <- read_values[2]
     list(output_list, index + 1, lines)
@@ -92,6 +96,7 @@ named_key_value_pairs_parser <- function(line_key) {
     }
     names(values) <- keys
 
+    names(lines)[index] <- paste0("NKVs: ", read_values[1])
     output_list <- list()
     output_list[[line_key]] <- as.list(values)
     list(output_list, index + 1, lines)
@@ -109,6 +114,8 @@ key_value_pairs_parser <- function(index, lines) {
   if (length(keys) != length(values)) {
     stop(paste0("Number of keys and values do not match at line:", index))
   }
+
+  names(lines)[index] <- paste0("KVs: ", paste(keys, collapse = ", "))
   names(values) <- keys
   list(as.list(values), index + 1, lines)
 }
@@ -125,6 +132,8 @@ parse_as_csv <- function(name, max_rows = Inf) {
 
     df <- read.csv(text = lines[index:(end_index - 1)], header = TRUE, sep = ",")
     df <- df[, colSums(is.na(df)) < nrow(df)]
+
+    names(lines)[index:(end_index - 1)] <- rep(paste0("CSV: ", name), end_index - index)
     output_list <- list()
     output_list[[name]] <- df
     list(output_list, end_index, lines)
@@ -179,6 +188,7 @@ repeat_parser <- function(parser) {
     while (!is.null(parser_output[[1]])) {
       joined_outputs <- c(joined_outputs, parser_output[[1]])
       index <- parser_output[[2]]
+      lines <- parser_output[[3]]
       parser_output <- opt_parser(index, lines)
     }
     list(joined_outputs, index, lines)
@@ -277,11 +287,13 @@ parse_results_block <- function(index, lines) {
     skip_blanks
   )(index, lines)
   index <- first[[2]]
+  lines <- first[[3]]
 
   output_dfs <- c()
-  while (!is.na(lines[index]) && stringr::str_detect(lines[index], "^DataType:")) {
+  while (!is.na(lines[index]) && stringr::str_detect(lines[index], "DataType:")) {
     second <- key_value_parser("DataType:")(index, lines)
     index <- second[[2]]
+    lines <- second[[3]]
 
     df_name <- second[[1]]$DataType
     third <- join_parsers(
@@ -289,6 +301,7 @@ parse_results_block <- function(index, lines) {
       skip_blanks
     )(index, lines)
     index <- third[[2]]
+    lines <- third[[3]]
 
     output_dfs <- c(output_dfs, third[[1]])
   }
@@ -300,10 +313,13 @@ parse_results_block <- function(index, lines) {
 ### CRC32 block
 
 parse_crc32_value <- function(index, lines) {
-  match <- stringr::str_match(lines[index], "^CRC32:\\s*(.+?),")
+  # HACK: This should be handled better
+  read_values <- vectorize_csv_line(lines[index])
+  match <- stringr::str_match(read_values[1], "^CRC32:\\s*(.+?)(,|$)")
   if (is.na(match[1])) {
     stop(paste0("No CRC32 found at line:", index))
   }
+  names(lines)[index] <- paste0("CRC32: ", match[2])
   list(list(CRC32 = match[2]), index + 1, lines)
 }
 
@@ -318,18 +334,23 @@ parse_crc32_block <- function(index, lines) {
 
 ### Main parser
 
-parse_data <- join_parsers(
-  parse_program_metadata,
-  skip_blanks,
-  parse_batch_metadata,
-  skip_blanks,
-  make_optional(parse_calibration_metadata),
-  skip_blanks,
-  make_optional(parse_assay_info),
-  skip_blanks,
-  key_value_pairs_parser,
-  skip_blanks,
-  parse_results_block,
-  skip_blanks,
-  make_optional(parse_crc32_block)
-)
+parse_luminex_data <- function(index, lines) {
+  main_parser <- join_parsers(
+    parse_program_metadata,
+    skip_blanks,
+    parse_batch_metadata,
+    skip_blanks,
+    make_optional(parse_calibration_metadata),
+    skip_blanks,
+    make_optional(parse_assay_info),
+    skip_blanks,
+    key_value_pairs_parser,
+    skip_blanks,
+    parse_results_block,
+    skip_blanks,
+    make_optional(parse_crc32_block)
+  )
+  names(lines) <- rep(NA, length(lines))
+
+  main_parser(index, lines)
+}

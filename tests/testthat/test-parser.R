@@ -169,49 +169,49 @@ test_that("Test repeating a parser", {
 test_that("Parse the random plate data", {
   plate_file <- system.file("extdata", "random.csv", package = "PvSTATEM", mustWork = TRUE)
   lines <- readr::read_lines(plate_file)
-  expect_error(parse_data(1, lines), NA)
+  expect_error(parse_luminex_data(1, lines), NA)
 })
 
 test_that("Parse the random plate 2 data", {
   plate_file <- system.file("extdata", "random2.csv", package = "PvSTATEM", mustWork = TRUE)
   lines <- readr::read_lines(plate_file)
-  expect_error(parse_data(1, lines), NA)
+  expect_error(parse_luminex_data(1, lines), NA)
 })
 
 # TODO: Those files work as expected but sharing them is forbidden for now
-#
-# test_that("Parse the kenya.csv data", {
-#   path <- "../../../PvSTATEM_resources/PvstatemPackage/inst/extdata/kenya.csv"
-#   lines <- readr::read_lines(path)
-#   expect_error(parse_data(1, lines), NA)
-# })
-#
-# test_that("Parse the kenya_P4.csv data", {
-#   path <- "../../../PvSTATEM_resources/PvstatemPackage/inst/extdata/kenya_P4.csv"
-#   lines <- readr::read_lines(path)
-#   expect_error(parse_data(1, lines), NA)
-# })
-#
-# test_that("Parse the OISE.csv data", {
-#   path <- "../../../PvSTATEM_resources/PvstatemPackage/inst/extdata/OISE.csv"
-#   lines <- readr::read_lines(path)
-#   expect_error(parse_data(1, lines), NA)
-# })
+
+test_that("Parse the kenya.csv data", {
+  path <- "../../../PvSTATEM_resources/PvstatemPackage/inst/extdata/kenya.csv"
+  lines <- readr::read_lines(path)
+  expect_error(parse_luminex_data(1, lines), NA)
+})
+
+test_that("Parse the kenya_P4.csv data", {
+  path <- "../../../PvSTATEM_resources/PvstatemPackage/inst/extdata/kenya_P4.csv"
+  lines <- readr::read_lines(path)
+  expect_error(parse_luminex_data(1, lines), NA)
+})
+
+test_that("Parse the OISE.csv data", {
+  path <- "../../../PvSTATEM_resources/PvstatemPackage/inst/extdata/OISE.csv"
+  lines <- readr::read_lines(path)
+  expect_error(parse_luminex_data(1, lines), NA)
+})
 
 test_that("Parse the RTSS_Kisumu_Schisto Chul_TotalIgG_2.csv data", {
   path <- "https://raw.githubusercontent.com/IDEELResearch/RTSS_Kisumu_Schisto/main/data/raw/luminex/Chul_TotalIgG_2.csv"
   lines <- readr::read_lines(path)
-  expect_error(parse_data(1, lines), NA)
+  expect_error(parse_luminex_data(1, lines), NA)
 })
 
 test_that("Parse the drLumi plate1.csv data", {
   path <- "https://raw.githubusercontent.com/cran/drLumi/master/inst/extdata/plate1.csv"
   lines <- readr::read_lines(path)
-  expect_error(parse_data(1, lines), NA)
+  expect_error(parse_luminex_data(1, lines), NA)
 })
 
 test_that("Parse the RTSS_Kisumu_Schisto Chul_IgG3_1.csv data", {
   path <- "https://raw.githubusercontent.com/IDEELResearch/RTSS_Kisumu_Schisto/main/data/raw/luminex/Chul_IgG3_1.csv"
   lines <- readr::read_lines(path)
-  expect_error(parse_data(1, lines), NA)
+  expect_error(parse_luminex_data(1, lines), NA)
 })
