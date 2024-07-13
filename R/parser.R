@@ -48,6 +48,13 @@ skip_blanks <- function(index, lines) {
   list(NULL, index, lines)
 }
 
+eof_parser <- function(index, lines) {
+  if (index < length(lines)) {
+    stop(paste0("Expected end of file at line:", index, ". File was not fully parsed."))
+  }
+  list(NULL, index, lines)
+}
+
 
 ### Generic parsers
 
@@ -348,7 +355,8 @@ parse_luminex_data <- function(index, lines) {
     skip_blanks,
     parse_results_block,
     skip_blanks,
-    make_optional(parse_crc32_block)
+    make_optional(parse_crc32_block),
+    eof_parser
   )
   names(lines) <- rep(NA, length(lines))
 
