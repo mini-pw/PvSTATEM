@@ -40,7 +40,7 @@ is_the_end_of_csv_section <- function(line) {
 parsing_error <- function(index, lines, parser_name, reason) {
   named_lines <- capture.output(print(names(lines)[1:index]))
   paste0(
-    "Parsing error occurred while parsing line: ", index, ".\n\n",
+    "Parsing error occurred while parsing line: ", index, ".\n",
     "Parser: ", parser_name, ".\n",
     "Reason: ", reason, ".\n",
     "Lines parsed before: \n",
@@ -65,7 +65,7 @@ eof_parser <- function(index, lines) {
       index,
       lines,
       "EOF parser",
-      "Expected end of file but not found. File was not fully parsed"
+      "Expected end of file but found next line. File was not fully parsed."
     ))
   }
   list(NULL, index, lines)
@@ -79,7 +79,10 @@ check_and_skip <- function(regex) {
     read_values <- vectorize_csv_line(lines[index])
     match <- stringr::str_match(read_values[1], regex)
     if (is.na(match[1])) {
-      stop(paste0("Could not match the regex: `", regex, "` at the line:", index))
+      stop(parsing_error(
+        index, lines, "Check line content",
+        paste0("Could not match the regex: `", regex, "`")
+      ))
     }
     names(lines)[index] <- paste0("CH: ", regex)
     list(NULL, index + 1, lines)
@@ -90,10 +93,16 @@ key_value_parser <- function(key_regex, check_length = TRUE) {
   function(index, lines) {
     read_values <- vectorize_csv_line(lines[index])
     if (check_length && length(read_values) > 2) {
-      stop(paste0("Expected at most 2 values at line:", index, ". Error occured while trying to parse key: ", key_regex))
+      stop(parsing_error(
+        index, lines, "Key,Value parser",
+        paste0("Expected at most 2 values at line. Error occured while trying to parse key: ", key_regex)
+      ))
     }
     if (!stringr::str_detect(read_values[1], key_regex)) {
-      stop(paste0("No key matching: `", key_regex, "` found at line:", index))
+      stop(parsing_error(
+        index, lines, "Key,Value parser",
+        paste0("No key matching: `", key_regex, "` found.")
+      ))
     }
     names(lines)[index] <- paste0("KV: ", read_values[1])
     output_list <- list()
@@ -106,16 +115,25 @@ named_key_value_pairs_parser <- function(line_key) {
   function(index, lines) {
     read_values <- vectorize_csv_line(lines[index])
     if (!stringr::str_detect(read_values[1], line_key)) {
-      stop(paste0("No key: ", line_key, " found at line:", index))
+      stop(parsing_error(
+        index, lines, "Named,(Key,Value)* pairs parser",
+        paste0("No key: ", line_key, " found")
+      ))
     }
     if (length(read_values) < 3) {
-      stop(paste0("Expected at least 3 values at line:", index))
+      stop(parsing_error(
+        index, lines, "Named,(Key,Value)* pairs parser",
+        paste0("Expected at least 3 values")
+      ))
     }
     keys_and_values <- read_values[-1]
     keys <- keys_and_values[seq(1, length(keys_and_values), 2)]
     values <- keys_and_values[seq(2, length(keys_and_values), 2)]
     if (length(keys) != length(values)) {
-      stop(paste0("Number of keys and values do not match at line:", index))
+      stop(parsing_error(
+        index, lines, "Named,(Key,Value)* pairs parser",
+        paste0("Number of keys and values do not match")
+      ))
     }
     names(values) <- keys
 
@@ -129,19 +147,19 @@ named_key_value_pairs_parser <- function(line_key) {
 key_value_pairs_parser <- function(index, lines) {
   read_values <- vectorize_csv_line(lines[index])
   if (length(read_values) < 2) {
-    stop(paste0(
-      "Expected at least 2 values at line: ",
-      index,
-      ". Error occured while trying to parse key-value pairs.",
-      "Parsed names before: ",
-      paste(names(lines)[1:index], collapse = "\n")
+    stop(parsing_error(
+      index, lines, "(Key,Value)* pairs parser",
+      "Expected at least 2 values. Error occurred while trying to parse key-value pairs."
     ))
   }
   keys <- read_values[seq(1, length(read_values), 2)]
   values <- read_values[seq(2, length(read_values), 2)]
   values <- c(values, rep(NA, length(keys) - length(values)))
   if (length(keys) != length(values)) {
-    stop(paste0("Number of keys and values do not match at line:", index))
+    stop(parsing_error(
+      index, lines, "(Key,Value)* pairs parser",
+      "Number of keys and values do not match."
+    ))
   }
 
   names(lines)[index] <- paste0("KVs: ", paste(keys, collapse = ", "))
@@ -177,7 +195,7 @@ join_parsers <- function(...) {
     for (parser in list(...)) {
       output <- parser(index, lines)
       if (length(output) != 3) {
-        stop("Parser should return a list with 3 elements")
+        stop("Internal error: Parser should return a list with 3 elements")
       }
       parsed_output <- output[[1]]
       outputs <- c(outputs, parsed_output)
@@ -205,7 +223,11 @@ match_any_parser <- function(...) {
         return(output)
       }
     }
-    stop(paste0("No parser matched for starting line: ", index))
+    stop(parsing_error(
+      index, lines,
+      "Match any parser",
+      "No parser matched starting at this line."
+    ))
   }
 }
 
@@ -229,11 +251,20 @@ repeat_parser <- function(parser) {
 parse_program_build_date <- function(index, lines) {
   read_values <- vectorize_csv_line(lines[index])
   if (length(read_values) < 3) {
-    stop(paste0("Expected at least 3 values at line:", index))
+    stop(parsing_error(
+      index, lines,
+      "Parse build date",
+      "Expected at least 3 values"
+    ))
   }
   if (read_values[1] != "Date") {
-    stop(paste0("Expected Date at line:", index))
+    stop(parsing_error(
+      index, lines,
+      "Parse build date",
+      "The line doesn't start with `Date`"
+    ))
   }
+  names(lines)[index] <- "Build Date"
   list(list(Date = read_values[2], Time = read_values[3]), index + 1, lines)
 }
 
@@ -354,7 +385,11 @@ parse_crc32_value <- function(index, lines) {
   read_values <- vectorize_csv_line(lines[index])
   match <- stringr::str_match(read_values[1], "^CRC32:\\s*(.+?)(,|$)")
   if (is.na(match[1])) {
-    stop(paste0("No CRC32 found at line:", index))
+    stop(parsing_error(
+      index, lines,
+      "CRC32 value parser",
+      "No CRC32 found"
+    ))
   }
   names(lines)[index] <- paste0("CRC32: ", match[2])
   list(list(CRC32 = match[2]), index + 1, lines)
