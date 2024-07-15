@@ -37,6 +37,17 @@ is_the_end_of_csv_section <- function(line) {
   }
 }
 
+parsing_error <- function(index, lines, parser_name, reason) {
+  named_lines <- capture.output(print(names(lines)[1:index]))
+  paste0(
+    "Parsing error occurred while parsing line: ", index, ".\n\n",
+    "Parser: ", parser_name, ".\n",
+    "Reason: ", reason, ".\n",
+    "Lines parsed before: \n",
+    paste0(named_lines, collapse = "\n")
+  )
+}
+
 
 ### Simple parsers
 
@@ -50,7 +61,12 @@ skip_blanks <- function(index, lines) {
 
 eof_parser <- function(index, lines) {
   if (index < length(lines)) {
-    stop(paste0("Expected end of file at line:", index, ". File was not fully parsed."))
+    stop(parsing_error(
+      index,
+      lines,
+      "EOF parser",
+      "Expected end of file but not found. File was not fully parsed"
+    ))
   }
   list(NULL, index, lines)
 }
@@ -74,7 +90,7 @@ key_value_parser <- function(key_regex, check_length = TRUE) {
   function(index, lines) {
     read_values <- vectorize_csv_line(lines[index])
     if (check_length && length(read_values) > 2) {
-      stop(paste0("Expected at most 2 values at line:", index))
+      stop(paste0("Expected at most 2 values at line:", index, ". Error occured while trying to parse key: ", key_regex))
     }
     if (!stringr::str_detect(read_values[1], key_regex)) {
       stop(paste0("No key matching: `", key_regex, "` found at line:", index))
@@ -113,7 +129,13 @@ named_key_value_pairs_parser <- function(line_key) {
 key_value_pairs_parser <- function(index, lines) {
   read_values <- vectorize_csv_line(lines[index])
   if (length(read_values) < 2) {
-    stop(paste0("Expected at least 2 values at line:", index))
+    stop(paste0(
+      "Expected at least 2 values at line: ",
+      index,
+      ". Error occured while trying to parse key-value pairs.",
+      "Parsed names before: ",
+      paste(names(lines)[1:index], collapse = "\n")
+    ))
   }
   keys <- read_values[seq(1, length(read_values), 2)]
   values <- read_values[seq(2, length(read_values), 2)]
@@ -246,6 +268,8 @@ parse_batch_metadata <- function(index, lines) {
       repeat_parser(key_value_parser("Protocol\\w+")),
       repeat_parser(key_value_parser("Template\\w+"))
     ),
+    make_optional(key_value_parser("PanelName")),
+    make_optional(key_value_parser("MaxSampleUptakeVolume")),
     repeat_parser(key_value_parser("Sample\\w+")),
     make_optional(key_value_parser("DDGate")),
     make_optional(key_value_parser("SampleTimeout")),
@@ -256,7 +280,13 @@ parse_batch_metadata <- function(index, lines) {
     make_optional(named_key_value_pairs_parser("ProtocolAnalysis")),
     repeat_parser(key_value_parser("Protocol\\w+")),
     make_optional(key_value_parser("NormBead")),
-    make_optional(key_value_parser("ProtocolHeater"))
+    make_optional(key_value_parser("ProtocolHeater")),
+    make_optional(key_value_parser("ProtocolOperatingMode")),
+    make_optional(key_value_parser("BeadType")),
+    make_optional(key_value_parser("PrePlateRoutine")),
+    make_optional(key_value_parser("PostPlateRoutine")),
+    make_optional(key_value_parser("PostWellRoutine")),
+    make_optional(key_value_parser("PlateReadDirection"))
   )(index, lines)
   list(list(BatchMetadata = output[[1]]), output[[2]], output[[3]])
 }
@@ -265,9 +295,9 @@ parse_batch_metadata <- function(index, lines) {
 parse_calibration_metadata <- function(index, lines) {
   output <- join_parsers(
     check_and_skip("^Most Recent Calibration"),
-    repeat_parser(key_value_parser("Last \\w+ Calibration")),
-    repeat_parser(key_value_parser("Last \\w+ Verification")),
-    repeat_parser(key_value_parser("Last \\w+ Test")),
+    repeat_parser(key_value_parser("Last\\s*\\w*\\s*Calibration")),
+    repeat_parser(key_value_parser("Last\\s*\\w*\\s*Verification")),
+    repeat_parser(key_value_parser("Last\\s*\\w*\\s*Test")),
     skip_blanks,
     check_and_skip("CALInfo:"),
     # HACK: This is not fully correct calibrator outputs are overwritten
