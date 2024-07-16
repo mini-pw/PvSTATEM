@@ -168,35 +168,30 @@ test_that("Test repeating a parser", {
 
 test_that("Parse the random plate data", {
   plate_file <- system.file("extdata", "random.csv", package = "PvSTATEM", mustWork = TRUE)
-  lines <- readr::read_lines(plate_file)
-  expect_error(parse_luminex_data(1, lines), NA)
+  expect_error(read_xponent_format(plate_file), NA)
 })
 
 test_that("Parse the random plate 2 data", {
   plate_file <- system.file("extdata", "random2.csv", package = "PvSTATEM", mustWork = TRUE)
-  lines <- readr::read_lines(plate_file)
-  expect_error(parse_luminex_data(1, lines), NA)
+  expect_error(read_xponent_format(plate_file), NA)
 })
 
 test_that("Parse CovidOISExPONTENT.csv plate data", {
   path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
-  lines <- readr::read_lines(path)
-  expect_no_error(parse_luminex_data(1, lines))
+  expect_no_error(read_xponent_format(path))
 })
 
 test_that("Parse CovidOISExPONTENT_CO.csv plate data", {
   path <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)
-  lines <- readr::read_lines(path)
-  expect_no_error(parse_luminex_data(1, lines))
+  expect_no_error(read_xponent_format(path))
 })
 
 file_parse_success <- function(file) {
-  lines <- readr::read_lines(file)
-
+  print(paste0("Parsing file", file))
   expect_error_free <- TRUE
   tryCatch(
     {
-      parse_luminex_data(1, lines)
+      read_xponent_format(file)
     },
     error = function(e) {
       print(sprintf("Error on file: %s\n", file))

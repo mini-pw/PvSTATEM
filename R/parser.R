@@ -409,7 +409,18 @@ parse_crc32_block <- function(index, lines) {
 
 ### Main parser
 
-parse_luminex_data <- function(index, lines) {
+read_xponent_format <- function(path, sep = ",") {
+  lines <- readr::read_lines(path)
+  if (sep != ",") {
+    lines <- sapply(lines, function(line) {
+      line <- gsub(sep, ",", line)
+      line
+    })
+  }
+
+  names(lines) <- rep(NA, length(lines))
+
+
   main_parser <- join_parsers(
     parse_program_metadata,
     skip_blanks,
@@ -426,7 +437,6 @@ parse_luminex_data <- function(index, lines) {
     make_optional(parse_crc32_block),
     eof_parser
   )
-  names(lines) <- rep(NA, length(lines))
 
-  main_parser(index, lines)
+  main_parser(1, lines)
 }
