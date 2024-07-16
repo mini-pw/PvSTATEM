@@ -36,13 +36,14 @@ After the plate is successfully loaded, we can look into some basic information 
 ```{r}
 plate$summary()
 
+plate$summary(include_names = TRUE) # more detailed summary - names of the types
+
 plate$get_sample(1)
-plate$get_sample_by_type("POSITIVE CONTROL")[[1]]
+plate$get_sample_by_type("STANDARD CURVE")[[1]]
 
 plate$sample_names
 plate$analyte_names
 ```
-
 
 
 ## Warnings
@@ -53,11 +54,11 @@ Our scripts are designed to catch potential errors in the data. If there are any
 
 plate$warnings
 
-plate$get_sample(1)$warnings
+plate$get_sample(5)$warnings
 
 plate$get(analyte = "AMA1", sample = 1)
 
-plate$get_sample_by_type("POSITIVE CONTROL")[[1]]$warnings
+plate$get_sample_by_type("STANDARD CURVE")[[1]]$warnings
 ```
 
 

@@ -81,17 +81,17 @@ read_data <- function(file_path,
       "Running consistency checks...\n",
       verbose = verbose
     )
-    if (!results_plate$check_analyte_consistency()) {
-      verbose_cat(
-        "(",
-        color_codes$red_start,
-        "WARNING",
-        color_codes$red_end,
-        ")",
-        "\nInconsistent analytes in the plate - there are data of analytes undefined in the file\n",
-        verbose = verbose
-      )
-    }
+    # if (!results_plate$check_analyte_consistency()) {
+    #  verbose_cat(
+    #    "(",
+    #    color_codes$red_start,
+    #    "WARNING",
+    #    color_codes$red_end,
+    #    ")",
+    #    "\nInconsistent analytes in the plate - there are data of analytes undefined in the file\n",
+    #    verbose = verbose
+    #  )
+    #}
 
     if (!results_plate$check_beads_number()) {
       verbose_cat(
@@ -117,6 +117,7 @@ read_data <- function(file_path,
 read_layout_data <- function(layout_file_path,
                              results_plate,
                              check_plate = TRUE,
+                             replace_names = TRUE,
                              ...,
                              verbose = TRUE) {
   # function modifies the results_plate object by adding the location information from the layout file
@@ -138,6 +139,9 @@ read_layout_data <- function(layout_file_path,
     sample_name <- sample$sample_name
     sample$sample_type <-
       SampleType$parse_sample_type(sample_name, sample_name_loc = sample_name_loc)
+    if (replace_names) {
+      sample$sample_name <- sample_name_loc
+    }
   }
 
   return(results_plate)
