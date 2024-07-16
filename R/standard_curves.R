@@ -72,7 +72,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
     }
 
     if (!antibody_name %in% plate$analyte_names) {
-      #stop("Antibody ", antibody_name, " not present in the plate")
+      stop("Antibody ", antibody_name, " not present in the plate")
     }
 
 

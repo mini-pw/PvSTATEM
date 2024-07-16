@@ -25,10 +25,10 @@ The basic functionality of the `PvSTATEM` package is reading raw MBA data. To pr
 ```{r}
 library(PvSTATEM)
 
-plate_filepath <- system.file("extdata", "artificial_plate.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+plate_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
 
-plate <- read_data(plate_filepath) # read the data with the layout
+plate <- read_data(plate_filepath) # read the data
 ```
 
 After the plate is successfully loaded, we can look into some basic information about the plate.
