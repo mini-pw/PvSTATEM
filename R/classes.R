@@ -408,10 +408,10 @@ SampleType$validate_dilution_factor <- function(sample_type, dilution_factor) {
 #' Parses the sample type based on the sample name and dilution factor
 #'
 #' It parses the names as follows:
-#' If `sample_name` or `sample_name_loc` equals to `BLANK`, `B` or starts with letter `B`, then SampleType equals to `BLANK`
-#' If `sample_name` or `sample_name_loc` equals to `STANDARD CURVE`, `SC`, `S` or equals to `1/\d+`, `S_1/d+`, `S 1\d+` or `S1\d+` then SampleType equals to `STANDARD CURVE`
-#' If `sample_name` or `sample_name_loc` equals to `NEGATIVE CONTROL`, `N`, or starts with `N` or `NEG`, then SampleType equals to `NEGATIVE CONTROL`
-#' If `sample_name` or `sample_name_loc` contains substring `1/\d+` SampleType equals to `POSITIVE CONTROL`
+#' If `sample_name` or `sample_name_loc` equals to `BLANK`, `BACKGROUND` or `B` , then SampleType equals to `BLANK`
+#' If `sample_name` or `sample_name_loc` equals to `STANDARD CURVE`, `SC`, `S` or contains substring `1/\d+` and has prefix ` `, `S_`, `S `, `S` or `CP3` then SampleType equals to `STANDARD CURVE`
+#' If `sample_name` or `sample_name_loc` equals to `NEGATIVE CONTROL`, `N`, or contains substring `NEG`, then SampleType equals to `NEGATIVE CONTROL`
+#' If `sample_name` or `sample_name_loc` starts with `P` following by whitespace, `POS` following by whitespace, `B770` or `10/190`   contains substring `1/\d+` SampleType equals to `POSITIVE CONTROL`
 #' otherwise, the returned SampleType is `TEST`
 #'
 #'
@@ -433,20 +433,41 @@ SampleType$parse_sample_type <- function(sample_name,
   }
 
   blank_types <- c("BLANK", "BACKGROUND", "B")
-  blank_pattern <- "^B..$"
 
   if (sample_name %in% blank_types ||
-    grepl(blank_pattern, sample_name) ||
-    grepl(blank_pattern, sample_name_loc)) {
+      sample_name_loc %in% blank_types) {
     return(SampleType$new("BLANK"))
   }
 
+  sample_type <- "TEST"
+
+  positive_control_pattern <- c("^(P.|POS.+|B770.+|10/198.+)(1/\\d+)$")
+  if (grepl(positive_control_pattern, sample_name) ||
+      grepl(positive_control_pattern, sample_name_loc)) {
+    sample_type <- "POSITIVE CONTROL"
+  }
+
+  negative_types <- c("NEGATIVE CONTROL", "N")
+  negative_pattern <-
+    "^(N..|.*\\bNEG\\b)" # check if it starts with N or contains NEG string
+
+  if (sample_name %in% negative_types ||
+      grepl(negative_pattern, sample_name) ||
+      grepl(negative_pattern, sample_name_loc)) {
+    sample_type <- "NEGATIVE CONTROL"
+  }
+
+
   standard_curve_types <- c("STANDARD CURVE", "SC", "S") # CP3 - tanzania, PRISM - uganda, Brefet - gambia, NIBSC 10/198
-  standard_curve_pattern <- "^(S_|S|S\\s|)(1/\\d+)$"
+  standard_curve_pattern <- "^(S_|S|S\\s|CP.+)(1/\\d+)$"
   standard_curve_loc_pattern <- "(1/\\d+)"
   if (sample_name %in% standard_curve_types ||
-    grepl(standard_curve_pattern, sample_name) ||
-    grepl(standard_curve_loc_pattern, sample_name_loc)) {
+      grepl(standard_curve_pattern, sample_name) ||
+      grepl(standard_curve_loc_pattern, sample_name_loc)) {
+    sample_type <- "STANDARD CURVE"
+  }
+
+  if (sample_type %in% c("STANDARD CURVE", "POSITIVE CONTROL", "NEGATIVE CONTROL")) {
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
     if (!is.null(sample_name_loc) && sample_name_loc != "" || !is.na(sample_name_loc) && sample_name_loc != "") {
@@ -490,10 +511,9 @@ SampleType$parse_sample_type <- function(sample_name,
     if (is.null(dilution_factor)) {
       dilution_factor <- NA # this value needs to be updated later
     }
-    return(SampleType$new("POSITIVE CONTROL", dilution_factor = dilution_factor, validate_dilution = FALSE))
+
+    return(SampleType$new(sample_type, dilution_factor = dilution_factor, validate_dilution = FALSE))
   }
-
-
 
   return(SampleType$new("TEST"))
 }
@@ -721,22 +741,32 @@ Plate <- R6Class(
     summary = function(..., include_names = FALSE) {
       positive_control_samples_list <- self$get_sample_by_type("POSITIVE CONTROL")
       negative_control_samples_list <- self$get_sample_by_type("NEGATIVE CONTROL")
+      standard_curve_samples_list <- self$get_sample_by_type("STANDARD CURVE")
 
       blank_samples_num <-
         length(self$get_sample_by_type("BLANK"))
       positive_control_num <- length(positive_control_samples_list)
       negative_control_num <- length(negative_control_samples_list)
-
+      standard_curve_num <- length(standard_curve_samples_list)
 
       positive_control_names <- ""
       negative_control_names <- ""
+      standard_curve_names <- ""
 
       if (include_names) {
-        positive_control_names <- paste(sapply(positive_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
-        negative_control_names <- paste(sapply(negative_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+        if (positive_control_num > 0) {
+          positive_control_names <- paste(sapply(positive_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+          positive_control_names <- paste0("\nSample names: ", positive_control_names)
+        }
 
-        positive_control_names <- paste0("\nSample names: ", positive_control_names)
-        negative_control_names <- paste0("\nSample names: ", negative_control_names)
+        if (negative_control_num > 0) {
+          negative_control_names <- paste(sapply(negative_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+          negative_control_names <- paste0("\nSample names: ", negative_control_names)
+        }
+        if (standard_curve_num > 0) {
+          standard_curve_names <- paste(sapply(standard_curve_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+          standard_curve_names <- paste0("\nSample names: ", standard_curve_names)
+        }
       }
 
       cat(
@@ -748,6 +778,9 @@ Plate <- R6Class(
         "Number of blank samples: ",
         blank_samples_num,
         "\n",
+        "Number of standard curve samples: ",
+        standard_curve_num,
+        standard_curve_names, "\n",
         "Number of positive control samples: ",
         positive_control_num,
         positive_control_names, "\n",
