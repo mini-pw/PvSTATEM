@@ -311,7 +311,10 @@ parse_batch_metadata <- function(index, lines) {
     make_optional(named_key_value_pairs_parser("ProtocolAnalysis")),
     repeat_parser(key_value_parser("Protocol\\w+")),
     make_optional(key_value_parser("NormBead")),
-    make_optional(key_value_parser("ProtocolHeater")),
+    make_optional(match_any_parser(
+      key_value_parser("ProtocolHeater"),
+      named_key_value_pairs_parser("ProtocolHeater")
+    )),
     make_optional(key_value_parser("ProtocolOperatingMode")),
     make_optional(key_value_parser("BeadType")),
     make_optional(key_value_parser("PrePlateRoutine")),
