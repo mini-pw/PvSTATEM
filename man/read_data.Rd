@@ -31,7 +31,12 @@ file structure based on the https://genome.med.harvard.edu/documents/luminex/IS2
 and Kenya screening csv files
 }
 \examples{
-plate_file <- system.file("extdata", "random.csv", package = "PvSTATEM")
-plate <- read_data(plate_file)
+plate_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM")
+plate <- read_data(plate_filepath, check_plate = FALSE, verbose = FALSE)
+
+
+
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM")
+plate <- read_data(plate_filepath)
 
 }
