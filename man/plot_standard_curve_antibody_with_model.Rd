@@ -43,6 +43,14 @@ Function plots the values of standard curve samples and the fitted model.
 plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 plate <- read_data(plate_filepath)
 
+
+# temporary replacement for the missing layout file
+dilution_factors <- c(1/50, 1/100, 1/200, 1/400, 1/800, 1/1600, 1/3200, 1/6400, 1/12800, 1/25600, 1/102400)
+for (i in seq_along(plate$standard_curve)) {
+ sample <- plate$standard_curve[[i]]
+ sample$sample_type$dilution_factor <- dilution_factors[i]
+}
+
 model <- create_standard_curve_model_antibody(plate, antibody_name = "RBD_wuhan_IPP")
 plot_standard_curve_antibody_with_model(plate, antibody_name = "RBD_wuhan_IPP", model)
 
