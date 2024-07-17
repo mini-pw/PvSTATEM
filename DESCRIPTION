@@ -2,7 +2,7 @@ Package: PvSTATEM
 Type: Package
 Title: Reading, quality control and preprocessin of MBA assay data
 Description: Reading, quality control and preprocessin of MBA assay data.
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: person("Tymoteusz", "Kwiecinski", email = "tymoteuszkwiecinski@gmail.com", role = c("aut", "cre"))
 LazyData: true
 RoxygenNote: 7.3.2
