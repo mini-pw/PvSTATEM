@@ -166,7 +166,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
     theme_minimal() +
     theme(
       axis.line = element_line(colour = "black"),
-      axis.text.x = element_text(size = 9),
+      axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
       axis.text.y = element_text(size = 9),
       legend.position = legend_position, # Automatically position the legend
       legend.background = element_rect(fill = "white", color = "black")
@@ -259,7 +259,7 @@ create_standard_curve_model_antibody = function(plate, antibody_name, data_type 
 #'
 #' @export
 predict_dilutions = function(plate, antibody_name, model, data_type = "Median", verbose = TRUE) {
-  sample_concentrations <- data.frame(matrix(nrow=nrow(data), ncol=4))
+  sample_concentrations <- data.frame(matrix(nrow=plate$number_of_samples, ncol=4))
   colnames(sample_concentrations) <- c("Location",  "Sample", "MFI", "dilution")
 
   sample_concentrations$Sample <- plate$sample_names
@@ -274,6 +274,8 @@ predict_dilutions = function(plate, antibody_name, model, data_type = "Median", 
   } else {
     stop("For now model should be an instance of nplr, other options not implemented yet")
   }
+
+  sample_concentrations
 
 }
 
@@ -314,11 +316,12 @@ plot_standard_curve_antibody_with_model = function(plate, antibody_name, model, 
 
   curve_values <- sapply(plate$standard_curve, function(sample) sample$data[data_type, antibody_name])
 
-  if (log_scale == "all" || "MFI" %in% log_scale) {
-    y <- seq(0, max(curve_values), length.out = 1000)
-  } else {
-    y <- seq(-500, max(curve_values), length.out = 1000)
-  }
+
+  top_asymptote <- nplr::getPar(model)$params$top
+  bottom_asymptote <- nplr::getPar(model)$params$bottom
+
+  y <- seq(bottom_asymptote, top_asymptote, length.out = 1000)
+
 
   estimates <- nplr::getEstimates(model, y, B = 1e4, conf.level = .95)
 
@@ -342,8 +345,6 @@ plot_standard_curve_antibody_with_model = function(plate, antibody_name, model, 
 
 
   if (plot_asymptote) {
-    top_asymptote <- nplr::getPar(model)$params$top
-    bottom_asymptote <- nplr::getPar(model)$params$bottom
     p <- p + geom_hline(yintercept = log_if_needed_mfi(top_asymptote), linetype = "dashed", color = "gray") +
       geom_hline(yintercept = log_if_needed_mfi(bottom_asymptote), linetype = "dashed", color = "gray")
   }
