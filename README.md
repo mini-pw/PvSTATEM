@@ -1,6 +1,7 @@
 # PvSTATEM - an R package for automated analysis of serological data
 
-[*pre-release* version]{style="color:red"}
+### 🔴 *Pre-release* version
+
 
 ## Overview
 
