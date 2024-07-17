@@ -435,7 +435,7 @@ SampleType$parse_sample_type <- function(sample_name,
   blank_types <- c("BLANK", "BACKGROUND", "B")
 
   if (sample_name %in% blank_types ||
-      sample_name_loc %in% blank_types) {
+    sample_name_loc %in% blank_types) {
     return(SampleType$new("BLANK"))
   }
 
@@ -443,7 +443,7 @@ SampleType$parse_sample_type <- function(sample_name,
 
   positive_control_pattern <- c("^(P.|POS.+|B770.+|10/198.+)(1/\\d+)$")
   if (grepl(positive_control_pattern, sample_name) ||
-      grepl(positive_control_pattern, sample_name_loc)) {
+    grepl(positive_control_pattern, sample_name_loc)) {
     sample_type <- "POSITIVE CONTROL"
   }
 
@@ -452,8 +452,8 @@ SampleType$parse_sample_type <- function(sample_name,
     "^(N..|.*\\bNEG\\b)" # check if it starts with N or contains NEG string
 
   if (sample_name %in% negative_types ||
-      grepl(negative_pattern, sample_name) ||
-      grepl(negative_pattern, sample_name_loc)) {
+    grepl(negative_pattern, sample_name) ||
+    grepl(negative_pattern, sample_name_loc)) {
     sample_type <- "NEGATIVE CONTROL"
   }
 
@@ -462,8 +462,8 @@ SampleType$parse_sample_type <- function(sample_name,
   standard_curve_pattern <- "^(S_|S|S\\s|CP.+)(1/\\d+)$"
   standard_curve_loc_pattern <- "(1/\\d+)"
   if (sample_name %in% standard_curve_types ||
-      grepl(standard_curve_pattern, sample_name) ||
-      grepl(standard_curve_loc_pattern, sample_name_loc)) {
+    grepl(standard_curve_pattern, sample_name) ||
+    grepl(standard_curve_loc_pattern, sample_name_loc)) {
     sample_type <- "STANDARD CURVE"
   }
 
@@ -1217,9 +1217,8 @@ Plate <- R6Class(
       errors <- lapply(self$samples, function(sample) sample$errors)
       remove_empty_lists(errors)
     },
-
     standard_curve = function() {
-      if (! is.null(private$standard_curve_private)) {
+      if (!is.null(private$standard_curve_private)) {
         return(private$standard_curve_private)
       }
 
@@ -1236,7 +1235,7 @@ Plate <- R6Class(
       }
 
       standard_curves <- self$get_sample_by_type("STANDARD CURVE")
-      if (length(standard_curves) == 0){
+      if (length(standard_curves) == 0) {
         verbose_cat(
           "(",
           color_codes$red_start,

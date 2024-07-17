@@ -28,7 +28,6 @@ library(ggplot2)
 #'
 #' plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", decreasing_dilution_order = FALSE) # reversed x - axis
 #'
-#'
 #' @export
 plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Median",
                                          decreasing_dilution_order = TRUE,
@@ -58,7 +57,6 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
   standard_curve_values_list <- list()
 
   for (plate_num in 1:length(plates)) {
-
     plate <- plates[[plate_num]]
 
     standard_curves <- plate$standard_curve
@@ -209,8 +207,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 #' @import nplr
 #'
 #' @export
-create_standard_curve_model_antibody = function(plate, antibody_name, data_type = "Median", npars = 5, verbose = TRUE) {
-
+create_standard_curve_model_antibody <- function(plate, antibody_name, data_type = "Median", npars = 5, verbose = TRUE) {
   # get standard curve values of certain antibody
 
   standard_curves <- plate$standard_curve
@@ -220,14 +217,13 @@ create_standard_curve_model_antibody = function(plate, antibody_name, data_type 
 
   # fit the model
 
-  fit.data <- data.frame("MFI"=curve_values,"dilutions"=dilutions_numeric)
+  fit.data <- data.frame("MFI" = curve_values, "dilutions" = dilutions_numeric)
 
   # try catch this later
   if (length(standard_curves) >= 5) {
     model <- nplr::nplr(x = dilutions_numeric, y = curve_values, npars = npars, silent = !verbose)
 
-    #sample_concentrations$dilution <- nplr::getEstimates(model, sample_concentrations$MFI, B = 1e4, conf.level = .95)$y
-
+    # sample_concentrations$dilution <- nplr::getEstimates(model, sample_concentrations$MFI, B = 1e4, conf.level = .95)$y
   } else {
     verbose_cat(
       "(",
@@ -238,12 +234,10 @@ create_standard_curve_model_antibody = function(plate, antibody_name, data_type 
       "\n Using less than 5 samples to fit logistic model. For now using the basic nplr method to fit the logistic model - should be modified in the future",
       verbose = private$verbose
     )
-    npars = min(npars, length(standard_curves))
+    npars <- min(npars, length(standard_curves))
     model <- nplr::nplr(x = dilutions_numeric, y = curve_values, npars = npars, silent = !verbose)
-
   }
   return(model)
-
 }
 #' predict dilutions using fitted model
 #'
@@ -259,9 +253,9 @@ create_standard_curve_model_antibody = function(plate, antibody_name, data_type 
 #' Function predicts the dilutions of the samples, based on the MFI values and the fitted model.
 #'
 #' @export
-predict_dilutions = function(plate, antibody_name, model, data_type = "Median", verbose = TRUE) {
-  sample_concentrations <- data.frame(matrix(nrow=plate$number_of_samples, ncol=4))
-  colnames(sample_concentrations) <- c("Location",  "Sample", "MFI", "dilution")
+predict_dilutions <- function(plate, antibody_name, model, data_type = "Median", verbose = TRUE) {
+  sample_concentrations <- data.frame(matrix(nrow = plate$number_of_samples, ncol = 4))
+  colnames(sample_concentrations) <- c("Location", "Sample", "MFI", "dilution")
 
   sample_concentrations$Sample <- plate$sample_names
 
@@ -277,7 +271,6 @@ predict_dilutions = function(plate, antibody_name, model, data_type = "Median", 
   }
 
   sample_concentrations
-
 }
 
 #' plot standard curve of a certain antibody with fitted model
@@ -306,18 +299,17 @@ predict_dilutions = function(plate, antibody_name, model, data_type = "Median", 
 #'
 #'
 #' # temporary replacement for the missing layout file
-#' dilution_factors <- c(1/50, 1/100, 1/200, 1/400, 1/800, 1/1600, 1/3200, 1/6400, 1/12800, 1/25600, 1/102400)
+#' dilution_factors <- c(1 / 50, 1 / 100, 1 / 200, 1 / 400, 1 / 800, 1 / 1600, 1 / 3200, 1 / 6400, 1 / 12800, 1 / 25600, 1 / 102400)
 #' for (i in seq_along(plate$standard_curve)) {
-#'  sample <- plate$standard_curve[[i]]
-#'  sample$sample_type$dilution_factor <- dilution_factors[i]
-#'}
+#'   sample <- plate$standard_curve[[i]]
+#'   sample$sample_type$dilution_factor <- dilution_factors[i]
+#' }
 #'
 #' model <- create_standard_curve_model_antibody(plate, antibody_name = "RBD_wuhan_IPP")
 #' plot_standard_curve_antibody_with_model(plate, antibody_name = "RBD_wuhan_IPP", model)
 #'
-#'
 #' @export
-plot_standard_curve_antibody_with_model = function(plate, antibody_name, model, data_type = "Median", decreasing_dilution_order = TRUE, log_scale = c("all"), plot_asymptote = TRUE, verbose = TRUE) {
+plot_standard_curve_antibody_with_model <- function(plate, antibody_name, model, data_type = "Median", decreasing_dilution_order = TRUE, log_scale = c("all"), plot_asymptote = TRUE, verbose = TRUE) {
   p <- plot_standard_curve_antibody(plate, antibody_name = antibody_name, data_type = data_type, decreasing_dilution_order = decreasing_dilution_order, log_scale = log_scale, verbose = verbose, plot_line = FALSE)
 
   plot_name <- paste0("Fitted standard curve for analyte: ", antibody_name)

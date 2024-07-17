@@ -44,7 +44,6 @@ library(PvSTATEM)
 plate <- read_data(dataset_filepath)
 
 plate$summary()
-
 ```
 
 

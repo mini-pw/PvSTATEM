@@ -37,7 +37,7 @@ cat("Successfully loaded plate with batch name:", plate$batch_name, "\n")
 
 
 # temporary replacement for the missing layout file
-dilution_factors <- c(1/50, 1/100, 1/200, 1/400, 1/800, 1/1600, 1/3200, 1/6400, 1/12800, 1/25600, 1/102400)
+dilution_factors <- c(1 / 50, 1 / 100, 1 / 200, 1 / 400, 1 / 800, 1 / 1600, 1 / 3200, 1 / 6400, 1 / 12800, 1 / 25600, 1 / 102400)
 
 for (i in seq_along(plate$standard_curve)) {
   sample <- plate$standard_curve[[i]]
@@ -87,7 +87,6 @@ plot_standard_curve_antibody(plate, antibody_name = "Spike_6P_IPP")
 plate$blank_adjustment()
 
 plot_standard_curve_antibody(plate, antibody_name = "Spike_6P_IPP")
-
 ```
 
 We can also plot the standard curve for different analytes and data types. A list of all available analytes on the plate can be accessed using the command `plate$analyte_names`.
@@ -95,10 +94,8 @@ We can also plot the standard curve for different analytes and data types. A lis
 By default, all the operations are performed on the `Median` value of the samples; this option can be selected from the `data_type` parameter of the function.
 
 ```{r}
-
 plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", data_type = "Mean")
 plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", data_type = "Avg Net MFI")
-
 ```
 
 The plotting function has more options, such as selecting which axis the log scale should be applied or reversing the curve. More detailed information can be found in the function documentation, accessed by executing the command `?plot_standard_curve_antibody`.
@@ -140,7 +137,6 @@ Since our `model` object is an instance of `nplr` class, it contains all the inf
 The predicted values may be used to plot the standard curve, which can be compared to the sample values.
 
 ```{r}
-
 plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model)
 
 plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model, log_scale = c("dilutions"))
@@ -149,7 +145,6 @@ plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", m
 Apart from the plotting, the package can predict values of all the samples on the plate.
 
 ```{r}
-
 predicted_values <- predict_dilutions(plate, antibody_name = "Spike_6P_IPP", model)
 
 head(predicted_values)
@@ -158,14 +153,12 @@ head(predicted_values)
 We can add this values onto the plot, to check if the predictions are valid and lay in the central part of the plot, not on the sides of the curve.
 
 ```{r}
-
 p <- plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model, log_scale = c("dilutions"))
 
 p <- p + theme(legend.position = "none") # remove the legend
 
 
 p + geom_point(data = predicted_values, aes(x = log(dilution), y = MFI), color = "blue")
-
 ```
 
 The new predicted values are marked with blue points. As we can see, the predictions are in the central part of the curve, which means that the model is valid. There are some outlier points above the asymptote, and their dilution is set to the maximum dilution value.
@@ -176,13 +169,11 @@ The new predicted values are marked with blue points. As we can see, the predict
 model_4npars <- create_standard_curve_model_antibody(plate, antibody_name = "Spike_6P_IPP", npars = 4)
 
 model_4npars
-
 ```
 
 As seen from the model's output, it has a better fit than the five-parameters model. Let's investigate the plot of the standard curve with the four-parameters model.
 
 ```{r}
-
 p <- plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model_4npars, log_scale = c("dilutions"))
 
 predicted_values_4npars <- predict_dilutions(plate, antibody_name = "Spike_6P_IPP", model_4npars)
@@ -190,7 +181,6 @@ predicted_values_4npars <- predict_dilutions(plate, antibody_name = "Spike_6P_IP
 p <- p + theme(legend.position = "none") # remove the legend
 
 p + geom_point(data = predicted_values_4npars, aes(x = log(dilution), y = MFI), color = "blue")
-
 ```
 
 We can see that even though the model supposedly has a better goodness of fit, extrapolation in the data is not desired. We need to control how the predictions are done and avoid bad practices, such as extrapolation. This is the main goal for the work in the following days

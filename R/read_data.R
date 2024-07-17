@@ -96,7 +96,7 @@ read_data <- function(file_path,
     #    "\nInconsistent analytes in the plate - there are data of analytes undefined in the file\n",
     #    verbose = verbose
     #  )
-    #}
+    # }
 
     if (!results_plate$check_beads_number()) {
       verbose_cat(
@@ -275,8 +275,8 @@ divide_blocks <- function(blocks) {
 
   for (i in seq_len(length(blocks))) {
     # Check if the block contains the keyword "results"
-    if (any(grepl("^Results|^\"Results|'Results", blocks[[i]], ignore.case = TRUE))
-        || any(grepl("^\"Results", blocks[[i]], ignore.case = TRUE))) {
+    if (any(grepl("^Results|^\"Results|'Results", blocks[[i]], ignore.case = TRUE)) ||
+      any(grepl("^\"Results", blocks[[i]], ignore.case = TRUE))) {
       results_block_index <- i
     }
   }
