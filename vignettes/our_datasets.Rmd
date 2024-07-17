@@ -1,0 +1,78 @@
+---
+title: "Our datasets"
+author: "Tymoteusz Kwieciński"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+Our package main purpose is to read, perform quality control and normalize raw MBA data. Unfortunately, different devices and labs have different data formats. We gathered few datasets on which our package could be tested. This document describes the datasets and theirs sources.
+
+The majority of our datasets, available for the public are stored in the `extdata` folder of the package. The remaining ones - both private and the larger number of publicly available datasets are stored in the `OneDrive` folder, which is accessible for the package developers.
+
+## How to access the files
+
+The simples way of accessing the files is to simply download them from our GitHub repository. 
+
+Another way, is to source the files using the `system.file` function. The function returns the path to the file, which can be used to read the data. The function has the following syntax:
+
+```{r}
+dataset_name <- "CovidOISExPONTENT.csv"
+
+dataset_filepath <- system.file("extdata", dataset_name, package = "PvSTATEM", mustWork = TRUE)
+```
+The variable `dataset_filepath` contains now the path to the specified dataset on you computer. Since we know the filepath to the desired dataset, we can execute the `read_data` function to read the data. The function has the following syntax:
+
+```{r}
+plate <- read_data(dataset_filepath)
+
+plate$summary()
+
+```
+
+
+## Description of the datasets
+
+Our datasets are divided into three main categories: 
+- **artificial** - the ones created by us for the purpose of testing the package functionalities 
+- **public** - the publicly available datasets, produced in scope of PvSTATEM project or by the laboratories participating in the project. 
+- **external** - the ones gathered from public domain, external sources, independent from PvSTATEM project
+
+
+### Artificial datasets
+
+In order to perform simple unit tests and validate the most basic reading functionalities of the package, we created a few artificial datasets. The datasets are stored in the `extdata` folder of the package. The datasets are:
+
+-  `random.csv` - a simple dataset with random values, used to test the basic functionalities of the package
+-  `random2.csv` - another simple dataset with random values, used to test the basic functionalities of the package. This file has a corresponding, artificial layout - `random_layout.csv`
+-  `random_broken_colB.csv` - this dataset has a broken column, which should be detected by the package and reported as a warning
+
+### Public datasets
+
+The datasets from this category are the most important for the package development, since the main purpose of the package is to make the preprocessing of the data easier in scope of the PvSTATEM project.
+
+The majority of them are stored in the `OneDrive` folder of the package. The datasets available in the `extdata` folder are two files coming from Covid oise examination: 
+
+- `CovidOISExPONTENT.csv` 
+- `CovidOISExPONTENT_CO.csv`
+
+Most of examples and vignettes in the package are based on these datasets.
+
+### External datasets
+
+To check the package functionalities on the data from different sources, we gathered a few datasets from the public domain. The datasets are also stored in the `OneDrive` folder of the package and in the subfolder `external` of the `extdata` directory. The datasets are:
+
+-   `Chul_IgG3_1.csv` - GitHub repo RTSS_Kisumu_Schisto [source](https://github.com/IDEELResearch/RTSS_Kisumu_Schisto/tree/main/data/raw/luminex)
+
+-   `Chul_TotalIgG_2.csv` - GitHub repo RTSS_Kisumu_Schisto [source](https://github.com/IDEELResearch/RTSS_Kisumu_Schisto/tree/main/data/raw/luminex)
+
+-   `pone.0187901.s001.csv` - data shipped with drLumi package [source](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5685631/)
+
+-   `New_Batch_6_20160309_174224.csv` - dataset posted on ReaserchGate [source](https://www.researchgate.net/publication/309410897_Raw_data_generated_by_Luminex)
+
+-   `New_Batch_14_20140513_082522.csv` - dataset posted on ReaserchGate [source](https://www.researchgate.net/publication/309411021_The_second_run_of_raw_data_exported_from_Luminex_200_applied_forcarbendazim_resistance_species_and_chemotype_detection_of_156_Fusarium_isolates)
