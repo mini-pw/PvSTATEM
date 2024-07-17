@@ -8,9 +8,9 @@ read_data(
   file_path,
   layout_file_path = NULL,
   check_plate = TRUE,
-  ...,
   verbose = TRUE,
-  colorize = !isTRUE(getOption("knitr.in.progress"))
+  colorize = !isTRUE(getOption("knitr.in.progress")),
+  ...
 )
 }
 \arguments{
@@ -23,12 +23,20 @@ read_data(
 \item{verbose}{if TRUE, print out the progress of the function}
 
 \item{colorize}{if TRUE, colorize the output}
+
+\item{...}{additional arguments passed down}
 }
 \description{
 file structure based on the https://genome.med.harvard.edu/documents/luminex/IS2.3_SW_110_eng_us.pdf page 97
 and Kenya screening csv files
 }
 \examples{
-plate <- read_data("path/to/file.csv")
+plate_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM")
+plate <- read_data(plate_filepath, check_plate = FALSE, verbose = FALSE)
+
+
+
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM")
+plate <- read_data(plate_filepath)
 
 }

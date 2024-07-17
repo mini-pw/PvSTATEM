@@ -9,17 +9,24 @@
 #' @param check_plate if TRUE veryfies the plate - checks the consistency etc.
 #' @param verbose if TRUE, print out the progress of the function
 #' @param colorize if TRUE, colorize the output
+#' @param ... additional arguments passed down
 #'
-#'@examples
-#' plate <- read_data("path/to/file.csv")
+#' @examples
+#' plate_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM")
+#' plate <- read_data(plate_filepath, check_plate = FALSE, verbose = FALSE)
+#'
+#'
+#'
+#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM")
+#' plate <- read_data(plate_filepath)
 #'
 #' @export
 read_data <- function(file_path,
-                              layout_file_path = NULL,
-                              check_plate = TRUE,
-                              ...,
-                              verbose = TRUE,
-                              colorize = !isTRUE(getOption('knitr.in.progress'))) {
+                      layout_file_path = NULL,
+                      check_plate = TRUE,
+                      verbose = TRUE,
+                      colorize = !isTRUE(getOption("knitr.in.progress")),
+                      ...) {
   # firstly we read the raw csv file as a dataframe
   # data <- read.csv(filepath, header = FALSE, sep = ",", stringsAsFactors = FALSE)
 
@@ -37,7 +44,9 @@ read_data <- function(file_path,
   verbose_cat(
     color_codes$green_start,
     "Reading MBA plate csv file...\n\n",
-    color_codes$green_end, verbose = verbose)
+    color_codes$green_end,
+    verbose = verbose
+  )
 
   blocks <- extract_blocks(file_path)
 
@@ -51,22 +60,25 @@ read_data <- function(file_path,
     parse_results_blocks(results_blocks, verbose = verbose)
 
   results_plate <-
-    parse_header_blocks(results_plate, header_blocks, check_consistency=check_plate, verbose = verbose)
+    parse_header_blocks(results_plate, header_blocks, check_consistency = check_plate, verbose = verbose)
 
   # merging the layout file
   if (!is.null(layout_file_path)) {
     verbose_cat(
-      "",color_codes$green_start,
+      "", color_codes$green_start,
       "reading layout file...\n\n",
-      color_codes$green_end, verbose = verbose)
+      color_codes$green_end,
+      verbose = verbose
+    )
     results_plate <-
-      read_layout_data(layout_file_path, results_plate, check_plate=check_plate, verbose = verbose)
+      read_layout_data(layout_file_path, results_plate, check_plate = check_plate, verbose = verbose)
   }
   verbose_cat(
     color_codes$green_start,
-    "New plate object has been created!\n",
-    color_codes$green_end,"\n",
-    verbose = verbose)
+    "New plate object has been created with name:", results_plate$plate_name, " !\n",
+    color_codes$green_end, "\n",
+    verbose = verbose
+  )
 
   # consistency and validation checks
   if (check_plate) {
@@ -74,17 +86,17 @@ read_data <- function(file_path,
       "Running consistency checks...\n",
       verbose = verbose
     )
-    if (!results_plate$check_analyte_consistency()) {
-      verbose_cat(
-        "(",
-        color_codes$red_start,
-        "WARNING",
-        color_codes$red_end,
-        ")",
-        "\nInconsistent analytes in the plate - there are data of analytes undefined in the file\n",
-        verbose = verbose
-      )
-    }
+    # if (!results_plate$check_analyte_consistency()) {
+    #  verbose_cat(
+    #    "(",
+    #    color_codes$red_start,
+    #    "WARNING",
+    #    color_codes$red_end,
+    #    ")",
+    #    "\nInconsistent analytes in the plate - there are data of analytes undefined in the file\n",
+    #    verbose = verbose
+    #  )
+    # }
 
     if (!results_plate$check_beads_number()) {
       verbose_cat(
@@ -95,27 +107,34 @@ read_data <- function(file_path,
         ")",
         "\nPlate contains at least one region that did not reach the specified bead count - ", results_plate$min_events_per_bead, "\n",
         verbose = verbose
-      )    }
+      )
+    }
   }
 
-  return(results_plate)
+  # add name from filepath
+  filename_without_extension <- sub("\\.[^.]*$", "", basename(file_path))
 
+  results_plate$plate_name <- filename_without_extension
+
+  return(results_plate)
 }
 
 read_layout_data <- function(layout_file_path,
                              results_plate,
                              check_plate = TRUE,
+                             replace_names = TRUE,
                              ...,
                              verbose = TRUE) {
   # function modifies the results_plate object by adding the location information from the layout file
 
-  ext = tools::file_ext(layout_file_path)
+  ext <- tools::file_ext(layout_file_path)
 
   stopifnot(ext %in% c("csv", "xlsx"))
 
   location_data <- switch(ext,
-                          csv = read_location_data_csv(layout_file_path),
-                          xlsx = read_location_data_xlsx(layout_file_path))
+    csv = read_location_data_csv(layout_file_path),
+    xlsx = read_location_data_xlsx(layout_file_path)
+  )
 
   for (sample in results_plate$samples) {
     row <- sample$sample_location$row
@@ -125,6 +144,9 @@ read_layout_data <- function(layout_file_path,
     sample_name <- sample$sample_name
     sample$sample_type <-
       SampleType$parse_sample_type(sample_name, sample_name_loc = sample_name_loc)
+    if (replace_names) {
+      sample$sample_name <- sample_name_loc
+    }
   }
 
   return(results_plate)
@@ -136,8 +158,9 @@ read_location_data_csv <- function(location_file_path, ...,
   verbose_cat("not tested implementation location csv file\n", verbose = verbose)
   location_data <-
     read.csv(location_file_path,
-             header = TRUE,
-             stringsAsFactors = FALSE)
+      header = TRUE,
+      stringsAsFactors = FALSE
+    )
 
   return(location_data)
 }
@@ -184,14 +207,21 @@ extract_blocks <- function(file_path) {
   blocks[[length(blocks) + 1]] <- current_block
 
   # remove empty blocks
-  blocks <- blocks[sapply(blocks, function(x)
-    length(x) > 0)]
+  blocks <- blocks[sapply(blocks, function(x) {
+    length(x) > 0
+  })]
 
   return(blocks)
 }
 
 parse_lines <- function(lines, csv_delim = ",") {
   # function parses unstructured lines saved as strings and returns a list of vectors
+
+  # remove " from the lines
+  lines <- lapply(lines, function(line) {
+    gsub("\"", "", line)
+  })
+
   replacement_delim <- ";"
 
   if (csv_delim == ";") {
@@ -200,20 +230,22 @@ parse_lines <- function(lines, csv_delim = ",") {
 
   # remove trailing delims
   leading_trailing_delim_regex <-
-    paste0("^", csv_delim, "*|", csv_delim , "*$")
+    paste0("^", csv_delim, "*|", csv_delim, "*$")
   lines <-
-    lapply(lines, function(line)
-      gsub(leading_trailing_delim_regex, "", line))
+    lapply(lines, function(line) {
+      gsub(leading_trailing_delim_regex, "", line)
+    })
 
   replace_delim_in_brackets <-
     paste0("(?:\\G(?!^)|\\()[^)(", csv_delim, "]*\\K,(?=[^)()*])")
   lines <-
-    lapply(lines, function(line)
-      gsub(replace_delim_in_brackets, replacement_delim, line, perl = TRUE))
+    lapply(lines, function(line) {
+      gsub(replace_delim_in_brackets, replacement_delim, line, perl = TRUE)
+    })
 
   delim_regex <-
     paste0(
-      '(?:^|',
+      "(?:^|",
       csv_delim,
       ')(?=[^"]|(")?)"?((?(1)(?:[^"]|"")*|[^',
       csv_delim,
@@ -224,12 +256,14 @@ parse_lines <- function(lines, csv_delim = ",") {
     regmatches(lines, gregexpr(delim_regex, lines, perl = TRUE))
   # remove trailing delims
   matches <-
-    lapply(matches, function(line)
-      gsub(leading_trailing_delim_regex, "", line))
+    lapply(matches, function(line) {
+      gsub(leading_trailing_delim_regex, "", line)
+    })
 
   # remove empty strings
-  matches <- lapply(matches, function(line)
-    line[nzchar(line)])
+  matches <- lapply(matches, function(line) {
+    line[nzchar(line)]
+  })
   return(matches)
 }
 
@@ -241,8 +275,9 @@ divide_blocks <- function(blocks) {
 
   for (i in seq_len(length(blocks))) {
     # Check if the block contains the keyword "results"
-    if (any(grepl("^Results", blocks[[i]], ignore.case = TRUE))) {
-      results_block_index = i
+    if (any(grepl("^Results|^\"Results|'Results", blocks[[i]], ignore.case = TRUE)) ||
+      any(grepl("^\"Results", blocks[[i]], ignore.case = TRUE))) {
+      results_block_index <- i
     }
   }
 
@@ -267,8 +302,9 @@ parse_header_blocks <-
            verbose = TRUE) {
     # this function parses the header blocks and writes the metadata into the results plate
 
-    if (length(header_blocks) < 5)
+    if (length(header_blocks) < 5) {
       stop("Improper data formatting - there are no enough blocks in the header section")
+    }
 
     batch_info <-
       parse_batch_info(header_blocks[[1]], header_blocks[[2]])
@@ -282,7 +318,7 @@ parse_header_blocks <-
     sample_info <- parse_sample_info(header_blocks[[5]])
 
     if (check_consistency) {
-      if (results_plate$number_of_samples != sample_info$samples_count)
+      if (results_plate$number_of_samples != sample_info$samples_count) {
         stop(
           "According to plate metadata there are ",
           sample_info$samples_count,
@@ -290,6 +326,7 @@ parse_header_blocks <-
           results_plate$number_of_samples,
           "found"
         )
+      }
 
       # TODO what is min events ?
       batch_info$min_events_per_bead <-
@@ -300,7 +337,6 @@ parse_header_blocks <-
     results_plate$batch_info <- batch_info
 
     return(results_plate)
-
   }
 
 
@@ -324,7 +360,6 @@ parse_header <- function(header_blocks) {
       sample_info = sample_info
     )
   )
-
 }
 
 parse_date <- function(date) {
@@ -375,7 +410,6 @@ parse_calibration_info <- function(cal_block1, cal_block2) {
   # TODO
 
   return(list())
-
 }
 
 parse_sample_info <- function(sample_block) {
@@ -436,20 +470,22 @@ parse_single_results_block <-
           "NOTE",
           color_codes$yellow_end,
           ")\n",
-          "CRC block found, omiting it for now\n", verbose = verbose)
+          "CRC block found, omiting it for now\n",
+          verbose = verbose
+        )
         return(list(data_type = "CRC", list()))
       }
 
       return(list(data_type = "CRC", list()))
     }
 
-    data_type = vector_data_type[2]
+    data_type <- vector_data_type[2]
 
     block_header <- results_block[[2]] # fields and antigen names
 
     if (length(results_block) <= 2) {
       # there are no data stored
-      return(list(data_type=data_type, list()))
+      return(list(data_type = data_type, list()))
     }
 
     results_df <-
@@ -459,11 +495,11 @@ parse_single_results_block <-
     warning_datatypes <- c("Warnings/Errors", "Audit Logs")
 
     if (data_type %in% warning_datatypes) {
-
       warnings <- list()
 
-      if (nrow(results_df) == 0)
+      if (nrow(results_df) == 0) {
         return(list(data_type = data_type, list()))
+      }
 
 
       for (row in 1:nrow(results_df)) {
@@ -482,7 +518,7 @@ parse_single_results_block <-
     if (data_type %in% analysis_datatypes) {
       rownames(results_df) <- results_df[1:nrow(results_df), 1]
       results_df <-
-        results_df[,-1] # remove the first column - it should have the known format
+        results_df[, -1] # remove the first column - it should have the known format
       # replace values
       null_values <- c("None", "Alysis Types", "Analysis Types")
       for (val in null_values) {
@@ -498,8 +534,9 @@ parse_single_results_block <-
           ")",
           "\nThe datatype ",
           data_type,
-          " contains NA values\n"
-        , verbose = verbose)
+          " contains NA values\n",
+          verbose = verbose
+        )
       }
 
       analyte_types <- list()
@@ -508,8 +545,9 @@ parse_single_results_block <-
 
         analysis_type <- results_df[1, col]
 
-        if (is.na(analysis_type))
-          analysis_type = NULL
+        if (is.na(analysis_type)) {
+          analysis_type <- NULL
+        }
 
         analyte_types[[analyte_name]] <- analysis_type
       }
@@ -522,7 +560,7 @@ parse_single_results_block <-
     if (data_type %in% beads_datatypes) {
       rownames(results_df) <- results_df[1:nrow(results_df), 1]
       results_df <-
-        results_df[,-1] # remove the first column - it should have the known format
+        results_df[, -1] # remove the first column - it should have the known format
       # replace values
       null_values <- c("None", "Units", "Units:")
       for (val in null_values) {
@@ -547,7 +585,7 @@ parse_single_results_block <-
       analytes <- list()
       for (col in 1:ncol(results_df)) {
         analyte_name <- colnames(results_df)[col]
-        id = NA
+        id <- NA
         per_bead_count <- NA
         analyte_units <- NULL
         analysis_type <- NULL
@@ -555,16 +593,16 @@ parse_single_results_block <-
 
         if (data_type == "Units") {
           analyte_units <- results_df[2, col]
-        }
-        else if (data_type == "Per Bead Count") {
+        } else if (data_type == "Per Bead Count") {
           per_bead_count <- as.numeric(results_df[2, col])
         }
 
         id <- as.numeric(results_df[1, col])
 
 
-        if (!is.null(analyte_units) && is.na(analyte_units))
-          analyte_units = NULL
+        if (!is.null(analyte_units) && is.na(analyte_units)) {
+          analyte_units <- NULL
+        }
 
         analyte <-
           Analyte$new(
@@ -576,7 +614,6 @@ parse_single_results_block <-
           )
 
         analytes[[as.character(id)]] <- analyte
-
       }
       return(list(data_type = "analytes", analytes))
     }
@@ -590,7 +627,7 @@ parse_single_results_block <-
 
     # check if the dataframe contains a column with name or Location
 
-    first_analyte_col_index = 1
+    first_analyte_col_index <- 1
     if ("Location" %in% names(results_df)) {
       first_analyte_col_index <- first_analyte_col_index + 1
     }
@@ -606,9 +643,11 @@ parse_single_results_block <-
       id <- row # TODO better labeling
 
       if (is.null(results_df[row, "Sample"])) {
-        stop(paste0("No name specified for the sample of id: ",
-                    row,
-                    " - omiting it"))
+        stop(paste0(
+          "No name specified for the sample of id: ",
+          row,
+          " - omiting it"
+        ))
         next
       }
 
@@ -624,8 +663,7 @@ parse_single_results_block <-
 
       if (data_type == "Dilution Factor") {
         dilution_factor <- as.numeric(results_df[row, "Dilution Factor"])
-      }
-      else {
+      } else {
         sample_df <-
           results_df[row, first_analyte_col_index:length(results_df)]
 
@@ -648,7 +686,6 @@ parse_single_results_block <-
           data = sample_df
         )
       samples[[row]] <- sample
-
     }
 
     return(list(data_type = "samples", samples))
