@@ -20,5 +20,5 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)
-License: BSD-3-Clause
+License: BSD_3_clause
 VignetteBuilder: knitr
