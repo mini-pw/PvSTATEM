@@ -10,6 +10,7 @@ Imports:
     dplyr,
     R6,
     tools,
+    qpdf,
     readxl,
     RColorBrewer,
     knitr,
