@@ -32,10 +32,9 @@ library(ggplot2)
 #'
 #' @export
 plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Median",
-                                         file_path = NULL, decreasing_dilution_order = TRUE,
+                                         decreasing_dilution_order = TRUE,
                                          log_scale = c("all"), plot_line = TRUE,
                                          verbose = TRUE) {
-
   if (inherits(plates, "Plate")) { # an instance of Plate
     plates <- list(plates)
   }
@@ -59,7 +58,10 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 
   standard_curve_values_list <- list()
 
-  for (plate in plates) {
+  for (plate_num in 1:length(plates)) {
+
+    plate <- plates[[plate_num]]
+
     standard_curves <- plate$standard_curve
 
     if (is.null(standard_curve_num_samples)) {
@@ -69,7 +71,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
     }
 
     if (!antibody_name %in% plate$analyte_names) {
-      #stop("Antibody ", antibody_name, " not present in the plate")
+      stop("Antibody ", antibody_name, " not present in the plate")
     }
 
     dilutions <- sapply(standard_curves, function(sample) sample$sample_type$character_dilution_factor)
@@ -155,7 +157,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
   p <- ggplot(plot_data, aes(x = dilutions, y = mfi, color = plate))
 
   if (plot_line) {
-    p <- p + geom_line(size = 1.2)
+    p <- p + geom_line(linewidth = 1.2)
   }
 
   p <- p + geom_point(size = 3) +
@@ -168,7 +170,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
       axis.line = element_line(colour = "black"),
       axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
       axis.text.y = element_text(size = 9),
-      legend.position = legend_position, # Automatically position the legend
+      legend.position.inside = legend_position, # Automatically position the legend
       legend.background = element_rect(fill = "white", color = "black")
     )
 
@@ -341,7 +343,7 @@ plot_standard_curve_antibody_with_model = function(plate, antibody_name, model, 
   }
 
   # add line to the plot
-  p <- p + geom_line(aes(x = log_if_needed_dilutions(x), y = log_if_needed_mfi(y)), color = "red", data = estimates, size = 1)
+  p <- p + geom_line(aes(x = log_if_needed_dilutions(x), y = log_if_needed_mfi(y)), color = "red", data = estimates, linewidth = 1)
 
 
   if (plot_asymptote) {

@@ -1223,7 +1223,7 @@ Plate <- R6Class(
         return(private$standard_curve_private)
       }
 
-      if (!plate$check_if_blanks_already_adjusted) {
+      if (!self$check_if_blanks_already_adjusted) {
         verbose_cat(
           "(",
           color_codes$red_start,
