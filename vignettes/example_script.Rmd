@@ -107,19 +107,11 @@ After inspection, we may create the model for the standard curve of a certain an
 
 $$ y = B + \frac{T - B}{[1 + 10^{b*(x_{mid} - x)}]^s} $$,
 
-where:
-- $y$ is the predicted value, MFI in our case,
-- $x$ is the independent variable, dilution in our case,
-- $B$ is the bottom plateau - the right horizontal asymptote,
-- $T$ is the top plateau - the left horizontal asymptote,
-- $b$ is the slope of the curve at the inflection point,
-- $x_{mid}$ is x-coordinate at the inflection point,
-- $s$ is the assymetric coefficient.
+where: - $y$ is the predicted value, MFI in our case, - $x$ is the independent variable, dilution in our case, - $B$ is the bottom plateau - the right horizontal asymptote, - $T$ is the top plateau - the left horizontal asymptote, - $b$ is the slope of the curve at the inflection point, - $x_{mid}$ is x-coordinate at the inflection point, - $s$ is the assymetric coefficient.
 
 This equation is refered as the Richards' equation. More informations about the model can be found in the `nplr` package documentation.
 
 By default, `nplr` model transforms the x values using the log10 function.
-
 
 ```{r}
 model <- create_standard_curve_model_antibody(plate, antibody_name = "Spike_6P_IPP")
@@ -127,10 +119,9 @@ model <- create_standard_curve_model_antibody(plate, antibody_name = "Spike_6P_I
 model
 ```
 
-Since our `model` object is an instance of `nplr` class, it contains all the information about the fitted model. The model can be used to predict the dilutions of the samples, based on the MFI values.
+Since our `model` object is an instance of `nplr` class, it contains all the information about the fitted model. The model can be used to predict the dilutions of the samples, based on the MFI values. The output above shows for instance goodness of the fit, the estimated parameters and the confidence intervals for the parameters.
 
 The predicted values may be used to plot the standard curve, which can be compared to the sample values.
-
 
 ```{r}
 
@@ -139,7 +130,49 @@ plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", m
 plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model, log_scale = c("dilutions"))
 ```
 
+Apart from the plotting, the package has an option to predict values of all the samples on the plate.
+
 ```{r}
 
+predicted_values <- predict_dilutions(plate, antibody_name = "Spike_6P_IPP", model)
+
+head(predicted_values)
+```
+We can add this values onto the plot, to check if the predictions are valid and lay in the central part of the plot, not on the sides of the curve.
+
+```{r}
+
+p <- plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model, log_scale = c("dilutions"))
+
+p <- p + theme(legend.position = "none") # remove the legend
+
+
+p + geom_point(data = predicted_values, aes(x = log(dilution), y = MFI), color = "blue")
 
 ```
+The new predicted values are marked with blue points. As we can see, the predictions are in the central part of the curve, which means that the model is valid. There are some outlier points above the asymptote, their dilution is set to the maximum dilution value.
+
+
+### 4 parameters model
+
+```{r}
+model_4npars <- create_standard_curve_model_antibody(plate, antibody_name = "Spike_6P_IPP", npars = 4)
+
+model_4npars
+
+```
+As it can be seen from the model's output it has better goodness of fit than the 5 parameters model. Let us see the plot of the standard curve with the 4 parameters model.
+
+```{r}
+
+p <- plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model_4npars, log_scale = c("dilutions"))
+
+predicted_values_4npars <- predict_dilutions(plate, antibody_name = "Spike_6P_IPP", model_4npars)
+
+p <- p + theme(legend.position = "none") # remove the legend
+
+p + geom_point(data = predicted_values_4npars, aes(x = log(dilution), y = MFI), color = "blue")
+
+```
+
+We can see, that even though the model supposedly has better goodness of fit, there is extrapolation in the data, which is not desired. We need to control how the predictions are being done, and avoid bad practices, such as extrapolation. 
