@@ -70,8 +70,8 @@ The datasets from this category are the most important for the package developme
 
 The majority of them are stored in the `OneDrive` folder of the package. The datasets available in the `extdata` folder are two files coming from Covid oise examination: 
 
-- `CovidOISExPONTENT.csv` 
-- `CovidOISExPONTENT_CO.csv`
+- `CovidOISExPONTENT.csv`, which is a `IG4DC2~1.csv` plate from examination `IgG_CovidOise4_30plex`. It contains corresponding layout file `CovidOISExPONTENT_layout.csv`
+- `CovidOISExPONTENT_CO.csv`, which is a `IGG_CO~1.csv` plate from examination `IgG_CovidOise2_30plex`
 
 Most of examples and vignettes in the package are based on these datasets.
 
