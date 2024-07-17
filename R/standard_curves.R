@@ -7,7 +7,6 @@ library(ggplot2)
 #'
 #' @param antibody_name Name of the antibody of which standard curve we want to plot.
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Net MFI`
-#' @param file_path where to save the output plot. If `NULL` the plot is displayed, `NULL` by default
 #' @param decreasing_dilution_order If `TRUE` the dilutions are plotted in decreasing order, `TRUE` by default
 #' @param log_scale Which elements on the plot should be displayed in log scale. By default `"dilutions"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
 #' @param plot_line If `TRUE` a line is plotted, `TRUE` by default
@@ -192,7 +191,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 #' @description
 #' function for now uses the `nplr` package to fit the model. The model is fitted using the formula:
 #'
-#' $$ y = B + \frac{T - B}{[1 + 10^{b*(x_{mid} - x)}]^s} $$,
+#' $$y = B + \\frac{T - B}{(1 + 10^{b*(x_{mid} - x)})^s}$$,
 
 #' where:
 #' - $y$ is the predicted value, MFI in our case,

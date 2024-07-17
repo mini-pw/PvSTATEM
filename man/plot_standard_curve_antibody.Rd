@@ -28,8 +28,6 @@ plot_standard_curve_antibody(
 \item{plot_line}{If \code{TRUE} a line is plotted, \code{TRUE} by default}
 
 \item{verbose}{If \code{TRUE} prints messages, \code{TRUE} by default}
-
-\item{file_path}{where to save the output plot. If \code{NULL} the plot is displayed, \code{NULL} by default}
 }
 \value{
 ggplot object with the plot

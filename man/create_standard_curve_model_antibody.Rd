@@ -29,7 +29,7 @@ nplr object with the model
 \description{
 function for now uses the \code{nplr} package to fit the model. The model is fitted using the formula:
 
-$$ y = B + \frac{T - B}{\link{1 + 10^{b*(x_{mid} - x)}}^s} $$,
+$$y = B + \\frac{T - B}{(1 + 10^{b*(x_{mid} - x)})^s}$$,
 where:
 \itemize{
 \item $y$ is the predicted value, MFI in our case,
