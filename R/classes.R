@@ -78,6 +78,7 @@ Analyte <- R6Class(
     #' @param units (`character(1)`)\cr
     #' Units of the analyte in which the results are expressed
     #'
+    #'
     initialize = function(id,
                           analyte_name,
                           bead_count = NA,
@@ -102,7 +103,6 @@ Analyte <- R6Class(
       self$analysis_type <- analysis_type
       self$units <- units
     },
-
 
     #' @description
     #' Prints the information about the analyte
@@ -1079,6 +1079,7 @@ Plate <- R6Class(
         stop("Blank values have been already adjusted in this plate, if you want to try doing it using different method consider reversing this process")
       }
 
+      private$standard_curve_private <- NULL
       private$blank_already_adjusted <- TRUE
       available_methods <- c("avg")
       if (!method %in% available_methods) {
@@ -1152,7 +1153,9 @@ Plate <- R6Class(
     }
   ),
   private = list(
-    blank_already_adjusted = FALSE
+    blank_already_adjusted = FALSE,
+    verbose = TRUE,
+    standard_curve_private = NULL
   ),
   active = list(
     #' @field number_of_samples number of samples stored in the current plate
@@ -1213,6 +1216,51 @@ Plate <- R6Class(
     errors = function() {
       errors <- lapply(self$samples, function(sample) sample$errors)
       remove_empty_lists(errors)
+    },
+
+    standard_curve = function() {
+      if (! is.null(private$standard_curve_private)) {
+        return(private$standard_curve_private)
+      }
+
+      if (!self$check_if_blanks_already_adjusted) {
+        verbose_cat(
+          "(",
+          color_codes$red_start,
+          "WARNING",
+          color_codes$red_end,
+          ")",
+          "\nBlank values not adjusted - Consider adjusting the blank values using function `plate$blank_adjustment`\n",
+          verbose = private$verbose
+        )
+      }
+
+      standard_curves <- self$get_sample_by_type("STANDARD CURVE")
+      if (length(standard_curves) == 0){
+        verbose_cat(
+          "(",
+          color_codes$red_start,
+          "WARNING",
+          color_codes$red_end,
+          ")",
+          "\nNo standard curve samples found in the plate\nUsing positive control samples",
+          verbose = private$verbose
+        )
+        standard_curves <- plate$get_sample_by_type("POSITIVE CONTROL")
+      }
+
+
+      dilutions <- sapply(standard_curves, function(sample) sample$sample_type$character_dilution_factor)
+      dilutions_numeric <- sapply(standard_curves, function(sample) sample$sample_type$dilution_factor)
+      # sort values according to dilutions
+      sorted_order <- order(dilutions_numeric)
+
+      # Sort the vectors according to the sorted order of the reference vector
+      dilutions_numeric <- dilutions_numeric[sorted_order]
+      dilutions <- dilutions[sorted_order]
+      standard_curves <- standard_curves[sorted_order]
+      private$standard_curve_private <- standard_curves
+      return(standard_curves)
     }
   )
 )

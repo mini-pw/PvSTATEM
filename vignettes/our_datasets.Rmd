@@ -2,11 +2,20 @@
 title: "Our datasets"
 author: "Tymoteusz Kwieciński"
 date: "`r Sys.Date()`"
-output: html_document
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{Simple example of basic PvSTATEM package pre-release version functionalities}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
 ```
 
 # Introduction
@@ -29,6 +38,9 @@ dataset_filepath <- system.file("extdata", dataset_name, package = "PvSTATEM", m
 The variable `dataset_filepath` contains now the path to the specified dataset on you computer. Since we know the filepath to the desired dataset, we can execute the `read_data` function to read the data. The function has the following syntax:
 
 ```{r}
+library(PvSTATEM)
+
+
 plate <- read_data(dataset_filepath)
 
 plate$summary()
@@ -58,8 +70,8 @@ The datasets from this category are the most important for the package developme
 
 The majority of them are stored in the `OneDrive` folder of the package. The datasets available in the `extdata` folder are two files coming from Covid oise examination: 
 
-- `CovidOISExPONTENT.csv` 
-- `CovidOISExPONTENT_CO.csv`
+- `CovidOISExPONTENT.csv`, which is a `IG4DC2~1.csv` plate from examination `IgG_CovidOise4_30plex`. It contains corresponding layout file `CovidOISExPONTENT_layout.csv`
+- `CovidOISExPONTENT_CO.csv`, which is a `IGG_CO~1.csv` plate from examination `IgG_CovidOise2_30plex`
 
 Most of examples and vignettes in the package are based on these datasets.
 

@@ -12,8 +12,13 @@
 #' @param ... additional arguments passed down
 #'
 #' @examples
-#' plate_file <- system.file("extdata", "random.csv", package = "PvSTATEM")
-#' plate <- read_data(plate_file)
+#' plate_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM")
+#' plate <- read_data(plate_filepath, check_plate = FALSE, verbose = FALSE)
+#'
+#'
+#'
+#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM")
+#' plate <- read_data(plate_filepath)
 #'
 #' @export
 read_data <- function(file_path,
@@ -70,7 +75,7 @@ read_data <- function(file_path,
   }
   verbose_cat(
     color_codes$green_start,
-    "New plate object has been created!\n",
+    "New plate object has been created with name:", results_plate$plate_name, " !\n",
     color_codes$green_end, "\n",
     verbose = verbose
   )
@@ -211,6 +216,12 @@ extract_blocks <- function(file_path) {
 
 parse_lines <- function(lines, csv_delim = ",") {
   # function parses unstructured lines saved as strings and returns a list of vectors
+
+  # remove " from the lines
+  lines <- lapply(lines, function(line) {
+    gsub("\"", "", line)
+  })
+
   replacement_delim <- ";"
 
   if (csv_delim == ";") {
@@ -264,7 +275,8 @@ divide_blocks <- function(blocks) {
 
   for (i in seq_len(length(blocks))) {
     # Check if the block contains the keyword "results"
-    if (any(grepl("^Results", blocks[[i]], ignore.case = TRUE))) {
+    if (any(grepl("^Results|^\"Results|'Results", blocks[[i]], ignore.case = TRUE))
+        || any(grepl("^\"Results", blocks[[i]], ignore.case = TRUE))) {
       results_block_index <- i
     }
   }
