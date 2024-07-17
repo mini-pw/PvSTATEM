@@ -20,16 +20,27 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
-The basic functionality of the `PvSTATEM` package is reading raw MBA data. To present the functionalities of the package, we created a simple, artificial `csv` file, which is pre-loaded into the package.
+
+The basic functionality of the `PvSTATEM` package is reading raw MBA data. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. The dataset
 
 ```{r}
 library(PvSTATEM)
 
-plate_filepath <- system.file("extdata", "covid_oise/Covid_Oise_9plex_plate1_IgG_20210222_20210222_142449.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
-layout_filepath <- system.file("extdata", "covid_oise/covid_oise_IgG_plate1.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
-plate <- read_data(plate_filepath, layout_file_path = layout_filepath) # read the data
+plate <- read_data(plate_filepath) # read the data
+
+cat("Successfully loaded plate with batch name:", plate$batch_name, "\n")
+
+
+# temporary replacement for the missing layout file
+dilution_factors <- c(1/50, 1/100, 1/200, 1/400, 1/800, 1/1600, 1/3200, 1/6400, 1/12800, 1/25600, 1/102400)
+
+for (i in seq_along(plate$standard_curve)) {
+  sample <- plate$standard_curve[[i]]
+  sample$sample_type$dilution_factor <- dilution_factors[i]
+}
 ```
 
 After the plate is successfully loaded, we can look into some basic information about the plate.
@@ -42,12 +53,14 @@ plate$summary(include_names = TRUE) # more detailed summary - names of the types
 plate$get_sample(1)
 plate$get_sample_by_type("STANDARD CURVE")[[1]]
 
+cat("Sample names:")
 plate$sample_names
+cat("Analyte names:")
 plate$analyte_names
 ```
 
-
 ## Warnings
+
 Our scripts are designed to catch potential errors in the data. If there are any warnings, they will be stored in the `warnings` field of the plate object. The warnings can be accessed by the `$warnings` field of the plate object or by the `$warnings` field of the sample object.
 
 ```{r}
@@ -57,33 +70,76 @@ plate$warnings
 
 plate$get_sample(5)$warnings
 
-plate$get(analyte = "spike", sample = 1)
+plate$get(analyte = "Spike_6P_IPP", sample = 1)
 
 plate$get_sample_by_type("STANDARD CURVE")[[1]]$warnings
 ```
 
+## Normalization
 
+The package has an option to plot the dilutions along the MFI values, which allows to inspect the standard curve manually. This method raises a warning in case the MFI values were not adjusted using the blank samples.
 
-## simple standard curve plotting
 ```{r}
-plot_standard_curve_antibody(plate, antibody_name = "spike_6P_IPP")
+plot_standard_curve_antibody(plate, antibody_name = "Spike_6P_IPP")
 
 plate$blank_adjustment()
 
-plot_standard_curve_antibody(plate, antibody_name = "spike_6P_IPP")
+plot_standard_curve_antibody(plate, antibody_name = "Spike_6P_IPP")
 
 ```
 
-```{r}
-model <- create_standard_curve_model_antibody(plate, antibody_name = "spike_6P_IPP")
+We can also plot the standard curve for different analytes and data types. List of all available analytes on the plate can be accessed using command `plate$analyte_names`.
 
-plot_standard_curve_antibody_with_model(plate, antibody_name = "spike_6P_IPP", model)
-```
+By default all the operations are performed on the `Median` value of the samples, this option can be selected in the `data_type` parameter of the function.
 
 ```{r}
 
+plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", data_type = "Mean")
+plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", data_type = "Avg Net MFI")
 
 ```
 
+The plotting function has more options, such as selecting on which axis the log scale should be applied, or reversing the curve. More detailed information can be found in the documentation of the function, which can be accessed by executing command `?plot_standard_curve_antibody`.
+
+After inspection, we may create the model for the standard curve of a certain antibody. For now, the model is fitted using the `nplr` package, which provides a simple interface for fitting n-Parameter logistic regression models. The model is then used to predict the dilutions of the samples, based on the MFI values.
+
+`nplr` package fits the model using the formula:
+
+$$ y = B + \frac{T - B}{[1 + 10^{b*(x_{mid} - x)}]^s} $$,
+
+where:
+- $y$ is the predicted value, MFI in our case,
+- $x$ is the independent variable, dilution in our case,
+- $B$ is the bottom plateau - the right horizontal asymptote,
+- $T$ is the top plateau - the left horizontal asymptote,
+- $b$ is the slope of the curve at the inflection point,
+- $x_{mid}$ is x-coordinate at the inflection point,
+- $s$ is the assymetric coefficient.
+
+This equation is refered as the Richards' equation. More informations about the model can be found in the `nplr` package documentation.
+
+By default, `nplr` model transforms the x values using the log10 function.
 
 
+```{r}
+model <- create_standard_curve_model_antibody(plate, antibody_name = "Spike_6P_IPP")
+
+model
+```
+
+Since our `model` object is an instance of `nplr` class, it contains all the information about the fitted model. The model can be used to predict the dilutions of the samples, based on the MFI values.
+
+The predicted values may be used to plot the standard curve, which can be compared to the sample values.
+
+
+```{r}
+
+plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model)
+
+plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model, log_scale = c("dilutions"))
+```
+
+```{r}
+
+
+```
