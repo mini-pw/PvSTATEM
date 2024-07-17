@@ -2,11 +2,20 @@
 title: "Our datasets"
 author: "Tymoteusz Kwieciński"
 date: "`r Sys.Date()`"
-output: html_document
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{Simple example of basic PvSTATEM package pre-release version functionalities}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
 ```
 
 # Introduction

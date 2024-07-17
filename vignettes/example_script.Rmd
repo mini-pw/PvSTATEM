@@ -8,6 +8,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{ggplot2}
+  %\VignetteDepends{nplr}
 ---
 
 ```{r setup, include=FALSE}
