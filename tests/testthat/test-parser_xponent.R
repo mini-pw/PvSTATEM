@@ -1,6 +1,6 @@
 library(testthat)
 
-## Unit tests for parser.R
+## Unit tests
 
 ### Tests for is blank line
 

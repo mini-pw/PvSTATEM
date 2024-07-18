@@ -9,15 +9,17 @@ is_line_blank <- function(line) {
   if (is.na(line)) {
     return(TRUE)
   }
-  stringr::str_detect(line, "^[,\"]*$")
+  stringr::str_detect(line, "^[;,\"]*$")
 }
 
+
+global_sep <<- ","
 vectorize_csv_line <- function(line) {
-  line_stripped <- stringr::str_remove(line, "[\\s,]*$")
+  line_stripped <- stringr::str_remove(line, "[\\s,;]*$")
   as.character(read.csv(
     text = line_stripped,
     header = FALSE,
-    sep = ",",
+    sep = global_sep,
     quote = '\"',
     allowEscapes = TRUE,
     stringsAsFactors = FALSE
@@ -38,13 +40,17 @@ is_the_end_of_csv_section <- function(line) {
 }
 
 parsing_error <- function(index, lines, parser_name, reason) {
-  named_lines <- capture.output(print(names(lines)[1:index]))
+  begin_index <- max(1, index - 5)
+  named_lines <- names(lines)[begin_index:index]
+  names(named_lines) <- begin_index:index
+  named_lines_str <- capture.output(print(named_lines))
+
   paste0(
     "Parsing error occurred while parsing line: ", index, ".\n",
     "Parser: ", parser_name, ".\n",
     "Reason: ", reason, ".\n",
     "Lines parsed before: \n",
-    paste0(named_lines, collapse = "\n")
+    paste0(named_lines_str, collapse = "\n")
   )
 }
 
@@ -65,7 +71,7 @@ eof_parser <- function(index, lines) {
       index,
       lines,
       "EOF parser",
-      "Expected end of file but found next line. File was not fully parsed."
+      "Expected end of file but found next line at index. File was not fully parsed."
     ))
   }
   list(NULL, index, lines)
@@ -177,7 +183,7 @@ parse_as_csv <- function(name, max_rows = Inf) {
     }
     end_index <- min(end_index, index + max_rows)
 
-    df <- read.csv(text = lines[index:(end_index - 1)], header = TRUE, sep = ",")
+    df <- read.csv(text = lines[index:(end_index - 1)], header = TRUE, sep = global_sep)
     df <- df[, colSums(is.na(df)) < nrow(df)]
 
     names(lines)[index:(end_index - 1)] <- rep(paste0("CSV: ", name), end_index - index)
@@ -308,7 +314,9 @@ parse_batch_metadata <- function(index, lines) {
     repeat_parser(key_value_parser("Batch\\w+")),
     make_optional(named_key_value_pairs_parser("ProtocolPlate")),
     make_optional(named_key_value_pairs_parser("ProtocolMicrosphere")),
-    make_optional(named_key_value_pairs_parser("ProtocolAnalysis")),
+    make_optional(
+      named_key_value_pairs_parser("ProtocolAnalysis")
+    ),
     repeat_parser(key_value_parser("Protocol\\w+")),
     make_optional(key_value_parser("NormBead")),
     make_optional(match_any_parser(
@@ -386,7 +394,7 @@ parse_results_block <- function(index, lines) {
 parse_crc32_value <- function(index, lines) {
   # HACK: This should be handled better
   read_values <- vectorize_csv_line(lines[index])
-  match <- stringr::str_match(read_values[1], "^CRC32:\\s*(.+?)(,|$)")
+  match <- stringr::str_match(read_values[1], "^CRC32:\\s*(.+?)(,|;|$)")
   if (is.na(match[1])) {
     stop(parsing_error(
       index, lines,
@@ -409,17 +417,16 @@ parse_crc32_block <- function(index, lines) {
 
 ### Main parser
 
-read_xponent_format <- function(path, sep = ",") {
-  lines <- readr::read_lines(path)
-  if (sep != ",") {
-    lines <- sapply(lines, function(line) {
-      line <- gsub(sep, ",", line)
-      line
-    })
-  }
+read_xponent_format <- function(path, encoding = "utf-8", sep = ",") {
+  lines <- readr::read_lines(
+    path,
+    locale = readr::locale(encoding = encoding),
+  )
+
+  # HACK: There has to be a better way
+  global_sep <<- sep
 
   names(lines) <- rep(NA, length(lines))
-
 
   main_parser <- join_parsers(
     parse_program_metadata,
