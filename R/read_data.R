@@ -73,6 +73,13 @@ read_data <- function(file_path,
     results_plate <-
       read_layout_data(layout_file_path, results_plate, check_plate = check_plate, verbose = verbose)
   }
+
+
+  # add name from filepath
+  filename_without_extension <- sub("\\.[^.]*$", "", basename(file_path))
+
+  results_plate$plate_name <- filename_without_extension
+
   verbose_cat(
     color_codes$green_start,
     "New plate object has been created with name:", results_plate$plate_name, " !\n",
@@ -110,11 +117,6 @@ read_data <- function(file_path,
       )
     }
   }
-
-  # add name from filepath
-  filename_without_extension <- sub("\\.[^.]*$", "", basename(file_path))
-
-  results_plate$plate_name <- filename_without_extension
 
   return(results_plate)
 }

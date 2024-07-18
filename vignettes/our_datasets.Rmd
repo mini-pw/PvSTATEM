@@ -50,6 +50,7 @@ plate$summary()
 ## Description of the datasets
 
 Our datasets are divided into three main categories: 
+
 - **artificial** - the ones created by us for the purpose of testing the package functionalities 
 - **public** - the publicly available datasets, produced in scope of PvSTATEM project or by the laboratories participating in the project. 
 - **external** - the ones gathered from public domain, external sources, independent from PvSTATEM project
@@ -69,8 +70,8 @@ The datasets from this category are the most important for the package developme
 
 The majority of them are stored in the `OneDrive` folder of the package. The datasets available in the `extdata` folder are two files coming from Covid oise examination: 
 
-- `CovidOISExPONTENT.csv`, which is a `IG4DC2~1.csv` plate from examination `IgG_CovidOise4_30plex`. It contains corresponding layout file `CovidOISExPONTENT_layout.csv`
-- `CovidOISExPONTENT_CO.csv`, which is a `IGG_CO~1.csv` plate from examination `IgG_CovidOise2_30plex`
+- `CovidOISExPONTENT.csv`, which is a `IG4DC2~1.csv` plate from examination `IgG_CovidOise4_30plex`. It contains corresponding layout file `CovidOISExPONTENT_layout.xlsx`
+- `CovidOISExPONTENT_CO.csv`, which is a `IGG_CO~1.csv` plate from examination `IgG_CovidOise2_30plex` and corresponding layout file 
 
 Most of examples and vignettes in the package are based on these datasets.
 

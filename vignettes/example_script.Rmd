@@ -30,19 +30,12 @@ library(ggplot2)
 
 plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
 
-plate <- read_data(plate_filepath) # read the data
+
+plate <- read_data(plate_filepath, layout_filepath) # read the data
 
 cat("Successfully loaded plate with batch name:", plate$batch_name, "\n")
-
-
-# temporary replacement for the missing layout file
-dilution_factors <- c(1 / 50, 1 / 100, 1 / 200, 1 / 400, 1 / 800, 1 / 1600, 1 / 3200, 1 / 6400, 1 / 12800, 1 / 25600, 1 / 102400)
-
-for (i in seq_along(plate$standard_curve)) {
-  sample <- plate$standard_curve[[i]]
-  sample$sample_type$dilution_factor <- dilution_factors[i]
-}
 ```
 
 After the plate is successfully loaded, we can look at some basic information about it.
@@ -77,9 +70,9 @@ plate$get(analyte = "Spike_6P_IPP", sample = 1)
 plate$get_sample_by_type("STANDARD CURVE")[[1]]$warnings
 ```
 
-## Normalisation
+## Normalization
 
-The package can plot the dilutions along the MFI values, which allows for manual inspecting of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
+The package can plot the dilutions along the MFI values, allowing manual inspecting of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
 
 ```{r}
 plot_standard_curve_antibody(plate, antibody_name = "Spike_6P_IPP")
@@ -108,7 +101,7 @@ $$ y = B + \frac{T - B}{[1 + 10^{b \cdot (x_{mid} - x)}]^s} $$
 
 Where:
 
--    $y$ is the predicted value, MFI in our case,
+-   $y$ is the predicted value, MFI in our case,
 
 -   $x$ is the independent variable, dilution in our case,
 
