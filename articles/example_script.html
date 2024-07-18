@@ -75,7 +75,7 @@ pre-release version functionalities</h1>
                         <h4 data-toc-skip class="author">Tymoteusz
 Kwieciński</h4>
             
-            <h4 data-toc-skip class="date">2024-07-17</h4>
+            <h4 data-toc-skip class="date">2024-07-18</h4>
       
 
       <div class="hidden name"><code>example_script.Rmd</code></div>
@@ -98,8 +98,10 @@ object.</p>
 <span></span>
 <span><span class="va">plate_filepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CovidOISExPONTENT_CO.csv"</span>, package <span class="op">=</span> <span class="st">"PvSTATEM"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># get the filepath of the csv dataset</span></span>
 <span></span>
+<span><span class="va">layout_filepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CovidOISExPONTENT_CO_layout.xlsx"</span>, package <span class="op">=</span> <span class="st">"PvSTATEM"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">plate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="va">plate_filepath</span><span class="op">)</span> <span class="co"># read the data</span></span></code></pre></div>
+<span></span>
+<span><span class="va">plate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="va">plate_filepath</span>, <span class="va">layout_filepath</span><span class="op">)</span> <span class="co"># read the data</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Reading MBA plate csv file...</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (<span style="color: #BB0000;">WARNING</span>)</span></span>
@@ -108,6 +110,8 @@ object.</p>
 <span><span class="co">#&gt; The datatype Analysis Types contains NA values</span></span>
 <span><span class="co">#&gt; (<span style="color: #BBBB00;">NOTE</span>)</span></span>
 <span><span class="co">#&gt; CRC block found, omiting it for now</span></span>
+<span><span class="co">#&gt; reading layout file...</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; New plate object has been created with name: !</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Running consistency checks...</span></span>
@@ -116,19 +120,9 @@ object.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Successfully loaded plate with batch name:"</span>, <span class="va">plate</span><span class="op">$</span><span class="va">batch_name</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Successfully loaded plate with batch name: IgG_CovidOise0_amiens_plate2_20211220</span></span></code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># temporary replacement for the missing layout file</span></span>
-<span><span class="va">dilution_factors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">50</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">100</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">200</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">400</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">800</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">1600</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">3200</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">6400</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">12800</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">25600</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">102400</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">plate</span><span class="op">$</span><span class="va">standard_curve</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">sample</span> <span class="op">&lt;-</span> <span class="va">plate</span><span class="op">$</span><span class="va">standard_curve</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span></span>
-<span>  <span class="va">sample</span><span class="op">$</span><span class="va">sample_type</span><span class="op">$</span><span class="va">dilution_factor</span> <span class="op">&lt;-</span> <span class="va">dilution_factors</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; (<span style="color: #BB0000;">WARNING</span>)</span></span>
-<span><span class="co">#&gt; Blank values not adjusted - Consider adjusting the blank values using function `plate$blank_adjustment`</span></span></code></pre>
 <p>After the plate is successfully loaded, we can look at some basic
 information about it.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">summary</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the plate generated on 12/20/2021 10:50 AM</span></span>
 <span><span class="co">#&gt; with name 'CovidOISExPONTENT_CO':</span></span>
@@ -137,45 +131,39 @@ information about it.</p>
 <span><span class="co">#&gt; Number of standard curve samples: 11</span></span>
 <span><span class="co">#&gt; Number of positive control samples: 0</span></span>
 <span><span class="co">#&gt; Number of negative control samples: 0</span></span></code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">summary</span><span class="op">(</span>include_names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># more detailed summary - names of the types</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the plate generated on 12/20/2021 10:50 AM</span></span>
 <span><span class="co">#&gt; with name 'CovidOISExPONTENT_CO':</span></span>
 <span><span class="co">#&gt; Total number of samples: 49</span></span>
 <span><span class="co">#&gt; Number of blank samples: 1</span></span>
 <span><span class="co">#&gt; Number of standard curve samples: 11</span></span>
-<span><span class="co">#&gt; Sample names: 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'</span></span>
+<span><span class="co">#&gt; Sample names: '1/50', '1/100', '1/200', '1/400', '1/800', '1/1600', '1/3200', '1/6400', '1/12800', '1/25600', '1/102400'</span></span>
 <span><span class="co">#&gt; Number of positive control samples: 0</span></span>
 <span><span class="co">#&gt; Number of negative control samples: 0</span></span></code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">get_sample</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; A sample B with ID:  1 </span></span>
 <span><span class="co">#&gt; Sample Type:  BLANK </span></span>
 <span><span class="co">#&gt; Sample Location:  (A, 1)</span></span></code></pre>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">get_sample_by_type</span><span class="op">(</span><span class="st">"STANDARD CURVE"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; A sample S with ID:  2 </span></span>
+<pre><code><span><span class="co">#&gt; A sample 1/50 with ID:  2 </span></span>
 <span><span class="co">#&gt; Sample Type:  STANDARD CURVE </span></span>
 <span><span class="co">#&gt; Dilution Factor:  1/50 </span></span>
 <span><span class="co">#&gt; Sample Location:  (A, 2)</span></span></code></pre>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Sample names:"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; Sample names:</span></span></code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="va">sample_names</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;  [1] "B"         "S"         "S"         "S"         "S"         "S"        </span></span>
-<span><span class="co">#&gt;  [7] "S"         "S"         "S"         "S"         "S"         "S"        </span></span>
-<span><span class="co">#&gt; [13] "Unknown2"  "Unknown10" "Unknown18" "Unknown26" "Unknown34" "Unknown42"</span></span>
-<span><span class="co">#&gt; [19] "Unknown3"  "Unknown11" "Unknown19" "Unknown27" "Unknown35" "Unknown43"</span></span>
-<span><span class="co">#&gt; [25] "Unknown4"  "Unknown12" "Unknown20" "Unknown28" "Unknown36" "Unknown5" </span></span>
-<span><span class="co">#&gt; [31] "Unknown13" "Unknown21" "Unknown29" "Unknown37" "Unknown6"  "Unknown14"</span></span>
-<span><span class="co">#&gt; [37] "Unknown22" "SP"        "Unknown38" "Unknown7"  "Unknown15" "Unknown23"</span></span>
-<span><span class="co">#&gt; [43] "FD"        "Unknown39" "Unknown8"  "Unknown16" "Unknown24" "LG"       </span></span>
-<span><span class="co">#&gt; [49] "Unknown40"</span></span></code></pre>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Analyte names:"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; Analyte names:</span></span></code></pre>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">#&gt;  [1] "B"        "1/50"     "1/100"    "1/200"    "1/400"    "1/800"   </span></span>
+<span><span class="co">#&gt;  [7] "1/1600"   "1/3200"   "1/6400"   "1/12800"  "1/25600"  "1/102400"</span></span>
+<span><span class="co">#&gt; [13] "K086-LM"  "M254-VM"  "M199-DS"  "M164-LM"  "M265-MM"  "K026-DJ" </span></span>
+<span><span class="co">#&gt; [19] "K137-DT"  "M255-VA"  "M258-PA"  "M188-VC"  "M270-BF"  "M050-EL" </span></span>
+<span><span class="co">#&gt; [25] "M088-GE"  "M259-PM"  "K101-PA"  "M189-VY"  "K018-FC"  "M142-RA" </span></span>
+<span><span class="co">#&gt; [31] "K100-CC"  "K107-RP"  "M240-HS"  "K019-FM"  "M148-PS"  "M089-HG" </span></span>
+<span><span class="co">#&gt; [37] "K136-DA"  "M241-HR"  "K020-NA"  "M239-HJ"  "M092-LS"  "M162-PE" </span></span>
+<span><span class="co">#&gt; [43] "M260-PM"  "K021-FS"  "M253-VM"  "M198-CN"  "M163-PD"  "M264-MA" </span></span>
+<span><span class="co">#&gt; [49] "K024-DT"</span></span></code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="va">analyte_names</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;  [1] "Spike_6P_IPP"     "ME_NA"            "HKU1_S_IPP"       "OC43_NP_NA"      </span></span>
 <span><span class="co">#&gt;  [5] "OC43_S_sino"      "HKU1_NP_NA"       "229E_NP_NA"       "Mumps_NP"        </span></span>
@@ -192,17 +180,17 @@ there are any warnings, they will be stored in the <code>warnings</code>
 field of the plate object. The warnings can be accessed by the
 <code>$warnings</code> field of the plate object or by the
 <code>$warnings</code> field of the sample object.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## warnings ----------------------------------------------------------------</span></span>
 <span></span>
 <span><span class="va">plate</span><span class="op">$</span><span class="va">warnings</span><span class="op">[[</span><span class="fl">5</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [1] "An analyte Measles_NP_NA did not reach the specified count in the given sample"</span></span></code></pre>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">get_sample</span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">$</span><span class="va">warnings</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [1] "An analyte Measles_NP_NA did not reach the specified count in the given sample"</span></span></code></pre>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span>analyte <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span>, sample <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;                              Spike_6P_IPP</span></span>
 <span><span class="co">#&gt; Median                              19.00</span></span>
@@ -219,7 +207,7 @@ field of the plate object. The warnings can be accessed by the
 <span><span class="co">#&gt; Trimmed Peak                        22.00</span></span>
 <span><span class="co">#&gt; Trimmed Standard Deviation           6.40</span></span>
 <span><span class="co">#&gt; Acquisition Time                       NA</span></span></code></pre>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">get_sample_by_type</span><span class="op">(</span><span class="st">"STANDARD CURVE"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">warnings</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [1] "An analyte Spike_6P_IPP did not reach the specified count in the given sample"</span></span>
@@ -231,16 +219,17 @@ field of the plate object. The warnings can be accessed by the
 <span><span class="co">#&gt; [1] "An analyte Mumps_NP did not reach the specified count in the given sample"</span></span></code></pre>
 </div>
 <div class="section level3">
-<h3 id="normalisation">Normalisation<a class="anchor" aria-label="anchor" href="#normalisation"></a>
+<h3 id="normalization">Normalization<a class="anchor" aria-label="anchor" href="#normalization"></a>
 </h3>
-<p>The package can plot the dilutions along the MFI values, which allows
-for manual inspecting of the standard curve. This method raises a
-warning in case the MFI values were not adjusted using the blank
-samples.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<p>The package can plot the dilutions along the MFI values, allowing
+manual inspecting of the standard curve. This method raises a warning in
+case the MFI values were not adjusted using the blank samples.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_antibody.html">plot_standard_curve_antibody</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; (<span style="color: #BB0000;">WARNING</span>)</span></span>
+<span><span class="co">#&gt; Blank values not adjusted - Consider adjusting the blank values using function `plate$blank_adjustment`</span></span></code></pre>
 <p><img src="example_script_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">blank_adjustment</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_standard_curve_antibody.html">plot_standard_curve_antibody</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span><span class="op">)</span></span></code></pre></div>
@@ -251,10 +240,10 @@ using the command <code>plate$analyte_names</code>.</p>
 <p>By default, all the operations are performed on the
 <code>Median</code> value of the samples; this option can be selected
 from the <code>data_type</code> parameter of the function.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_antibody.html">plot_standard_curve_antibody</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"RBD_wuhan_IPP"</span>, data_type <span class="op">=</span> <span class="st">"Mean"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_antibody.html">plot_standard_curve_antibody</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"RBD_wuhan_IPP"</span>, data_type <span class="op">=</span> <span class="st">"Avg Net MFI"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-5-2.png" width="700"></p>
 <p>The plotting function has more options, such as selecting which axis
@@ -290,7 +279,7 @@ information about the model can be found in the <code>nplr</code>
 package documentation.</p>
 <p>By default, the <code>nplr</code> model transforms the x values using
 the log10 function.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_standard_curve_model_antibody.html">create_standard_curve_model_antibody</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model</span></span></code></pre></div>
@@ -315,29 +304,29 @@ fit, the estimated parameters and the confidence intervals for the
 parameters.</p>
 <p>The predicted values may be used to plot the standard curve, which
 can be compared to the sample values.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_antibody_with_model.html">plot_standard_curve_antibody_with_model</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span>, <span class="va">model</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_antibody_with_model.html">plot_standard_curve_antibody_with_model</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span>, <span class="va">model</span>, log_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dilutions"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-7-2.png" width="700"></p>
 <p>Apart from the plotting, the package can predict values of all the
 samples on the plate.</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predicted_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_dilutions.html">predict_dilutions</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span>, <span class="va">model</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">predicted_values</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;   Location Sample     MFI     dilution</span></span>
 <span><span class="co">#&gt; 1   (A, 1)      B    19.0 9.147037e-05</span></span>
-<span><span class="co">#&gt; 2   (A, 2)      S 12703.5 2.000000e-02</span></span>
-<span><span class="co">#&gt; 3   (A, 3)      S  9144.5 9.894250e-03</span></span>
-<span><span class="co">#&gt; 4   (A, 4)      S  6716.0 6.046758e-03</span></span>
-<span><span class="co">#&gt; 5   (A, 5)      S  3491.0 2.231589e-03</span></span>
-<span><span class="co">#&gt; 6   (A, 6)      S  2258.0 1.208470e-03</span></span></code></pre>
+<span><span class="co">#&gt; 2   (A, 2)   1/50 12703.5 2.000000e-02</span></span>
+<span><span class="co">#&gt; 3   (A, 3)  1/100  9144.5 9.894250e-03</span></span>
+<span><span class="co">#&gt; 4   (A, 4)  1/200  6716.0 6.046758e-03</span></span>
+<span><span class="co">#&gt; 5   (A, 5)  1/400  3491.0 2.231589e-03</span></span>
+<span><span class="co">#&gt; 6   (A, 6)  1/800  2258.0 1.208470e-03</span></span></code></pre>
 <p>We can add this values onto the plot, to check if the predictions are
 valid and lay in the central part of the plot, not on the sides of the
 curve.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_standard_curve_antibody_with_model.html">plot_standard_curve_antibody_with_model</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span>, <span class="va">model</span>, log_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dilutions"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="co"># remove the legend</span></span>
@@ -352,7 +341,7 @@ and their dilution is set to the maximum dilution value.</p>
 <div class="section level4">
 <h4 id="four-parameters-model">Four parameters model<a class="anchor" aria-label="anchor" href="#four-parameters-model"></a>
 </h4>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_4npars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_standard_curve_model_antibody.html">create_standard_curve_model_antibody</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span>, npars <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model_4npars</span></span></code></pre></div>
@@ -372,7 +361,7 @@ and their dilution is set to the maximum dilution value.</p>
 <p>As seen from the model’s output, it has a better fit than the
 five-parameters model. Let’s investigate the plot of the standard curve
 with the four-parameters model.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_standard_curve_antibody_with_model.html">plot_standard_curve_antibody_with_model</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span>, <span class="va">model_4npars</span>, log_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dilutions"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">predicted_values_4npars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_dilutions.html">predict_dilutions</a></span><span class="op">(</span><span class="va">plate</span>, antibody_name <span class="op">=</span> <span class="st">"Spike_6P_IPP"</span>, <span class="va">model_4npars</span><span class="op">)</span></span>
