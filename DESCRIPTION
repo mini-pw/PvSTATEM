@@ -1,9 +1,15 @@
 Package: PvSTATEM
 Type: Package
-Title: Reading, quality control and preprocessin of MBA assay data
-Description: Reading, quality control and preprocessin of MBA assay data.
+Title: Reading, quality control and preprocessing of MBA assay data
+Description: Reading, quality control and preprocessing of MBA assay data.
+BugReports: https://github.com/mini-pw/PvSTATEM/issues
 Version: 0.0.2
-Authors@R: person("Tymoteusz", "Kwiecinski", email = "tymoteuszkwiecinski@gmail.com", role = c("aut", "cre"))
+License: BSD_3_clause
+Encoding: UTF-8
+Authors@R: c(
+        person("Tymoteusz", "Kwiecinski", email = "tymoteuszkwiecinski@gmail.com", role = c("aut", "cre")),
+        person("Mateusz", "Nizwantowski", email = "mateusznizwantowski@gmail.com", role = c("aut", "cre"))
+        )
 LazyData: true
 RoxygenNote: 7.3.2
 Imports:
@@ -21,5 +27,4 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)
-License: BSD_3_clause
 VignetteBuilder: knitr
