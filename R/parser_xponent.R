@@ -3,6 +3,20 @@
 #
 
 
+### Settings
+
+.global_env <- new.env(parent = emptyenv())
+.global_env$global_sep <- ","
+
+get_global_sep <- function() {
+  return(.global_env$global_sep)
+}
+
+set_global_sep <- function(value) {
+  .global_env$global_sep <- value
+}
+
+
 ### Utility functions
 
 is_line_blank <- function(line) {
@@ -12,14 +26,12 @@ is_line_blank <- function(line) {
   stringr::str_detect(line, "^[;,\"]*$")
 }
 
-
-global_sep <<- ","
 vectorize_csv_line <- function(line) {
   line_stripped <- stringr::str_remove(line, "[\\s,;]*$")
   as.character(read.csv(
     text = line_stripped,
     header = FALSE,
-    sep = global_sep,
+    sep = get_global_sep(),
     quote = '\"',
     allowEscapes = TRUE,
     stringsAsFactors = FALSE
@@ -186,7 +198,7 @@ parse_as_csv <- function(name, max_rows = Inf, remove_na_rows = FALSE, ...) {
     end_index <- min(end_index, index + max_rows)
 
     mod_lines <- lines[index:(end_index - 1)]
-    regex <- paste0("(\\d+\\(\\d+", global_sep, "\\w+\\d+\\))")
+    regex <- paste0("(\\d+\\(\\d+", get_global_sep(), "\\w+\\d+\\))")
     replacement <- '\"$1\"'
     mod_lines <- stringi::stri_replace_all(mod_lines, regex = regex, replacement = replacement)
     mod_lines <- stringi::stri_replace_all(mod_lines, regex = '"+', replacement = '"')
@@ -194,7 +206,7 @@ parse_as_csv <- function(name, max_rows = Inf, remove_na_rows = FALSE, ...) {
     df <- read.csv(
       text = mod_lines,
       header = TRUE,
-      sep = global_sep,
+      sep = get_global_sep(),
       na.strings = c("", "NA", "None", "<NA>")
     )
     df <- df[, colSums(is.na(df)) < nrow(df)]
@@ -438,7 +450,7 @@ read_xponent_format <- function(path, encoding = "utf-8", sep = ",") {
   )
 
   # HACK: There has to be a better way
-  global_sep <<- sep
+  set_global_sep(sep)
 
   names(lines) <- rep(NA, length(lines))
 

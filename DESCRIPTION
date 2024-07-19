@@ -30,6 +30,7 @@ Imports:
     ggplot2,
     nplr,
     readr,
+    stringi,
     stringr
 Suggests:
     testthat (>= 3.0.0),
