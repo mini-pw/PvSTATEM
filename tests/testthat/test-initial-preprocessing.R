@@ -1,4 +1,4 @@
-library(testthat)
+require(testthat)
 
 test_that("blank adjustment", {
   plate_file <- system.file("extdata", "random.csv", package = "PvSTATEM", mustWork = TRUE)

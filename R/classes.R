@@ -1,4 +1,4 @@
-library(R6)
+require(R6)
 
 
 verify_numeric_join <- function(x, y) {
@@ -613,7 +613,7 @@ Sample <- R6Class(
         rownames(data_num) <- rownames(data)
 
         # fix conversion TODO
-        for (i in 1:ncol(data)) {
+        for (i in seq_len(ncol(data))) {
           data_num[, i] <- as.numeric(as.character(data[, i]))
         }
 

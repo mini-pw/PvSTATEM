@@ -1,25 +1,30 @@
 Package: PvSTATEM
 Type: Package
-Title: Reading, quality control and preprocessin of MBA assay data
-Description: Reading, quality control and preprocessin of MBA assay data.
+Title: Reading, quality control and preprocessing of MBA assay data
+Description: The package speeds up the process of loading raw data from MBA 
+    assays, performs quality control checks and automatically normalizes the data, 
+    preparing it for more advanced downstream tasks. The main objective of the 
+    package is to create a simple environment for a user, which does not 
+    necessarily has experience with R language. The package is developed 
+    within the project of the same name - `PvSTATEM` - which is an international 
+    project which aims into malaria elimination.
 Version: 0.0.2
 Authors@R: person("Tymoteusz", "Kwiecinski", email = "tymoteuszkwiecinski@gmail.com", role = c("aut", "cre"))
-LazyData: true
+LazyData: false
 RoxygenNote: 7.3.2
 Imports:
-    dplyr,
-    R6,
     tools,
-    qpdf,
     readxl,
     RColorBrewer,
-    knitr,
-    rmarkdown,
     ggplot2,
     nplr,
 Suggests:
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    knitr
 Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 License: BSD_3_clause
 VignetteBuilder: knitr
+biocViews: DataImport, QualityControl, Preprocessing
+URL: https://github.com/mini-pw/PvSTATEM
+BugReports: https://github.com/mini-pw/PvSTATEM/issues

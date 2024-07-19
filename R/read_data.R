@@ -289,7 +289,7 @@ divide_blocks <- function(blocks) {
     )
   }
 
-  header_blocks <- blocks[1:(results_block_index - 1)]
+  header_blocks <- blocks[seq_len(results_block_index - 1)]
   results_blocks <- blocks[(results_block_index + 1):length(blocks)]
 
 
@@ -439,7 +439,7 @@ parse_results_blocks <- function(results_blocks, verbose = TRUE) {
 
   plate <- Plate$new()
 
-  for (i in 1:length(results_blocks)) {
+  for (i in seq_len(length(results_blocks))) {
     results_block <- results_blocks[[i]]
 
     parsed_list <-
@@ -504,7 +504,7 @@ parse_single_results_block <-
       }
 
 
-      for (row in 1:nrow(results_df)) {
+      for (row in seq_len(nrow(results_df))) {
         warning <- list()
         warning[[colnames(results_df)[1]]] <- results_df[row, 1]
         warning[[colnames(results_df)[2]]] <- results_df[row, 2]
@@ -518,7 +518,7 @@ parse_single_results_block <-
 
     analysis_datatypes <- c("Alysis Types", "Analysis Types")
     if (data_type %in% analysis_datatypes) {
-      rownames(results_df) <- results_df[1:nrow(results_df), 1]
+      rownames(results_df) <- results_df[seq_len(nrow(results_df)), 1]
       results_df <-
         results_df[, -1] # remove the first column - it should have the known format
       # replace values
@@ -542,7 +542,7 @@ parse_single_results_block <-
       }
 
       analyte_types <- list()
-      for (col in 1:ncol(results_df)) {
+      for (col in seq_len(ncol(results_df))) {
         analyte_name <- colnames(results_df)[col]
 
         analysis_type <- results_df[1, col]
@@ -560,7 +560,7 @@ parse_single_results_block <-
     beads_datatypes <- c("Units", "Per Bead Count")
 
     if (data_type %in% beads_datatypes) {
-      rownames(results_df) <- results_df[1:nrow(results_df), 1]
+      rownames(results_df) <- results_df[seq_len(nrow(results_df)), 1]
       results_df <-
         results_df[, -1] # remove the first column - it should have the known format
       # replace values
@@ -585,7 +585,7 @@ parse_single_results_block <-
       }
 
       analytes <- list()
-      for (col in 1:ncol(results_df)) {
+      for (col in seq_len(ncol(results_df))) {
         analyte_name <- colnames(results_df)[col]
         id <- NA
         per_bead_count <- NA
@@ -641,7 +641,7 @@ parse_single_results_block <-
 
     samples <- list()
 
-    for (row in 1:nrow(results_df)) {
+    for (row in seq_len(nrow(results_df))) {
       id <- row # TODO better labeling
 
       if (is.null(results_df[row, "Sample"])) {

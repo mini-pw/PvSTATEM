@@ -1,4 +1,4 @@
-library(ggplot2)
+require(ggplot2)
 
 #' Plot standard curves of plate or list of plates
 #'
@@ -56,7 +56,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 
   standard_curve_values_list <- list()
 
-  for (plate_num in 1:length(plates)) {
+  for (plate_num in seq_len(length(plates))) {
     plate <- plates[[plate_num]]
 
     standard_curves <- plate$standard_curve
@@ -119,7 +119,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
   plot_data <- data.frame()
 
 
-  for (i in 1:length(plates)) {
+  for (i in seq_len(length(plates))) {
     temp_data <- data.frame(
       dilutions = log_if_needed_dilutions(dilutions_numeric),
       mfi = log_if_needed_mfi(standard_curve_values_list[[i]]),
@@ -259,9 +259,9 @@ predict_dilutions <- function(plate, antibody_name, model, data_type = "Median",
 
   sample_concentrations$Sample <- plate$sample_names
 
-  sample_concentrations$Location <- sapply(1:plate$number_of_samples, function(i) plate$samples[[i]]$sample_location$location_name)
+  sample_concentrations$Location <- sapply(seq_len(plate$number_of_samples), function(i) plate$samples[[i]]$sample_location$location_name)
 
-  sample_concentrations$MFI <- sapply(1:plate$number_of_samples, function(i) plate$samples[[i]]$data[data_type, antibody_name])
+  sample_concentrations$MFI <- sapply(seq_len(plate$number_of_samples), function(i) plate$samples[[i]]$data[data_type, antibody_name])
 
 
   if (inherits(model, "nplr")) {
