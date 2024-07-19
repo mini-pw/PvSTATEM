@@ -47,5 +47,4 @@ plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", log_scale =
 
 plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", decreasing_dilution_order = FALSE) # reversed x - axis
 
-
 }
