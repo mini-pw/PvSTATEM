@@ -26,13 +26,14 @@ vectorize_csv_line <- function(line) {
   ))
 }
 
-is_the_end_of_csv_section <- function(line) {
+is_the_end_of_csv_section <- function(line, empty_line_stop = TRUE) {
   if (is.na(line)) {
+    return(TRUE)
+  } else if (empty_line_stop && is_line_blank(line)) {
     return(TRUE)
   } else {
     return(
-      is_line_blank(line) ||
-        stringr::str_detect(line, "^DataType:") ||
+      stringr::str_detect(line, "^DataType:") ||
         stringr::str_detect(line, "^Samples") ||
         stringr::str_detect(line, "^-- CRC --")
     )
@@ -58,7 +59,7 @@ parsing_error <- function(index, lines, parser_name, reason) {
 ### Simple parsers
 
 skip_blanks <- function(index, lines) {
-  while (is_line_blank(lines[index])) {
+  while (is_line_blank(lines[index]) && (index <= length(lines))) {
     names(lines)[index] <- "BLANK"
     index <- index + 1
   }
@@ -175,15 +176,20 @@ key_value_pairs_parser <- function(index, lines) {
 
 
 # max_rows are counter with the header
-parse_as_csv <- function(name, max_rows = Inf) {
+parse_as_csv <- function(name, max_rows = Inf, ...) {
   function(index, lines) {
     end_index <- index
-    while (!is_the_end_of_csv_section(lines[end_index])) {
+    while (!is_the_end_of_csv_section(lines[end_index], ...)) {
       end_index <- end_index + 1
     }
     end_index <- min(end_index, index + max_rows)
 
-    df <- read.csv(text = lines[index:(end_index - 1)], header = TRUE, sep = global_sep)
+    df <- read.csv(
+      text = lines[index:(end_index - 1)],
+      header = TRUE,
+      sep = global_sep,
+      na.strings = c("", "NA", "None", "<NA>")
+    )
     df <- df[, colSums(is.na(df)) < nrow(df)]
 
     names(lines)[index:(end_index - 1)] <- rep(paste0("CSV: ", name), end_index - index)
@@ -195,7 +201,7 @@ parse_as_csv <- function(name, max_rows = Inf) {
 
 
 ### Combinators
-join_parsers <- function(...) {
+join_parsers <- function(..., do_skip_blanks = FALSE) {
   function(index, lines) {
     outputs <- list()
     for (parser in list(...)) {
@@ -207,6 +213,12 @@ join_parsers <- function(...) {
       outputs <- c(outputs, parsed_output)
       index <- output[[2]]
       lines <- output[[3]]
+
+      if (do_skip_blanks) {
+        sb_out <- skip_blanks(index, lines)
+        index <- sb_out[[2]]
+        lines <- sb_out[[3]]
+      }
     }
     list(outputs, index, lines)
   }
@@ -361,13 +373,6 @@ parse_assay_info <- join_parsers(
 
 ### Results block
 parse_results_block <- function(index, lines) {
-  first <- join_parsers(
-    check_and_skip("^Results"),
-    skip_blanks
-  )(index, lines)
-  index <- first[[2]]
-  lines <- first[[3]]
-
   output_dfs <- c()
   while (!is.na(lines[index]) && stringr::str_detect(lines[index], "DataType:")) {
     second <- key_value_parser("DataType:")(index, lines)
@@ -376,7 +381,7 @@ parse_results_block <- function(index, lines) {
 
     df_name <- second[[1]]$DataType
     third <- join_parsers(
-      parse_as_csv(df_name),
+      parse_as_csv(df_name, empty_line_stop = FALSE),
       skip_blanks
     )(index, lines)
     index <- third[[2]]
@@ -392,7 +397,6 @@ parse_results_block <- function(index, lines) {
 ### CRC32 block
 
 parse_crc32_value <- function(index, lines) {
-  # HACK: This should be handled better
   read_values <- vectorize_csv_line(lines[index])
   match <- stringr::str_match(read_values[1], "^CRC32:\\s*(.+?)(,|;|$)")
   if (is.na(match[1])) {
@@ -430,20 +434,17 @@ read_xponent_format <- function(path, encoding = "utf-8", sep = ",") {
 
   main_parser <- join_parsers(
     parse_program_metadata,
-    skip_blanks,
     parse_batch_metadata,
-    skip_blanks,
     make_optional(parse_calibration_metadata),
-    skip_blanks,
     make_optional(parse_assay_info),
-    skip_blanks,
     key_value_pairs_parser,
-    skip_blanks,
+    check_and_skip("^Results"),
     parse_results_block,
-    skip_blanks,
     make_optional(parse_crc32_block),
-    eof_parser
+    eof_parser,
+    do_skip_blanks = TRUE
   )
 
-  main_parser(1, lines)
+  out <- main_parser(1, lines)
+  out[[1]]
 }
