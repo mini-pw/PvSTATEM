@@ -198,10 +198,18 @@ parse_as_csv <- function(name, max_rows = Inf, remove_na_rows = FALSE, ...) {
     end_index <- min(end_index, index + max_rows)
 
     mod_lines <- lines[index:(end_index - 1)]
+    regex_check <- paste0("\"(\\d+\\(\\d+", get_global_sep(), "\\w+\\d+\\))\"")
     regex <- paste0("(\\d+\\(\\d+", get_global_sep(), "\\w+\\d+\\))")
-    replacement <- '\"$1\"'
-    mod_lines <- stringi::stri_replace_all(mod_lines, regex = regex, replacement = replacement)
-    mod_lines <- stringi::stri_replace_all(mod_lines, regex = '"+', replacement = '"')
+    mod_lines <- as.character(sapply(
+      mod_lines,
+      function(line) {
+        if (!stringr::str_detect(line, regex_check)) {
+          replacement <- '\"$1\"'
+          line <- stringi::stri_replace_all(line, regex = regex, replacement = replacement)
+        }
+        line
+      }
+    ))
 
     df <- read.csv(
       text = mod_lines,
