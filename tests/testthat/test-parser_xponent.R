@@ -103,7 +103,7 @@ test_that("Test parsing multiple key-value pairs", {
 
 test_that("Test parsing a CSV section (Simple)", {
   lines <- c("h1,h2", "r1,r2,", "")
-  out <- parse_as_csv("test")(1, lines)
+  out <- parse_as_csv("test", remove_na_rows = TRUE)(1, lines)
   test_df <- out[[1]]$test
   expect_true(!is.null(test_df))
   expect_length(test_df, 1)
@@ -112,7 +112,7 @@ test_that("Test parsing a CSV section (Simple)", {
 
 test_that("Test parsing a CSV section (with row limit)", {
   lines <- c("h1,h2", "r1,r2,", "h3,h4", "r3,r4")
-  out <- parse_as_csv("test", 2)(1, lines)
+  out <- parse_as_csv("test", max_rows = 2)(1, lines)
   test_df <- out[[1]]$test
   expect_true(!is.null(test_df))
   expect_length(test_df, 1)

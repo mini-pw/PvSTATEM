@@ -29,13 +29,14 @@ vectorize_csv_line <- function(line) {
 is_the_end_of_csv_section <- function(line, empty_line_stop = TRUE) {
   if (is.na(line)) {
     return(TRUE)
-  } else if (empty_line_stop && is_line_blank(line)) {
-    return(TRUE)
+  } else if (is_line_blank(line)) {
+    return(empty_line_stop)
   } else {
+    first_value <- vectorize_csv_line(line)[1]
     return(
-      stringr::str_detect(line, "^DataType:") ||
-        stringr::str_detect(line, "^Samples") ||
-        stringr::str_detect(line, "^-- CRC --")
+      stringr::str_detect(first_value, "^DataType:") ||
+        stringr::str_detect(first_value, "^Samples") ||
+        stringr::str_detect(first_value, "^-- CRC --")
     )
   }
 }
@@ -184,8 +185,14 @@ parse_as_csv <- function(name, max_rows = Inf, remove_na_rows = FALSE, ...) {
     }
     end_index <- min(end_index, index + max_rows)
 
+    mod_lines <- lines[index:(end_index - 1)]
+    regex <- paste0("(\\d+\\(\\d+", global_sep, "\\w+\\d+\\))")
+    replacement <- '\"$1\"'
+    mod_lines <- stringi::stri_replace_all(mod_lines, regex = regex, replacement = replacement)
+    mod_lines <- stringi::stri_replace_all(mod_lines, regex = '"+', replacement = '"')
+
     df <- read.csv(
-      text = lines[index:(end_index - 1)],
+      text = mod_lines,
       header = TRUE,
       sep = global_sep,
       na.strings = c("", "NA", "None", "<NA>")
