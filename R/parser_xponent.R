@@ -176,7 +176,7 @@ key_value_pairs_parser <- function(index, lines) {
 
 
 # max_rows are counter with the header
-parse_as_csv <- function(name, max_rows = Inf, ...) {
+parse_as_csv <- function(name, max_rows = Inf, remove_na_rows = FALSE, ...) {
   function(index, lines) {
     end_index <- index
     while (!is_the_end_of_csv_section(lines[end_index], ...)) {
@@ -191,6 +191,9 @@ parse_as_csv <- function(name, max_rows = Inf, ...) {
       na.strings = c("", "NA", "None", "<NA>")
     )
     df <- df[, colSums(is.na(df)) < nrow(df)]
+    if ((any(nrow(df)) > 0) && remove_na_rows) {
+      df <- df[rowSums(is.na(df)) < ncol(df), ]
+    }
 
     names(lines)[index:(end_index - 1)] <- rep(paste0("CSV: ", name), end_index - index)
     output_list <- list()
@@ -381,7 +384,7 @@ parse_results_block <- function(index, lines) {
 
     df_name <- second[[1]]$DataType
     third <- join_parsers(
-      parse_as_csv(df_name, empty_line_stop = FALSE),
+      parse_as_csv(df_name, empty_line_stop = FALSE, remove_na_rows = TRUE),
       skip_blanks
     )(index, lines)
     index <- third[[2]]
