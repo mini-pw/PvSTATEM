@@ -282,6 +282,8 @@ SampleLocation$parse_sample_location <- function(location_string) {
 #'
 #' @field dilution_factor A numeric value that represents the dilution factor of the sample. Used only in the case of control samples
 #'
+#' @examples
+#' sample_type <- SampleType$new("POSITIVE CONTROL", 1)
 #'
 #' @export
 SampleType <- R6Class(
@@ -523,7 +525,7 @@ SampleType$parse_sample_type <- function(sample_name,
 #' @description
 #' A class to represent the sample. It contains all the necessary information about the sample
 #' @examples
-#' # TODO
+#' sample <- Sample$new(id = 1, sample_name = "test", sample_type = SampleType$new("TEST"), sample_location = SampleLocation$new(1, 1))
 #'
 #' @export
 Sample <- R6Class(
@@ -664,7 +666,13 @@ Sample <- R6Class(
 #'
 #'
 #' @examples
-#' # TODO
+#' 
+#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
+#'
+#' plate <- read_data(plate_filepath, layout_filepath)
+#'
+#' plate$summary()
 #'
 #' @export
 Plate <- R6Class(
