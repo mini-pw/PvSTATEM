@@ -31,7 +31,8 @@ Imports:
     nplr,
     readr,
     stringi,
-    stringr
+    stringr,
+    nplr
 Suggests:
     testthat (>= 3.0.0),
     knitr
