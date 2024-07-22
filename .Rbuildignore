@@ -3,3 +3,4 @@
 ^LICENSE\.md$
 ^\.github$
 ^NEWS.md
+.pre-commit-config.yaml
