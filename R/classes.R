@@ -1,6 +1,3 @@
-require(R6)
-
-
 verify_numeric_join <- function(x, y) {
   # check if two numeric values are equal
   if (is.na(x) || is.na(y)) {
@@ -52,7 +49,7 @@ get_join_value <- function(x, y) {
 #' print(etramp)
 #'
 #' @export
-Analyte <- R6Class(
+Analyte <- R6::R6Class(
   "Analyte",
   list(
     id = NA,
@@ -171,7 +168,7 @@ Analyte <- R6Class(
 #' sample_location$location_name
 #'
 #' @export
-SampleLocation <- R6Class(
+SampleLocation <- R6::R6Class(
   "SampleLocation",
   public = list(
     col = NA,
@@ -286,7 +283,7 @@ SampleLocation$parse_sample_location <- function(location_string) {
 #' sample_type <- SampleType$new("POSITIVE CONTROL", 1)
 #'
 #' @export
-SampleType <- R6Class(
+SampleType <- R6::R6Class(
   "SampleType",
   public = list(
     sample_type = NULL,
@@ -528,7 +525,7 @@ SampleType$parse_sample_type <- function(sample_name,
 #' sample <- Sample$new(id = 1, sample_name = "test", sample_type = SampleType$new("TEST"), sample_location = SampleLocation$new(1, 1))
 #'
 #' @export
-Sample <- R6Class(
+Sample <- R6::R6Class(
   "Sample",
   list(
     #' @field id Sample id, when reading from a plate it is a id extracted from the sample position on the plate
@@ -666,7 +663,7 @@ Sample <- R6Class(
 #'
 #'
 #' @examples
-#' 
+#'
 #' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 #' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
 #'
@@ -675,7 +672,7 @@ Sample <- R6Class(
 #' plate$summary()
 #'
 #' @export
-Plate <- R6Class(
+Plate <- R6::R6Class(
   "Plate",
   public = list(
 

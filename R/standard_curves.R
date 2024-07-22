@@ -1,4 +1,4 @@
-require(ggplot2)
+
 
 #' Plot standard curves of plate or list of plates
 #'
@@ -151,7 +151,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
     }
   }
 
-  p <- ggplot(plot_data, aes(x = dilutions, y = mfi, color = plate))
+  p <- ggplot2::ggplot(plot_data, aes(x = dilutions, y = mfi, color = plate))
 
   if (plot_line) {
     p <- p + geom_line(linewidth = 1.2)
