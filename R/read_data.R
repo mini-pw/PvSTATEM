@@ -11,6 +11,8 @@
 #' @param colorize if TRUE, colorize the output
 #' @param ... additional arguments passed down
 #'
+#' @return Plate object with the the data extracted from the csv file
+#'
 #' @examples
 #' plate_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM")
 #' plate <- read_data(plate_filepath, check_plate = FALSE, verbose = FALSE)
@@ -154,12 +156,13 @@ read_layout_data <- function(layout_file_path,
   return(results_plate)
 }
 
+
 read_location_data_csv <- function(location_file_path, ...,
                                    verbose = TRUE) {
   # function reads the location data from the csv file
   verbose_cat("not tested implementation location csv file\n", verbose = verbose)
   location_data <-
-    read.csv(location_file_path,
+    utils::read.csv(location_file_path,
       header = TRUE,
       stringsAsFactors = FALSE
     )
