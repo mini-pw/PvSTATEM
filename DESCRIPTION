@@ -17,14 +17,13 @@ Imports:
     readxl,
     RColorBrewer,
     ggplot2,
-    nplr,
-    R6
+    nplr
 Suggests:
     testthat (>= 3.0.0),
     knitr
 Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)
-License: BSD_3_clause
+License: BSD_3_clause + file LICENSE
 VignetteBuilder: knitr
 biocViews: DataImport, QualityControl, Preprocessing
 URL: https://github.com/mini-pw/PvSTATEM
