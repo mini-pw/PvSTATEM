@@ -8,9 +8,8 @@ License: BSD_3_clause
 Encoding: UTF-8
 Authors@R: c(
         person("Tymoteusz", "Kwiecinski", email = "tymoteuszkwiecinski@gmail.com", role = c("aut", "cre")),
-        person("Jakub", "Grzywaczewski", email = "jakubzgrzywaczewski@gmail.com", role = "aut")),
-        person("Mateusz", "Nizwantowski", email = "mateusznizwantowski@gmail.com", role = c("aut")
-        )
+        person("Jakub", "Grzywaczewski", email = "jakubzgrzywaczewski@gmail.com", role = "aut"),
+        person("Mateusz", "Nizwantowski", email = "mateusznizwantowski@gmail.com", role = c("aut"))
 LazyData: true
 RoxygenNote: 7.3.2
 Imports:
