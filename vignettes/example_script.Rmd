@@ -25,8 +25,8 @@ knitr::opts_chunk$set(
 The basic functionality of the `PvSTATEM` package is reading raw MBA data. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. Firsly, let us load the dataset as the `plate` object.
 
 ```{r}
-library(PvSTATEM)
-library(ggplot2)
+require(PvSTATEM)
+require(ggplot2)
 
 plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 

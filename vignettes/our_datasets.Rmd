@@ -4,7 +4,7 @@ author: "Tymoteusz Kwieciński"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_document
 vignette: >
-  %\VignetteIndexEntry{Simple example of basic PvSTATEM package pre-release version functionalities}
+  %\VignetteIndexEntry{Our datasets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -31,6 +31,8 @@ The simples way of accessing the files is to simply download them from our GitHu
 Another way, is to source the files using the `system.file` function. The function returns the path to the file, which can be used to read the data. The function has the following syntax:
 
 ```{r}
+require(PvSTATEM)
+
 dataset_name <- "CovidOISExPONTENT.csv"
 
 dataset_filepath <- system.file("extdata", dataset_name, package = "PvSTATEM", mustWork = TRUE)
@@ -38,7 +40,6 @@ dataset_filepath <- system.file("extdata", dataset_name, package = "PvSTATEM", m
 The variable `dataset_filepath` contains now the path to the specified dataset on you computer. Since we know the filepath to the desired dataset, we can execute the `read_data` function to read the data. The function has the following syntax:
 
 ```{r}
-library(PvSTATEM)
 
 
 plate <- read_data(dataset_filepath)

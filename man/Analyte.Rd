@@ -4,7 +4,8 @@
 \alias{Analyte}
 \title{Analyte Object}
 \description{
-Analyte class is an object that gathers information about one specific Analyte on the Luminex plate
+Analyte class is an object that gathers information about one specific
+Analyte on the Luminex plate
 }
 \examples{
 etramp <- Analyte$new(id = 73, analyte_name = "Etramp5_ag1", bead_count = 50)
@@ -14,7 +15,8 @@ print(etramp)
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{id}}{A numeric value that represents the unique identifier of the analyte}
+\item{\code{id}}{A numeric value that represents the unique identifier
+of the analyte}
 
 \item{\code{analyte_name}}{A character value that represents the name of the analyte}
 
@@ -86,7 +88,8 @@ Prints the information about the analyte
 \subsection{Method \code{join()}}{
 Joins the data of two analytes
 Performs checks to ensure that the analytes can be joined
-If the analytes can be joined, the bead_count, analysis_type and units are updated in the current analyte object
+If the analytes can be joined, the bead_count, analysis_type and units
+are updated in the current analyte object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Analyte$join(new_analyte)}\if{html}{\out{</div>}}
 }
@@ -95,9 +98,12 @@ If the analytes can be joined, the bead_count, analysis_type and units are updat
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{new_analyte}}{(\code{Analyte})\cr
-The analyte object to be joined with the current analyte object - this is rather a technical inner functionand should rarely be used by the user}
+The analyte object to be joined with the current analyte object}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The updated analyte object
 }
 }
 \if{html}{\out{<hr>}}

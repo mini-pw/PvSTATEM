@@ -5,7 +5,8 @@
 \title{SampleLocation Object}
 \description{
 SampleLocation defines a location of a sample on the Luminex plate
-The location is defined by the row and column number and explicitly states the location of the sample
+The location is defined by the row and column number
+and explicitly states the location of the sample
 }
 \examples{
 
@@ -29,9 +30,11 @@ sample_location$location_name
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{row_letter}}{row where sample is located as a letter. For instance \code{1} -> \code{A}}
+\item{\code{row_letter}}{row where sample is located as a letter.
+For instance \code{1} -> \code{A}}
 
-\item{\code{location_name}}{Lcation of the sample formatted in readable way - \verb{(row_letter, column)}}
+\item{\code{location_name}}{Lcation of the sample formatted
+in readable way -  \verb{(row_letter, column)}}
 }
 \if{html}{\out{</div>}}
 }
@@ -81,11 +84,25 @@ Prints the information about the sample location
 \subsection{Method \code{join()}}{
 Joins the data of two sample locations
 Performs checks to ensure that the sample locations can be joined
-Essentially checks if the two sample locations are identical or at least one of them is empty
+Essentially checks if the two sample locations are identical or
+at least one of them is empty
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SampleLocation$join(new_location)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{new_location}}{(\code{SampleLocation})\cr
+The sample location object to be joined with the current sample location
+object}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The updated sample location object - an invisible object,
+the outputs may be stacked together
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SampleLocation-clone"></a>}}

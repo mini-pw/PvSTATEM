@@ -26,6 +26,9 @@ read_data(
 
 \item{...}{additional arguments passed down}
 }
+\value{
+Plate object with the the data extracted from the csv file
+}
 \description{
 file structure based on the https://genome.med.harvard.edu/documents/luminex/IS2.3_SW_110_eng_us.pdf page 97
 and Kenya screening csv files

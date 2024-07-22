@@ -1,5 +1,3 @@
-library(ggplot2)
-
 #' Plot standard curves of plate or list of plates
 #'
 #'
@@ -56,7 +54,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 
   standard_curve_values_list <- list()
 
-  for (plate_num in 1:length(plates)) {
+  for (plate_num in seq_len(length(plates))) {
     plate <- plates[[plate_num]]
 
     standard_curves <- plate$standard_curve
@@ -117,9 +115,9 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
   y_log_scale <- "MFI" %in% log_scale || "all" %in% log_scale
 
   plot_data <- data.frame()
+  mfi <- NULL
 
-
-  for (i in 1:length(plates)) {
+  for (i in seq_len(length(plates))) {
     temp_data <- data.frame(
       dilutions = log_if_needed_dilutions(dilutions_numeric),
       mfi = log_if_needed_mfi(standard_curve_values_list[[i]]),
@@ -151,7 +149,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
     }
   }
 
-  p <- ggplot(plot_data, aes(x = dilutions, y = mfi, color = plate))
+  p <- ggplot2::ggplot(plot_data, aes(x = dilutions, y = mfi, color = plate))
 
   if (plot_line) {
     p <- p + geom_line(linewidth = 1.2)
@@ -199,12 +197,19 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 #' - $b$ is the slope of the curve at the inflection point,
 #' - $x_{mid}$ is x-coordinate at the inflection point,
 #' - $s$ is the assymetric coefficient.
-
+#'
 #' This equation is refered as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
-
-#' By default, `nplr` model transforms the x values using the log10 function.
+#'
+#' By default, `nplr` model transforms the x values using the `log10` function.
 #'
 #' @import nplr
+#'
+#' @examples
+#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
+#'
+#' plate <- read_data(plate_filepath, layout_filepath)
+#' model <- create_standard_curve_model_antibody(plate, antibody_name = "RBD_wuhan_IPP")
 #'
 #' @export
 create_standard_curve_model_antibody <- function(plate, antibody_name, data_type = "Median", npars = 5, verbose = TRUE) {
@@ -232,7 +237,7 @@ create_standard_curve_model_antibody <- function(plate, antibody_name, data_type
       color_codes$red_end,
       ")",
       "\n Using less than 5 samples to fit logistic model. For now using the basic nplr method to fit the logistic model - should be modified in the future",
-      verbose = private$verbose
+      verbose = verbose
     )
     npars <- min(npars, length(standard_curves))
     model <- nplr::nplr(x = dilutions_numeric, y = curve_values, npars = npars, silent = !verbose)
@@ -251,6 +256,15 @@ create_standard_curve_model_antibody <- function(plate, antibody_name, data_type
 #'
 #' @description
 #' Function predicts the dilutions of the samples, based on the MFI values and the fitted model.
+#' @examples
+#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
+#'
+#' plate <- read_data(plate_filepath, layout_filepath)
+#' model <- create_standard_curve_model_antibody(plate, antibody_name = "RBD_wuhan_IPP")
+#'
+#' sample_concentrations <- predict_dilutions(plate, antibody_name = "RBD_wuhan_IPP", model)
+#' head(sample_concentrations)
 #'
 #' @export
 predict_dilutions <- function(plate, antibody_name, model, data_type = "Median", verbose = TRUE) {
@@ -259,9 +273,9 @@ predict_dilutions <- function(plate, antibody_name, model, data_type = "Median",
 
   sample_concentrations$Sample <- plate$sample_names
 
-  sample_concentrations$Location <- sapply(1:plate$number_of_samples, function(i) plate$samples[[i]]$sample_location$location_name)
+  sample_concentrations$Location <- sapply(seq_len(plate$number_of_samples), function(i) plate$samples[[i]]$sample_location$location_name)
 
-  sample_concentrations$MFI <- sapply(1:plate$number_of_samples, function(i) plate$samples[[i]]$data[data_type, antibody_name])
+  sample_concentrations$MFI <- sapply(seq_len(plate$number_of_samples), function(i) plate$samples[[i]]$data[data_type, antibody_name])
 
 
   if (inherits(model, "nplr")) {
@@ -325,6 +339,7 @@ plot_standard_curve_antibody_with_model <- function(plate, antibody_name, model,
 
 
   estimates <- nplr::getEstimates(model, y, B = 1e4, conf.level = .95)
+  x <- estimates$x
 
 
   log_if_needed_mfi <- function(x) {

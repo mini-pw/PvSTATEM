@@ -6,6 +6,10 @@
 \description{
 SampleType defines the type of the sample and the dilution factor
 }
+\examples{
+sample_type <- SampleType$new("POSITIVE CONTROL", 1)
+
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -19,14 +23,18 @@ The possible sample types are:
 \item (\code{"TEST"})\cr - the actual sample used for testing
 }}
 
-\item{\code{dilution_factor}}{A numeric value that represents the dilution factor of the sample. Used only in the case of control samples}
+\item{\code{dilution_factor}}{A numeric value that represents
+the dilution factor of the sample. Used only in the case of control samples}
 }
 \if{html}{\out{</div>}}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{character_dilution_factor}}{the dilution factor in the format \code{1/x} - useful for printing}
+\item{\code{character_dilution_factor}}{the dilution factor in the format \code{1/x}
+\itemize{
+\item useful for printing
+}}
 }
 \if{html}{\out{</div>}}
 }
@@ -53,12 +61,15 @@ Creates a new instance of the SampleType class
 \describe{
 \item{\code{sample_type}}{(\code{character(1)})\cr
 A character value that represents the type of the sample
-Possible values are: \code{"BLANK"}, \code{"POSITIVE CONTROL"}, \code{"NEGATIVE CONTROL"}, \code{"TEST"}.}
+Possible values are: \code{"BLANK"}, \code{"POSITIVE CONTROL"}, \code{"STANDARD CURVE"}
+\code{"NEGATIVE CONTROL"}, \code{"TEST"}.}
 
 \item{\code{dilution_factor}}{(\code{numeric(1)})\cr
-A numeric value that represents the dilution factor of the sample. Used only in the case of control samples}
+A numeric value that represents the dilution factor of the sample.
+Used only in the case of control samples}
 
-\item{\code{Whether}}{to validate the object for the dilution factor. Used in the reading scripts to dynamically assign values. Default to \code{TRUE}}
+\item{\code{validate_dilution}}{Whether to validate the object for the dilution factor.
+Used in the reading scripts to dynamically assign values. Default to \code{TRUE}}
 }
 \if{html}{\out{</div>}}
 }
@@ -79,11 +90,22 @@ Prints the sample type and the dilution factor
 \subsection{Method \code{join()}}{
 Joins the data of two sample types
 Performs checks to ensure that the sample types can be joined
-Essentially checks if the two sample types are identical or at least one of them is empty
+Essentially checks if the two sample types are identical or
+at least one of them is empty
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SampleType$join(new_sample_type)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{new_sample_type}}{(\code{SampleType})\cr}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+returns the updated sample type object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SampleType-clone"></a>}}
