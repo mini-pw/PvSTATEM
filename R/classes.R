@@ -381,7 +381,7 @@ SampleType$valid_sample_types <-
   )
 #'
 #' @description
-#' Validates the sample type using five possible values: `"BLANK"`, `"POSITIVE CONTROL"`, `"NEGATIVE CONTROL"`, `"TEST"`.
+#' Validates the sample type using five possible values: `"BLANK"`, `"STANDARD CURVE"` `"POSITIVE CONTROL"`, `"NEGATIVE CONTROL"`, `"TEST"`.
 #'
 SampleType$validate_sample_type <- function(sample_type) {
   if (!(sample_type %in% SampleType$valid_sample_types)) {
