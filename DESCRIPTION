@@ -15,13 +15,16 @@ Authors@R: c(
 LazyData: true
 RoxygenNote: 7.3.2
 Imports:
+    dplyr,
+    R6,
     tools,
+    qpdf,
     readxl,
     RColorBrewer,
+    knitr,
+    rmarkdown,
     ggplot2,
-    nplr,
-    R6,
-    dplyr
+    nplr
 Suggests:
     testthat (>= 3.0.0),
     knitr
