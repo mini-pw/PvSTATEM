@@ -3,16 +3,22 @@
 \name{Plate}
 \alias{Plate}
 \title{Plate}
-\value{
-sample object of given sample name or id
-
-analyte id of given name
-}
 \description{
-A class to represent the luminex plate. It contains information about the samples and analytes that were examined on the plate as well as some additional metadata and batch info
+A class to represent the luminex plate. It contains information about
+the samples and analytes that were examined on the plate as well as
+some additional metadata and batch info
 }
 \examples{
-# TODO
+
+plate_filepath <- system.file("extdata",
+"CovidOISExPONTENT_CO.csv", package = "PvSTATEM",
+mustWork = TRUE) # get the filepath of the csv dataset
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
+package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
+
+plate <- read_data(plate_filepath, layout_filepath)
+
+plate$summary()
 
 }
 \section{Public fields}{
@@ -22,9 +28,11 @@ A class to represent the luminex plate. It contains information about the sample
 
 \item{\code{samples}}{list of all samples examined on a plate}
 
-\item{\code{batch_info}}{a raw list containing all the metadata about the plate read from the Luminex file}
+\item{\code{batch_info}}{a raw list containing all the metadata about
+the plate read from the Luminex file}
 
-\item{\code{calibration_info}}{a list containing calibration logs read from Luminex file}
+\item{\code{calibration_info}}{a list containing calibration logs read from
+the Luminex file}
 
 \item{\code{audit_logs}}{a list containing audit logs read from Luminex file}
 
@@ -49,7 +57,9 @@ A class to represent the luminex plate. It contains information about the sample
 
 \item{\code{min_events_per_bead}}{minimal number of events that is valid for one bead - sample and analyte}
 
-\item{\code{check_if_blanks_already_adjusted}}{flag that specifies if the blanks were already adjusted and its MFI values subtracted from remaining samples}
+\item{\code{check_if_blanks_already_adjusted}}{flag that specifies
+if the blanks were already adjusted and its MFI values subtracted from
+remaining samples}
 
 \item{\code{warnings}}{list of lists of all warnings from all samples}
 
@@ -103,7 +113,8 @@ list of all analytes measured during an examination}
 list of all samples examined on a plate}
 
 \item{\code{batch_info}}{(\code{list}) \cr
-a raw list containing all the metadata about the plate read from the Luminex file}
+a raw list containing all the metadata about the plate read from
+the Luminex file}
 
 \item{\code{calibration_info}}{(\code{list}) \cr
 a list containing calibration logs read from Luminex file}
@@ -136,7 +147,9 @@ batch name, and sample types
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{include_names}}{If \code{include_names} parameter is \code{TRUE}, apart from count of control samples, provides also their names.By default \code{FALSE}}
+\item{\code{include_names}}{If \code{include_names} parameter is \code{TRUE}, a
+part from count of control samples, provides also their names.
+By default \code{FALSE}}
 }
 \if{html}{\out{</div>}}
 }
@@ -147,7 +160,8 @@ batch name, and sample types
 \subsection{Method \code{add_results_block()}}{
 function adds block of information to the current plate
 
-the analysis type should be added after the analysis, otherwise there is no enough information about samples
+the analysis type should be added after the analysis,
+otherwise there is no enough information about samples
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$add_results_block(data_type, parsed_block)}\if{html}{\out{</div>}}
 }
@@ -189,6 +203,9 @@ function performs validity check - verifies which samples and analytes saved in 
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+returns \code{TRUE} if there are samples with bead count lower than \code{min_events_per_bead}, otherwise \code{FALSE}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-get_sample"></a>}}
@@ -204,6 +221,9 @@ function performs validity check - verifies which samples and analytes saved in 
 \item{\code{sample}}{sample name or its id}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+sample object of given sample name or id
 }
 }
 \if{html}{\out{<hr>}}
@@ -235,6 +255,9 @@ otherwise returns all samples except for the specified \code{sample_type}}
 \if{html}{\out{<div class="r">}}\preformatted{Plate$get_analyte_id(analyte_name)}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+analyte id of given name
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-get"></a>}}
@@ -286,7 +309,8 @@ In short it substracts the values from data in all samples, except from Blanks. 
 \if{html}{\out{<a id="method-Plate-check_MFI_after_adjustment"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-check_MFI_after_adjustment}{}}}
 \subsection{Method \code{check_MFI_after_adjustment()}}{
-Function verifies if there are any MFI values below zero after blank removal
+Function verifies if there are any MFI values below zero
+after blank removal
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$check_MFI_after_adjustment()}\if{html}{\out{</div>}}
 }

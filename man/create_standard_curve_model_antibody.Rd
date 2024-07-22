@@ -39,7 +39,17 @@ where:
 \item $b$ is the slope of the curve at the inflection point,
 \item $x_{mid}$ is x-coordinate at the inflection point,
 \item $s$ is the assymetric coefficient.
-This equation is refered as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
-By default, \code{nplr} model transforms the x values using the log10 function.
 }
+
+This equation is refered as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
+
+By default, \code{nplr} model transforms the x values using the \code{log10} function.
+}
+\examples{
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
+
+plate <- read_data(plate_filepath, layout_filepath)
+model <- create_standard_curve_model_antibody(plate, antibody_name = "RBD_wuhan_IPP")
+
 }
