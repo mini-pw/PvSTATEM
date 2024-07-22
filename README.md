@@ -1,6 +1,11 @@
 # PvSTATEM - an R package for automated analysis of serological data
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 ### 🔴 *Pre-release* version
+
 
 
 ## Overview

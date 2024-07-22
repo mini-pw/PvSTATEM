@@ -9,8 +9,10 @@ Description: The package speeds up the process of loading raw data from MBA
     within the project of the same name - `PvSTATEM` - which is an international 
     project which aims into malaria elimination.
 Version: 0.0.2
-Authors@R: person("Tymoteusz", "Kwiecinski", email = "tymoteuszkwiecinski@gmail.com", role = c("aut", "cre"))
-LazyData: false
+Authors@R: c(
+    person("Tymoteusz", "Kwiecinski", email = "tymoteuszkwiecinski@gmail.com", role = c("aut", "cre")),
+    person("Jakub", "Grzywaczewski", email = "jakubzgrzywaczewski@gmail.com", role = "aut"))
+LazyData: true
 RoxygenNote: 7.3.2
 Imports:
     tools,

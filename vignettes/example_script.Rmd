@@ -48,7 +48,9 @@ plate$summary(include_names = TRUE) # more detailed summary - names of the types
 plate$get_sample(1)
 plate$get_sample_by_type("STANDARD CURVE")[[1]]
 
+cat("Sample names:")
 plate$sample_names
+cat("Analyte names:")
 plate$analyte_names
 ```
 
