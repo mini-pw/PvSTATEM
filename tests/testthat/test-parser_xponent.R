@@ -5,6 +5,7 @@ library(testthat)
 ### Tests for is blank line
 
 test_that("Test checking if a line is blank", {
+  expect_true(is_line_blank(NA))
   expect_true(is_line_blank(""))
   expect_true(is_line_blank(",,"))
   expect_true(is_line_blank('""'))

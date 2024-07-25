@@ -20,6 +20,9 @@ set_global_sep <- function(value) {
 ### Utility functions
 
 is_line_blank <- function(line) {
+  if (!is.scalar(line)) {
+    stop("Line must be a scalar character value")
+  }
   if (is.na(line)) {
     return(TRUE)
   }
