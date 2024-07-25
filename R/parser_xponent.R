@@ -187,6 +187,47 @@ key_value_pairs_parser <- function(index, lines) {
   list(as.list(values), index + 1, lines)
 }
 
+read_until <- function(stop_cond, name = "Header") {
+  function(index, lines) {
+    current_index <- index
+
+    while (current_index <= length(lines)) {
+      if (!is_line_blank(lines[current_index])) {
+        read_values <- vectorize_csv_line(lines[current_index])
+        if (stop_cond(read_values[1])) {
+          break
+        }
+      }
+      current_index <- current_index + 1
+    }
+    prev_index <- max(index, current_index - 1)
+    names(lines)[index:prev_index] <- rep(name, prev_index - index + 1)
+
+
+    output_list <- list()
+    output_list[[name]] <- paste(lines[index:prev_index], collapse = "\n")
+
+    list(output_list, current_index, lines)
+  }
+}
+
+wrap_parser_output <- function(parser, name) {
+  function(index, lines) {
+    output <- parser(index, lines)
+    output_list <- list()
+    output_list[[name]] <- output[[1]]
+    list(output_list, output[[2]], output[[3]])
+  }
+}
+
+rename_parser_output <- function(parser, names) {
+  function(index, lines) {
+    output <- parser(index, lines)
+    names(output[[1]]) <- names
+    output
+  }
+}
+
 
 # max_rows are counter with the header
 parse_as_csv <- function(name, max_rows = Inf, remove_na_rows = FALSE, ...) {
@@ -451,7 +492,7 @@ parse_crc32_block <- function(index, lines) {
 
 ### Main parser
 
-read_xponent_format <- function(path, encoding = "utf-8", sep = ",") {
+read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", sep = ",") {
   lines <- readr::read_lines(
     path,
     locale = readr::locale(encoding = encoding),
@@ -462,12 +503,28 @@ read_xponent_format <- function(path, encoding = "utf-8", sep = ",") {
 
   names(lines) <- rep(NA, length(lines))
 
+  if (exact_parse) {
+    header_parser <- wrap_parser_output(
+      join_parsers(
+        parse_batch_metadata,
+        make_optional(parse_calibration_metadata),
+        make_optional(parse_assay_info),
+        do_skip_blanks = TRUE
+      ),
+      "Header"
+    )
+  } else {
+    header_parser <- wrap_parser_output(
+      read_until(function(value) stringr::str_detect(value, "^Samples")),
+      "Header"
+    )
+  }
+
+
   main_parser <- join_parsers(
     parse_program_metadata,
-    parse_batch_metadata,
-    make_optional(parse_calibration_metadata),
-    make_optional(parse_assay_info),
-    key_value_pairs_parser,
+    header_parser,
+    key_value_pairs_parser, # Samples
     check_and_skip("^Results"),
     parse_results_block,
     make_optional(parse_crc32_block),
