@@ -3,20 +3,6 @@
 #
 
 
-### Settings
-
-.global_env <- new.env(parent = emptyenv())
-.global_env$global_sep <- ","
-
-get_global_sep <- function() {
-  return(.global_env$global_sep)
-}
-
-set_global_sep <- function(value) {
-  .global_env$global_sep <- value
-}
-
-
 ### Utility functions
 
 is_line_blank <- function(line) {
@@ -29,31 +15,16 @@ is_line_blank <- function(line) {
   stringr::str_detect(line, "^[;,\"]*$")
 }
 
-vectorize_csv_line <- function(line) {
+vectorize_csv_line <- function(line, separator) {
   line_stripped <- stringr::str_remove(line, "[\\s,;]*$")
   as.character(read.csv(
     text = line_stripped,
     header = FALSE,
-    sep = get_global_sep(),
+    sep = separator,
     quote = '\"',
     allowEscapes = TRUE,
     stringsAsFactors = FALSE
   ))
-}
-
-is_the_end_of_csv_section <- function(line, empty_line_stop = TRUE) {
-  if (is.na(line)) {
-    return(TRUE)
-  } else if (is_line_blank(line)) {
-    return(empty_line_stop)
-  } else {
-    first_value <- vectorize_csv_line(line)[1]
-    return(
-      stringr::str_detect(first_value, "^DataType:") ||
-        stringr::str_detect(first_value, "^Samples") ||
-        stringr::str_detect(first_value, "^-- CRC --")
-    )
-  }
 }
 
 parsing_error <- function(index, lines, parser_name, reason) {
@@ -74,7 +45,7 @@ parsing_error <- function(index, lines, parser_name, reason) {
 
 ### Simple parsers
 
-skip_blanks <- function(index, lines) {
+skip_blanks_parser <- function(index, lines) {
   while (is_line_blank(lines[index]) && (index <= length(lines))) {
     names(lines)[index] <- "BLANK"
     index <- index + 1
@@ -95,186 +66,8 @@ eof_parser <- function(index, lines) {
 }
 
 
-### Generic parsers
-
-check_and_skip <- function(regex) {
-  function(index, lines) {
-    read_values <- vectorize_csv_line(lines[index])
-    match <- stringr::str_match(read_values[1], regex)
-    if (is.na(match[1])) {
-      stop(parsing_error(
-        index, lines, "Check line content",
-        paste0("Could not match the regex: `", regex, "`")
-      ))
-    }
-    names(lines)[index] <- paste0("CH: ", regex)
-    list(NULL, index + 1, lines)
-  }
-}
-
-key_value_parser <- function(key_regex, check_length = TRUE) {
-  function(index, lines) {
-    read_values <- vectorize_csv_line(lines[index])
-    if (check_length && length(read_values) > 2) {
-      stop(parsing_error(
-        index, lines, "Key,Value parser",
-        paste0("Expected at most 2 values at line. Error occured while trying to parse key: ", key_regex)
-      ))
-    }
-    if (!stringr::str_detect(read_values[1], key_regex)) {
-      stop(parsing_error(
-        index, lines, "Key,Value parser",
-        paste0("No key matching: `", key_regex, "` found.")
-      ))
-    }
-    names(lines)[index] <- paste0("KV: ", read_values[1])
-    output_list <- list()
-    output_list[read_values[1]] <- read_values[2]
-    list(output_list, index + 1, lines)
-  }
-}
-
-named_key_value_pairs_parser <- function(line_key) {
-  function(index, lines) {
-    read_values <- vectorize_csv_line(lines[index])
-    if (!stringr::str_detect(read_values[1], line_key)) {
-      stop(parsing_error(
-        index, lines, "Named,(Key,Value)* pairs parser",
-        paste0("No key: ", line_key, " found")
-      ))
-    }
-    if (length(read_values) < 3) {
-      stop(parsing_error(
-        index, lines, "Named,(Key,Value)* pairs parser",
-        paste0("Expected at least 3 values")
-      ))
-    }
-    keys_and_values <- read_values[-1]
-    keys <- keys_and_values[seq(1, length(keys_and_values), 2)]
-    values <- keys_and_values[seq(2, length(keys_and_values), 2)]
-    if (length(keys) != length(values)) {
-      stop(parsing_error(
-        index, lines, "Named,(Key,Value)* pairs parser",
-        paste0("Number of keys and values do not match")
-      ))
-    }
-    names(values) <- keys
-
-    names(lines)[index] <- paste0("NKVs: ", read_values[1])
-    output_list <- list()
-    output_list[[line_key]] <- as.list(values)
-    list(output_list, index + 1, lines)
-  }
-}
-
-key_value_pairs_parser <- function(index, lines) {
-  read_values <- vectorize_csv_line(lines[index])
-  if (length(read_values) < 2) {
-    stop(parsing_error(
-      index, lines, "(Key,Value)* pairs parser",
-      "Expected at least 2 values. Error occurred while trying to parse key-value pairs."
-    ))
-  }
-  keys <- read_values[seq(1, length(read_values), 2)]
-  values <- read_values[seq(2, length(read_values), 2)]
-  values <- c(values, rep(NA, length(keys) - length(values)))
-  if (length(keys) != length(values)) {
-    stop(parsing_error(
-      index, lines, "(Key,Value)* pairs parser",
-      "Number of keys and values do not match."
-    ))
-  }
-
-  names(lines)[index] <- paste0("KVs: ", paste(keys, collapse = ", "))
-  names(values) <- keys
-  list(as.list(values), index + 1, lines)
-}
-
-read_until <- function(stop_cond, name = "Header") {
-  function(index, lines) {
-    current_index <- index
-
-    while (current_index <= length(lines)) {
-      if (!is_line_blank(lines[current_index])) {
-        read_values <- vectorize_csv_line(lines[current_index])
-        if (stop_cond(read_values[1])) {
-          break
-        }
-      }
-      current_index <- current_index + 1
-    }
-    prev_index <- max(index, current_index - 1)
-    names(lines)[index:prev_index] <- rep(name, prev_index - index + 1)
-
-
-    output_list <- list()
-    output_list[[name]] <- paste(lines[index:prev_index], collapse = "\n")
-
-    list(output_list, current_index, lines)
-  }
-}
-
-wrap_parser_output <- function(parser, name) {
-  function(index, lines) {
-    output <- parser(index, lines)
-    output_list <- list()
-    output_list[[name]] <- output[[1]]
-    list(output_list, output[[2]], output[[3]])
-  }
-}
-
-rename_parser_output <- function(parser, names) {
-  function(index, lines) {
-    output <- parser(index, lines)
-    names(output[[1]]) <- names
-    output
-  }
-}
-
-
-# max_rows are counter with the header
-parse_as_csv <- function(name, max_rows = Inf, remove_na_rows = FALSE, ...) {
-  function(index, lines) {
-    end_index <- index
-    while (!is_the_end_of_csv_section(lines[end_index], ...)) {
-      end_index <- end_index + 1
-    }
-    end_index <- min(end_index, index + max_rows)
-
-    mod_lines <- lines[index:(end_index - 1)]
-    regex_check <- paste0("\"(\\d+\\(\\d+", get_global_sep(), "\\w+\\d+\\))\"")
-    regex <- paste0("(\\d+\\(\\d+", get_global_sep(), "\\w+\\d+\\))")
-    mod_lines <- as.character(sapply(
-      mod_lines,
-      function(line) {
-        if (!stringr::str_detect(line, regex_check)) {
-          replacement <- '\"$1\"'
-          line <- stringi::stri_replace_all(line, regex = regex, replacement = replacement)
-        }
-        line
-      }
-    ))
-
-    df <- read.csv(
-      text = mod_lines,
-      header = TRUE,
-      sep = get_global_sep(),
-      na.strings = c("", "NA", "None", "<NA>")
-    )
-    df <- df[, colSums(is.na(df)) < nrow(df)]
-    if ((any(nrow(df)) > 0) && remove_na_rows) {
-      df <- df[rowSums(is.na(df)) < ncol(df), ]
-    }
-
-    names(lines)[index:(end_index - 1)] <- rep(paste0("CSV: ", name), end_index - index)
-    output_list <- list()
-    output_list[[name]] <- df
-    list(output_list, end_index, lines)
-  }
-}
-
-
 ### Combinators
+
 join_parsers <- function(..., do_skip_blanks = FALSE) {
   function(index, lines) {
     outputs <- list()
@@ -289,7 +82,7 @@ join_parsers <- function(..., do_skip_blanks = FALSE) {
       lines <- output[[3]]
 
       if (do_skip_blanks) {
-        sb_out <- skip_blanks(index, lines)
+        sb_out <- skip_blanks_parser(index, lines)
         index <- sb_out[[2]]
         lines <- sb_out[[3]]
       }
@@ -339,157 +132,367 @@ repeat_parser <- function(parser) {
 }
 
 
+### Output modifies
+
+wrap_parser_output <- function(parser, name) {
+  function(index, lines) {
+    output <- parser(index, lines)
+    output_list <- list()
+    output_list[[name]] <- output[[1]]
+    list(output_list, output[[2]], output[[3]])
+  }
+}
+
+rename_parser_output <- function(parser, names) {
+  function(index, lines) {
+    output <- parser(index, lines)
+    names(output[[1]]) <- names
+    output
+  }
+}
+
+
+### CSV parsers
+
+check_key_parser <- function(regex, separator) {
+  function(index, lines) {
+    read_values <- vectorize_csv_line(lines[index], separator)
+    match <- stringr::str_match(read_values[1], regex)
+    if (is.na(match[1])) {
+      stop(parsing_error(
+        index, lines, "Check line content",
+        paste0("Could not match the regex: `", regex, "`")
+      ))
+    }
+    names(lines)[index] <- paste0("CH: ", regex)
+    list(NULL, index + 1, lines)
+  }
+}
+
+key_value_parser <- function(key_regex, separator, check_length = TRUE) {
+  function(index, lines) {
+    read_values <- vectorize_csv_line(lines[index], separator)
+    if (check_length && length(read_values) > 2) {
+      stop(parsing_error(
+        index, lines, "Key,Value parser",
+        paste0("Expected at most 2 values at line. Error occured while trying to parse key: ", key_regex)
+      ))
+    }
+    if (!stringr::str_detect(read_values[1], key_regex)) {
+      stop(parsing_error(
+        index, lines, "Key,Value parser",
+        paste0("No key matching: `", key_regex, "` found.")
+      ))
+    }
+    names(lines)[index] <- paste0("KV: ", read_values[1])
+    output_list <- list()
+    output_list[read_values[1]] <- read_values[2]
+    list(output_list, index + 1, lines)
+  }
+}
+
+named_key_value_pairs_parser <- function(line_key, separator) {
+  function(index, lines) {
+    read_values <- vectorize_csv_line(lines[index], separator)
+    if (!stringr::str_detect(read_values[1], line_key)) {
+      stop(parsing_error(
+        index, lines, "Named,(Key,Value)* pairs parser",
+        paste0("No key: ", line_key, " found")
+      ))
+    }
+    if (length(read_values) < 3) {
+      stop(parsing_error(
+        index, lines, "Named,(Key,Value)* pairs parser",
+        paste0("Expected at least 3 values")
+      ))
+    }
+    keys_and_values <- read_values[-1]
+    keys <- keys_and_values[seq(1, length(keys_and_values), 2)]
+    values <- keys_and_values[seq(2, length(keys_and_values), 2)]
+    if (length(keys) != length(values)) {
+      stop(parsing_error(
+        index, lines, "Named,(Key,Value)* pairs parser",
+        paste0("Number of keys and values do not match")
+      ))
+    }
+    names(values) <- keys
+
+    names(lines)[index] <- paste0("NKVs: ", read_values[1])
+    output_list <- list()
+    output_list[[line_key]] <- as.list(values)
+    list(output_list, index + 1, lines)
+  }
+}
+
+key_value_pairs_parser <- function(separator) {
+  function(index, lines) {
+    read_values <- vectorize_csv_line(lines[index], separator)
+    if (length(read_values) < 2) {
+      stop(parsing_error(
+        index, lines, "(Key,Value)* pairs parser",
+        "Expected at least 2 values. Error occurred while trying to parse key-value pairs."
+      ))
+    }
+    keys <- read_values[seq(1, length(read_values), 2)]
+    values <- read_values[seq(2, length(read_values), 2)]
+    values <- c(values, rep(NA, length(keys) - length(values)))
+    if (length(keys) != length(values)) {
+      stop(parsing_error(
+        index, lines, "(Key,Value)* pairs parser",
+        "Number of keys and values do not match."
+      ))
+    }
+
+    names(lines)[index] <- paste0("KVs: ", paste(keys, collapse = ", "))
+    names(values) <- keys
+    list(as.list(values), index + 1, lines)
+  }
+}
+
+read_until_parser <- function(stop_cond, separator, name = "Header") {
+  function(index, lines) {
+    current_index <- index
+
+    while (current_index <= length(lines)) {
+      if (!is_line_blank(lines[current_index])) {
+        read_values <- vectorize_csv_line(lines[current_index], separator)
+        if (stop_cond(read_values[1])) {
+          break
+        }
+      }
+      current_index <- current_index + 1
+    }
+    prev_index <- max(index, current_index - 1)
+    names(lines)[index:prev_index] <- rep(name, prev_index - index + 1)
+
+
+    output_list <- list()
+    output_list[[name]] <- paste(lines[index:prev_index], collapse = "\n")
+
+    list(output_list, current_index, lines)
+  }
+}
+
+is_the_end_of_csv_section <- function(line, separator, empty_line_stop = TRUE) {
+  if (is.na(line)) {
+    return(TRUE)
+  } else if (is_line_blank(line)) {
+    return(empty_line_stop)
+  } else {
+    first_value <- vectorize_csv_line(line, separator)[1]
+    return(
+      stringr::str_detect(first_value, "^DataType:") ||
+        stringr::str_detect(first_value, "^Samples") ||
+        stringr::str_detect(first_value, "^-- CRC --")
+    )
+  }
+}
+
+
+csv_table_parser <- function(name, separator, max_rows = Inf, remove_na_rows = FALSE, ...) {
+  function(index, lines) {
+    end_index <- index
+    while (!is_the_end_of_csv_section(lines[end_index], separator, ...)) {
+      end_index <- end_index + 1
+    }
+    end_index <- min(end_index, index + max_rows)
+
+    mod_lines <- lines[index:(end_index - 1)]
+    regex_check <- paste0("\"(\\d+\\(\\d+", separator, "\\w+\\d+\\))\"")
+    regex <- paste0("(\\d+\\(\\d+", separator, "\\w+\\d+\\))")
+    mod_lines <- as.character(sapply(
+      mod_lines,
+      function(line) {
+        if (!stringr::str_detect(line, regex_check)) {
+          replacement <- '\"$1\"'
+          line <- stringi::stri_replace_all(line, regex = regex, replacement = replacement)
+        }
+        line
+      }
+    ))
+
+    df <- read.csv(
+      text = mod_lines,
+      header = TRUE,
+      sep = separator,
+      na.strings = c("", "NA", "None", "<NA>")
+    )
+    df <- df[, colSums(is.na(df)) < nrow(df)]
+    if ((any(nrow(df)) > 0) && remove_na_rows) {
+      df <- df[rowSums(is.na(df)) < ncol(df), ]
+    }
+
+    names(lines)[index:(end_index - 1)] <- rep(paste0("CSV: ", name), end_index - index)
+    output_list <- list()
+    output_list[[name]] <- df
+    list(output_list, end_index, lines)
+  }
+}
+
+
 ### Program metadata
-parse_program_build_date <- function(index, lines) {
-  read_values <- vectorize_csv_line(lines[index])
-  if (length(read_values) < 3) {
-    stop(parsing_error(
-      index, lines,
-      "Parse build date",
-      "Expected at least 3 values"
-    ))
+program_build_data_parser <- function(separator) {
+  function(index, lines) {
+    read_values <- vectorize_csv_line(lines[index], separator)
+    if (length(read_values) < 3) {
+      stop(parsing_error(
+        index, lines,
+        "Parse build date",
+        "Expected at least 3 values"
+      ))
+    }
+    if (read_values[1] != "Date") {
+      stop(parsing_error(
+        index, lines,
+        "Parse build date",
+        "The line doesn't start with `Date`"
+      ))
+    }
+    names(lines)[index] <- "Build Date"
+    list(list(Date = read_values[2], Time = read_values[3]), index + 1, lines)
   }
-  if (read_values[1] != "Date") {
-    stop(parsing_error(
-      index, lines,
-      "Parse build date",
-      "The line doesn't start with `Date`"
-    ))
-  }
-  names(lines)[index] <- "Build Date"
-  list(list(Date = read_values[2], Time = read_values[3]), index + 1, lines)
 }
 
-parse_program_metadata <- function(index, lines) {
-  output <- join_parsers(
-    key_value_parser("Program", check_length = FALSE),
-    key_value_parser("Build"),
-    parse_program_build_date
-  )(index, lines)
-  list(list(ProgramMetadata = output[[1]]), output[[2]], output[[3]])
+program_metadata_parser <- function(separator) {
+  function(index, lines) {
+    output <- join_parsers(
+      key_value_parser("Program", separator, check_length = FALSE),
+      key_value_parser("Build", separator),
+      program_build_data_parser(separator)
+    )(index, lines)
+    list(list(ProgramMetadata = output[[1]]), output[[2]], output[[3]])
+  }
 }
-
 
 ### Batch metadata
-parse_batch_metadata <- function(index, lines) {
-  output <- join_parsers(
-    key_value_parser("SN"),
-    match_any_parser(
-      key_value_parser("Batch"),
-      key_value_parser("Session")
-    ),
-    make_optional(key_value_parser("Version")),
-    key_value_parser("Operator"),
-    make_optional(
+batch_metadata_parser <- function(separator) {
+  function(index, lines) {
+    output <- join_parsers(
+      key_value_parser("SN", separator),
       match_any_parser(
-        key_value_parser("Computerme"),
-        key_value_parser("ComputerName")
-      )
-    ),
-    make_optional(key_value_parser("Country Code")),
-    match_any_parser(
-      repeat_parser(key_value_parser("Protocol\\w+")),
-      repeat_parser(key_value_parser("Template\\w+"))
-    ),
-    make_optional(key_value_parser("PanelName")),
-    make_optional(key_value_parser("MaxSampleUptakeVolume")),
-    repeat_parser(key_value_parser("Sample\\w+")),
-    make_optional(key_value_parser("DDGate")),
-    make_optional(key_value_parser("SampleTimeout")),
-    skip_blanks,
-    repeat_parser(key_value_parser("Batch\\w+")),
-    make_optional(named_key_value_pairs_parser("ProtocolPlate")),
-    make_optional(named_key_value_pairs_parser("ProtocolMicrosphere")),
-    make_optional(
-      named_key_value_pairs_parser("ProtocolAnalysis")
-    ),
-    repeat_parser(key_value_parser("Protocol\\w+")),
-    make_optional(key_value_parser("NormBead")),
-    make_optional(match_any_parser(
-      key_value_parser("ProtocolHeater"),
-      named_key_value_pairs_parser("ProtocolHeater")
-    )),
-    make_optional(key_value_parser("ProtocolOperatingMode")),
-    make_optional(key_value_parser("BeadType")),
-    make_optional(key_value_parser("PrePlateRoutine")),
-    make_optional(key_value_parser("PostPlateRoutine")),
-    make_optional(key_value_parser("PostWellRoutine")),
-    make_optional(key_value_parser("PlateReadDirection"))
-  )(index, lines)
-  list(list(BatchMetadata = output[[1]]), output[[2]], output[[3]])
+        key_value_parser("Batch", separator),
+        key_value_parser("Session", separator)
+      ),
+      make_optional(key_value_parser("Version", separator)),
+      key_value_parser("Operator", separator),
+      make_optional(
+        match_any_parser(
+          key_value_parser("Computerme", separator),
+          key_value_parser("ComputerName", separator)
+        )
+      ),
+      make_optional(key_value_parser("Country Code", separator)),
+      match_any_parser(
+        repeat_parser(key_value_parser("Protocol\\w+", separator)),
+        repeat_parser(key_value_parser("Template\\w+", separator))
+      ),
+      make_optional(key_value_parser("PanelName", separator)),
+      make_optional(key_value_parser("MaxSampleUptakeVolume", separator)),
+      repeat_parser(key_value_parser("Sample\\w+", separator)),
+      make_optional(key_value_parser("DDGate", separator)),
+      make_optional(key_value_parser("SampleTimeout", separator)),
+      skip_blanks_parser,
+      repeat_parser(key_value_parser("Batch\\w+", separator)),
+      make_optional(named_key_value_pairs_parser("ProtocolPlate", separator)),
+      make_optional(named_key_value_pairs_parser("ProtocolMicrosphere", separator)),
+      make_optional(
+        named_key_value_pairs_parser("ProtocolAnalysis", separator)
+      ),
+      repeat_parser(key_value_parser("Protocol\\w+", separator)),
+      make_optional(key_value_parser("NormBead", separator)),
+      make_optional(match_any_parser(
+        key_value_parser("ProtocolHeater", separator),
+        named_key_value_pairs_parser("ProtocolHeater", separator)
+      )),
+      make_optional(key_value_parser("ProtocolOperatingMode", separator)),
+      make_optional(key_value_parser("BeadType", separator)),
+      make_optional(key_value_parser("PrePlateRoutine", separator)),
+      make_optional(key_value_parser("PostPlateRoutine", separator)),
+      make_optional(key_value_parser("PostWellRoutine", separator)),
+      make_optional(key_value_parser("PlateReadDirection", separator))
+    )(index, lines)
+    list(list(BatchMetadata = output[[1]]), output[[2]], output[[3]])
+  }
 }
 
 ### Calibration metadata
-parse_calibration_metadata <- function(index, lines) {
-  output <- join_parsers(
-    check_and_skip("^Most Recent Calibration"),
-    repeat_parser(key_value_parser("Last\\s*\\w*\\s*Calibration")),
-    repeat_parser(key_value_parser("Last\\s*\\w*\\s*Verification")),
-    repeat_parser(key_value_parser("Last\\s*\\w*\\s*Test")),
-    skip_blanks,
-    check_and_skip("CALInfo:"),
-    # HACK: This is not fully correct calibrator outputs are overwritten
-    repeat_parser(join_parsers(
-      check_and_skip("Calibrator"),
-      parse_as_csv("Calibrator", max_rows = 2)
-    ))
-  )(index, lines)
-  list(list(CalibrationMetadata = output[[1]]), output[[2]], output[[3]])
+calibration_metadata_parser <- function(separator) {
+  function(index, lines) {
+    output <- join_parsers(
+      check_key_parser("^Most Recent Calibration", separator),
+      repeat_parser(key_value_parser("Last\\s*\\w*\\s*Calibration", separator)),
+      repeat_parser(key_value_parser("Last\\s*\\w*\\s*Verification", separator)),
+      repeat_parser(key_value_parser("Last\\s*\\w*\\s*Test", separator)),
+      skip_blanks_parser,
+      check_key_parser("CALInfo:", separator),
+      # HACK: This is not fully correct calibrator outputs are overwritten
+      repeat_parser(join_parsers(
+        check_key_parser("Calibrator", separator),
+        csv_table_parser("Calibrator", separator, max_rows = 2)
+      ))
+    )(index, lines)
+    list(list(CalibrationMetadata = output[[1]]), output[[2]], output[[3]])
+  }
 }
 
 ### Assay info block
-parse_assay_info <- join_parsers(
-  check_and_skip("^AssayLotInfo"),
-  parse_as_csv("AssayLotInfo"),
-  skip_blanks,
-  parse_as_csv("AssayLotInfo2")
-)
+assay_info_parser <- function(separator) {
+  join_parsers(
+    check_key_parser("^AssayInfo", separator),
+    csv_table_parser("AssayInfo", separator),
+    skip_blanks_parser,
+    check_key_parser("^AssayInfo2", separator)
+  )
+}
 
 ### Results block
-parse_results_block <- function(index, lines) {
-  output_dfs <- c()
-  while (!is.na(lines[index]) && stringr::str_detect(lines[index], "DataType:")) {
-    second <- key_value_parser("DataType:")(index, lines)
-    index <- second[[2]]
-    lines <- second[[3]]
+results_block_parser <- function(separator) {
+  function(index, lines) {
+    output_dfs <- c()
+    while (!is.na(lines[index]) && stringr::str_detect(lines[index], "DataType:")) {
+      second <- key_value_parser("DataType:", separator)(index, lines)
+      index <- second[[2]]
+      lines <- second[[3]]
 
-    df_name <- second[[1]]$DataType
-    third <- join_parsers(
-      parse_as_csv(df_name, empty_line_stop = FALSE, remove_na_rows = TRUE),
-      skip_blanks
-    )(index, lines)
-    index <- third[[2]]
-    lines <- third[[3]]
+      df_name <- second[[1]]$DataType
+      third <- join_parsers(
+        csv_table_parser(
+          df_name, separator,
+          empty_line_stop = FALSE, remove_na_rows = TRUE
+        ),
+        skip_blanks_parser
+      )(index, lines)
+      index <- third[[2]]
+      lines <- third[[3]]
 
-    output_dfs <- c(output_dfs, third[[1]])
+      output_dfs <- c(output_dfs, third[[1]])
+    }
+
+    list(list(Results = output_dfs), index, lines)
   }
-
-  list(list(Results = output_dfs), index, lines)
 }
 
 
 ### CRC32 block
 
-parse_crc32_value <- function(index, lines) {
-  read_values <- vectorize_csv_line(lines[index])
-  match <- stringr::str_match(read_values[1], "^CRC32:\\s*(.+?)(,|;|$)")
-  if (is.na(match[1])) {
-    stop(parsing_error(
-      index, lines,
-      "CRC32 value parser",
-      "No CRC32 found"
-    ))
+crc32_parser <- function(separator) {
+  parse_crc32_value <- function(index, lines) {
+    read_values <- vectorize_csv_line(lines[index], separator)
+    match <- stringr::str_match(read_values[1], "^CRC32:\\s*(.+?)(,|;|$)")
+    if (is.na(match[1])) {
+      stop(parsing_error(
+        index, lines,
+        "CRC32 value parser",
+        "No CRC32 found"
+      ))
+    }
+    names(lines)[index] <- paste0("CRC32: ", match[2])
+    list(list(CRC32 = match[2]), index + 1, lines)
   }
-  names(lines)[index] <- paste0("CRC32: ", match[2])
-  list(list(CRC32 = match[2]), index + 1, lines)
-}
-
-parse_crc32_block <- function(index, lines) {
-  output <- join_parsers(
-    check_and_skip("^-- CRC --"),
+  join_parsers(
+    check_key_parser("^-- CRC --", separator),
     parse_crc32_value
-  )(index, lines)
-  list(output[[1]], output[[2]], output[[3]])
+  )
 }
 
 
@@ -501,36 +504,32 @@ read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", s
     locale = readr::locale(encoding = encoding),
   )
 
-  # HACK: There has to be a better way
-  set_global_sep(sep)
-
   names(lines) <- rep(NA, length(lines))
 
   if (exact_parse) {
     header_parser <- wrap_parser_output(
       join_parsers(
-        parse_batch_metadata,
-        make_optional(parse_calibration_metadata),
-        make_optional(parse_assay_info),
+        batch_metadata_parser(sep),
+        make_optional(parse_calibration_metadata(sep)),
+        make_optional(parse_assay_info(sep)),
         do_skip_blanks = TRUE
       ),
       "Header"
     )
   } else {
     header_parser <- wrap_parser_output(
-      read_until(function(value) stringr::str_detect(value, "^Samples")),
+      read_until_parser(function(value) stringr::str_detect(value, "^Samples"), sep),
       "Header"
     )
   }
 
-
   main_parser <- join_parsers(
-    parse_program_metadata,
+    program_metadata_parser(sep),
     header_parser,
-    key_value_pairs_parser, # Samples
-    check_and_skip("^Results"),
-    parse_results_block,
-    make_optional(parse_crc32_block),
+    key_value_pairs_parser(sep), # Samples
+    check_key_parser("^Results", sep),
+    results_block_parser(sep),
+    make_optional(crc32_parser(sep)),
     eof_parser,
     do_skip_blanks = TRUE
   )
