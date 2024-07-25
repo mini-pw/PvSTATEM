@@ -29,19 +29,20 @@ nplr object with the model
 \description{
 function for now uses the \code{nplr} package to fit the model. The model is fitted using the formula:
 
-$$y = B + \\frac{T - B}{(1 + 10^{b*(x_{mid} - x)})^s}$$,
+\deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s}}
+
 where:
 \itemize{
-\item $y$ is the predicted value, MFI in our case,
-\item $x$ is the independent variable, dilution in our case,
-\item $B$ is the bottom plateau - the right horizontal asymptote,
-\item $T$ is the top plateau - the left horizontal asymptote,
-\item $b$ is the slope of the curve at the inflection point,
-\item $x_{mid}$ is x-coordinate at the inflection point,
-\item $s$ is the assymetric coefficient.
+\item \eqn{y} is the predicted value, MFI in our case,
+\item \eqn{x} is the independent variable, dilution in our case,
+\item \eqn{B} is the bottom plateau - the right horizontal asymptote,
+\item \eqn{T} is the top plateau - the left horizontal asymptote,
+\item \eqn{b} is the slope of the curve at the inflection point,
+\item \eqn{x_{mid}} is the x-coordinate at the inflection point,
+\item \eqn{s} is the asymmetric coefficient.
 }
 
-This equation is refered as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
+This equation is referred to as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
 
 By default, \code{nplr} model transforms the x values using the \code{log10} function.
 }
