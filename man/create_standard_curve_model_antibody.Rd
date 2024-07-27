@@ -29,7 +29,7 @@ nplr object with the model
 \description{
 function for now uses the \code{nplr} package to fit the model. The model is fitted using the formula:
 
-\deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s}}
+\deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s}}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s}
 
 where:
 \itemize{
@@ -38,7 +38,7 @@ where:
 \item \eqn{B} is the bottom plateau - the right horizontal asymptote,
 \item \eqn{T} is the top plateau - the left horizontal asymptote,
 \item \eqn{b} is the slope of the curve at the inflection point,
-\item \eqn{x_{mid}} is the x-coordinate at the inflection point,
+\item \eqn{x_{mid}}{x_mid} is the x-coordinate at the inflection point,
 \item \eqn{s} is the asymmetric coefficient.
 }
 

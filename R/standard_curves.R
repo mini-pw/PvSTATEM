@@ -187,7 +187,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 #' @description
 #' function for now uses the `nplr` package to fit the model. The model is fitted using the formula:
 #'
-#' \deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s}}
+#' \deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s}}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s}
 #'
 #' where:
 #' - \eqn{y} is the predicted value, MFI in our case,
@@ -195,7 +195,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 #' - \eqn{B} is the bottom plateau - the right horizontal asymptote,
 #' - \eqn{T} is the top plateau - the left horizontal asymptote,
 #' - \eqn{b} is the slope of the curve at the inflection point,
-#' - \eqn{x_{mid}} is the x-coordinate at the inflection point,
+#' - \eqn{x_{mid}}{x_mid} is the x-coordinate at the inflection point,
 #' - \eqn{s} is the asymmetric coefficient.
 #'
 #' This equation is referred to as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
