@@ -453,7 +453,7 @@ Plate <- R6::R6Class(
       }
 
       blank_samples <- self$get_sample_by_type("BLANK") # these values will be subtracted
-      non_blank_samples <- self$get_sample_by_type("BLANK", 
+      non_blank_samples <- self$get_sample_by_type("BLANK",
                                                    exclude = TRUE) # from these values
 
       # aggregate blank values
