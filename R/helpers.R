@@ -60,10 +60,6 @@ get_join_value <- function(x, y) {
 #' @param lst A list to be processed.
 #' @return A list with empty lists removed.
 #' @keywords internal
-#' @examples
-#' my_list <- list(a = 1, b = list(), c = 3, d = list(e = 4, f = list()))
-#' remove_empty_lists(my_list)
-#' # Returns: $a: 1, $c: 3, $d: list(e = 4, f = list())
 remove_empty_lists <- function(lst) {
   # Filter out elements that are empty lists
   result <- lst[!sapply(lst, function(x) is.list(x) && length(x) == 0)]
