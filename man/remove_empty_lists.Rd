@@ -15,9 +15,4 @@ A list with empty lists removed.
 \description{
 This internal function filters out elements from a list that are empty lists.
 }
-\examples{
-my_list <- list(a = 1, b = list(), c = 3, d = list(e = 4, f = list()))
-remove_empty_lists(my_list)
-# Returns: $a: 1, $c: 3, $d: list(e = 4, f = list())
-}
 \keyword{internal}
