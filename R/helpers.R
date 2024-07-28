@@ -65,3 +65,16 @@ remove_empty_lists <- function(lst) {
   result <- lst[!sapply(lst, function(x) is.list(x) && length(x) == 0)]
   return(result)
 }
+
+#' Verbose Cat
+#' 
+#' This function prints the input to the console if the `verbose` argument is `TRUE`.
+#' 
+#' @param ... The input to be printed.
+#' @param verbose A logical value indicating whether the input should be printed.
+#' @keywords internal
+verbose_cat <- function(..., verbose = TRUE) {
+  if (verbose) {
+    cat(..., sep = "")
+  }
+}

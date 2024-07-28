@@ -370,13 +370,6 @@ plot_standard_curve_antibody_with_model <- function(plate, antibody_name, model,
 }
 
 
-
-verbose_cat <- function(..., verbose = TRUE) {
-  if (verbose) {
-    cat(..., sep = "")
-  }
-}
-
 color_codes <-
   list(
     yellow_start = "\033[33m",

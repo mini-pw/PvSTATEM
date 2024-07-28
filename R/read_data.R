@@ -707,12 +707,6 @@ parse_crc <- function(results_block) {
   return(list())
 }
 
-verbose_cat <- function(..., verbose = TRUE) {
-  if (verbose) {
-    cat(..., sep = "")
-  }
-}
-
 
 #
 # colors for WARNING, NOTE, DEFAULT
