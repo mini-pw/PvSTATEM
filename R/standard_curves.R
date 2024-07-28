@@ -369,13 +369,3 @@ plot_standard_curve_antibody_with_model <- function(plate, antibody_name, model,
   p
 }
 
-
-color_codes <-
-  list(
-    yellow_start = "\033[33m",
-    yellow_end = "\033[39m",
-    red_start = "\033[31m",
-    red_end = "\033[39m",
-    green_start = "\033[32m",
-    green_end = "\033[39m"
-  )

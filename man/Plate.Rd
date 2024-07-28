@@ -129,10 +129,15 @@ a list containing audit logs read from Luminex file}
 \if{html}{\out{<a id="method-Plate-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-print}{}}}
 \subsection{Method \code{print()}}{
+Function prints the basic information about the plate
+such as the number of samples and analytes
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$print(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+invisible object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-summary"></a>}}
