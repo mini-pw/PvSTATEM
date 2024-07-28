@@ -20,7 +20,7 @@ of the analyte}
 
 \item{\code{analyte_name}}{A character value that represents the name of the analyte}
 
-\item{\code{bead_count}}{? not exactly sure what this field means tbh}
+\item{\code{bead_count}}{A numeric value that represents the number of beads}
 
 \item{\code{analysis_type}}{Type of the analyte}
 

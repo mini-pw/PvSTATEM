@@ -9,7 +9,7 @@
 #'
 #' @field analyte_name A character value that represents the name of the analyte
 #'
-#' @field bead_count ? not exactly sure what this field means tbh
+#' @field bead_count A numeric value that represents the number of beads
 #'
 #' @field analysis_type Type of the analyte
 #'

@@ -214,8 +214,6 @@ SampleType$validate_dilution_factor <- function(sample_type, dilution_factor) {
 #'
 #' @return a new `SampleType` object
 #'
-#' @examples
-#'
 #'
 #' @export
 SampleType$parse_sample_type <- function(sample_name,
