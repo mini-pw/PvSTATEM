@@ -40,8 +40,7 @@ Plot standard curves of plate or list of plates
 plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
 
-
-plate <- read_data(plate_filepath, layout_filepath)
+plate <- read_data(plate_filepath, layout_filepath) # read the data
 
 plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP")
 
