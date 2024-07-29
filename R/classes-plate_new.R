@@ -151,11 +151,14 @@ Plate <- R6::R6Class(
     #' @param data 1D array of data represents for example counts, dilutions
     #' or sample types
     #'
-    #' @return A 2D array representing data with the spatial arrangement 
+    #' @return A 2D array representing data with the spatial arrangement
     #' of the samples
     layout = function(data) {},
   ),
   private = list(
+
+    ## Private Fields ---------------------------------------------------------
+
     blank_adjusted = FALSE,
     verbose = TRUE,
     valid_sample_types = c(
@@ -178,5 +181,29 @@ Plate <- R6::R6Class(
         "Peak",
         "Std Dev"
     ),
+
+    ## Private Methods --------------------------------------------------------
+
+    #' @description
+    #' Function translates sample names to sample types
+    #' The function uses regular expressions to match the sample names
+    #' to the sample types
+    #' 
+    #' @param sample_names A vector of sample names
+    #' @return A vector of sample types
+
+    #' @examples
+    #' translate_sample_names_to_sample_types(c("B", "BLANK", "TEST1"))
+    #' translate_sample_names_to_sample_types(c("S", "CP3"))
+    #'
+    translate_sample_names_to_sample_types = function(sample_names) {}
+    # this function is implemented only once at the moment of parsing the data
+    # it might be better to move it to other file
+
+    # this function is not implemented yet
+    # it consists of convoluted logic that uses regular expressions
+    # but luckily a lot can be scavenged from the existing code
+    # in the `SampleType` class it's just need to be adapted to
+    # work with new structure of the data
   ),
 )
