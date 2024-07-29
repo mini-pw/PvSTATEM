@@ -134,8 +134,10 @@ Analyte <- R6::R6Class(
       if (!verify_numeric_join(self$bead_count, new_analyte$bead_count)) {
         stop("Cannot join analytes with different bead counts")
       }
-      if (!verify_character_join(self$analysis_type,
-                                 new_analyte$analysis_type)) {
+      if (!verify_character_join(
+        self$analysis_type,
+        new_analyte$analysis_type
+      )) {
         stop("Cannot join analytes with different analysis types")
       }
       if (!verify_character_join(self$units, new_analyte$units)) {
@@ -164,7 +166,7 @@ Analyte <- R6::R6Class(
 #' @field row_letter row where sample is located as a letter.
 #' For instance `1` -> `A`
 #'
-#' @field location_name Location of the sample formatted 
+#' @field location_name Location of the sample formatted
 #' in readable way - `(row_letter, column)`
 #'
 #' @examples
@@ -261,7 +263,6 @@ SampleLocation <- R6::R6Class(
 #' SampleLocation$parse_sample_location("2(1,A2)")
 #'
 #' SampleLocation$parse_sample_location("1(3, A1)")
-#'
 #'
 #' @export
 SampleLocation$parse_sample_location <- function(location_string) {
@@ -375,12 +376,16 @@ SampleType <- R6::R6Class(
     join = function(new_sample_type) {
       # join the data of two samples
 
-      if (!verify_character_join(self$sample_type,
-                                 new_sample_type$sample_type)) {
+      if (!verify_character_join(
+        self$sample_type,
+        new_sample_type$sample_type
+      )) {
         stop("Cannot join samples of different types")
       }
-      if (!verify_numeric_join(self$dilution_factor,
-                               new_sample_type$dilution_factor)) {
+      if (!verify_numeric_join(
+        self$dilution_factor,
+        new_sample_type$dilution_factor
+      )) {
         stop("Cannot join samples with different dilution factors")
       }
 
@@ -458,7 +463,6 @@ SampleType$validate_sample_type <- function(sample_type) {
 #' @examples
 #' SampleType$validate_dilution_factor("POSITIVE CONTROL", 1)
 #'
-#'
 #' @export
 SampleType$validate_dilution_factor <- function(sample_type, dilution_factor) {
   if (sample_type == "POSITIVE CONTROL" && is.na(dilution_factor)) {
@@ -509,8 +513,6 @@ SampleType$validate_dilution_factor <- function(sample_type, dilution_factor) {
 #' @return a new `SampleType` object
 #'
 #' @examples
-#'
-#'
 #' @export
 SampleType$parse_sample_type <- function(sample_name,
                                          sample_name_loc = "",
@@ -557,13 +559,17 @@ SampleType$parse_sample_type <- function(sample_name,
   if (sample_type %in% c("STANDARD CURVE", "POSITIVE CONTROL", "NEGATIVE CONTROL")) {
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
-    if (!is.null(sample_name_loc) && sample_name_loc != ""
-        || !is.na(sample_name_loc) && sample_name_loc != "") {
-      match <- regmatches(sample_name_loc, regexpr(dilution_factor_pattern,
-                                                   sample_name_loc))
+    if (!is.null(sample_name_loc) && sample_name_loc != "" ||
+      !is.na(sample_name_loc) && sample_name_loc != "") {
+      match <- regmatches(sample_name_loc, regexpr(
+        dilution_factor_pattern,
+        sample_name_loc
+      ))
     } else {
-      match <- regmatches(sample_name, regexpr(dilution_factor_pattern,
-                                               sample_name))
+      match <- regmatches(sample_name, regexpr(
+        dilution_factor_pattern,
+        sample_name
+      ))
     }
     dilution_factor <- eval(parse(text = match))
 
@@ -571,8 +577,10 @@ SampleType$parse_sample_type <- function(sample_name,
       dilution_factor <- NA # this value needs to be updated later
     }
 
-    return(SampleType$new("STANDARD CURVE", dilution_factor = dilution_factor,
-                          validate_dilution = FALSE))
+    return(SampleType$new("STANDARD CURVE",
+      dilution_factor = dilution_factor,
+      validate_dilution = FALSE
+    ))
   }
 
   negative_types <- c("NEGATIVE CONTROL", "N")
@@ -593,12 +601,16 @@ SampleType$parse_sample_type <- function(sample_name,
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
     if (!is.null(sample_name_loc) && sample_name_loc != "" ||
-        !is.na(sample_name_loc) && sample_name_loc != "") {
-      match <- regmatches(sample_name_loc, regexpr(dilution_factor_pattern,
-                                                   sample_name_loc))
+      !is.na(sample_name_loc) && sample_name_loc != "") {
+      match <- regmatches(sample_name_loc, regexpr(
+        dilution_factor_pattern,
+        sample_name_loc
+      ))
     } else {
-      match <- regmatches(sample_name, regexpr(dilution_factor_pattern,
-                                               sample_name))
+      match <- regmatches(sample_name, regexpr(
+        dilution_factor_pattern,
+        sample_name
+      ))
     }
     dilution_factor <- eval(parse(text = match))
 
@@ -606,8 +618,10 @@ SampleType$parse_sample_type <- function(sample_name,
       dilution_factor <- NA # this value needs to be updated later
     }
 
-    return(SampleType$new(sample_type, dilution_factor = dilution_factor,
-                          validate_dilution = FALSE))
+    return(SampleType$new(sample_type,
+      dilution_factor = dilution_factor,
+      validate_dilution = FALSE
+    ))
   }
 
   return(SampleType$new("TEST"))
@@ -619,9 +633,11 @@ SampleType$parse_sample_type <- function(sample_name,
 #' A class to represent the sample. It contains all the necessary
 #' information about the sample
 #' @examples
-#' sample <- Sample$new(id = 1, sample_name = "test",
-#' sample_type = SampleType$new("TEST"),
-#' sample_location = SampleLocation$new(1, 1))
+#' sample <- Sample$new(
+#'   id = 1, sample_name = "test",
+#'   sample_type = SampleType$new("TEST"),
+#'   sample_location = SampleLocation$new(1, 1)
+#' )
 #'
 #' @export
 Sample <- R6::R6Class(
@@ -649,7 +665,7 @@ Sample <- R6::R6Class(
     errors = list(),
 
     #' @field data The dataframe containing information about the analytes within the sample.
-    #' The dataframe rows are different measures, such as `Median`, `Net MFI`, etc. 
+    #' The dataframe rows are different measures, such as `Median`, `Net MFI`, etc.
     #'  whereas the columns represent different analytes
     #'
     data = data.frame(),
@@ -778,10 +794,13 @@ Sample <- R6::R6Class(
 #' @examples
 #'
 #' plate_filepath <- system.file("extdata",
-#' "CovidOISExPONTENT_CO.csv", package = "PvSTATEM",
-#' mustWork = TRUE) # get the filepath of the csv dataset
+#'   "CovidOISExPONTENT_CO.csv",
+#'   package = "PvSTATEM",
+#'   mustWork = TRUE
+#' ) # get the filepath of the csv dataset
 #' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-#' package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
+#'   package = "PvSTATEM", mustWork = TRUE
+#' ) # get the filepath of the layout file
 #'
 #' plate <- read_data(plate_filepath, layout_filepath)
 #'
@@ -1222,8 +1241,9 @@ Plate <- R6::R6Class(
       }
 
       blank_samples <- self$get_sample_by_type("BLANK") # these values will be subtracted
-      non_blank_samples <- self$get_sample_by_type("BLANK", 
-                                                   exclude = TRUE) # from these values
+      non_blank_samples <- self$get_sample_by_type("BLANK",
+        exclude = TRUE
+      ) # from these values
 
       # aggregate blank values
 
@@ -1271,8 +1291,10 @@ Plate <- R6::R6Class(
         below_min <- which(sample$data < 0, arr.ind = TRUE)
         if (length(below_min) > 0) {
           below_min_analytes <- names(sample$data)[below_min[, "col"]]
-          new_warnings <- paste0("An analyte ", below_min_analytes,
-                                 " has value below 0 after blank adjustment")
+          new_warnings <- paste0(
+            "An analyte ", below_min_analytes,
+            " has value below 0 after blank adjustment"
+          )
           sample$warnings <- c(sample$warnings, new_warnings)
         }
       }
@@ -1388,10 +1410,12 @@ Plate <- R6::R6Class(
       }
 
 
-      dilutions <- sapply(standard_curves, function(sample)
-        sample$sample_type$character_dilution_factor)
-      dilutions_numeric <- sapply(standard_curves, function(sample)
-        sample$sample_type$dilution_factor)
+      dilutions <- sapply(standard_curves, function(sample) {
+        sample$sample_type$character_dilution_factor
+      })
+      dilutions_numeric <- sapply(standard_curves, function(sample) {
+        sample$sample_type$dilution_factor
+      })
       # sort values according to dilutions
       sorted_order <- order(dilutions_numeric)
 
