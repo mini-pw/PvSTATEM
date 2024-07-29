@@ -11,7 +11,7 @@
 #' @field row_letter row where sample is located as a letter.
 #' For instance `1` -> `A`
 #'
-#' @field location_name Location of the sample formatted 
+#' @field location_name Location of the sample formatted
 #' in readable way - `(row_letter, column)`
 #'
 #' @examples
@@ -108,7 +108,6 @@ SampleLocation <- R6::R6Class(
 #' SampleLocation$parse_sample_location("2(1,A2)")
 #'
 #' SampleLocation$parse_sample_location("1(3, A1)")
-#'
 #'
 #' @export
 SampleLocation$parse_sample_location <- function(location_string) {
