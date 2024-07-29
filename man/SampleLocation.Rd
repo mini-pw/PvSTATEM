@@ -33,8 +33,8 @@ sample_location$location_name
 \item{\code{row_letter}}{row where sample is located as a letter.
 For instance \code{1} -> \code{A}}
 
-\item{\code{location_name}}{Lcation of the sample formatted
-in readable way -  \verb{(row_letter, column)}}
+\item{\code{location_name}}{Location of the sample formatted
+in readable way - \verb{(row_letter, column)}}
 }
 \if{html}{\out{</div>}}
 }

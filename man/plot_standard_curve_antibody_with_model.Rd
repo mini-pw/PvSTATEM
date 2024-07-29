@@ -2,7 +2,7 @@
 % Please edit documentation in R/standard_curves.R
 \name{plot_standard_curve_antibody_with_model}
 \alias{plot_standard_curve_antibody_with_model}
-\title{plot standard curve of a certain antibody with fitted model}
+\title{Plot standard curve of a certain antibody with fitted model}
 \usage{
 plot_standard_curve_antibody_with_model(
   plate,

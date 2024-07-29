@@ -11,10 +11,13 @@ some additional metadata and batch info
 \examples{
 
 plate_filepath <- system.file("extdata",
-"CovidOISExPONTENT_CO.csv", package = "PvSTATEM",
-mustWork = TRUE) # get the filepath of the csv dataset
+  "CovidOISExPONTENT_CO.csv",
+  package = "PvSTATEM",
+  mustWork = TRUE
+) # get the filepath of the csv dataset
 layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
+  package = "PvSTATEM", mustWork = TRUE
+) # get the filepath of the layout file
 
 plate <- read_data(plate_filepath, layout_filepath)
 
@@ -288,8 +291,9 @@ Data about a sample and analyte
 \if{html}{\out{<a id="method-Plate-blank_adjustment"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-blank_adjustment}{}}}
 \subsection{Method \code{blank_adjustment()}}{
-Function adjusts the values of test samples substracting values from BLANK samples to remove background light
-In short it substracts the values from data in all samples, except from Blanks. It does not substract values from
+Function adjusts the values of test samples by subtracting average of BLANK samples
+purpose of this operation is to remove background light
+In short it subtracts the values from data in all samples, except from Blanks. It does not subtract values from
 \code{Count} values
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$blank_adjustment(method = "avg", inplace = "TRUE")}\if{html}{\out{</div>}}
