@@ -189,7 +189,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 #' function for now uses the `nplr` package to fit the model. The model is fitted using the formula:
 #'
 #' \deqn{y = B + \frac{T - B}{(1 + 10^{b*(x_{mid} - x)})^s,}}
-
+#'
 #' where:
 #' - \eqn{y} is the predicted value, MFI in our case,
 #' - \eqn{x} is the independent variable, dilution in our case,
