@@ -142,6 +142,18 @@ Plate <- R6::R6Class(
     #' @param inplace Whether the method should produce new plate with adjusted
     #' values or not, By default `TRUE` - operates on the current plate.
     blank_adjustment = function(method = "avg", in_place = "TRUE") {},
+
+    #' @description
+    #' Function takes the data 1D array and returns the data in the form of
+    #' a 2D array, that represents the spatial arrangement of the samples
+    #' on the plate, ie. 12x8 grid.
+    #'
+    #' @param data 1D array of data represents for example counts, dilutions
+    #' or sample types
+    #'
+    #' @return A 2D array representing data with the spatial arrangement 
+    #' of the samples
+    layout = function(data) {},
   ),
   private = list(
     blank_adjusted = FALSE,
