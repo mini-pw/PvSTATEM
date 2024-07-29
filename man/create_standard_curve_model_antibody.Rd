@@ -2,7 +2,7 @@
 % Please edit documentation in R/standard_curves.R
 \name{create_standard_curve_model_antibody}
 \alias{create_standard_curve_model_antibody}
-\title{create model for standard curve of a certain antibody}
+\title{Create model for standard curve of a certain antibody}
 \usage{
 create_standard_curve_model_antibody(
   plate,

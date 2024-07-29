@@ -174,7 +174,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 }
 
 
-#' create model for standard curve of a certain antibody
+#' Create model for standard curve of a certain antibody
 #'
 #' @param plate Plate object
 #' @param antibody_name Name of the antibody for which we want to create the model
@@ -288,7 +288,7 @@ predict_dilutions <- function(plate, antibody_name, model, data_type = "Median",
   sample_concentrations
 }
 
-#' plot standard curve of a certain antibody with fitted model
+#' Plot standard curve of a certain antibody with fitted model
 #'
 #' @param plate Plate object
 #' @param antibody_name Name of the antibody for which we want to plot the standard curve - the same for which the model was fitted
