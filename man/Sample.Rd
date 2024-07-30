@@ -8,9 +8,11 @@ A class to represent the sample. It contains all the necessary
 information about the sample
 }
 \examples{
-sample <- Sample$new(id = 1, sample_name = "test",
-sample_type = SampleType$new("TEST"),
-sample_location = SampleLocation$new(1, 1))
+sample <- Sample$new(
+  id = 1, sample_name = "test",
+  sample_type = SampleType$new("TEST"),
+  sample_location = SampleLocation$new(1, 1)
+)
 
 }
 \section{Public fields}{

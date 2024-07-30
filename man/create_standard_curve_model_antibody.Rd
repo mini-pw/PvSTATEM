@@ -2,7 +2,7 @@
 % Please edit documentation in R/standard_curves.R
 \name{create_standard_curve_model_antibody}
 \alias{create_standard_curve_model_antibody}
-\title{create model for standard curve of a certain antibody}
+\title{Create model for standard curve of a certain antibody}
 \usage{
 create_standard_curve_model_antibody(
   plate,
@@ -29,7 +29,7 @@ nplr object with the model
 \description{
 function for now uses the \code{nplr} package to fit the model. The model is fitted using the formula:
 
-\deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s}}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s}
+\deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s},}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s,}
 
 where:
 \itemize{

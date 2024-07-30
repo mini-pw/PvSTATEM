@@ -38,8 +38,7 @@ Plot standard curves of plate or list of plates
 \examples{
 
 plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
-
-layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
 
 plate <- read_data(plate_filepath, layout_filepath) # read the data
 

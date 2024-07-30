@@ -11,10 +11,13 @@ some additional metadata and batch info
 \examples{
 
 plate_filepath <- system.file("extdata",
-"CovidOISExPONTENT_CO.csv", package = "PvSTATEM",
-mustWork = TRUE) # get the filepath of the csv dataset
+  "CovidOISExPONTENT_CO.csv",
+  package = "PvSTATEM",
+  mustWork = TRUE
+) # get the filepath of the csv dataset
 layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
+  package = "PvSTATEM", mustWork = TRUE
+) # get the filepath of the layout file
 
 plate <- read_data(plate_filepath, layout_filepath)
 

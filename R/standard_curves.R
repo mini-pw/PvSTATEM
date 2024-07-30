@@ -17,8 +17,7 @@
 #' @examples
 #'
 #' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
-#'
-#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
 #'
 #' plate <- read_data(plate_filepath, layout_filepath) # read the data
 #'
@@ -175,7 +174,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 }
 
 
-#' create model for standard curve of a certain antibody
+#' Create model for standard curve of a certain antibody
 #'
 #' @param plate Plate object
 #' @param antibody_name Name of the antibody for which we want to create the model
@@ -189,7 +188,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 #' @description
 #' function for now uses the `nplr` package to fit the model. The model is fitted using the formula:
 #'
-#' \deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s}}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s}
+#' \deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s},}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s,}
 #'
 #' where:
 #' - \eqn{y} is the predicted value, MFI in our case,
@@ -289,7 +288,7 @@ predict_dilutions <- function(plate, antibody_name, model, data_type = "Median",
   sample_concentrations
 }
 
-#' plot standard curve of a certain antibody with fitted model
+#' Plot standard curve of a certain antibody with fitted model
 #'
 #' @param plate Plate object
 #' @param antibody_name Name of the antibody for which we want to plot the standard curve - the same for which the model was fitted
