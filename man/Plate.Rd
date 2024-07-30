@@ -8,124 +8,62 @@ A class to represent the luminex plate. It contains information about
 the samples and analytes that were examined on the plate as well as
 some additional metadata and batch info
 }
-\examples{
-
-plate_filepath <- system.file("extdata",
-  "CovidOISExPONTENT_CO.csv",
-  package = "PvSTATEM",
-  mustWork = TRUE
-) # get the filepath of the csv dataset
-layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-  package = "PvSTATEM", mustWork = TRUE
-) # get the filepath of the layout file
-
-plate <- read_data(plate_filepath, layout_filepath)
-
-plate$summary()
-
-}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{analytes}}{list of all analytes measured during an examination}
-
-\item{\code{samples}}{list of all samples examined on a plate}
-
-\item{\code{batch_info}}{a raw list containing all the metadata about
-the plate read from the Luminex file}
-
-\item{\code{calibration_info}}{a list containing calibration logs read from
-the Luminex file}
-
-\item{\code{audit_logs}}{a list containing audit logs read from Luminex file}
-
 \item{\code{plate_name}}{\itemize{
 \item plate name obtained from filename
 }}
-}
-\if{html}{\out{</div>}}
-}
-\section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{number_of_samples}}{number of samples stored in the current plate}
 
-\item{\code{analyte_names}}{list of all analyte names saved in the plate}
+\item{\code{analytes_names}}{vector of analytes names measured during
+an examination in the same order as in the data}
 
-\item{\code{sample_names}}{list of all sample names}
+\item{\code{sample_names}}{vector of sample names measured during
+an examination in the same order as in the data}
 
-\item{\code{examination_date}}{Metadata: date of the examination}
+\item{\code{sample_locations}}{vector of sample locations pretty name ie. A1, B2}
 
-\item{\code{batch_name}}{Metdata: batch name}
+\item{\code{dilutions}}{vector of dilutions used during the examination
+due to the nature of data it's a vector of strings, logic to transform
+it to numeric has to be implemented in the future}
 
-\item{\code{min_events_per_bead}}{minimal number of events that is valid for one bead - sample and analyte}
+\item{\code{sample_types}}{vector of sample types used during the examination
+those values are derived from the sample names in the Luminex file
+using regular expressions
+possibly in the future it will be possible to specify the sample types
+manually either by passing a vector or by select it in the GUI}
 
-\item{\code{check_if_blanks_already_adjusted}}{flag that specifies
-if the blanks were already adjusted and its MFI values subtracted from
-remaining samples}
+\item{\code{data}}{a named list of data frames containing information about
+the samples and analytes. The list is named by the type of the data
+e.g. \code{Median}, \verb{Net MFI}, etc.
+The data frames contain information about the samples and analytes
+The rows are different measures, whereas the columns represent
+different analytes
+Example of how \code{data$Median} looks like:\tabular{llll}{
+   Sample \tab Analyte1 \tab Analyte2 \tab Analyte3 \cr
+   Sample1 \tab 1.2 \tab 2.3 \tab 3.4 \cr
+   Sample2 \tab 4.5 \tab 5.6 \tab 6.7 \cr
+   ... \tab ... \tab ... \tab ... \cr
+   Sample96 \tab 7.8 \tab 8.9 \tab 9.0 \cr
+}}
 
-\item{\code{warnings}}{list of lists of all warnings from all samples}
+\item{\code{data_type_used}}{a character value representing the type of data
+that is currently used for calculations. By default, it is set to Median}
 
-\item{\code{errors}}{list of lists of all errors from all samples}
+\item{\code{batch_info}}{a raw list containing metadata about
+the plate read from the Luminex file}
 }
 \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-Plate-new}{\code{Plate$new()}}
 \item \href{#method-Plate-print}{\code{Plate$print()}}
 \item \href{#method-Plate-summary}{\code{Plate$summary()}}
-\item \href{#method-Plate-add_results_block}{\code{Plate$add_results_block()}}
-\item \href{#method-Plate-check_batch_info}{\code{Plate$check_batch_info()}}
-\item \href{#method-Plate-check_analyte_consistency}{\code{Plate$check_analyte_consistency()}}
-\item \href{#method-Plate-check_beads_number}{\code{Plate$check_beads_number()}}
-\item \href{#method-Plate-get_sample}{\code{Plate$get_sample()}}
-\item \href{#method-Plate-get_sample_by_type}{\code{Plate$get_sample_by_type()}}
-\item \href{#method-Plate-get_analyte_id}{\code{Plate$get_analyte_id()}}
 \item \href{#method-Plate-get}{\code{Plate$get()}}
 \item \href{#method-Plate-blank_adjustment}{\code{Plate$blank_adjustment()}}
-\item \href{#method-Plate-check_MFI_after_adjustment}{\code{Plate$check_MFI_after_adjustment()}}
-\item \href{#method-Plate-copy}{\code{Plate$copy()}}
+\item \href{#method-Plate-layout}{\code{Plate$layout()}}
 \item \href{#method-Plate-clone}{\code{Plate$clone()}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-new}{}}}
-\subsection{Method \code{new()}}{
-creates a new \code{Plate} object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$new(
-  analytes = list(),
-  samples = list(),
-  batch_info = list(),
-  calibration_info = list(),
-  audit_logs = list(),
-  plate_name = ""
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{analytes}}{(\code{list})
-list of all analytes measured during an examination}
-
-\item{\code{samples}}{(\code{list})
-list of all samples examined on a plate}
-
-\item{\code{batch_info}}{(\code{list}) \cr
-a raw list containing all the metadata about the plate read from
-the Luminex file}
-
-\item{\code{calibration_info}}{(\code{list}) \cr
-a list containing calibration logs read from Luminex file}
-
-\item{\code{audit_logs}}{(\code{list})
-a list containing audit logs read from Luminex file}
-}
-\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
@@ -138,16 +76,13 @@ such as the number of samples and analytes
 \if{html}{\out{<div class="r">}}\preformatted{Plate$print(...)}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-invisible object
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-summary"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-summary}{}}}
 \subsection{Method \code{summary()}}{
-Function outputs basic information about the plate, such as examination date,
-batch name, and sample types
+Function outputs basic information about the plate, such as
+examination date, batch name, and sample types
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$summary(..., include_names = FALSE)}\if{html}{\out{</div>}}
 }
@@ -163,117 +98,12 @@ By default \code{FALSE}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-add_results_block"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-add_results_block}{}}}
-\subsection{Method \code{add_results_block()}}{
-function adds block of information to the current plate
-
-the analysis type should be added after the analysis,
-otherwise there is no enough information about samples
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$add_results_block(data_type, parsed_block)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-check_batch_info"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-check_batch_info}{}}}
-\subsection{Method \code{check_batch_info()}}{
-Function verifies if the batch info contain valid information
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$check_batch_info()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-check_analyte_consistency"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-check_analyte_consistency}{}}}
-\subsection{Method \code{check_analyte_consistency()}}{
-checks analyte consistency - verifies if all of the analytes contained within the samples are listed in the \code{analytes} list of the plate object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$check_analyte_consistency()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-check_beads_number"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-check_beads_number}{}}}
-\subsection{Method \code{check_beads_number()}}{
-function performs validity check - verifies which samples and analytes saved in the plate have the bead count lower than \code{min_events_per_bead}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$check_beads_number(min_events_per_bead = self$min_events_per_bead)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{min_events_per_bead}}{lower bound of acceptable number of events. By default equals to \code{min_events_per_bead} parameter saved in the plate object}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-returns \code{TRUE} if there are samples with bead count lower than \code{min_events_per_bead}, otherwise \code{FALSE}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-get_sample"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-get_sample}{}}}
-\subsection{Method \code{get_sample()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$get_sample(sample)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{sample}}{sample name or its id}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-sample object of given sample name or id
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-get_sample_by_type"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-get_sample_by_type}{}}}
-\subsection{Method \code{get_sample_by_type()}}{
-Function returns list of samples filtered by the type
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$get_sample_by_type(sample_type, exclude = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{sample_type}}{type of the sample to be filtered. Possible values are:
-SampleType$valid_sample_types}
-
-\item{\code{exclude}}{If \code{FALSE} returns list of samples with given \code{sample_type},
-otherwise returns all samples except for the specified \code{sample_type}}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-get_analyte_id"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-get_analyte_id}{}}}
-\subsection{Method \code{get_analyte_id()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$get_analyte_id(analyte_name)}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-analyte id of given name
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-get"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-get}{}}}
 \subsection{Method \code{get()}}{
 Function returns data for a specific analyte and sample.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$get(analyte, sample, data_type = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Plate$get(analyte, sample_type, data_type = self$data_type_used)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -281,10 +111,11 @@ Function returns data for a specific analyte and sample.
 \describe{
 \item{\code{analyte}}{An analyte name or its id of which data we want to extract}
 
-\item{\code{sample}}{sample name or id}
+\item{\code{data_type}}{if \code{NULL} returns whole column of the dataframe
+containing information about the sample. Default value is plate's
+\code{data_type_used} usually \code{Median}.}
 
-\item{\code{data_type}}{if \code{NULL} returns whole column of the dataframe containing information about the sample.
-Otherwise tries to select the exact \code{data_type} from the dataframe and returns a single value}
+\item{\code{sample}}{sample name or id}
 }
 \if{html}{\out{</div>}}
 }
@@ -296,44 +127,50 @@ Data about a sample and analyte
 \if{html}{\out{<a id="method-Plate-blank_adjustment"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-blank_adjustment}{}}}
 \subsection{Method \code{blank_adjustment()}}{
-Function adjusts the values of test samples by subtracting average of BLANK samples
-purpose of this operation is to remove background light
-In short it subtracts the values from data in all samples, except from Blanks. It does not subtract values from
-\code{Count} values
+Function adjusts the values of test samples by subtracting average of
+BLANK samples purpose of this operation is to remove background light
+In short it subtracts the values from data in all samples, except from
+Blanks. It does not subtract values from \code{Count} values, even if this
+step seems logical, people from the lab do not do it always.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$blank_adjustment(method = "avg", inplace = "TRUE")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Plate$blank_adjustment(method = "avg", in_place = "TRUE")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{method}}{How the values of different blanks should be aggregated. By default \code{avg}. For now it is the only available method}
+\item{\code{method}}{How the values of different blanks should be aggregated.
+By default \code{avg}. For now it is the only available method}
 
-\item{\code{inplace}}{Whether the method should produce new plate with adjusted values or not, By default \code{TRUE} - operates on the current plate.}
+\item{\code{inplace}}{Whether the method should produce new plate with adjusted
+values or not, By default \code{TRUE} - operates on the current plate.}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-check_MFI_after_adjustment"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-check_MFI_after_adjustment}{}}}
-\subsection{Method \code{check_MFI_after_adjustment()}}{
-Function verifies if there are any MFI values below zero
-after blank removal
+\if{html}{\out{<a id="method-Plate-layout"></a>}}
+\if{latex}{\out{\hypertarget{method-Plate-layout}{}}}
+\subsection{Method \code{layout()}}{
+Function takes the data 1D array and returns the data in the form of
+a 2D array, that represents the spatial arrangement of the samples
+on the plate, ie. 12x8 grid.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$check_MFI_after_adjustment()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Plate$layout(data)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{1D array of data represents for example counts, dilutions
+or sample types}
 }
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-copy"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-copy}{}}}
-\subsection{Method \code{copy()}}{
-performs copy of the plate
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$copy()}\if{html}{\out{</div>}}
+\if{html}{\out{</div>}}
 }
-
+\subsection{Returns}{
+A 2D array representing data with the spatial arrangement
+of the samples
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-clone"></a>}}
