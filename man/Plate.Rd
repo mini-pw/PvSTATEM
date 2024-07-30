@@ -28,10 +28,10 @@ Method to initialize the Plate object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$new(
   plate_name,
+  sample_names,
+  analyte_names,
   dilutions = NULL,
   dilution_values = NULL,
-  analyte_names = NULL,
-  sample_names = NULL,
   sample_types = NULL,
   data = NULL,
   sample_locations = NULL,

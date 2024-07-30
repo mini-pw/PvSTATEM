@@ -8,29 +8,30 @@ Plate <- R6::R6Class(
   public = list(
 
     ## Fields ----------------------------------------------------------------
+    ## Must be set ---
     plate_name = "",
     analyte_names = character(),
     sample_names = character(),
-    sample_locations = character(),
-    sample_types = character(),
-    dilutions = character(),
-    dilution_values = numeric(),
-    data = list(),
-    default_data_type = "",
-    batch_info = list(),
+    ## Must be set if validated ---
+    sample_locations = NULL,
+    sample_types = NULL,
+    dilutions = NULL,
+    dilution_values = NULL,
+    data = NULL,
+    default_data_type = NULL,
+    batch_info = NULL,
 
     ## Methods ---------------------------------------------------------------
 
     #' @description
     #' Method to initialize the Plate object
-    initialize = function(plate_name,
+    initialize = function(plate_name, sample_names, analyte_names,
                           dilutions = NULL, dilution_values = NULL,
-                          analyte_names = NULL, sample_names = NULL,
                           sample_types = NULL, data = NULL,
                           sample_locations = NULL, default_data_type = NULL, batch_info = NULL) {
       self$plate_name <- plate_name
-      if (!is.null(analyte_names)) self$analyte_names <- analyte_names
-      if (!is.null(sample_names)) self$sample_names <- sample_names
+      self$analyte_names <- analyte_names
+      self$sample_names <- sample_names
       if (!is.null(sample_locations)) self$sample_locations <- sample_locations
       if (!is.null(dilutions)) self$dilutions <- dilutions
       if (!is.null(sample_types)) self$sample_types <- sample_types
