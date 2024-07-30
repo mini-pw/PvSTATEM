@@ -66,6 +66,16 @@ remove_empty_lists <- function(lst) {
   return(result)
 }
 
+
+is.str.number <- function(x) {
+  all(sapply(x, function(x) grepl("^[0-9]+$", x)))
+}
+
+
+is.scalar <- function(x) {
+  is.atomic(x) && length(x) == 1L
+}
+
 #' Verbose Cat
 #'
 #' This function prints the input to the console if the `verbose` argument is `TRUE`.

@@ -8,56 +8,10 @@ A class to represent the luminex plate. It contains information about
 the samples and analytes that were examined on the plate as well as
 some additional metadata and batch info
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{plate_name}}{\itemize{
-\item plate name obtained from filename
-}}
-
-\item{\code{analytes_names}}{vector of analytes names measured during
-an examination in the same order as in the data}
-
-\item{\code{sample_names}}{vector of sample names measured during
-an examination in the same order as in the data}
-
-\item{\code{sample_locations}}{vector of sample locations pretty name ie. A1, B2}
-
-\item{\code{dilutions}}{vector of dilutions used during the examination
-due to the nature of data it's a vector of strings, logic to transform
-it to numeric has to be implemented in the future}
-
-\item{\code{sample_types}}{vector of sample types used during the examination
-those values are derived from the sample names in the Luminex file
-using regular expressions
-possibly in the future it will be possible to specify the sample types
-manually either by passing a vector or by select it in the GUI}
-
-\item{\code{data}}{a named list of data frames containing information about
-the samples and analytes. The list is named by the type of the data
-e.g. \code{Median}, \verb{Net MFI}, etc.
-The data frames contain information about the samples and analytes
-The rows are different measures, whereas the columns represent
-different analytes
-Example of how \code{data$Median} looks like:\tabular{llll}{
-   Sample \tab Analyte1 \tab Analyte2 \tab Analyte3 \cr
-   Sample1 \tab 1.2 \tab 2.3 \tab 3.4 \cr
-   Sample2 \tab 4.5 \tab 5.6 \tab 6.7 \cr
-   ... \tab ... \tab ... \tab ... \cr
-   Sample96 \tab 7.8 \tab 8.9 \tab 9.0 \cr
-}}
-
-\item{\code{data_type_used}}{a character value representing the type of data
-that is currently used for calculations. By default, it is set to Median}
-
-\item{\code{batch_info}}{a raw list containing metadata about
-the plate read from the Luminex file}
-}
-\if{html}{\out{</div>}}
-}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-Plate-new}{\code{Plate$new()}}
 \item \href{#method-Plate-print}{\code{Plate$print()}}
 \item \href{#method-Plate-summary}{\code{Plate$summary()}}
 \item \href{#method-Plate-get}{\code{Plate$get()}}
@@ -65,6 +19,27 @@ the plate read from the Luminex file}
 \item \href{#method-Plate-layout}{\code{Plate$layout()}}
 \item \href{#method-Plate-clone}{\code{Plate$clone()}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Plate-new"></a>}}
+\if{latex}{\out{\hypertarget{method-Plate-new}{}}}
+\subsection{Method \code{new()}}{
+Method to initialize the Plate object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Plate$new(
+  plate_name,
+  dilutions = NULL,
+  dilution_values = NULL,
+  analyte_names = NULL,
+  sample_names = NULL,
+  sample_types = NULL,
+  data = NULL,
+  sample_locations = NULL,
+  default_data_type = NULL,
+  batch_info = NULL
+)}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-print"></a>}}

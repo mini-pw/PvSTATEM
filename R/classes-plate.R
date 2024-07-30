@@ -3,64 +3,41 @@
 #' A class to represent the luminex plate. It contains information about
 #' the samples and analytes that were examined on the plate as well as
 #' some additional metadata and batch info
-#'
-#' @export
 Plate <- R6::R6Class(
   "Plate",
   public = list(
 
     ## Fields ----------------------------------------------------------------
-
-    #' @field plate_name - plate name obtained from filename
     plate_name = "",
-
-    #' @field analytes_names vector of analytes names measured during
-    #' an examination in the same order as in the data
-    analytes_names = character(),
-
-    #' @field sample_names vector of sample names measured during
-    #' an examination in the same order as in the data
+    analyte_names = character(),
     sample_names = character(),
-
-    #' @field sample_locations vector of sample locations pretty name ie. A1, B2
     sample_locations = character(),
-
-    #' @field dilutions vector of dilutions used during the examination
-    #' due to the nature of data it's a vector of strings, logic to transform
-    #' it to numeric has to be implemented in the future
-    dilutions = character(),
-
-    #' @field sample_types vector of sample types used during the examination
-    #' those values are derived from the sample names in the Luminex file
-    #' using regular expressions
-    #' possibly in the future it will be possible to specify the sample types
-    #' manually either by passing a vector or by select it in the GUI
     sample_types = character(),
-
-    #' @field data a named list of data frames containing information about
-    #' the samples and analytes. The list is named by the type of the data
-    #' e.g. `Median`, `Net MFI`, etc.
-    #' The data frames contain information about the samples and analytes
-    #' The rows are different measures, whereas the columns represent
-    #' different analytes
-    #' Example of how `data$Median` looks like:
-    #' | Sample  | Analyte1 | Analyte2 | Analyte3 |
-    #' |---------|----------|----------|----------|
-    #' | Sample1 | 1.2      | 2.3      | 3.4      |
-    #' | Sample2 | 4.5      | 5.6      | 6.7      |
-    #' | ...     | ...      | ...      | ...      |
-    #' | Sample96| 7.8      | 8.9      | 9.0      |
+    dilutions = character(),
+    dilution_values = numeric(),
     data = list(),
-
-    #' @field data_type_used a character value representing the type of data
-    #' that is currently used for calculations. By default, it is set to Median
-    data_type_used = "Median",
-
-    #' @field batch_info a raw list containing metadata about
-    #' the plate read from the Luminex file
+    default_data_type = "",
     batch_info = list(),
 
     ## Methods ---------------------------------------------------------------
+
+    #' @description
+    #' Method to initialize the Plate object
+    initialize = function(plate_name,
+                          dilutions = NULL, dilution_values = NULL,
+                          analyte_names = NULL, sample_names = NULL,
+                          sample_types = NULL, data = NULL,
+                          sample_locations = NULL, default_data_type = NULL, batch_info = NULL) {
+      self$plate_name <- plate_name
+      if (!is.null(analyte_names)) self$analyte_names <- analyte_names
+      if (!is.null(sample_names)) self$sample_names <- sample_names
+      if (!is.null(sample_locations)) self$sample_locations <- sample_locations
+      if (!is.null(dilutions)) self$dilutions <- dilutions
+      if (!is.null(sample_types)) self$sample_types <- sample_types
+      if (!is.null(data)) self$data <- data
+      if (!is.null(default_data_type)) self$default_data_type <- default_data_type
+      if (!is.null(batch_info)) self$batch_info <- batch_info
+    },
 
     #' @description
     #' Function prints the basic information about the plate
@@ -70,7 +47,7 @@ Plate <- R6::R6Class(
         "Plate with",
         length(self$sample_names),
         "samples and",
-        length(self$analytes_names),
+        length(self$analyte_names),
         "analytes\n"
       )
     },
@@ -99,7 +76,7 @@ Plate <- R6::R6Class(
     get = function(analyte, sample_type, data_type = self$data_type_used) {
       # check if the analyte exists in analytes_names
       if (!is.null(analyte) && !is.na(analyte)) {
-        if (!analyte %in% analytes_names) {
+        if (!analyte %in% self$analyte_names) {
           stop("Analyte does not exist in analytes_names")
         }
       } else {
@@ -159,50 +136,6 @@ Plate <- R6::R6Class(
 
     ## Private Fields ---------------------------------------------------------
     blank_adjusted = FALSE,
-    verbose = TRUE,
-    valid_sample_types = c(
-      "BLANK",
-      "TEST",
-      "NEGATIVE CONTROL",
-      "STANDARD CURVE",
-      "POSITIVE CONTROL"
-    ),
-    # this is a vector of valid data types but it is not complete
-    # because I do not know all the possible values, I haven't
-    # interact that much with the Luminex data
-    valid_data_types = c(
-      "Median",
-      "Net MFI",
-      "Count",
-      "Avg net MFI",
-      "Mean",
-      "%CV",
-      "Peak",
-      "Std Dev"
-    ),
-
-    ## Private Methods --------------------------------------------------------
-
-    #' @description
-    #' Function translates sample names to sample types
-    #' The function uses regular expressions to match the sample names
-    #' to the sample types
-    #'
-    #' @param sample_names A vector of sample names
-    #' @return A vector of sample types
-
-    #' @examples
-    #' translate_sample_names_to_sample_types(c("B", "BLANK", "TEST1"))
-    #' translate_sample_names_to_sample_types(c("S", "CP3"))
-    #'
-    translate_sample_names_to_sample_types = function(sample_names) {}
-    # this function is implemented only once at the moment of parsing the data
-    # it might be better to move it to other file
-
-    # this function is not implemented yet
-    # it consists of convoluted logic that uses regular expressions
-    # but luckily a lot can be scavenged from the existing code
-    # in the `SampleType` class it's just need to be adapted to
-    # work with new structure of the data
+    verbose = TRUE
   )
 )
