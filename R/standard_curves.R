@@ -14,19 +14,6 @@
 #'
 #' @import ggplot2
 #'
-#' @examples
-#'
-#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
-#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
-#'
-#' plate <- read_data(plate_filepath, layout_filepath) # read the data
-#'
-#' plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP")
-#'
-#' plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", log_scale = c("dilutions")) # `log_scale` option allows to apply log scale on selected axis
-#'
-#' plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", decreasing_dilution_order = FALSE) # reversed x - axis
-#'
 #' @export
 plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Median",
                                          decreasing_dilution_order = TRUE,
@@ -205,13 +192,6 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 #'
 #' @import nplr
 #'
-#' @examples
-#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
-#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
-#'
-#' plate <- read_data(plate_filepath, layout_filepath)
-#' model <- create_standard_curve_model_antibody(plate, antibody_name = "RBD_wuhan_IPP")
-#'
 #' @export
 create_standard_curve_model_antibody <- function(plate, antibody_name, data_type = "Median", npars = 5, verbose = TRUE) {
   # get standard curve values of certain antibody
@@ -245,6 +225,7 @@ create_standard_curve_model_antibody <- function(plate, antibody_name, data_type
   }
   return(model)
 }
+
 #' predict dilutions using fitted model
 #'
 #' @param plate Plate object
@@ -257,16 +238,6 @@ create_standard_curve_model_antibody <- function(plate, antibody_name, data_type
 #'
 #' @description
 #' Function predicts the dilutions of the samples, based on the MFI values and the fitted model.
-#' @examples
-#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
-#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
-#'
-#' plate <- read_data(plate_filepath, layout_filepath)
-#' model <- create_standard_curve_model_antibody(plate, antibody_name = "RBD_wuhan_IPP")
-#'
-#' sample_concentrations <- predict_dilutions(plate, antibody_name = "RBD_wuhan_IPP", model)
-#' head(sample_concentrations)
-#'
 #' @export
 predict_dilutions <- function(plate, antibody_name, model, data_type = "Median", verbose = TRUE) {
   sample_concentrations <- data.frame(matrix(nrow = plate$number_of_samples, ncol = 4))
@@ -306,22 +277,6 @@ predict_dilutions <- function(plate, antibody_name, model, data_type = "Median",
 #'
 #'
 #' @import ggplot2
-#'
-#' @examples
-#'
-#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
-#' plate <- read_data(plate_filepath)
-#'
-#'
-#' # temporary replacement for the missing layout file
-#' dilution_factors <- c(1 / 50, 1 / 100, 1 / 200, 1 / 400, 1 / 800, 1 / 1600, 1 / 3200, 1 / 6400, 1 / 12800, 1 / 25600, 1 / 102400)
-#' for (i in seq_along(plate$standard_curve)) {
-#'   sample <- plate$standard_curve[[i]]
-#'   sample$sample_type$dilution_factor <- dilution_factors[i]
-#' }
-#'
-#' model <- create_standard_curve_model_antibody(plate, antibody_name = "RBD_wuhan_IPP")
-#' plot_standard_curve_antibody_with_model(plate, antibody_name = "RBD_wuhan_IPP", model)
 #'
 #' @export
 plot_standard_curve_antibody_with_model <- function(plate, antibody_name, model, data_type = "Median", decreasing_dilution_order = TRUE, log_scale = c("all"), plot_asymptote = TRUE, verbose = TRUE) {
