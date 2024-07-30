@@ -42,7 +42,7 @@ where:
 \item \eqn{s} is the asymmetric coefficient.
 }
 
-This equation is refereed as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
+This equation is referred to as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
 
 By default, \code{nplr} model transforms the x values using the \code{log10} function.
 }

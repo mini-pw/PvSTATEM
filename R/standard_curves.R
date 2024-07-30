@@ -199,7 +199,7 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
 #' - \eqn{x_{mid}}{x_mid} is the x-coordinate at the inflection point,
 #' - \eqn{s} is the asymmetric coefficient.
 #'
-#' This equation is refereed as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
+#' This equation is referred to as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
 #'
 #' By default, `nplr` model transforms the x values using the `log10` function.
 #'
@@ -367,21 +367,3 @@ plot_standard_curve_antibody_with_model <- function(plate, antibody_name, model,
   }
   p
 }
-
-
-
-verbose_cat <- function(..., verbose = TRUE) {
-  if (verbose) {
-    cat(..., sep = "")
-  }
-}
-
-color_codes <-
-  list(
-    yellow_start = "\033[33m",
-    yellow_end = "\033[39m",
-    red_start = "\033[31m",
-    red_end = "\033[39m",
-    green_start = "\033[32m",
-    green_end = "\033[39m"
-  )

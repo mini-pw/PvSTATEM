@@ -79,6 +79,11 @@ Plate <- R6::R6Class(
       self$audit_logs <- audit_logs
       self$plate_name <- plate_name
     },
+
+    #' @description
+    #' Function prints the basic information about the plate
+    #' such as the number of samples and analytes
+    #' @return invisible object
     print = function(...) {
       cat(
         "Plate with",
