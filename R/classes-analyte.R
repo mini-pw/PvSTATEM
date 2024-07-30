@@ -103,8 +103,10 @@ Analyte <- R6::R6Class(
       if (!verify_numeric_join(self$bead_count, new_analyte$bead_count)) {
         stop("Cannot join analytes with different bead counts")
       }
-      if (!verify_character_join(self$analysis_type,
-                                 new_analyte$analysis_type)) {
+      if (!verify_character_join(
+        self$analysis_type,
+        new_analyte$analysis_type
+      )) {
         stop("Cannot join analytes with different analysis types")
       }
       if (!verify_character_join(self$units, new_analyte$units)) {

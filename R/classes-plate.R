@@ -9,10 +9,13 @@
 #' @examples
 #'
 #' plate_filepath <- system.file("extdata",
-#' "CovidOISExPONTENT_CO.csv", package = "PvSTATEM",
-#' mustWork = TRUE) # get the filepath of the csv dataset
+#'   "CovidOISExPONTENT_CO.csv",
+#'   package = "PvSTATEM",
+#'   mustWork = TRUE
+#' ) # get the filepath of the csv dataset
 #' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-#' package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
+#'   package = "PvSTATEM", mustWork = TRUE
+#' ) # get the filepath of the layout file
 #'
 #' plate <- read_data(plate_filepath, layout_filepath)
 #'
@@ -459,7 +462,8 @@ Plate <- R6::R6Class(
 
       blank_samples <- self$get_sample_by_type("BLANK") # these values will be subtracted
       non_blank_samples <- self$get_sample_by_type("BLANK",
-                                                   exclude = TRUE) # from these values
+        exclude = TRUE
+      ) # from these values
 
       # aggregate blank values
 
@@ -507,8 +511,10 @@ Plate <- R6::R6Class(
         below_min <- which(sample$data < 0, arr.ind = TRUE)
         if (length(below_min) > 0) {
           below_min_analytes <- names(sample$data)[below_min[, "col"]]
-          new_warnings <- paste0("An analyte ", below_min_analytes,
-                                 " has value below 0 after blank adjustment")
+          new_warnings <- paste0(
+            "An analyte ", below_min_analytes,
+            " has value below 0 after blank adjustment"
+          )
           sample$warnings <- c(sample$warnings, new_warnings)
         }
       }
@@ -624,10 +630,12 @@ Plate <- R6::R6Class(
       }
 
 
-      dilutions <- sapply(standard_curves, function(sample)
-        sample$sample_type$character_dilution_factor)
-      dilutions_numeric <- sapply(standard_curves, function(sample)
-        sample$sample_type$dilution_factor)
+      dilutions <- sapply(standard_curves, function(sample) {
+        sample$sample_type$character_dilution_factor
+      })
+      dilutions_numeric <- sapply(standard_curves, function(sample) {
+        sample$sample_type$dilution_factor
+      })
       # sort values according to dilutions
       sorted_order <- order(dilutions_numeric)
 

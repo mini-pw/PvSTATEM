@@ -3,9 +3,11 @@
 #' A class to represent the sample. It contains all the necessary
 #' information about the sample
 #' @examples
-#' sample <- Sample$new(id = 1, sample_name = "test",
-#' sample_type = SampleType$new("TEST"),
-#' sample_location = SampleLocation$new(1, 1))
+#' sample <- Sample$new(
+#'   id = 1, sample_name = "test",
+#'   sample_type = SampleType$new("TEST"),
+#'   sample_location = SampleLocation$new(1, 1)
+#' )
 #'
 #' @export
 Sample <- R6::R6Class(
@@ -33,7 +35,7 @@ Sample <- R6::R6Class(
     errors = list(),
 
     #' @field data The dataframe containing information about the analytes within the sample.
-    #' The dataframe rows are different measures, such as `Median`, `Net MFI`, etc. 
+    #' The dataframe rows are different measures, such as `Median`, `Net MFI`, etc.
     #'  whereas the columns represent different analytes
     #'
     data = data.frame(),

@@ -81,12 +81,16 @@ SampleType <- R6::R6Class(
     join = function(new_sample_type) {
       # join the data of two samples
 
-      if (!verify_character_join(self$sample_type,
-                                 new_sample_type$sample_type)) {
+      if (!verify_character_join(
+        self$sample_type,
+        new_sample_type$sample_type
+      )) {
         stop("Cannot join samples of different types")
       }
-      if (!verify_numeric_join(self$dilution_factor,
-                               new_sample_type$dilution_factor)) {
+      if (!verify_numeric_join(
+        self$dilution_factor,
+        new_sample_type$dilution_factor
+      )) {
         stop("Cannot join samples with different dilution factors")
       }
 
@@ -163,7 +167,6 @@ SampleType$validate_sample_type <- function(sample_type) {
 #'
 #' @examples
 #' SampleType$validate_dilution_factor("POSITIVE CONTROL", 1)
-#'
 #'
 #' @export
 SampleType$validate_dilution_factor <- function(sample_type, dilution_factor) {
@@ -261,13 +264,17 @@ SampleType$parse_sample_type <- function(sample_name,
   if (sample_type %in% c("STANDARD CURVE", "POSITIVE CONTROL", "NEGATIVE CONTROL")) {
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
-    if (!is.null(sample_name_loc) && sample_name_loc != ""
-        || !is.na(sample_name_loc) && sample_name_loc != "") {
-      match <- regmatches(sample_name_loc, regexpr(dilution_factor_pattern,
-                                                   sample_name_loc))
+    if (!is.null(sample_name_loc) && sample_name_loc != "" ||
+      !is.na(sample_name_loc) && sample_name_loc != "") {
+      match <- regmatches(sample_name_loc, regexpr(
+        dilution_factor_pattern,
+        sample_name_loc
+      ))
     } else {
-      match <- regmatches(sample_name, regexpr(dilution_factor_pattern,
-                                               sample_name))
+      match <- regmatches(sample_name, regexpr(
+        dilution_factor_pattern,
+        sample_name
+      ))
     }
     dilution_factor <- eval(parse(text = match))
 
@@ -275,8 +282,10 @@ SampleType$parse_sample_type <- function(sample_name,
       dilution_factor <- NA # this value needs to be updated later
     }
 
-    return(SampleType$new("STANDARD CURVE", dilution_factor = dilution_factor,
-                          validate_dilution = FALSE))
+    return(SampleType$new("STANDARD CURVE",
+      dilution_factor = dilution_factor,
+      validate_dilution = FALSE
+    ))
   }
 
   negative_types <- c("NEGATIVE CONTROL", "N")
@@ -297,12 +306,16 @@ SampleType$parse_sample_type <- function(sample_name,
     dilution_factor_pattern <- "1/\\d+"
     match <- ""
     if (!is.null(sample_name_loc) && sample_name_loc != "" ||
-        !is.na(sample_name_loc) && sample_name_loc != "") {
-      match <- regmatches(sample_name_loc, regexpr(dilution_factor_pattern,
-                                                   sample_name_loc))
+      !is.na(sample_name_loc) && sample_name_loc != "") {
+      match <- regmatches(sample_name_loc, regexpr(
+        dilution_factor_pattern,
+        sample_name_loc
+      ))
     } else {
-      match <- regmatches(sample_name, regexpr(dilution_factor_pattern,
-                                               sample_name))
+      match <- regmatches(sample_name, regexpr(
+        dilution_factor_pattern,
+        sample_name
+      ))
     }
     dilution_factor <- eval(parse(text = match))
 
@@ -310,8 +323,10 @@ SampleType$parse_sample_type <- function(sample_name,
       dilution_factor <- NA # this value needs to be updated later
     }
 
-    return(SampleType$new(sample_type, dilution_factor = dilution_factor,
-                          validate_dilution = FALSE))
+    return(SampleType$new(sample_type,
+      dilution_factor = dilution_factor,
+      validate_dilution = FALSE
+    ))
   }
 
   return(SampleType$new("TEST"))

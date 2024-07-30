@@ -40,8 +40,6 @@ dataset_filepath <- system.file("extdata", dataset_name, package = "PvSTATEM", m
 The variable `dataset_filepath` contains now the path to the specified dataset on you computer. Since we know the filepath to the desired dataset, we can execute the `read_data` function to read the data. The function has the following syntax:
 
 ```{r}
-
-
 plate <- read_data(dataset_filepath)
 
 plate$summary()

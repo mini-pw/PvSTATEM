@@ -67,9 +67,9 @@ remove_empty_lists <- function(lst) {
 }
 
 #' Verbose Cat
-#' 
+#'
 #' This function prints the input to the console if the `verbose` argument is `TRUE`.
-#' 
+#'
 #' @param ... The input to be printed.
 #' @param verbose A logical value indicating whether the input should be printed.
 #' @keywords internal
