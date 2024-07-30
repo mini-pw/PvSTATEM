@@ -72,6 +72,9 @@ is.str.number <- function(x) {
 }
 
 
+#' Check if a value is a scalar
+#'
+#' This will return FALSE for NULL and vectors of length bigger than 2.
 is.scalar <- function(x) {
   is.atomic(x) && length(x) == 1L
 }
