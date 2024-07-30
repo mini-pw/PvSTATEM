@@ -97,21 +97,15 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
   p
 }
 
-
-
-#' Create model for standard curve of a certain antibody
+#' Create model using nplr logistic regresion model
 #'
-#' @param plate Plate object
-#' @param antibody_name Name of the antibody for which we want to create the model
-#' @param data_type Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default equals to `Median`
+#' @param standard_curve_df Data frame with the standard curve data. Should contain columns: `dilution` and `MFI`
+#' @param model_name Name of the model
 #' @param npars Number of parameters to fit the model, by default 5 - the maximum value. `npars` also accepts a number of parameters to fit the model - an integer between 2 and 5, accepts also value `"all"`, which chooses best models from those with different number of parameters.
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #'
-#'
-#' @return nplr object with the model
-#'
 #' @description
-#' function for now uses the `nplr` package to fit the model. The model is fitted using the formula:
+#' This function uses the `nplr` package to fit the model. The model is fitted using the formula:
 #'
 #' \deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s},}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s,}
 #'
@@ -124,47 +118,63 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
 #' - \eqn{x_{mid}}{x_mid} is the x-coordinate at the inflection point,
 #' - \eqn{s} is the asymmetric coefficient.
 #'
-#' This equation is referred to as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
+#' This equation is refereed as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
 #'
 #' By default, `nplr` model transforms the x values using the `log10` function.
 #'
 #' @import nplr
+#' @import dplyr
 #'
-#' @export
-create_standard_curve_model_antibody <- function(plate, antibody_name, data_type = "Median", npars = 5, verbose = TRUE) {
-  # get standard curve values of certain antibody
+logistic_regresion_model <- function(
+    standard_curve_df,
+    model_name = "MFI model",
+    npars = 5, verbose = TRUE) {
+  stopifnot(is.data.frame(standard_curve_df))
+  stopifnot(all(!is.na(standard_curve_df)))
+  stopifnot(is.character(model_name))
 
-  standard_curves <- plate$standard_curve
-  dilutions <- sapply(standard_curves, function(sample) sample$sample_type$character_dilution_factor)
-  dilutions_numeric <- sapply(standard_curves, function(sample) sample$sample_type$dilution_factor)
-  curve_values <- sapply(standard_curves, function(sample) sample$data[data_type, antibody_name])
+  data <- standard_curve_df %>%
+    select(dilution, MFI)
 
-  # fit the model
-
-  fit.data <- data.frame("MFI" = curve_values, "dilutions" = dilutions_numeric)
-
-  # try catch this later
-  if (length(standard_curves) >= 5) {
-    model <- nplr::nplr(x = dilutions_numeric, y = curve_values, npars = npars, silent = !verbose)
-
-    # sample_concentrations$dilution <- nplr::getEstimates(model, sample_concentrations$MFI, B = 1e4, conf.level = .95)$y
-  } else {
+  number_of_samples <- dim(data)[1]
+  if (number_of_samples < 5) {
     verbose_cat(
-      "(",
-      color_codes$red_start,
-      "WARNING",
-      color_codes$red_end,
-      ")",
-      "\n Using less than 5 samples to fit logistic model. For now using the basic nplr method to fit the logistic model - should be modified in the future",
+      "(", color_codes$red_start, "WARNING", color_codes$red_end, ")\n",
+      "Using less than 5 samples to fit logistic model. For now using the basic nplr method to fit the logistic model - should be modified in the future",
       verbose = verbose
     )
-    npars <- min(npars, length(standard_curves))
-    model <- nplr::nplr(x = dilutions_numeric, y = curve_values, npars = npars, silent = !verbose)
+    npars <- min(npars, number_of_samples)
   }
-  return(model)
+
+  model <- nplr::nplr(
+    x = data$dilution, y = data$MFI, npars = npars, silent = !verbose
+  )
+  model
 }
 
-#' predict dilutions using fitted model
+
+#' Create standard curve model for a certain analyte
+#'
+#' @param plate Plate object
+#' @param analyte_name Name of the analyte for which we want to create the model
+#' @param data_type Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default equals to `Median`
+#' @param ... Additional arguments passed to the model
+#'
+#' @return Standard Curve model
+#'
+#' @export
+create_standard_curve_model_analyte <- function(plate, analyte_name, data_type = "Median", ...) {
+  # Create a dataframe with the data
+  dilutions_numeric <- plate$get_dilution_values("STANDARD CURVE")
+  curve_values <- plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type)
+  fit_data <- data.frame("MFI" = curve_values, "dilution" = dilutions_numeric)
+
+  # Create the model
+  logistic_regresion_model(fit_data, analyte_name, ...)
+}
+
+
+#' Predict dilutions using fitted model
 #'
 #' @param plate Plate object
 #' @param antibody_name Name of the antibody for which we want to predict the dilutions

@@ -13,12 +13,17 @@ get_test_plate <- function() {
     analyte_names = c("Spike_6P_IPP"),
     sample_types = types,
     dilutions = dilutions,
-    dilution_values = c(0.2, 0.01, NA),
+    dilution_values = dilution_values,
     data = list(Median = data.frame(Spike_6P_IPP = values))
   )
 }
 
-test_that("plot_standard_curve_antibody", {
+test_that("Test plotting the standard curve samples from a plate object", {
   plate <- get_test_plate()
   expect_no_error(plot_standard_curve_analyte(plate, "Spike_6P_IPP"))
+})
+
+test_that("Test creating analyte model from a plate object", {
+  plate <- get_test_plate()
+  expect_no_error(create_standard_curve_model_analyte(plate, "Spike_6P_IPP"))
 })

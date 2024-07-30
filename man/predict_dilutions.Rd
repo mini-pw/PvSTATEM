@@ -2,7 +2,7 @@
 % Please edit documentation in R/standard_curves.R
 \name{predict_dilutions}
 \alias{predict_dilutions}
-\title{predict dilutions using fitted model}
+\title{Predict dilutions using fitted model}
 \usage{
 predict_dilutions(
   plate,

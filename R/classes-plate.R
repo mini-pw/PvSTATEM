@@ -175,6 +175,8 @@ Plate <- R6::R6Class(
       if (is.null(self$dilution_values)) {
         stop("Dilution values are not set for the plate")
       }
+      print(self$sample_types)
+      print(self$dilution_values)
       return(self$dilution_values[self$sample_types == sample_type])
     },
 
