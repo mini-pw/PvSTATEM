@@ -2,7 +2,9 @@
 
 export(PlateBuilder)
 export(create_standard_curve_model_antibody)
-export(plot_standard_curve_antibody)
+export(is_valid_data_type)
+export(is_valid_sample_type)
+export(plot_standard_curve_analyte)
 export(plot_standard_curve_antibody_with_model)
 export(predict_dilutions)
 import(ggplot2)

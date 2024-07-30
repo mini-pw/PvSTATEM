@@ -143,6 +143,8 @@ Plate <- R6::R6Class(
       data_of_specified_type <- self$data[[data_type]]
       return(data_of_specified_type[valid_samples, analyte])
     },
+
+    #'
     get_dilution = function(sample_type) {
       if (!is_valid_sample_type(sample_type)) {
         stop("Sample type is not a valid sample type")
@@ -152,6 +154,8 @@ Plate <- R6::R6Class(
       }
       return(self$dilutions[self$sample_types == sample_type])
     },
+
+    #'
     get_dilution_values = function(sample_type) {
       if (!is_valid_sample_type(sample_type)) {
         stop("Sample type is not a valid sample type")

@@ -186,15 +186,20 @@ PlateBuilder <- R6::R6Class(
 
 convert_dilutions_to_numeric <- function(dilutions) {
   stopifnot(is.character(dilutions))
-  splitted_dilutions <- stringr::str_split(dilutions, "/")
+  non_na_filter <- !is.na(dilutions)
+
+  splitted_dilutions <- stringr::str_split(dilutions[non_na_filter], "/")
   for (splitted_dilution in splitted_dilutions) {
     stopifnot(length(splitted_dilution) == 2)
     stopifnot(all())
   }
-  as.numeric(sapply(splitted_dilutions, function(x) {
+
+  dilution_values <- rep(NA, length(dilutions))
+  dilution_values[non_na_filter] <- as.numeric(sapply(splitted_dilutions, function(x) {
     x <- as.numeric(x)
     x[1] / x[2]
   }))
+  dilution_values
 }
 
 #' @description

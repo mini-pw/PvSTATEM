@@ -6,6 +6,12 @@
 \usage{
 is.scalar(x)
 }
+\arguments{
+\item{x}{Object to be checked.}
+}
+\value{
+\code{TRUE} if the object is a scalar, \code{FALSE} otherwise.
+}
 \description{
 This will return FALSE for NULL and vectors of length bigger than 2.
 }

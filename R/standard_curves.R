@@ -4,7 +4,7 @@
 #' Plot standard curve samples of a plate
 #'
 #'
-#' @param plates A plate object
+#' @param plate A plate object
 #'
 #' @param analyte_name Name of the analyte of which standard curve we want to plot.
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Net MFI`
@@ -18,9 +18,9 @@
 #' @import ggplot2
 #'
 #' @export
-plot_standard_curve_antibody <- function(plate, analyte_name,
-                                         data_type = "Median", decreasing_dilution_order = TRUE,
-                                         log_scale = c("all"), plot_line = TRUE, verbose = TRUE) {
+plot_standard_curve_analyte <- function(plate, analyte_name,
+                                        data_type = "Median", decreasing_dilution_order = TRUE,
+                                        log_scale = c("all"), plot_line = TRUE, verbose = TRUE) {
   AVAILABLE_LOG_SCALE_VALUES <- c("all", "dilutions", "MFI")
 
   if (!inherits(plate, "Plate")) {
@@ -218,7 +218,7 @@ predict_dilutions <- function(plate, antibody_name, model, data_type = "Median",
 #'
 #' @export
 plot_standard_curve_antibody_with_model <- function(plate, antibody_name, model, data_type = "Median", decreasing_dilution_order = TRUE, log_scale = c("all"), plot_asymptote = TRUE, verbose = TRUE) {
-  p <- plot_standard_curve_antibody(plate, antibody_name = antibody_name, data_type = data_type, decreasing_dilution_order = decreasing_dilution_order, log_scale = log_scale, verbose = verbose, plot_line = FALSE)
+  p <- plot_standard_curve_analyte(plate, antibody_name = antibody_name, data_type = data_type, decreasing_dilution_order = decreasing_dilution_order, log_scale = log_scale, verbose = verbose, plot_line = FALSE)
 
   plot_name <- paste0("Fitted standard curve for analyte: ", antibody_name)
   p$labels$title <- plot_name

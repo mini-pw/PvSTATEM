@@ -14,7 +14,9 @@ some additional metadata and batch info
 \item \href{#method-Plate-new}{\code{Plate$new()}}
 \item \href{#method-Plate-print}{\code{Plate$print()}}
 \item \href{#method-Plate-summary}{\code{Plate$summary()}}
-\item \href{#method-Plate-get}{\code{Plate$get()}}
+\item \href{#method-Plate-get_data}{\code{Plate$get_data()}}
+\item \href{#method-Plate-get_dilution}{\code{Plate$get_dilution()}}
+\item \href{#method-Plate-get_dilution_values}{\code{Plate$get_dilution_values()}}
 \item \href{#method-Plate-blank_adjustment}{\code{Plate$blank_adjustment()}}
 \item \href{#method-Plate-layout}{\code{Plate$layout()}}
 \item \href{#method-Plate-clone}{\code{Plate$clone()}}
@@ -73,12 +75,12 @@ By default \code{FALSE}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-get"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-get}{}}}
-\subsection{Method \code{get()}}{
+\if{html}{\out{<a id="method-Plate-get_data"></a>}}
+\if{latex}{\out{\hypertarget{method-Plate-get_data}{}}}
+\subsection{Method \code{get_data()}}{
 Function returns data for a specific analyte and sample.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$get(analyte, sample_type, data_type = self$data_type_used)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Plate$get_data(analyte, sample_type, data_type = self$data_type_used)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -97,6 +99,24 @@ containing information about the sample. Default value is plate's
 \subsection{Returns}{
 Data about a sample and analyte
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Plate-get_dilution"></a>}}
+\if{latex}{\out{\hypertarget{method-Plate-get_dilution}{}}}
+\subsection{Method \code{get_dilution()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Plate$get_dilution(sample_type)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Plate-get_dilution_values"></a>}}
+\if{latex}{\out{\hypertarget{method-Plate-get_dilution_values}{}}}
+\subsection{Method \code{get_dilution_values()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Plate$get_dilution_values(sample_type)}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-blank_adjustment"></a>}}
