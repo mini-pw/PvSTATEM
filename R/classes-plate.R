@@ -22,11 +22,23 @@ VALID_DATA_TYPES <- c(
 
 globalVariables(c("VALID_SAMPLE_TYPES", "VALID_DATA_TYPES"))
 
+#' Check if the sample type is valid. The sample type is valid if it is one of the
+#' elements of the `VALID_SAMPLE_TYPES` vector.
+#'
+#' @param sample_type A string representing the sample type.
+#' @return `TRUE` if the sample type is valid, `FALSE` otherwise.
+#'
 #' @export
 is_valid_sample_type <- function(sample_type) {
   sample_type %in% VALID_SAMPLE_TYPES
 }
 
+#' Check if the data type is valid. The data type is valid if it is one of the
+#' elements of the `VALID_DATA_TYPES` vector.
+#'
+#' @param data_type A string representing the data type.
+#' @return `TRUE` if the data type is valid, `FALSE` otherwise.
+#'
 #' @export
 is_valid_data_type <- function(data_type) {
   data_type %in% VALID_DATA_TYPES
