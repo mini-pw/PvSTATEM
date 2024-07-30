@@ -1,3 +1,38 @@
+#'
+#'
+
+VALID_SAMPLE_TYPES <- c(
+  "BLANK",
+  "TEST",
+  "NEGATIVE CONTROL",
+  "STANDARD CURVE",
+  "POSITIVE CONTROL"
+)
+
+VALID_DATA_TYPES <- c(
+  "Median",
+  "Net MFI",
+  "Count",
+  "Avg net MFI",
+  "Mean",
+  "%CV",
+  "Peak",
+  "Std Dev"
+)
+
+globalVariables(c("VALID_SAMPLE_TYPES", "VALID_DATA_TYPES"))
+
+#' @export
+is_valid_sample_type <- function(sample_type) {
+  sample_type %in% VALID_SAMPLE_TYPES
+}
+
+#' @export
+is_valid_data_type <- function(data_type) {
+  data_type %in% VALID_DATA_TYPES
+}
+
+
 #' @title Plate
 #' @description
 #' A class to represent the luminex plate. It contains information about
@@ -34,6 +69,7 @@ Plate <- R6::R6Class(
       self$sample_names <- sample_names
       if (!is.null(sample_locations)) self$sample_locations <- sample_locations
       if (!is.null(dilutions)) self$dilutions <- dilutions
+      if (!is.null(dilution_values)) self$dilution_values <- dilution_values
       if (!is.null(sample_types)) self$sample_types <- sample_types
       if (!is.null(data)) self$data <- data
       if (!is.null(default_data_type)) self$default_data_type <- default_data_type
@@ -84,26 +120,26 @@ Plate <- R6::R6Class(
         stop("Analyte is either NULL or NA")
       }
 
-      # check if the sample_type exists in valid_sample_types
+      # check if the sample_type is a valid sample type
       if (!is.null(sample_type) && !is.na(sample_type)) {
-        if (!sample_type %in% valid_sample_types) {
-          stop("Sample type does not exist in valid_sample_types")
+        if (!is_valid_sample_type(sample_type)) {
+          stop("Sample type is not a valid sample type")
         }
       } else {
         stop("Sample type is either NULL or NA")
       }
 
-      # check if the data_type exists in valid_data_types
+      # check if the data_type is a valid data type
       if (!is.null(data_type) && !is.na(data_type)) {
-        if (!data_type %in% valid_data_types) {
-          stop("Data type does not exist in valid_data_types")
+        if (!is_valid_data_type(data_type)) {
+          stop("Data type is not a valid data type")
         }
       } else {
         stop("Data type is either NULL or NA")
       }
 
       # get samples of the given type, data_type and analyte and return them
-      valid_samples <- sample_types == sample_type
+      valid_samples <- self$sample_types == sample_type
       data_of_specified_type <- self$data[[data_type]]
       return(data_of_specified_type[valid_samples, analyte])
     },

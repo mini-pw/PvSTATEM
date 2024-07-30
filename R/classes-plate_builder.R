@@ -64,7 +64,7 @@ PlateBuilder <- R6::R6Class(
       stopifnot(is.null(self$sample_types))
       sample_types <- translate_sample_names_to_sample_types(self$sample_names)
       for (sample_type in sample_types) {
-        if (!sample_type %in% private$valid_sample_types) {
+        if (!is_valid_sample_type(sample_type)) {
           stop("Sample type `", sample_type, "` is not a valid sample type")
         }
       }
@@ -90,7 +90,7 @@ PlateBuilder <- R6::R6Class(
       stopifnot(is.list(data))
       stopifnot(length(data) > 0)
       for (name in names(data)) {
-        if (!name %in% private$valid_data_types) {
+        if (!is_valid_data_type(name)) {
           stop("Data type `", name, "` is not a valid data type")
         }
       }
@@ -122,7 +122,7 @@ PlateBuilder <- R6::R6Class(
     #' @param data_type a character value representing the type of data
     #' that is currently used for calculations. By default, it is set to Median
     set_default_data_type = function(data_type = "Median") {
-      stopifnot(data_type %in% private$valid_data_types)
+      stopifnot(is_valid_data_type(data_type))
       self$default_data_type <- data_type
     },
 
@@ -156,23 +156,6 @@ PlateBuilder <- R6::R6Class(
     }
   ),
   private = list(
-    valid_sample_types = c(
-      "BLANK",
-      "TEST",
-      "NEGATIVE CONTROL",
-      "STANDARD CURVE",
-      "POSITIVE CONTROL"
-    ),
-    valid_data_types = c(
-      "Median",
-      "Net MFI",
-      "Count",
-      "Avg net MFI",
-      "Mean",
-      "%CV",
-      "Peak",
-      "Std Dev"
-    ),
     validate = function() {
       errors <- list()
       if (lengh(self$sample_names) != length(self$sample_locations)) {
@@ -184,7 +167,7 @@ PlateBuilder <- R6::R6Class(
       if (lengh(self$sample_names) != length(self$sample_types)) {
         append(errors, "Length of sample_names and sample_types is not equal")
       }
-      if (!(self$data_type_used %in% self$valid_data_types)) {
+      if (!is_valid_data_type(self$data_type_used)) {
         append(errors, "Data type used is not valid")
       }
       if (length(self$data) == 0) {
