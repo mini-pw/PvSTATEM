@@ -1,9 +1,12 @@
-#' Plot standard curves of plate or list of plates
+#' @title Standard curves
+#'
+
+#' Plot standard curve samples of a plate
 #'
 #'
-#' @param plates A single plate object or a list of plates. Plates should contain the same number of standard curve samples and same diltuions
+#' @param plates A plate object
 #'
-#' @param antibody_name Name of the antibody of which standard curve we want to plot.
+#' @param analyte_name Name of the analyte of which standard curve we want to plot.
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Net MFI`
 #' @param decreasing_dilution_order If `TRUE` the dilutions are plotted in decreasing order, `TRUE` by default
 #' @param log_scale Which elements on the plot should be displayed in log scale. By default `"dilutions"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
@@ -15,114 +18,46 @@
 #' @import ggplot2
 #'
 #' @export
-plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Median",
-                                         decreasing_dilution_order = TRUE,
-                                         log_scale = c("all"), plot_line = TRUE,
-                                         verbose = TRUE) {
-  if (inherits(plates, "Plate")) { # an instance of Plate
-    plates <- list(plates)
-  }
-  if (!inherits(plates, "list")) {
-    stop("plates object should be a plate or a list of plates")
-  }
-  for (plate in plates) {
-    if (!inherits(plate, "Plate")) {
-      stop("plates object should be a plate or a list of plates")
-    }
-  }
+plot_standard_curve_antibody <- function(plate, analyte_name,
+                                         data_type = "Median", decreasing_dilution_order = TRUE,
+                                         log_scale = c("all"), plot_line = TRUE, verbose = TRUE) {
+  AVAILABLE_LOG_SCALE_VALUES <- c("all", "dilutions", "MFI")
 
-  # check if log_scale is a character vector and contains element from set
-  available_log_scale_values <- c("all", "dilutions", "MFI")
-  if (!is.null(log_scale) && !all(log_scale %in% available_log_scale_values)) {
-    stop("log_scale should be a character vector containing elements from set: ", paste(available_log_scale_values, collapse = ", "))
+  if (!inherits(plate, "Plate")) {
+    stop("plate object should be a Plate")
+  }
+  if (!is.null(log_scale) && !all(log_scale %in% AVAILABLE_LOG_SCALE_VALUES)) {
+    stop("log_scale should be a character vector containing elements from set: ", paste(AVAILABLE_LOG_SCALE_VALUES, collapse = ", "))
+  }
+  if (!(analyte_name %in% plate$analyte_names)) {
+    stop(analyte_name, " not found in the plate object")
   }
 
-  dilutions_numeric_base <- NULL
-  standard_curve_num_samples <- NULL
+  plot_name <- paste0("Sample values of standard curve for analyte: ", analyte_name)
+  mfi <- plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type)
+  plot_data <- data.frame(
+    dilution = plate$get_dilution_values("STANDARD CURVE"),
+    MFI = mfi,
+    plate = plate$plate_name
+  )
 
-  standard_curve_values_list <- list()
-
-  for (plate_num in seq_len(length(plates))) {
-    plate <- plates[[plate_num]]
-
-    standard_curves <- plate$standard_curve
-
-    if (is.null(standard_curve_num_samples)) {
-      standard_curve_num_samples <- length(standard_curves)
-    } else if (standard_curve_num_samples != length(standard_curves)) {
-      stop("Inconsistent number of positive control or standard curve samples accross plates")
-    }
-
-    if (!antibody_name %in% plate$analyte_names) {
-      stop("Antibody ", antibody_name, " not present in the plate")
-    }
-
-    dilutions <- sapply(standard_curves, function(sample) sample$sample_type$character_dilution_factor)
-    dilutions_numeric <- sapply(standard_curves, function(sample) sample$sample_type$dilution_factor)
-
-
-    if (is.null(dilutions_numeric_base)) {
-      dilutions_numeric_base <- dilutions_numeric
-    } else if (!all.equal(dilutions_numeric_base, dilutions_numeric)) {
-      stop("Inconsistent dilutions accross plates")
-    }
-
-    curve_values <- sapply(standard_curves, function(sample) sample$data[data_type, antibody_name])
-
-    if (any(is.na(curve_values))) {
-      stop(data_type, " not present in the dataframe")
-    }
-
-    standard_curve_values_list <- append(standard_curve_values_list, list(curve_values))
+  # Scale x and y if needed
+  x_log_scale <- "dilution" %in% log_scale || "all" %in% log_scale
+  if (x_log_scale) {
+    plot_data$dilution <- log(plot_data$dilution)
   }
-
-  plot_name <- paste0("Sample values of standard curve for analyte: ", antibody_name)
-
-  if (length(plates) >= 3) {
-    colors <- RColorBrewer::brewer.pal(length(plates), "Set1")
-  } else {
-    colors <- c("red", "blue")
-  }
-
-  log_if_needed_mfi <- function(x) {
-    if ("MFI" %in% log_scale || "all" %in% log_scale) {
-      return(log(x))
-    }
-    return(x)
-  }
-
-  log_if_needed_dilutions <- function(x) {
-    if ("dilutions" %in% log_scale || "all" %in% log_scale) {
-      return(log(x))
-    }
-    return(x)
-  }
-
-  # Determine if x and y axes need to be log-scaled
-  x_log_scale <- "dilutions" %in% log_scale || "all" %in% log_scale
+  xlab <- ifelse(x_log_scale, "log(dilution)", "dilution")
   y_log_scale <- "MFI" %in% log_scale || "all" %in% log_scale
-
-  plot_data <- data.frame()
-  mfi <- NULL
-
-  for (i in seq_len(length(plates))) {
-    temp_data <- data.frame(
-      dilutions = log_if_needed_dilutions(dilutions_numeric),
-      mfi = log_if_needed_mfi(standard_curve_values_list[[i]]),
-      plate = plates[[i]]$plate_name,
-      colors = colors[[i]]
-    )
-    plot_data <- rbind(plot_data, temp_data)
+  if (y_log_scale) {
+    plot_data$MFI <- log(plot_data$MFI)
   }
-
-  # Generate x and y labels
-  xlab <- ifelse(x_log_scale, "log(dilutions)", "dilutions")
   ylab <- ifelse(y_log_scale, paste0("log(", data_type, ")"), data_type)
 
-  x_ticks <- c(log_if_needed_dilutions(dilutions_numeric), max(log_if_needed_dilutions(dilutions_numeric)) + 1)
-  x_labels <- c(dilutions, "")
+  x_ticks <- c(plot_data$dilution, max(plot_data$dilution) + 1)
+  x_labels <- c(plate$get_dilution("STANDARD CURVE"), "")
 
-  legend_position <- c(0.8, 0.2) # Automatically position the legend
+  # Automatically position the legend
+  legend_position <- c(0.8, 0.2)
   if (decreasing_dilution_order) {
     if (x_log_scale && !y_log_scale) {
       legend_position <- c(0.8, 0.8)
@@ -137,28 +72,31 @@ plot_standard_curve_antibody <- function(plates, antibody_name, data_type = "Med
     }
   }
 
-  p <- ggplot2::ggplot(plot_data, aes(x = dilutions, y = mfi, color = plate))
+  p <- ggplot2::ggplot(plot_data, aes(x = dilution, y = mfi, color = plate))
 
   if (plot_line) {
     p <- p + geom_line(linewidth = 1.2)
   }
 
   p <- p + geom_point(size = 3) +
-    scale_color_manual(values = colors) +
     labs(title = plot_name, x = xlab, y = ylab) +
-    scale_x_continuous(breaks = x_ticks, labels = x_labels, trans = if (decreasing_dilution_order) "reverse" else "identity") +
+    scale_x_continuous(
+      breaks = x_ticks, labels = x_labels,
+      trans = ifelse(decreasing_dilution_order, "reverse", "identity")
+    ) +
     scale_y_continuous() +
     theme_minimal() +
     theme(
       axis.line = element_line(colour = "black"),
       axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
       axis.text.y = element_text(size = 9),
-      legend.position.inside = legend_position, # Automatically position the legend
+      legend.position.inside = legend_position,
       legend.background = element_rect(fill = "white", color = "black")
     )
 
   p
 }
+
 
 
 #' Create model for standard curve of a certain antibody
