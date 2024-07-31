@@ -28,7 +28,6 @@ Imports:
     knitr,
     rmarkdown,
     ggplot2,
-    nplr,
     readr,
     stringi,
     stringr,
