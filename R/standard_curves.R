@@ -177,7 +177,7 @@ create_standard_curve_model_analyte <- function(plate, analyte_name, data_type =
 #' Predict dilutions using fitted model
 #'
 #' @param plate Plate object
-#' @param antibody_name Name of the antibody for which we want to predict the dilutions
+#' @param analyte_name Name of the analyte for which we want to predict the dilutions
 #' @param model nplr object with the model
 #' @param data_type Data type using which the model was fitted - the same datatype as in the plate file. By default equals to `Median`
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
@@ -187,24 +187,22 @@ create_standard_curve_model_analyte <- function(plate, analyte_name, data_type =
 #' @description
 #' Function predicts the dilutions of the samples, based on the MFI values and the fitted model.
 #' @export
-predict_dilutions <- function(plate, antibody_name, model, data_type = "Median", verbose = TRUE) {
-  sample_concentrations <- data.frame(matrix(nrow = plate$number_of_samples, ncol = 4))
-  colnames(sample_concentrations) <- c("Location", "Sample", "MFI", "dilution")
-
-  sample_concentrations$Sample <- plate$sample_names
-
-  sample_concentrations$Location <- sapply(seq_len(plate$number_of_samples), function(i) plate$samples[[i]]$sample_location$location_name)
-
-  sample_concentrations$MFI <- sapply(seq_len(plate$number_of_samples), function(i) plate$samples[[i]]$data[data_type, antibody_name])
-
+predict_dilutions <- function(plate, analyte_name, model, data_type = "Median", verbose = TRUE) {
+  concentrations_df <- data.frame(
+    Location = plate$sample_locations,
+    Sample = plate$sample_names,
+    MFI = plate$get_data(analyte_name, "ALL", data_type = data_type),
+    dilution = plate$get_dilution_values("ALL")
+  )
 
   if (inherits(model, "nplr")) {
-    sample_concentrations$dilution <- nplr::getEstimates(model, sample_concentrations$MFI, B = max(sample_concentrations$MFI), conf.level = .95)$x
+    estimates <- nplr::getEstimates(model, concentrations_df$MFI, B = max(concentrations_df$MFI), conf.level = .95)
+    concentrations_df$dilution <- estimates$x
   } else {
     stop("For now model should be an instance of nplr, other options not implemented yet")
   }
 
-  sample_concentrations
+  concentrations_df
 }
 
 #' Plot standard curve of a certain antibody with fitted model

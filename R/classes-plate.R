@@ -2,6 +2,7 @@
 #'
 
 VALID_SAMPLE_TYPES <- c(
+  "ALL",
   "BLANK",
   "TEST",
   "NEGATIVE CONTROL",
@@ -122,7 +123,7 @@ Plate <- R6::R6Class(
     #' `data_type_used` usually `Median`.
     #'
     #' @return Data about a sample and analyte
-    get_data = function(analyte, sample_type, data_type = self$data_type_used) {
+    get_data = function(analyte, sample_type = "ALL", data_type = self$data_type_used) {
       # check if the analyte exists in analytes_names
       if (!is.null(analyte) && !is.na(analyte)) {
         if (!analyte %in% self$analyte_names) {
@@ -151,7 +152,11 @@ Plate <- R6::R6Class(
       }
 
       # get samples of the given type, data_type and analyte and return them
-      valid_samples <- self$sample_types == sample_type
+      if (sample_type == "ALL") {
+        valid_samples <- rep(TRUE, length(self$sample_types))
+      } else {
+        valid_samples <- self$sample_types == sample_type
+      }
       data_of_specified_type <- self$data[[data_type]]
       return(data_of_specified_type[valid_samples, analyte])
     },
@@ -164,7 +169,11 @@ Plate <- R6::R6Class(
       if (is.null(self$dilutions)) {
         stop("Dilutions are not set for the plate")
       }
-      return(self$dilutions[self$sample_types == sample_type])
+      if (sample_type == "ALL") {
+        return(self$dilutions)
+      } else {
+        return(self$dilutions[self$sample_types == sample_type])
+      }
     },
 
     #'
@@ -175,9 +184,11 @@ Plate <- R6::R6Class(
       if (is.null(self$dilution_values)) {
         stop("Dilution values are not set for the plate")
       }
-      print(self$sample_types)
-      print(self$dilution_values)
-      return(self$dilution_values[self$sample_types == sample_type])
+      if (sample_type == "ALL") {
+        return(self$dilution_values)
+      } else {
+        return(self$dilution_values[self$sample_types == sample_type])
+      }
     },
 
     #' @description
