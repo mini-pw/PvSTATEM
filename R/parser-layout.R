@@ -30,6 +30,10 @@ read_location_data_xlsx <- function(location_file_path, ...) {
 #' @param layout_file_path Path to the layout file
 #' @param ... Additional arguments to pass to the underlying read function
 #'
+#' @return A matrix with the layout data.
+#' The row names are supposed to be letters A,B,C, etc.
+#' The column names are supposed to be numbers 1,2,3, etc.
+#'
 #' @export
 read_layout_data <- function(layout_file_path, ...) {
   ext <- tools::file_ext(layout_file_path)
