@@ -498,6 +498,18 @@ crc32_parser <- function(separator) {
 
 ### Main parser
 
+#' Read the xPONENT format data
+#'
+#' @param path Path to the xPONENT file
+#' @param exact_parse Whether to parse the file exactly or not
+#' Exact parsing means that the batch, calibration and assay metadata will be parsed as well
+#' @param encoding Encoding of the file
+#' @param sep Separator for the CSV values
+#'
+#' @import stringr
+#' @import readr
+#'
+#' @export
 read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", sep = ",") {
   lines <- readr::read_lines(
     path,
@@ -510,8 +522,8 @@ read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", s
     header_parser <- wrap_parser_output(
       join_parsers(
         batch_metadata_parser(sep),
-        make_optional(parse_calibration_metadata(sep)),
-        make_optional(parse_assay_info(sep)),
+        make_optional(calibration_metadata_parser(sep)),
+        make_optional(assay_info_parser(sep)),
         do_skip_blanks = TRUE
       ),
       "Header"
