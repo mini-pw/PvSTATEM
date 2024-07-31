@@ -1,32 +1,42 @@
-read_layout_data <- function(layout_file_path,
-                             results_plate,
-                             check_plate = TRUE,
-                             replace_names = TRUE,
-                             ...,
-                             verbose = TRUE) {
-  # function modifies the results_plate object by adding the location information from the layout file
+#'
+#'
 
+read_location_data_csv <- function(location_file_path, separator = ",", ...) {
+  location_data <- utils::read.csv(
+    location_file_path,
+    stringsAsFactors = FALSE,
+    check.names = FALSE,
+    row.names = 1,
+    sep = separator
+  )
+  stopifnot(all(rownames(location_data) %in% LETTERS))
+  as.matrix(location_data)
+}
+
+
+read_location_data_xlsx <- function(location_file_path, ...) {
+  location_data <- readxl::read_xlsx(location_file_path, .name_repair = "unique_quiet")
+  location_matrix <- as.matrix(location_data)
+  row_names <- location_matrix[, 1]
+  stopifnot(all(row_names %in% LETTERS))
+  location_matrix <- location_matrix[, -1]
+  rownames(location_matrix) <- row_names
+  location_matrix
+}
+
+
+#' Read layout data from a file
+#'
+#' @param layout_file_path Path to the layout file
+#' @param ... Additional arguments to pass to the underlying read function
+#'
+#' @export
+read_layout_data <- function(layout_file_path, ...) {
   ext <- tools::file_ext(layout_file_path)
-
   stopifnot(ext %in% c("csv", "xlsx"))
 
-  location_data <- switch(ext,
-    csv = read_location_data_csv(layout_file_path),
-    xlsx = read_location_data_xlsx(layout_file_path)
+  switch(ext,
+    csv = read_location_data_csv(layout_file_path, ...),
+    xlsx = read_location_data_xlsx(layout_file_path, ...)
   )
-
-  for (sample in results_plate$samples) {
-    row <- sample$sample_location$row
-    col <- sample$sample_location$col
-    # first col should contain the row letter
-    sample_name_loc <- location_data[[row, col + 1]]
-    sample_name <- sample$sample_name
-    sample$sample_type <-
-      SampleType$parse_sample_type(sample_name, sample_name_loc = sample_name_loc)
-    if (replace_names) {
-      sample$sample_name <- sample_name_loc
-    }
-  }
-
-  return(results_plate)
 }
