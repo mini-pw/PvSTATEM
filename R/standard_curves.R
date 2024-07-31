@@ -205,10 +205,10 @@ predict_dilutions <- function(plate, analyte_name, model, data_type = "Median", 
   concentrations_df
 }
 
-#' Plot standard curve of a certain antibody with fitted model
+#' Plot standard curve of a certain analyte with fitted model
 #'
 #' @param plate Plate object
-#' @param antibody_name Name of the antibody for which we want to plot the standard curve - the same for which the model was fitted
+#' @param analyte_name Name of the analyte for which we want to plot the standard curve - the same for which the model was fitted
 #' @param model nplr object with the model
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Median`
 #' @param decreasing_dilution_order If `TRUE` the dilutions are plotted in decreasing order, `TRUE` by default.
@@ -225,46 +225,45 @@ predict_dilutions <- function(plate, analyte_name, model, data_type = "Median", 
 #' @import ggplot2
 #'
 #' @export
-plot_standard_curve_antibody_with_model <- function(plate, antibody_name, model, data_type = "Median", decreasing_dilution_order = TRUE, log_scale = c("all"), plot_asymptote = TRUE, verbose = TRUE) {
-  p <- plot_standard_curve_analyte(plate, antibody_name = antibody_name, data_type = data_type, decreasing_dilution_order = decreasing_dilution_order, log_scale = log_scale, verbose = verbose, plot_line = FALSE)
+plot_standard_curve_analyte_with_model <- function(plate, analyte_name, model, data_type = "Median", decreasing_dilution_order = TRUE, log_scale = c("all"), plot_asymptote = TRUE, verbose = TRUE) {
+  p <- plot_standard_curve_analyte(plate, analyte_name = analyte_name, data_type = data_type, decreasing_dilution_order = decreasing_dilution_order, log_scale = log_scale, verbose = verbose, plot_line = FALSE)
 
-  plot_name <- paste0("Fitted standard curve for analyte: ", antibody_name)
+  plot_name <- paste0("Fitted standard curve for analyte: ", analyte_name)
   p$labels$title <- plot_name
-
-  curve_values <- sapply(plate$standard_curve, function(sample) sample$data[data_type, antibody_name])
-
 
   top_asymptote <- nplr::getPar(model)$params$top
   bottom_asymptote <- nplr::getPar(model)$params$bottom
+  bottom_asymptote <- max(bottom_asymptote, 1)
+
+  print(top_asymptote)
+  print(bottom_asymptote)
+
 
   y <- seq(bottom_asymptote, top_asymptote, length.out = 1000)
-
-
   estimates <- nplr::getEstimates(model, y, B = 1e4, conf.level = .95)
   x <- estimates$x
 
-
-  log_if_needed_mfi <- function(x) {
-    if ("MFI" %in% log_scale || "all" %in% log_scale) {
-      return(log(x))
-    }
-    return(x)
+  x_log_scale <- "dilution" %in% log_scale || "all" %in% log_scale
+  if (x_log_scale) {
+    x <- log(x)
+  }
+  y_log_scale <- "MFI" %in% log_scale || "all" %in% log_scale
+  if (y_log_scale) {
+    y <- log(y)
   }
 
-  log_if_needed_dilutions <- function(x) {
-    if ("dilutions" %in% log_scale || "all" %in% log_scale) {
-      return(log(x))
-    }
-    return(x)
-  }
-
-  # add line to the plot
-  p <- p + geom_line(aes(x = log_if_needed_dilutions(x), y = log_if_needed_mfi(y)), color = "red", data = estimates, linewidth = 1)
-
-
+  p <- p + geom_line(
+    aes(x = x, y = y),
+    color = "red", data = estimates, linewidth = 1
+  )
   if (plot_asymptote) {
-    p <- p + geom_hline(yintercept = log_if_needed_mfi(top_asymptote), linetype = "dashed", color = "gray") +
-      geom_hline(yintercept = log_if_needed_mfi(bottom_asymptote), linetype = "dashed", color = "gray")
+    p <- p + geom_hline(
+      yintercept = top_asymptote, linetype = "dashed", color = "gray"
+    ) +
+      geom_hline(
+        yintercept = bottom_asymptote, linetype = "dashed", color = "gray"
+      )
   }
-  p
+
+  print(p)
 }

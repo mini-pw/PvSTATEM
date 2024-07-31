@@ -6,7 +6,7 @@
 \usage{
 predict_dilutions(
   plate,
-  antibody_name,
+  analyte_name,
   model,
   data_type = "Median",
   verbose = TRUE
@@ -15,7 +15,7 @@ predict_dilutions(
 \arguments{
 \item{plate}{Plate object}
 
-\item{antibody_name}{Name of the antibody for which we want to predict the dilutions}
+\item{analyte_name}{Name of the analyte for which we want to predict the dilutions}
 
 \item{model}{nplr object with the model}
 

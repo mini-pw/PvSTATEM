@@ -38,3 +38,9 @@ test_that("Test predications from a plate object", {
   model <- create_standard_curve_model_analyte(plate, "Spike_6P_IPP")
   expect_no_error(predict_dilutions(plate, "Spike_6P_IPP", model))
 })
+
+test_that("Test plotting the full plot", {
+  plate <- get_test_plate()
+  model <- create_standard_curve_model_analyte(plate, "Spike_6P_IPP")
+  expect_no_error(plot_standard_curve_analyte_with_model(plate, "Spike_6P_IPP", model))
+})

@@ -80,7 +80,7 @@ By default \code{FALSE}}
 \subsection{Method \code{get_data()}}{
 Function returns data for a specific analyte and sample.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$get_data(analyte, sample_type, data_type = self$data_type_used)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Plate$get_data(analyte, sample_type = "ALL", data_type = self$data_type_used)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
