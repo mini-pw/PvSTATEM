@@ -1,66 +1,93 @@
+#'
+#'
+
+VALID_SAMPLE_TYPES <- c(
+  "ALL",
+  "BLANK",
+  "TEST",
+  "NEGATIVE CONTROL",
+  "STANDARD CURVE",
+  "POSITIVE CONTROL"
+)
+
+VALID_DATA_TYPES <- c(
+  "Median",
+  "Net MFI",
+  "Count",
+  "Avg net MFI",
+  "Mean",
+  "%CV",
+  "Peak",
+  "Std Dev"
+)
+
+globalVariables(c("VALID_SAMPLE_TYPES", "VALID_DATA_TYPES"))
+
+#' Check if the sample type is valid. The sample type is valid if it is one of the
+#' elements of the `VALID_SAMPLE_TYPES` vector.
+#'
+#' @param sample_type A string representing the sample type.
+#' @return `TRUE` if the sample type is valid, `FALSE` otherwise.
+#'
+#' @export
+is_valid_sample_type <- function(sample_type) {
+  sample_type %in% VALID_SAMPLE_TYPES
+}
+
+#' Check if the data type is valid. The data type is valid if it is one of the
+#' elements of the `VALID_DATA_TYPES` vector.
+#'
+#' @param data_type A string representing the data type.
+#' @return `TRUE` if the data type is valid, `FALSE` otherwise.
+#'
+#' @export
+is_valid_data_type <- function(data_type) {
+  data_type %in% VALID_DATA_TYPES
+}
+
+
 #' @title Plate
 #' @description
 #' A class to represent the luminex plate. It contains information about
 #' the samples and analytes that were examined on the plate as well as
 #' some additional metadata and batch info
-#'
-#' @export
 Plate <- R6::R6Class(
   "Plate",
   public = list(
 
     ## Fields ----------------------------------------------------------------
-
-    #' @field plate_name - plate name obtained from filename
+    ## Must be set ---
     plate_name = "",
-
-    #' @field analytes_names vector of analytes names measured during
-    #' an examination in the same order as in the data
-    analytes_names = character(),
-
-    #' @field sample_names vector of sample names measured during
-    #' an examination in the same order as in the data
+    analyte_names = character(),
     sample_names = character(),
-
-    #' @field sample_locations vector of sample locations pretty name ie. A1, B2
-    sample_locations = character(),
-
-    #' @field dilutions vector of dilutions used during the examination
-    #' due to the nature of data it's a vector of strings, logic to transform
-    #' it to numeric has to be implemented in the future
-    dilutions = character(),
-
-    #' @field sample_types vector of sample types used during the examination
-    #' those values are derived from the sample names in the Luminex file
-    #' using regular expressions
-    #' possibly in the future it will be possible to specify the sample types
-    #' manually either by passing a vector or by select it in the GUI
-    sample_types = character(),
-
-    #' @field data a named list of data frames containing information about
-    #' the samples and analytes. The list is named by the type of the data
-    #' e.g. `Median`, `Net MFI`, etc.
-    #' The data frames contain information about the samples and analytes
-    #' The rows are different measures, whereas the columns represent
-    #' different analytes
-    #' Example of how `data$Median` looks like:
-    #' | Sample  | Analyte1 | Analyte2 | Analyte3 |
-    #' |---------|----------|----------|----------|
-    #' | Sample1 | 1.2      | 2.3      | 3.4      |
-    #' | Sample2 | 4.5      | 5.6      | 6.7      |
-    #' | ...     | ...      | ...      | ...      |
-    #' | Sample96| 7.8      | 8.9      | 9.0      |
-    data = list(),
-
-    #' @field data_type_used a character value representing the type of data
-    #' that is currently used for calculations. By default, it is set to Median
-    data_type_used = "Median",
-
-    #' @field batch_info a raw list containing metadata about
-    #' the plate read from the Luminex file
-    batch_info = list(),
+    ## Must be set if validated ---
+    sample_locations = NULL,
+    sample_types = NULL,
+    dilutions = NULL,
+    dilution_values = NULL,
+    data = NULL,
+    default_data_type = NULL,
+    batch_info = NULL,
 
     ## Methods ---------------------------------------------------------------
+
+    #' @description
+    #' Method to initialize the Plate object
+    initialize = function(plate_name, sample_names, analyte_names,
+                          dilutions = NULL, dilution_values = NULL,
+                          sample_types = NULL, data = NULL,
+                          sample_locations = NULL, default_data_type = NULL, batch_info = NULL) {
+      self$plate_name <- plate_name
+      self$analyte_names <- analyte_names
+      self$sample_names <- sample_names
+      if (!is.null(sample_locations)) self$sample_locations <- sample_locations
+      if (!is.null(dilutions)) self$dilutions <- dilutions
+      if (!is.null(dilution_values)) self$dilution_values <- dilution_values
+      if (!is.null(sample_types)) self$sample_types <- sample_types
+      if (!is.null(data)) self$data <- data
+      if (!is.null(default_data_type)) self$default_data_type <- default_data_type
+      if (!is.null(batch_info)) self$batch_info <- batch_info
+    },
 
     #' @description
     #' Function prints the basic information about the plate
@@ -70,7 +97,7 @@ Plate <- R6::R6Class(
         "Plate with",
         length(self$sample_names),
         "samples and",
-        length(self$analytes_names),
+        length(self$analyte_names),
         "analytes\n"
       )
     },
@@ -96,38 +123,72 @@ Plate <- R6::R6Class(
     #' `data_type_used` usually `Median`.
     #'
     #' @return Data about a sample and analyte
-    get = function(analyte, sample_type, data_type = self$data_type_used) {
+    get_data = function(analyte, sample_type = "ALL", data_type = self$data_type_used) {
       # check if the analyte exists in analytes_names
       if (!is.null(analyte) && !is.na(analyte)) {
-        if (!analyte %in% analytes_names) {
+        if (!analyte %in% self$analyte_names) {
           stop("Analyte does not exist in analytes_names")
         }
       } else {
         stop("Analyte is either NULL or NA")
       }
 
-      # check if the sample_type exists in valid_sample_types
+      # check if the sample_type is a valid sample type
       if (!is.null(sample_type) && !is.na(sample_type)) {
-        if (!sample_type %in% valid_sample_types) {
-          stop("Sample type does not exist in valid_sample_types")
+        if (!is_valid_sample_type(sample_type)) {
+          stop("Sample type is not a valid sample type")
         }
       } else {
         stop("Sample type is either NULL or NA")
       }
 
-      # check if the data_type exists in valid_data_types
+      # check if the data_type is a valid data type
       if (!is.null(data_type) && !is.na(data_type)) {
-        if (!data_type %in% valid_data_types) {
-          stop("Data type does not exist in valid_data_types")
+        if (!is_valid_data_type(data_type)) {
+          stop("Data type is not a valid data type")
         }
       } else {
         stop("Data type is either NULL or NA")
       }
 
       # get samples of the given type, data_type and analyte and return them
-      valid_samples <- sample_types == sample_type
+      if (sample_type == "ALL") {
+        valid_samples <- rep(TRUE, length(self$sample_types))
+      } else {
+        valid_samples <- self$sample_types == sample_type
+      }
       data_of_specified_type <- self$data[[data_type]]
       return(data_of_specified_type[valid_samples, analyte])
+    },
+
+    #'
+    get_dilution = function(sample_type) {
+      if (!is_valid_sample_type(sample_type)) {
+        stop("Sample type is not a valid sample type")
+      }
+      if (is.null(self$dilutions)) {
+        stop("Dilutions are not set for the plate")
+      }
+      if (sample_type == "ALL") {
+        return(self$dilutions)
+      } else {
+        return(self$dilutions[self$sample_types == sample_type])
+      }
+    },
+
+    #'
+    get_dilution_values = function(sample_type) {
+      if (!is_valid_sample_type(sample_type)) {
+        stop("Sample type is not a valid sample type")
+      }
+      if (is.null(self$dilution_values)) {
+        stop("Dilution values are not set for the plate")
+      }
+      if (sample_type == "ALL") {
+        return(self$dilution_values)
+      } else {
+        return(self$dilution_values[self$sample_types == sample_type])
+      }
     },
 
     #' @description
@@ -159,50 +220,6 @@ Plate <- R6::R6Class(
 
     ## Private Fields ---------------------------------------------------------
     blank_adjusted = FALSE,
-    verbose = TRUE,
-    valid_sample_types = c(
-      "BLANK",
-      "TEST",
-      "NEGATIVE CONTROL",
-      "STANDARD CURVE",
-      "POSITIVE CONTROL"
-    ),
-    # this is a vector of valid data types but it is not complete
-    # because I do not know all the possible values, I haven't
-    # interact that much with the Luminex data
-    valid_data_types = c(
-      "Median",
-      "Net MFI",
-      "Count",
-      "Avg net MFI",
-      "Mean",
-      "%CV",
-      "Peak",
-      "Std Dev"
-    ),
-
-    ## Private Methods --------------------------------------------------------
-
-    #' @description
-    #' Function translates sample names to sample types
-    #' The function uses regular expressions to match the sample names
-    #' to the sample types
-    #'
-    #' @param sample_names A vector of sample names
-    #' @return A vector of sample types
-
-    #' @examples
-    #' translate_sample_names_to_sample_types(c("B", "BLANK", "TEST1"))
-    #' translate_sample_names_to_sample_types(c("S", "CP3"))
-    #'
-    translate_sample_names_to_sample_types = function(sample_names) {}
-    # this function is implemented only once at the moment of parsing the data
-    # it might be better to move it to other file
-
-    # this function is not implemented yet
-    # it consists of convoluted logic that uses regular expressions
-    # but luckily a lot can be scavenged from the existing code
-    # in the `SampleType` class it's just need to be adapted to
-    # work with new structure of the data
+    verbose = TRUE
   )
 )
