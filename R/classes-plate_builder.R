@@ -212,7 +212,7 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' If `sample_names` or `sample_names_from_layout` equals to `BLANK`, `BACKGROUND` or `B`,
 #' then SampleType equals to `BLANK`
 #' If `sample_names` or `sample_names_from_layout` equals to `STANDARD CURVE`,
-#' `SC`, `S` or contains substring `1/\d+` and has prefix ` `, `S_`, `S `,
+#' `SC`, `S` contains substring `1/\d+` and has prefix ` `, `S_`, `S `,
 #' `S` or `CP3`, then SampleType equals to `STANDARD CURVE`
 #' If `sample_names` or `sample_names_from_layout` equals to `NEGATIVE CONTROL`, `N`,
 #' or contains substring `NEG`, then SampleType equals to `NEGATIVE CONTROL`
@@ -278,7 +278,7 @@ translate_sample_names_to_sample_types <- function(sample_names,
     # Check if the sample is a standard curve
     standard_curve_types <- c("STANDARD CURVE", "SC", "S")
     standard_curve_pattern <- "^(S_|S|S\\s|CP.+)(1/\\d+)$"
-    standard_curve_loc_pattern <- "(1/\\d+)"
+    standard_curve_loc_pattern <- "^(1/\\d+)$"
     if (name %in% standard_curve_types || grepl(standard_curve_pattern, name) || grepl(standard_curve_loc_pattern, name_layout)) {
       sample_type <- "STANDARD CURVE"
     }
