@@ -39,10 +39,10 @@ test_that("Sample type is correctly identified as NEGATIVE CONTROL", {
 test_that("Sample type is correctly identified as POSITIVE CONTROL", {
   expect_equal(
     translate_sample_names_to_sample_types(
-      c("P 1/100", "POS 1/50", "B770 1/2", "10/198 1/3", "Sample1", "Sample2"),
-      c("POSITIVE CONTROL", "", "B770", "10/198", "B770 1/2", "10/198 1/3")
+      c("P 1/100", "POS 1/50", "B770 1/2", "10/198 1/3", "Sample1", "Sample2", "Sample3"),
+      c("POSITIVE CONTROL", "", "B770", "10/198", "B770 1/2", "10/198 1/3", "C71/4 1/3")
     ),
-    c("POSITIVE CONTROL", "POSITIVE CONTROL", "POSITIVE CONTROL", "POSITIVE CONTROL", "POSITIVE CONTROL", "POSITIVE CONTROL")
+    c("POSITIVE CONTROL", "POSITIVE CONTROL", "POSITIVE CONTROL", "POSITIVE CONTROL", "POSITIVE CONTROL", "POSITIVE CONTROL", "POSITIVE CONTROL")
   )
 })
 

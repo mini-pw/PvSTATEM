@@ -212,13 +212,13 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' If `sample_names` or `sample_names_from_layout` equals to `BLANK`, `BACKGROUND` or `B`,
 #' then SampleType equals to `BLANK`
 #' If `sample_names` or `sample_names_from_layout` equals to `STANDARD CURVE`,
-#' `SC`, `S` contains substring `1/\d+` and has prefix ` `, `S_`, `S `,
+#' `SC`, `S`, contains substring `1/\d+` and has prefix ` `, `S_`, `S `,
 #' `S` or `CP3`, then SampleType equals to `STANDARD CURVE`
 #' If `sample_names` or `sample_names_from_layout` equals to `NEGATIVE CONTROL`, `N`,
 #' or contains substring `NEG`, then SampleType equals to `NEGATIVE CONTROL`
 #' If `sample_names` or `sample_names_from_layout` starts with `P` followed by
-#' whitespace, `POS` followed by whitespace, `B770` or `10/190`
-#' contains substring `1/\d+` SampleType equals to `POSITIVE CONTROL`
+#' whitespace, `POS` followed by whitespace, some sample name followed by
+#' substring `1/\d+` SampleType equals to `POSITIVE CONTROL`
 #' otherwise, the returned SampleType is `TEST`
 #'
 #' @param sample_names (`character`)\cr
@@ -236,14 +236,14 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' translate_sample_names_to_sample_types(c("S", "CP3"))
 #'
 #' @export
-translate_sample_names_to_sample_types <- function(sample_names,
-                                                   sample_names_from_layout = "") {
-  
+translate_sample_names_to_sample_types <- function(sample_names, sample_names_from_layout = "") {
   # handle case when sample name from layout is not provided
   # Ensure sample_names_from_layout is a character vector of the same length as sample_names
-  if (is.null(sample_names_from_layout) || is.na(sample_names_from_layout)) {
+    # Ensure sample_names_from_layout is a character vector of the same length as sample_names
+  if (length(sample_names_from_layout) != length(sample_names)) {
     sample_names_from_layout <- rep("", length(sample_names))
   }
+
 
   # Initialize the result vector
   sample_types <- vector("character", length(sample_names))
@@ -263,7 +263,7 @@ translate_sample_names_to_sample_types <- function(sample_names,
     }
 
     # Check if the sample is a positive control
-    positive_control_pattern <- "^(P.|POS.+|B770.+|10/198.+)(1/\\d+)$"
+    positive_control_pattern <- "^(P.|POS.+|[A-Za-z0-9/-_]+ )(1/\\d+)$"
     if (grepl(positive_control_pattern, name) || grepl(positive_control_pattern, name_layout)) {
       sample_type <- "POSITIVE CONTROL"
     }
