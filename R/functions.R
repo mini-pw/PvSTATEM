@@ -3,45 +3,45 @@
 #' the sample name from the layout file, which may not be provided.
 #'
 #' It parses the names as follows:
-#' If `sample_name` or `sample_name_from_layout` equals to `BLANK`, `BACKGROUND` or `B`,
+#' If `sample_names` or `sample_names_from_layout` equals to `BLANK`, `BACKGROUND` or `B`,
 #' then SampleType equals to `BLANK`
-#' If `sample_name` or `sample_name_from_layout` equals to `STANDARD CURVE`,
+#' If `sample_names` or `sample_names_from_layout` equals to `STANDARD CURVE`,
 #' `SC`, `S` or contains substring `1/\d+` and has prefix ` `, `S_`, `S `,
 #' `S` or `CP3`, then SampleType equals to `STANDARD CURVE`
-#' If `sample_name` or `sample_name_from_layout` equals to `NEGATIVE CONTROL`, `N`,
+#' If `sample_names` or `sample_names_from_layout` equals to `NEGATIVE CONTROL`, `N`,
 #' or contains substring `NEG`, then SampleType equals to `NEGATIVE CONTROL`
-#' If `sample_name` or `sample_name_from_layout` starts with `P` followed by
+#' If `sample_names` or `sample_names_from_layout` starts with `P` followed by
 #' whitespace, `POS` followed by whitespace, `B770` or `10/190`
 #' contains substring `1/\d+` SampleType equals to `POSITIVE CONTROL`
 #' otherwise, the returned SampleType is `TEST`
 #'
-#' @param sample_name (`character`)\cr
+#' @param sample_names (`character`)\cr
 #' Vector of sample names from Luminex file
 #'
-#' @param sample_name_from_layout (`character`)\cr
+#' @param sample_names_from_layout (`character`)\cr
 #' Vector of sample names from Layout file
-#' values in this vector may be different than `sample_name` and may
+#' values in this vector may be different than `sample_names` and may
 #' contain additional information about the sample type like dilution
 #'
 #' @return A vector of valid sample_type strings
 #'
 #' @export
-derive_sample_type <- function(sample_name,
-                               sample_name_from_layout = "") {
+derive_sample_type <- function(sample_names,
+                               sample_names_from_layout = "") {
   
   # handle case when sample name from layout is not provided
-  # Ensure sample_name_from_layout is a character vector of the same length as sample_name
-  if (is.null(sample_name_from_layout) || is.na(sample_name_from_layout)) {
-    sample_name_from_layout <- rep("", length(sample_name))
+  # Ensure sample_names_from_layout is a character vector of the same length as sample_names
+  if (is.null(sample_names_from_layout) || is.na(sample_names_from_layout)) {
+    sample_names_from_layout <- rep("", length(sample_names))
   }
 
   # Initialize the result vector
-  sample_types <- vector("character", length(sample_name))
+  sample_types <- vector("character", length(sample_names))
 
   # Iterate over each sample
-  for (i in seq_along(sample_name)) {
-    name <- sample_name[i]
-    name_layout <- sample_name_from_layout[i]
+  for (i in seq_along(sample_names)) {
+    name <- sample_names[i]
+    name_layout <- sample_names_from_layout[i]
 
     # Default sample type
     sample_type <- "TEST"
