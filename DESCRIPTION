@@ -28,8 +28,10 @@ Imports:
     knitr,
     rmarkdown,
     ggplot2,
-    nplr,
-    stringr
+    readr,
+    stringi,
+    stringr,
+    nplr
 Suggests:
     testthat (>= 3.0.0),
     knitr
