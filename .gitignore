@@ -4,3 +4,4 @@
 .Ruserdata
 inst/doc
 PvSTATEM.Rproj
+*.DS_Store
