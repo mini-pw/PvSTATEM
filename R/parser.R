@@ -122,7 +122,6 @@ read_luminex_data <- function(plate_filepath,
       postprocess_intelliflex(output)
     }
   )
-  layout_matrix <- read_layout_data(layout_filepath)
 
   plate_builder <- PlateBuilder$new(
     parser_output$plate_name,
@@ -135,7 +134,10 @@ read_luminex_data <- function(plate_filepath,
   plate_builder$set_default_data_type(default_data_type)
   plate_builder$set_batch_info(parser_output$batch_info)
   plate_builder$set_data(parser_output$data)
-  plate_builder$set_layout(layout_matrix)
+  if (!is.null(layout_filepath)) {
+    layout_matrix <- read_layout_data(layout_filepath)
+    plate_builder$set_layout(layout_matrix)
+  }
 
   plate <- plate_builder$build(validate = FALSE) # HACK: This should be set to TRUE after the extract_sample_types
 
