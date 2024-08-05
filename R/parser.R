@@ -124,7 +124,11 @@ read_luminex_data <- function(plate_filepath,
       postprocess_intelliflex(output)
     }
   )
+<<<<<<< HEAD
 
+=======
+  layout_matrix <- read_layout_data(layout_filepath)
+>>>>>>> 5344e9b (Base of the parser implementation)
 
   plate_builder <- PlateBuilder$new(
     parser_output$plate_name,
@@ -132,6 +136,7 @@ read_luminex_data <- function(plate_filepath,
     parser_output$analyte_names
   )
   plate_builder$set_sample_locations(parser_output$sample_locations)
+<<<<<<< HEAD
 
   if (!is.null(layout_filepath)) {
     layout_matrix <- read_layout_data(layout_filepath)
@@ -147,6 +152,16 @@ read_luminex_data <- function(plate_filepath,
 
 
   plate <- plate_builder$build(validate = TRUE) # HACK: This should be set to TRUE after the extract_sample_types
+=======
+  plate_builder$set_data(parser_output$data)
+  plate_builder$extract_sample_types() # HACK: This is the dummy implementation
+  plate_builder$set_default_data_type(default_data_type)
+  plate_builder$set_batch_info(parser_output$batch_info)
+  plate_builder$set_data(parser_output$data)
+  plate_builder$set_layout(layout_matrix)
+
+  plate <- plate_builder$build(validate = FALSE) # HACK: This should be set to TRUE after the extract_sample_types
+>>>>>>> 5344e9b (Base of the parser implementation)
 
   plate
 }

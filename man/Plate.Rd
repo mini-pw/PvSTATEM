@@ -124,7 +124,7 @@ Data about a sample and analyte
 \subsection{Method \code{blank_adjustment()}}{
 Function adjusts the values of test samples by subtracting average of
 BLANK samples purpose of this operation is to remove background light
-In short it subtracts the values from data in all samples, except from
+In short it subtracts the values from data in all samples, except fromplate
 Blanks. It does not subtract values from \code{Count} values, even if this
 step seems logical, people from the lab do not do it always.
 \subsection{Usage}{
