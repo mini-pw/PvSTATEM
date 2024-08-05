@@ -202,6 +202,8 @@ convert_dilutions_to_numeric <- function(dilutions) {
   dilution_values
 }
 
+#' Translate sample names to sample types
+#'
 #' @description
 #' Function translates sample names to sample types based on the sample name
 #' from Luminex file and the sample name from the layout file, which may not
@@ -239,7 +241,6 @@ convert_dilutions_to_numeric <- function(dilutions) {
 translate_sample_names_to_sample_types <- function(sample_names, sample_names_from_layout = "") {
   # handle case when sample name from layout is not provided
   # Ensure sample_names_from_layout is a character vector of the same length as sample_names
-    # Ensure sample_names_from_layout is a character vector of the same length as sample_names
   if (length(sample_names_from_layout) != length(sample_names)) {
     sample_names_from_layout <- rep("", length(sample_names))
   }
