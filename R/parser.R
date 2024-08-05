@@ -130,7 +130,7 @@ read_luminex_data <- function(plate_filepath,
     parser_output$sample_names,
     parser_output$analyte_names
   )
-
+  plate_builder$set_sample_locations(parser_output$sample_locations)
   if (!is.null(layout_filepath)) {
     layout_matrix <- read_layout_data(layout_filepath)
     plate_builder$set_layout(layout_matrix)
