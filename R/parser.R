@@ -98,6 +98,7 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #' @param use_layout_types Whether to use names from the layout file in extracting sample types.
 #' Works only when layout file is provided
 #' @param default_data_type The default data type to use if none is specified
+#' @param sample_types a vector of sample types to use instead of the extracted ones
 #'
 #' @return Plate file containing the Luminex data
 #'
@@ -108,7 +109,8 @@ read_luminex_data <- function(plate_filepath,
                               plate_file_separator = ",",
                               plate_file_encoding = "UTF-8",
                               use_layout_types = TRUE,
-                              default_data_type = "Median") {
+                              default_data_type = "Median",
+                              sample_types = NULL) {
   if (!(format %in% valid_formats)) {
     stop("Invalid format: ", format, ". Select from: ", paste(valid_formats, collapse = ", "))
   }
@@ -123,23 +125,28 @@ read_luminex_data <- function(plate_filepath,
     }
   )
 
+
   plate_builder <- PlateBuilder$new(
     parser_output$plate_name,
     parser_output$sample_names,
     parser_output$analyte_names
   )
   plate_builder$set_sample_locations(parser_output$sample_locations)
-  plate_builder$set_data(parser_output$data)
-  plate_builder$extract_sample_types() # HACK: This is the dummy implementation
-  plate_builder$set_default_data_type(default_data_type)
-  plate_builder$set_batch_info(parser_output$batch_info)
-  plate_builder$set_data(parser_output$data)
+
   if (!is.null(layout_filepath)) {
     layout_matrix <- read_layout_data(layout_filepath)
     plate_builder$set_layout(layout_matrix)
   }
+  use_layout_types <- use_layout_types && !is.null(layout_filepath)
+  plate_builder$extract_sample_types(use_layout_types, sample_types)
 
-  plate <- plate_builder$build(validate = FALSE) # HACK: This should be set to TRUE after the extract_sample_types
+  plate_builder$set_data(parser_output$data)
+  plate_builder$set_default_data_type(default_data_type)
+  plate_builder$set_batch_info(parser_output$batch_info)
+  plate_builder$set_data(parser_output$data)
+
+
+  plate <- plate_builder$build(validate = TRUE) # HACK: This should be set to TRUE after the extract_sample_types
 
   plate
 }

@@ -11,7 +11,8 @@ read_luminex_data(
   plate_file_separator = ",",
   plate_file_encoding = "UTF-8",
   use_layout_types = TRUE,
-  default_data_type = "Median"
+  default_data_type = "Median",
+  sample_types = NULL
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ read_luminex_data(
 Works only when layout file is provided}
 
 \item{default_data_type}{The default data type to use if none is specified}
+
+\item{sample_types}{a vector of sample types to use instead of the extracted ones}
 }
 \value{
 Plate file containing the Luminex data
