@@ -1,5 +1,7 @@
 #' @title PlateBuilder
 #'
+#' @import R6
+#'
 #' @export
 PlateBuilder <- R6::R6Class(
   "PlateBuilder",
