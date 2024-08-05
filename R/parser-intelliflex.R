@@ -5,10 +5,10 @@ require(dplyr)
 #' @param path Path to the INTELLIFLEX file
 #'
 #' @import dplyr
-#'
-#' @export
+#' @import utils
+#' @import stringr
 read_intelliflex_format <- function(path) {
-  df <- read.csv(path, stringsAsFactors = FALSE)
+  df <- utils::read.csv(path, stringsAsFactors = FALSE)
   system_end_index <- which(colnames(df) == "PLATE.START")
   sample_end_index <- which(colnames(df) == "TOTAL.EVENTS")
 
