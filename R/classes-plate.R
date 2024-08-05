@@ -199,7 +199,7 @@ Plate <- R6::R6Class(
     #' @description
     #' Function adjusts the values of test samples by subtracting average of
     #' BLANK samples purpose of this operation is to remove background light
-    #' In short it subtracts the values from data in all samples, except fromplate
+    #' In short it subtracts the values from data in all samples, except from
     #' Blanks. It does not subtract values from `Count` values, even if this
     #' step seems logical, people from the lab do not do it always.
     #'
