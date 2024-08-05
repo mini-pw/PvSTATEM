@@ -18,6 +18,7 @@ PlateBuilder
 \item \href{#method-PlateBuilder-set_data}{\code{PlateBuilder$set_data()}}
 \item \href{#method-PlateBuilder-set_default_data_type}{\code{PlateBuilder$set_default_data_type()}}
 \item \href{#method-PlateBuilder-set_batch_info}{\code{PlateBuilder$set_batch_info()}}
+\item \href{#method-PlateBuilder-set_layout}{\code{PlateBuilder$set_layout()}}
 \item \href{#method-PlateBuilder-build}{\code{PlateBuilder$build()}}
 \item \href{#method-PlateBuilder-clone}{\code{PlateBuilder$clone()}}
 }
@@ -158,6 +159,23 @@ Set the batch info for the plate
 \describe{
 \item{\code{batch_info}}{a raw list containing metadata about
 the plate read from the Luminex file}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PlateBuilder-set_layout"></a>}}
+\if{latex}{\out{\hypertarget{method-PlateBuilder-set_layout}{}}}
+\subsection{Method \code{set_layout()}}{
+Set the layout matrix for the plate
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$set_layout(layout_matrix)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{layout_matrix}}{a matrix containing information about the}
 }
 \if{html}{\out{</div>}}
 }

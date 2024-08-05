@@ -14,11 +14,9 @@ VALID_DATA_TYPES <- c(
   "Median",
   "Net MFI",
   "Count",
-  "Avg net MFI",
+  "Avg Net MFI",
   "Mean",
-  "%CV",
-  "Peak",
-  "Std Dev"
+  "Peak"
 )
 
 globalVariables(c("VALID_SAMPLE_TYPES", "VALID_DATA_TYPES"))
@@ -68,6 +66,7 @@ Plate <- R6::R6Class(
     data = NULL,
     default_data_type = NULL,
     batch_info = NULL,
+    layout = NULL,
 
     ## Methods ---------------------------------------------------------------
 
@@ -76,7 +75,8 @@ Plate <- R6::R6Class(
     initialize = function(plate_name, sample_names, analyte_names,
                           dilutions = NULL, dilution_values = NULL,
                           sample_types = NULL, data = NULL,
-                          sample_locations = NULL, default_data_type = NULL, batch_info = NULL) {
+                          sample_locations = NULL, default_data_type = NULL,
+                          batch_info = NULL, layout = NULL) {
       self$plate_name <- plate_name
       self$analyte_names <- analyte_names
       self$sample_names <- sample_names
@@ -87,6 +87,7 @@ Plate <- R6::R6Class(
       if (!is.null(data)) self$data <- data
       if (!is.null(default_data_type)) self$default_data_type <- default_data_type
       if (!is.null(batch_info)) self$batch_info <- batch_info
+      if (!is.null(layout)) self$layout <- layout
     },
 
     #' @description
@@ -194,7 +195,7 @@ Plate <- R6::R6Class(
     #' @description
     #' Function adjusts the values of test samples by subtracting average of
     #' BLANK samples purpose of this operation is to remove background light
-    #' In short it subtracts the values from data in all samples, except from
+    #' In short it subtracts the values from data in all samples, except fromplate
     #' Blanks. It does not subtract values from `Count` values, even if this
     #' step seems logical, people from the lab do not do it always.
     #'
@@ -202,19 +203,7 @@ Plate <- R6::R6Class(
     #' By default `avg`. For now it is the only available method
     #' @param inplace Whether the method should produce new plate with adjusted
     #' values or not, By default `TRUE` - operates on the current plate.
-    blank_adjustment = function(method = "avg", in_place = "TRUE") {},
-
-    #' @description
-    #' Function takes the data 1D array and returns the data in the form of
-    #' a 2D array, that represents the spatial arrangement of the samples
-    #' on the plate, ie. 12x8 grid.
-    #'
-    #' @param data 1D array of data represents for example counts, dilutions
-    #' or sample types
-    #'
-    #' @return A 2D array representing data with the spatial arrangement
-    #' of the samples
-    layout = function(data) {}
+    blank_adjustment = function(method = "avg", in_place = "TRUE") {}
   ),
   private = list(
 

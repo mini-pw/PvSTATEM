@@ -12,8 +12,9 @@ PlateBuilder <- R6::R6Class(
     dilution_values = NULL,
     sample_types = NULL,
     data = NULL,
-    data_type_used = "Median",
+    default_data_type = "Median",
     batch_info = NULL,
+    layout = NULL,
 
 
     #' @description
@@ -107,11 +108,6 @@ PlateBuilder <- R6::R6Class(
             stop("Column `", colname, "` is not a valid analyte name")
           }
         }
-        for (rowname in rownames(data_type_df)) {
-          if (!rowname %in% self$sample_names) {
-            stop("Row `", rowname, "` is not a valid sample name")
-          }
-        }
       }
 
       self$data <- data
@@ -131,8 +127,16 @@ PlateBuilder <- R6::R6Class(
     #' @param batch_info a raw list containing metadata about
     #' the plate read from the Luminex file
     set_batch_info = function(batch_info) {
-      stopifnot(is.list(batch_info))
       self$batch_info <- batch_info
+    },
+
+    #' @description
+    #' Set the layout matrix for the plate
+    #' @param layout_matrix a matrix containing information about the
+    set_layout = function(layout_matrix) {
+      stopifnot(is.matrix(layout_matrix))
+      # TODO: Additional validation probably needed
+      self$layout <- layout_matrix
     },
 
     #' @description
@@ -151,7 +155,8 @@ PlateBuilder <- R6::R6Class(
         sample_types = self$sample_types,
         data = self$data,
         default_data_type = self$default_data_type,
-        batch_info = self$batch_info
+        batch_info = self$batch_info,
+        layout = self$layout
       )
     }
   ),
@@ -167,13 +172,13 @@ PlateBuilder <- R6::R6Class(
       if (lengh(self$sample_names) != length(self$sample_types)) {
         append(errors, "Length of sample_names and sample_types is not equal")
       }
-      if (!is_valid_data_type(self$data_type_used)) {
+      if (!is_valid_data_type(self$default_data_type)) {
         append(errors, "Data type used is not valid")
       }
       if (length(self$data) == 0) {
         append(errors, "Data is empty")
       }
-      if (!(self$data_type_used %in% names(self$data))) {
+      if (!(self$default_data_type %in% names(self$data))) {
         append(errors, "Data type used is not present in data")
       }
       if (length(self$analyte_names) == 0) {

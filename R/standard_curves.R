@@ -235,10 +235,6 @@ plot_standard_curve_analyte_with_model <- function(plate, analyte_name, model, d
   bottom_asymptote <- nplr::getPar(model)$params$bottom
   bottom_asymptote <- max(bottom_asymptote, 1)
 
-  print(top_asymptote)
-  print(bottom_asymptote)
-
-
   y <- seq(bottom_asymptote, top_asymptote, length.out = 1000)
   estimates <- nplr::getEstimates(model, y, B = 1e4, conf.level = .95)
   x <- estimates$x

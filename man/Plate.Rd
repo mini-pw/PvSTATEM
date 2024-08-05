@@ -18,7 +18,6 @@ some additional metadata and batch info
 \item \href{#method-Plate-get_dilution}{\code{Plate$get_dilution()}}
 \item \href{#method-Plate-get_dilution_values}{\code{Plate$get_dilution_values()}}
 \item \href{#method-Plate-blank_adjustment}{\code{Plate$blank_adjustment()}}
-\item \href{#method-Plate-layout}{\code{Plate$layout()}}
 \item \href{#method-Plate-clone}{\code{Plate$clone()}}
 }
 }
@@ -38,7 +37,8 @@ Method to initialize the Plate object
   data = NULL,
   sample_locations = NULL,
   default_data_type = NULL,
-  batch_info = NULL
+  batch_info = NULL,
+  layout = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -124,7 +124,7 @@ Data about a sample and analyte
 \subsection{Method \code{blank_adjustment()}}{
 Function adjusts the values of test samples by subtracting average of
 BLANK samples purpose of this operation is to remove background light
-In short it subtracts the values from data in all samples, except from
+In short it subtracts the values from data in all samples, except fromplate
 Blanks. It does not subtract values from \code{Count} values, even if this
 step seems logical, people from the lab do not do it always.
 \subsection{Usage}{
@@ -141,30 +141,6 @@ By default \code{avg}. For now it is the only available method}
 values or not, By default \code{TRUE} - operates on the current plate.}
 }
 \if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Plate-layout"></a>}}
-\if{latex}{\out{\hypertarget{method-Plate-layout}{}}}
-\subsection{Method \code{layout()}}{
-Function takes the data 1D array and returns the data in the form of
-a 2D array, that represents the spatial arrangement of the samples
-on the plate, ie. 12x8 grid.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$layout(data)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{1D array of data represents for example counts, dilutions
-or sample types}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A 2D array representing data with the spatial arrangement
-of the samples
 }
 }
 \if{html}{\out{<hr>}}

@@ -358,8 +358,18 @@ program_metadata_parser <- function(separator) {
     output <- join_parsers(
       key_value_parser("Program", separator, check_length = FALSE),
       key_value_parser("Build", separator),
-      program_build_data_parser(separator)
+      program_build_data_parser(separator),
+      skip_blanks_parser,
+      key_value_parser("SN", separator),
+      match_any_parser(
+        key_value_parser("Batch", separator),
+        key_value_parser("Session", separator)
+      )
     )(index, lines)
+    # Rename Session to Batch if it exists
+    if ("Session" %in% names(output[[1]])) {
+      output[[1]]$Batch <- output[[1]]$Session
+    }
     list(list(ProgramMetadata = output[[1]]), output[[2]], output[[3]])
   }
 }
@@ -368,11 +378,6 @@ program_metadata_parser <- function(separator) {
 batch_metadata_parser <- function(separator) {
   function(index, lines) {
     output <- join_parsers(
-      key_value_parser("SN", separator),
-      match_any_parser(
-        key_value_parser("Batch", separator),
-        key_value_parser("Session", separator)
-      ),
       make_optional(key_value_parser("Version", separator)),
       key_value_parser("Operator", separator),
       make_optional(
@@ -504,13 +509,13 @@ crc32_parser <- function(separator) {
 #' @param exact_parse Whether to parse the file exactly or not
 #' Exact parsing means that the batch, calibration and assay metadata will be parsed as well
 #' @param encoding Encoding of the file
-#' @param sep Separator for the CSV values
+#' @param separator Separator for the CSV values
 #'
 #' @import stringr
 #' @import readr
 #'
 #' @export
-read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", sep = ",") {
+read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", separator = ",") {
   lines <- readr::read_lines(
     path,
     locale = readr::locale(encoding = encoding),
@@ -518,6 +523,7 @@ read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", s
 
   names(lines) <- rep(NA, length(lines))
 
+  sep <- separator # alias
   if (exact_parse) {
     header_parser <- wrap_parser_output(
       join_parsers(
