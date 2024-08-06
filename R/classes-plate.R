@@ -51,8 +51,7 @@ is_valid_data_type <- function(data_type) {
 #' the samples and analytes that were examined on the plate as well as
 #' some additional metadata and batch info
 #'
-#' @import R6
-#'
+#' @importFrom R6 R6Class
 #'
 Plate <- R6::R6Class(
   "Plate",
