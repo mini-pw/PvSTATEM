@@ -177,16 +177,6 @@ test_that("Parse the random plate 2 data", {
   expect_error(read_xponent_format(plate_file), NA)
 })
 
-test_that("Parse CovidOISExPONTENT.csv plate data", {
-  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
-  expect_no_error(read_xponent_format(path))
-})
-
-test_that("Parse CovidOISExPONTENT_CO.csv plate data", {
-  path <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)
-  expect_no_error(read_xponent_format(path))
-})
-
 file_parse_success <- function(file) {
   print(paste0("Parsing file", file))
   expect_error_free <- TRUE

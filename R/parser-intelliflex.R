@@ -5,10 +5,10 @@ require(dplyr)
 #' @param path Path to the INTELLIFLEX file
 #'
 #' @import dplyr
-#'
-#' @export
+#' @import utils
+#' @import stringr
 read_intelliflex_format <- function(path) {
-  df <- read.csv(path)
+  df <- utils::read.csv(path, stringsAsFactors = FALSE)
   system_end_index <- which(colnames(df) == "PLATE.START")
   sample_end_index <- which(colnames(df) == "TOTAL.EVENTS")
 
@@ -41,7 +41,7 @@ read_intelliflex_format <- function(path) {
         select(matches(paste0("R\\d+\\.\\.RP\\d+\\.", result_type)))
       regions <- stringr::str_extract(colnames(x), paste0("(.*?).", result_type), group = 1)
       colnames(x) <- analyte_names[regions]
-      x <- cbind(location = sample_df[, "WELL.LOCATION"], x)
+      x <- cbind(Location = sample_df[, "WELL.LOCATION"], x)
       x
     }
   )

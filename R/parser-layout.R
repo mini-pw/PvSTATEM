@@ -34,7 +34,8 @@ read_location_data_xlsx <- function(location_file_path, ...) {
 #' The row names are supposed to be letters A,B,C, etc.
 #' The column names are supposed to be numbers 1,2,3, etc.
 #'
-#' @export
+#' @import readxl
+#' @import utils
 read_layout_data <- function(layout_file_path, ...) {
   ext <- tools::file_ext(layout_file_path)
   stopifnot(ext %in% c("csv", "xlsx"))
