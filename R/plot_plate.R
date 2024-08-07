@@ -19,14 +19,15 @@ random_pastel_color <- function(n) {
 # Generate random pastel colors for each well
 colors <- random_pastel_color(96)
 
-plot_plate <- function(colors) {
+plot_plate <- function(colors, plot_numbers = TRUE, numbers) {
   # Load the background image
-  image_file <- "/Users/mat/Desktop/new_thesis_bc_i_suck/PvSTATEM/inst/img/96_well_plate.png"
-  plate_img <- readPNG(image_file)
-
+  image_path <- system.file("img", "96_well_plate.png", package = "PvSTATEM", mustWork = TRUE)
+  plate_img <- readPNG(image_path)
   rgb_image <- array(0, dim = c(dim(plate_img)[1], dim(plate_img)[2], 3))
 
   # Fill each channel with the grayscale values
+  # this step is necessary because the image have two channels
+  # this is unusual and R complains about it
   rgb_image[,,1] <- plate_img[,,1]  # Red channel
   rgb_image[,,2] <- plate_img[,,1]  # Green channel
   rgb_image[,,3] <- plate_img[,,1]  # Blue channel
@@ -39,13 +40,14 @@ plot_plate <- function(colors) {
 
   # Add colors to the well positions data frame
   well_positions$color <- colors
+  well_positions$numbers <- numbers
 
   # Define the aspect ratio of the background image
   background_image_resolution <- c(dim(plate_img)[2], dim(plate_img)[1])
   aspect_ratio <- background_image_resolution[2] / background_image_resolution[1]
 
   # Plot the plate with colored wells
-  ggplot(well_positions, aes(x = x, y = y)) +
+  p <- ggplot(well_positions, aes(x = x, y = y)) +
     annotation_custom(
       rasterGrob(rgb_image, width = unit(1, "npc"), height = unit(1, "npc")),
       -Inf, Inf, -Inf, Inf
@@ -57,4 +59,13 @@ plot_plate <- function(colors) {
     scale_y_continuous(limits = c(0, 1)) +
     theme(aspect.ratio = aspect_ratio, plot.title = element_text(hjust = 0.5)) +
     ggtitle("Plate Layout")
+
+  if (plot_numbers) {
+    p <- p + geom_text(aes(label = numbers), size = 3, color = "black", vjust = 0.5, hjust = 0.5)
+  }
+
+  p
 }
+
+plot_plate(colors = colors, plot_numbers = T, numbers = 1:96)
+
