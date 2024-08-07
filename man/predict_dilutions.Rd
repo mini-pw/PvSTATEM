@@ -2,11 +2,11 @@
 % Please edit documentation in R/standard_curves.R
 \name{predict_dilutions}
 \alias{predict_dilutions}
-\title{predict dilutions using fitted model}
+\title{Predict dilutions using fitted model}
 \usage{
 predict_dilutions(
   plate,
-  antibody_name,
+  analyte_name,
   model,
   data_type = "Median",
   verbose = TRUE
@@ -15,7 +15,7 @@ predict_dilutions(
 \arguments{
 \item{plate}{Plate object}
 
-\item{antibody_name}{Name of the antibody for which we want to predict the dilutions}
+\item{analyte_name}{Name of the analyte for which we want to predict the dilutions}
 
 \item{model}{nplr object with the model}
 
@@ -28,15 +28,4 @@ data frame with columns: \code{Location}, \code{Sample}, \code{MFI}, \code{dilut
 }
 \description{
 Function predicts the dilutions of the samples, based on the MFI values and the fitted model.
-}
-\examples{
-plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
-layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the layout file
-
-plate <- read_data(plate_filepath, layout_filepath)
-model <- create_standard_curve_model_antibody(plate, antibody_name = "RBD_wuhan_IPP")
-
-sample_concentrations <- predict_dilutions(plate, antibody_name = "RBD_wuhan_IPP", model)
-head(sample_concentrations)
-
 }

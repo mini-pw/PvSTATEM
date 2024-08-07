@@ -28,6 +28,9 @@ Imports:
     knitr,
     rmarkdown,
     ggplot2,
+    readr,
+    stringi,
+    stringr,
     nplr
 Suggests:
     testthat (>= 3.0.0),
