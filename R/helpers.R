@@ -113,3 +113,8 @@ color_codes <-
     green_start = "\033[32m",
     green_end = "\033[39m"
   )
+
+
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5 * IQR(x))
+}
