@@ -19,7 +19,20 @@ random_pastel_color <- function(n) {
 # Generate random pastel colors for each well
 colors <- random_pastel_color(96)
 
-plot_plate <- function(colors, plot_numbers = TRUE, numbers) {
+plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL) {
+
+  if (length(colors) != 96) {
+    stop("The colors vector must have 96 elements")
+  }
+
+  if (plot_numbers && is.null(numbers))  {
+    stop("The numbers vector must be provided if plot_numbers is TRUE")
+  }
+
+  if (plot_numbers && length(numbers) != 96) {
+    stop("The numbers vector must have 96 elements")
+  }
+
   # Load the background image
   image_path <- system.file("img", "96_well_plate.png", package = "PvSTATEM", mustWork = TRUE)
   plate_img <- readPNG(image_path)
@@ -67,5 +80,4 @@ plot_plate <- function(colors, plot_numbers = TRUE, numbers) {
   p
 }
 
-plot_plate(colors = colors, plot_numbers = T, numbers = 1:96)
-
+plot_plate(colors = colors, plot_numbers = T, 1:96)
