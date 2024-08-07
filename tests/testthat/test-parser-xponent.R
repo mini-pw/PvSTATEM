@@ -165,7 +165,7 @@ test_that("Test repeating a parser", {
 })
 
 
-## Integration tests
+## Functionality tests
 
 test_that("Parse the random plate data", {
   plate_file <- system.file("extdata", "random.csv", package = "PvSTATEM", mustWork = TRUE)

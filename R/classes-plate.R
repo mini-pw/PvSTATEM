@@ -72,6 +72,9 @@ Plate <- R6::R6Class(
     batch_info = NULL,
     layout = NULL,
 
+    ## Fields that will be set by the methods ---
+    blank_adjusted = FALSE,
+
     ## Methods ---------------------------------------------------------------
 
     #' @description
@@ -207,12 +210,56 @@ Plate <- R6::R6Class(
     #' By default `avg`. For now it is the only available method
     #' @param inplace Whether the method should produce new plate with adjusted
     #' values or not, By default `TRUE` - operates on the current plate.
-    blank_adjustment = function(method = "avg", in_place = "TRUE") {}
+    blank_adjustment = function(method = "avg", in_place = TRUE) {
+      if (self$blank_adjusted) {
+        stop("Blank values have been already adjusted in this plate, If you want to try doing it using different method consider reversing this process")
+      }
+
+      available_methods <- c("avg")
+      if (!method %in% available_methods) {
+        stop(paste0(method, "not available for now, consider using one of the following: ", available_methods))
+      }
+
+      plate <- if (in_place) self else self$clone()
+
+      blanks_filter <- plate$sample_types == "BLANK"
+      if (!any(blanks_filter)) {
+        stop("No blanks found in the plate")
+      }
+      for (datatype in names(plate$data)) {
+        df <- plate$data[[datatype]]
+        blanks_df <- df[blanks_filter, ]
+        blank_values <- switch(method,
+          "avg" = {
+            apply(blanks_df, 2, mean)
+          },
+          {
+            stop("Method ", method, " is not supported")
+          }
+        )
+        new_df <- sweep(df, 2, blank_values, "-")
+
+        if (any(new_df < 0)) {
+          warning("Some values are below 0 after blank adjustment for ", datatype, "\n")
+          row_col_indices <- which(new_df < 0, arr.ind = TRUE)
+          for (idx in seq_len(nrow(row_col_indices))) {
+            row <- row_col_indices[idx, 1]
+            col <- row_col_indices[idx, 2]
+            sample_name <- plate$sample_names[row]
+            analyte_name <- plate$analyte_names[col]
+            stopifnot(analyte_name == colnames(new_df)[col])
+            warning("Analyte:", analyte_name, "Row:", row, "Sample Name:", sample_name, "\n")
+          }
+        }
+        plate$data[[datatype]] <- new_df
+      }
+      plate$blank_adjusted <- TRUE
+      return(plate)
+    }
   ),
   private = list(
 
     ## Private Fields ---------------------------------------------------------
-    blank_adjusted = FALSE,
     verbose = TRUE
   )
 )

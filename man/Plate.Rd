@@ -128,7 +128,7 @@ In short it subtracts the values from data in all samples, except from
 Blanks. It does not subtract values from \code{Count} values, even if this
 step seems logical, people from the lab do not do it always.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$blank_adjustment(method = "avg", in_place = "TRUE")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Plate$blank_adjustment(method = "avg", in_place = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
