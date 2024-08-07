@@ -104,4 +104,39 @@ plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE) {
   plot_plate(colors, plot_title = title, plot_numbers = plot_counts, numbers = counts)
 }
 
-plot_counts(c(1:960:10), antibody_name = "IgG", plot_counts = TRUE)
+plot_layout <- function(sample_types, plate_name = NULL) {
+
+  if (length(sample_types) != 96) {
+    stop("The sample_types vector must have 96 elements")
+  }
+
+  # Define the mapping using a named vector
+  color_map <- c(
+    "BLANK" = "pink",
+    "POSITIVE CONTROL" = "green",
+    "NEGATIVE CONTROL" = "red",
+    "TEST" = "blue",
+    "STANDARD CURVE" = "yellow",
+    "default" = "black"
+  )
+
+  # Mapping function using the named vector
+  map_to_color <- function(sample_type) {
+    if (!is.null(color_map[sample_type])) {
+      return(color_map[sample_type])
+    } else {
+      return(color_map["default"])
+    }
+  }
+
+  # Apply the mapping function to the sample_types vector
+  colors <- sapply(sample_types, map_to_color)
+
+  if (is.null(plate_name)) {
+    title <- "Layout"
+  } else {
+    title <- paste("Layout of", plate_name)
+  }
+
+  plot_plate(colors, plot_title = title, plot_numbers = FALSE)
+}
