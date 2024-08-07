@@ -74,5 +74,34 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   p
 }
 
-plot_plate(colors = colors, plot_numbers = T, 1:96)
 
+plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE) {
+
+  if (length(counts) != 96) {
+    stop("The counts vector must have 96 elements")
+  }
+
+  # mapping function from counts to colors
+  map_to_color <- function(count) {
+    if (count < 50) {
+      return("red")
+    } else if (count >= 50 && count <= 200) {
+      return("#e5e50f")
+    } else {
+      return("green")
+    }
+  }
+
+  # Apply the mapping function to the counts vector
+  colors <- sapply(counts, map_to_color)
+
+  if (is.null(antibody_name)) {
+    title <- "Counts"
+  } else {
+    title <- paste("Counts for", antibody_name)
+  }
+
+  plot_plate(colors, plot_title = title, plot_numbers = plot_counts, numbers = counts)
+}
+
+plot_counts(c(1:960:10), antibody_name = "IgG", plot_counts = TRUE)
