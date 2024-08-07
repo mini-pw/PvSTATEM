@@ -1,9 +1,3 @@
-# Install and load necessary packages
-install.packages("ggplot2")
-install.packages("grid")
-install.packages("png") # or "jpeg" if the image is in JPEG format
-
-
 library(ggplot2)
 library(grid)
 library(png)
@@ -19,7 +13,7 @@ random_pastel_color <- function(n) {
 # Generate random pastel colors for each well
 colors <- random_pastel_color(96)
 
-plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL) {
+plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate") {
 
   if (length(colors) != 96) {
     stop("The colors vector must have 96 elements")
@@ -65,19 +59,20 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL) {
       rasterGrob(rgb_image, width = unit(1, "npc"), height = unit(1, "npc")),
       -Inf, Inf, -Inf, Inf
     ) +
-    geom_point(aes(color = color), size = min(dev.size("px") / background_image_resolution) * 19.7 - 2, shape = 21, fill = colors, stroke = 0.5) +
+    geom_point(aes(color = color), size = min(dev.size("px") / background_image_resolution) * 19.9 - 1.5, shape = 21, fill = colors, stroke = 0.5) +
     scale_color_identity() +
     theme_void() +
     scale_x_continuous(limits = c(0, 1)) +
     scale_y_continuous(limits = c(0, 1)) +
     theme(aspect.ratio = aspect_ratio, plot.title = element_text(hjust = 0.5)) +
-    ggtitle("Plate Layout")
+    ggtitle(plot_title)
 
   if (plot_numbers) {
-    p <- p + geom_text(aes(label = numbers), size = 3, color = "black", vjust = 0.5, hjust = 0.5)
+    p <- p + geom_text(aes(label = numbers), size = 6, color = "black", vjust = 0.5, hjust = 0.5)
   }
 
   p
 }
 
 plot_plate(colors = colors, plot_numbers = T, 1:96)
+

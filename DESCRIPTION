@@ -31,7 +31,9 @@ Imports:
     readr,
     stringi,
     stringr,
-    nplr
+    nplr,
+    grid,
+    png
 Suggests:
     testthat (>= 3.0.0),
     knitr
