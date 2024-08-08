@@ -1,18 +1,22 @@
-library(ggplot2)
-library(grid)
-library(png)
+require(ggplot2)
+require(grid)
+require(png)
 
-# Function to generate random pastel colors
-random_pastel_color <- function(n) {
-  rgb_matrix <- matrix(runif(n * 3, min = 0.6, max = 1), ncol = 3)
-  apply(rgb_matrix, 1, function(rgb) {
-    rgb(rgb[1], rgb[2], rgb[3])
-  })
-}
 
-# Generate random pastel colors for each well
-colors <- random_pastel_color(96)
-
+#' Plot a 96-well plate with colored wells
+#'
+#' @param colors A vector with 96 colors
+#' @param plot_numbers Logical indicating if the well numbers should be plotted
+#' @param numbers A vector with 96 numbers
+#' @param plot_title The title of the plot (default is "Plate")
+#'
+#' @return A ggplot object
+#'
+#' @import ggplot2
+#' @import grid
+#' @import png
+#'
+#' @internal
 plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate") {
 
   if (length(colors) != 96) {
@@ -140,3 +144,4 @@ plot_layout <- function(sample_types, plate_name = NULL) {
 
   plot_plate(colors, plot_title = title, plot_numbers = FALSE)
 }
+
