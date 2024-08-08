@@ -4,6 +4,11 @@ require(png)
 
 
 #' Plot a 96-well plate with colored wells
+#' 
+#' It is a generic function to plot a 96-well plate with colored wells
+#' used by other functions in this package, mainly to plot layout and counts.
+#' The function uses a background image of a 96-well plate and
+#' plots the colors in the wells using ggplot2.
 #'
 #' @param colors A vector with 96 colors
 #' @param plot_numbers Logical indicating if the well numbers should be plotted
@@ -79,6 +84,20 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 }
 
 
+#' Plot counts in a 96-well plate
+#' 
+#' It is a function to plot counts in a 96-well plate using a color scale.
+#' The function uses a color scale to map the counts to colors and plot them
+#' in a 96-well plate.
+#' The function uses the plot_plate function to plot the counts.
+#'
+#' @param counts A vector with 96 counts
+#' @param antibody_name The name of the antibody
+#' @param plot_counts Logical indicating if the counts should be plotted
+#'
+#' @return A ggplot object
+#'
+#' @export
 plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE) {
 
   if (length(counts) != 96) {
@@ -108,6 +127,18 @@ plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE) {
   plot_plate(colors, plot_title = title, plot_numbers = plot_counts, numbers = counts)
 }
 
+
+#' Plot layout of a 96-well plate
+#' 
+#' It is a function to plot the layout of a 96-well plate using a color scale.
+#' The function uses the plot_plate function to plot the layout.
+#'
+#' @param sample_types A vector with 96 sample types
+#' @param plate_name The name of the plate
+#'
+#' @return A ggplot object
+#'
+#' @export
 plot_layout <- function(sample_types, plate_name = NULL) {
 
   if (length(sample_types) != 96) {
@@ -144,4 +175,3 @@ plot_layout <- function(sample_types, plate_name = NULL) {
 
   plot_plate(colors, plot_title = title, plot_numbers = FALSE)
 }
-

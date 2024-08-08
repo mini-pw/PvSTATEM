@@ -19,5 +19,8 @@ plot_plate(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate")
 A ggplot object
 }
 \description{
-Plot a 96-well plate with colored wells
+It is a generic function to plot a 96-well plate with colored wells
+used by other functions in this package, mainly to plot layout and counts.
+The function uses a background image of a 96-well plate and
+plots the colors in the wells using ggplot2.
 }
