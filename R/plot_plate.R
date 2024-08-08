@@ -69,16 +69,18 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
       rasterGrob(rgb_image, width = unit(1, "npc"), height = unit(1, "npc")),
       -Inf, Inf, -Inf, Inf
     ) +
-    geom_point(aes(color = color), size = area_size * 19.9 - 1.5, shape = 21, fill = colors, stroke = 0.5) +
+    geom_point(aes(color = color), size = area_size * 19 - 1.5, shape = 21, fill = colors, stroke = 0.5) +
     scale_color_identity() +
     theme_void() +
     scale_x_continuous(limits = c(0, 1)) +
     scale_y_continuous(limits = c(0, 1)) +
-    theme(aspect.ratio = aspect_ratio, plot.title = element_text(hjust = 0.5)) +
-    ggtitle(plot_title)
+    ggtitle(plot_title) +
+    theme(aspect.ratio = aspect_ratio,
+          plot.title = element_text(hjust = 0.5, size = area_size * 20 + 5, vjust = -1))
+
 
   if (plot_numbers) {
-    p <- p + geom_text(aes(label = numbers), size = area_size * 8 - 0.5, color = "black", vjust = 0.5, hjust = 0.5)
+    p <- p + geom_text(aes(label = numbers), size = area_size * 8 - 0.5, color = "black", vjust = 0.5, hjust = 0.5, fontface = "bold")
   }
 
   p
