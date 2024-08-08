@@ -78,7 +78,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
     ggtitle(plot_title)
 
   if (plot_numbers) {
-    p <- p + geom_text(aes(label = numbers), size = 6, color = "black", vjust = 0.5, hjust = 0.5)
+    p <- p + geom_text(aes(label = numbers), size = area_size * 8 - 0.5, color = "black", vjust = 0.5, hjust = 0.5)
   }
 
   p
