@@ -4,7 +4,7 @@ require(png)
 
 
 #' Plot a 96-well plate with colored wells
-#' 
+#'
 #' It is a generic function to plot a 96-well plate with colored wells
 #' used by other functions in this package, mainly to plot layout and counts.
 #' The function uses a background image of a 96-well plate and
@@ -61,6 +61,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   # Define the aspect ratio of the background image
   background_image_resolution <- c(dim(plate_img)[2], dim(plate_img)[1])
   aspect_ratio <- background_image_resolution[2] / background_image_resolution[1]
+  area_size <- min(dev.size("px") / background_image_resolution)
 
   # Plot the plate with colored wells
   p <- ggplot(well_positions, aes(x = x, y = y)) +
@@ -68,7 +69,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
       rasterGrob(rgb_image, width = unit(1, "npc"), height = unit(1, "npc")),
       -Inf, Inf, -Inf, Inf
     ) +
-    geom_point(aes(color = color), size = min(dev.size("px") / background_image_resolution) * 19.9 - 1.5, shape = 21, fill = colors, stroke = 0.5) +
+    geom_point(aes(color = color), size = area_size * 19.9 - 1.5, shape = 21, fill = colors, stroke = 0.5) +
     scale_color_identity() +
     theme_void() +
     scale_x_continuous(limits = c(0, 1)) +
@@ -85,7 +86,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 
 
 #' Plot counts in a 96-well plate
-#' 
+#'
 #' It is a function to plot counts in a 96-well plate using a color scale.
 #' The function uses a color scale to map the counts to colors and plot them
 #' in a 96-well plate.
@@ -107,11 +108,11 @@ plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE) {
   # mapping function from counts to colors
   map_to_color <- function(count) {
     if (count < 50) {
-      return("red")
-    } else if (count >= 50 && count <= 200) {
+      return("#cc3232")
+    } else if (count >= 50 && count <= 70) {
       return("#e5e50f")
     } else {
-      return("green")
+      return("#2dc937")
     }
   }
 
@@ -129,7 +130,7 @@ plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE) {
 
 
 #' Plot layout of a 96-well plate
-#' 
+#'
 #' It is a function to plot the layout of a 96-well plate using a color scale.
 #' The function uses the plot_plate function to plot the layout.
 #'
@@ -147,11 +148,11 @@ plot_layout <- function(sample_types, plate_name = NULL) {
 
   # Define the mapping using a named vector
   color_map <- c(
-    "BLANK" = "pink",
-    "POSITIVE CONTROL" = "green",
-    "NEGATIVE CONTROL" = "red",
-    "TEST" = "blue",
-    "STANDARD CURVE" = "yellow",
+    "BLANK" = "#B5CFB7",
+    "POSITIVE CONTROL" = "#B1AFFF",
+    "NEGATIVE CONTROL" = "#FFE9D0",
+    "TEST" = "#BBE9FF",
+    "STANDARD CURVE" = "#F7B5CA",
     "default" = "black"
   )
 
