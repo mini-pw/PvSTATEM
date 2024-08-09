@@ -12,6 +12,7 @@ read_luminex_data(
   plate_file_encoding = "UTF-8",
   use_layout_types = TRUE,
   default_data_type = "Median",
+  dilutions_from = "sample_names",
   sample_types = NULL
 )
 }
@@ -30,6 +31,8 @@ read_luminex_data(
 Works only when layout file is provided}
 
 \item{default_data_type}{The default data type to use if none is specified}
+
+\item{dilutions_from}{Where to extract dilutions from. Select from: layout, sample_names}
 
 \item{sample_types}{a vector of sample types to use instead of the extracted ones}
 }

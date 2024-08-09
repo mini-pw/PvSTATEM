@@ -80,7 +80,11 @@ By default \code{FALSE}}
 \subsection{Method \code{get_data()}}{
 Function returns data for a specific analyte and sample.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$get_data(analyte, sample_type = "ALL", data_type = self$data_type_used)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Plate$get_data(
+  analyte,
+  sample_type = "ALL",
+  data_type = self$default_data_type
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -90,7 +94,7 @@ Function returns data for a specific analyte and sample.
 
 \item{\code{data_type}}{if \code{NULL} returns whole column of the dataframe
 containing information about the sample. Default value is plate's
-\code{data_type_used} usually \code{Median}.}
+\code{default_data_type} usually \code{Median}.}
 
 \item{\code{sample}}{sample name or id}
 }

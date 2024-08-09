@@ -98,6 +98,7 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #' @param use_layout_types Whether to use names from the layout file in extracting sample types.
 #' Works only when layout file is provided
 #' @param default_data_type The default data type to use if none is specified
+#' @param dilutions_from Where to extract dilutions from. Select from: layout, sample_names
 #' @param sample_types a vector of sample types to use instead of the extracted ones
 #'
 #' @return Plate file containing the Luminex data
@@ -110,6 +111,7 @@ read_luminex_data <- function(plate_filepath,
                               plate_file_encoding = "UTF-8",
                               use_layout_types = TRUE,
                               default_data_type = "Median",
+                              dilutions_from = "sample_names",
                               sample_types = NULL) {
   if (!(format %in% valid_formats)) {
     stop("Invalid format: ", format, ". Select from: ", paste(valid_formats, collapse = ", "))
@@ -131,6 +133,7 @@ read_luminex_data <- function(plate_filepath,
     parser_output$analyte_names
   )
   plate_builder$set_sample_locations(parser_output$sample_locations)
+  layout_matrix <- NULL
   if (!is.null(layout_filepath)) {
     layout_matrix <- read_layout_data(layout_filepath)
     plate_builder$set_layout(layout_matrix)
@@ -142,6 +145,22 @@ read_luminex_data <- function(plate_filepath,
   plate_builder$set_default_data_type(default_data_type)
   plate_builder$set_batch_info(parser_output$batch_info)
   plate_builder$set_data(parser_output$data)
+
+  switch(dilutions_from,
+    "layout" = {
+      if (is.null(layout_matrix)) {
+        stop("Cannot extract dilutions from layout. Layout is not set.")
+      }
+      plate_builder$set_dilutions(c(t(layout_matrix))) # TODO: Implement a switch for this
+    },
+    "sample_names" = {
+      plate_builder$set_dilutions(parser_output$sample_names)
+    },
+    {
+      stop("Invalid dilutions_from: ", dilutions_from, ". Select from: layout, data")
+    }
+  )
+
 
   plate <- plate_builder$build(validate = TRUE)
 

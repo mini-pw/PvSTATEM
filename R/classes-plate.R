@@ -128,10 +128,10 @@ Plate <- R6::R6Class(
     #' @param sample sample name or id
     #' @param data_type if `NULL` returns whole column of the dataframe
     #' containing information about the sample. Default value is plate's
-    #' `data_type_used` usually `Median`.
+    #' `default_data_type` usually `Median`.
     #'
     #' @return Data about a sample and analyte
-    get_data = function(analyte, sample_type = "ALL", data_type = self$data_type_used) {
+    get_data = function(analyte, sample_type = "ALL", data_type = self$default_data_type) {
       # check if the analyte exists in analytes_names
       if (!is.null(analyte) && !is.na(analyte)) {
         if (!analyte %in% self$analyte_names) {
