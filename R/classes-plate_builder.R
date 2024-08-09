@@ -57,6 +57,13 @@ PlateBuilder <- R6::R6Class(
     set_dilutions = function(dilutions) {
       stopifnot(is.character(dilutions) && length(dilutions) > 0)
       stopifnot(length(dilutions) == length(self$sample_names))
+
+      is_dilution_filter <- is_dilution(dilutions)
+      dilutions[!is_dilution_filter] <- NA
+      if (all(is.na(dilutions))) {
+        warning("No valid dilutions found")
+      }
+
       self$dilutions <- dilutions
       self$dilution_values <- convert_dilutions_to_numeric(dilutions)
     },
@@ -76,7 +83,7 @@ PlateBuilder <- R6::R6Class(
         if (is.null(self$layout)) {
           stop("Layout is not provided. But `use_layout_types` is set to `TRUE`")
         }
-        layout_names <- c(self$layout) # TODO: Make it into a function and explain
+        layout_names <- c(t(self$layout)) # TODO: Make it into a function and explain
         sample_types <- translate_sample_names_to_sample_types(self$sample_names, layout_names)
       } else {
         sample_types <- translate_sample_names_to_sample_types(self$sample_names)
@@ -205,16 +212,21 @@ PlateBuilder <- R6::R6Class(
   )
 )
 
+is_dilution <- function(character_vector) {
+  stopifnot(is.character(character_vector))
+
+  dilution_regex <- "^\\d+/\\d+$"
+  is_valid_dilution <- (!is.na(character_vector)) & (stringr::str_detect(character_vector, dilution_regex))
+  is_valid_dilution
+}
 
 convert_dilutions_to_numeric <- function(dilutions) {
   stopifnot(is.character(dilutions))
-  non_na_filter <- !is.na(dilutions)
+
+  non_na_filter <- is_dilution(dilutions)
 
   splitted_dilutions <- stringr::str_split(dilutions[non_na_filter], "/")
-  for (splitted_dilution in splitted_dilutions) {
-    stopifnot(length(splitted_dilution) == 2)
-    stopifnot(all())
-  }
+  stopifnot(all(lengths(splitted_dilutions) == 2))
 
   dilution_values <- rep(NA, length(dilutions))
   dilution_values[non_na_filter] <- as.numeric(sapply(splitted_dilutions, function(x) {
