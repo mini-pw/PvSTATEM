@@ -22,7 +22,8 @@ require(png)
 #' @import png
 #'
 #' @internal
-plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate") {
+plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate",
+                       plot_legend = FALSE, legend_mapping = NULL) {
 
   if (length(colors) != 96) {
     stop("The colors vector must have 96 elements")
@@ -34,6 +35,14 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 
   if (plot_numbers && length(numbers) != 96) {
     stop("The numbers vector must have 96 elements")
+  }
+
+  if (is.null(legend_mapping)) {
+    stop("The legend_mapping vector must always be provided")
+  }
+
+  if (length(legend_mapping) < length(unique(colors))) {
+    stop("The legend_mapping vector must have at least the same length as the unique colors")
   }
 
   # Load the background image
@@ -63,24 +72,42 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   aspect_ratio <- background_image_resolution[2] / background_image_resolution[1]
   area_size <- min(dev.size("px") / background_image_resolution)
 
+
+  categories <- names(legend_mapping)
+  well_positions$category <- factor(well_positions$color, levels = legend_mapping, labels = categories)
+
+
   # Plot the plate with colored wells
   p <- ggplot(well_positions, aes(x = x, y = y)) +
     annotation_custom(
       rasterGrob(rgb_image, width = unit(1, "npc"), height = unit(1, "npc")),
       -Inf, Inf, -Inf, Inf
     ) +
-    geom_point(aes(color = color), size = area_size * 19 - 1.5, shape = 21, fill = colors, stroke = 0.5) +
-    scale_color_identity() +
+    geom_point(aes(fill = category), size = area_size * 19 - 1.5, shape = 21, color = "black", stroke = 0) +
+    scale_fill_manual(values = legend_mapping) +
     theme_void() +
     scale_x_continuous(limits = c(0, 1)) +
     scale_y_continuous(limits = c(0, 1)) +
     ggtitle(plot_title) +
-    theme(aspect.ratio = aspect_ratio,
-          plot.title = element_text(hjust = 0.5, size = area_size * 20 + 5, vjust = -1))
-
+    theme(
+      aspect.ratio = aspect_ratio,
+      plot.title = element_text(hjust = 0.5, size = area_size * 20 + 5, vjust = -1),
+      legend.title = element_text(size = 0),
+      legend.text = element_text(size = 12, face = "bold"),
+      legend.background = element_rect(fill = "white", size = 0),
+      legend.key = element_rect(fill = "white", color = "white")
+    )
 
   if (plot_numbers) {
     p <- p + geom_text(aes(label = numbers), size = area_size * 8 - 0.5, color = "black", vjust = 0.5, hjust = 0.5, fontface = "bold")
+  }
+
+  if ((dev.size("px") / background_image_resolution)[1] < (dev.size("px") / background_image_resolution)[2]){
+    p <- p + theme(legend.position="bottom")
+  }
+
+  if (!plot_legend) {
+    p <- p + theme(legend.position = "none")
   }
 
   p
@@ -101,7 +128,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' @return A ggplot object
 #'
 #' @export
-plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE) {
+plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE, plot_legend = TRUE) {
 
   if (length(counts) != 96) {
     stop("The counts vector must have 96 elements")
@@ -118,6 +145,14 @@ plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE) {
     }
   }
 
+  # Define the mapping using a named vector
+  color_map <- c(
+    "TO LITTLE" = "#cc3232",
+    "WARNING" = "#e5e50f",
+    "CORRECT" = "#2dc937",
+    "default" = "black"
+  )
+
   # Apply the mapping function to the counts vector
   colors <- sapply(counts, map_to_color)
 
@@ -127,7 +162,7 @@ plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE) {
     title <- paste("Counts for", antibody_name)
   }
 
-  plot_plate(colors, plot_title = title, plot_numbers = plot_counts, numbers = counts)
+  plot_plate(colors, plot_title = title, plot_numbers = plot_counts, numbers = counts, plot_legend = plot_legend, legend_mapping = color_map)
 }
 
 
@@ -142,7 +177,7 @@ plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE) {
 #' @return A ggplot object
 #'
 #' @export
-plot_layout <- function(sample_types, plate_name = NULL) {
+plot_layout <- function(sample_types, plate_name = NULL, plot_legend=TRUE) {
 
   if (length(sample_types) != 96) {
     stop("The sample_types vector must have 96 elements")
@@ -176,5 +211,6 @@ plot_layout <- function(sample_types, plate_name = NULL) {
     title <- paste("Layout of", plate_name)
   }
 
-  plot_plate(colors, plot_title = title, plot_numbers = FALSE)
+  plot_plate(colors, plot_title = title, plot_numbers = FALSE, plot_legend = plot_legend, legend_mapping = color_map)
 }
+
