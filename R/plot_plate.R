@@ -85,7 +85,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
       rasterGrob(rgb_image, width = unit(1, "npc"), height = unit(1, "npc")),
       -Inf, Inf, -Inf, Inf
     ) +
-    geom_point(aes(fill = category), size = area_size * 19, shape = 21, color = "black", stroke = 0) +
+    geom_point(aes(fill = category), size = area_size * 19 - 1, shape = 21, color = "black", stroke = 0) +
     scale_fill_manual(values = legend_mapping) +
     theme_void() +
     scale_x_continuous(limits = c(0, 1)) +
@@ -129,6 +129,10 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' @param plot_legend Logical indicating if the legend should be plotted
 #'
 #' @return A ggplot object
+#'
+#' @examples
+#' counts = c(40:135)
+#' plot_counts(counts, plot_legend = TRUE, plot_counts = TRUE)
 #'
 #' @export
 plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE, plot_legend = FALSE) {
@@ -179,6 +183,16 @@ plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE, plot_
 #' @param plot_legend Logical indicating if the legend should be plotted
 #'
 #' @return A ggplot object
+#'
+#' @examples
+#' types = c(rep("BLANK", 12),
+#'           rep("TEST", 14),
+#'           rep("NEGATIVE CONTROL", 30),
+#'           rep("STANDARD CURVE", 35),
+#'           rep("POSITIVE CONTROL", 5))
+#'
+#' plot_layout(sample_types = types, plate_name = "Plate 1")
+#'
 #'
 #' @export
 plot_layout <- function(sample_types, plate_name = NULL, plot_legend = TRUE) {
