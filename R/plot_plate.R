@@ -14,6 +14,8 @@ require(png)
 #' @param plot_numbers Logical indicating if the well numbers should be plotted
 #' @param numbers A vector with 96 numbers
 #' @param plot_title The title of the plot (default is "Plate")
+#' @param plot_legend Logical indicating if the legend should be plotted
+#' @param legend_mapping A named vector with the colors mapping
 #'
 #' @return A ggplot object
 #'
@@ -50,7 +52,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   plate_img <- readPNG(image_path)
   rgb_image <- array(0, dim = c(dim(plate_img)[1], dim(plate_img)[2], 3))
 
-  # Fill each channel with the grayscale values
+  # Fill each channel with the gray scale values
   # this step is necessary because the image have two channels
   # this is unusual and R complains about it
   rgb_image[,,1] <- plate_img[,,1]  # Red channel
@@ -83,7 +85,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
       rasterGrob(rgb_image, width = unit(1, "npc"), height = unit(1, "npc")),
       -Inf, Inf, -Inf, Inf
     ) +
-    geom_point(aes(fill = category), size = area_size * 19 - 1.5, shape = 21, color = "black", stroke = 0) +
+    geom_point(aes(fill = category), size = area_size * 19, shape = 21, color = "black", stroke = 0) +
     scale_fill_manual(values = legend_mapping) +
     theme_void() +
     scale_x_continuous(limits = c(0, 1)) +
@@ -94,16 +96,16 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
       plot.title = element_text(hjust = 0.5, size = area_size * 20 + 5, vjust = -1),
       legend.title = element_text(size = 0),
       legend.text = element_text(size = 12, face = "bold"),
-      legend.background = element_rect(fill = "white", size = 0),
+      legend.background = element_rect(fill = "white", linewidth = 0),
       legend.key = element_rect(fill = "white", color = "white")
     )
 
-  if (plot_numbers) {
-    p <- p + geom_text(aes(label = numbers), size = area_size * 8 - 0.5, color = "black", vjust = 0.5, hjust = 0.5, fontface = "bold")
+  if ((dev.size("px") / background_image_resolution)[1] < (dev.size("px") / background_image_resolution)[2]){
+    p <- p + theme(legend.position = "bottom")
   }
 
-  if ((dev.size("px") / background_image_resolution)[1] < (dev.size("px") / background_image_resolution)[2]){
-    p <- p + theme(legend.position="bottom")
+  if (plot_numbers) {
+    p <- p + geom_text(aes(label = numbers), size = area_size * 8 - 0.5, color = "black", vjust = 0.5, hjust = 0.5, fontface = "bold")
   }
 
   if (!plot_legend) {
@@ -124,11 +126,12 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' @param counts A vector with 96 counts
 #' @param antibody_name The name of the antibody
 #' @param plot_counts Logical indicating if the counts should be plotted
+#' @param plot_legend Logical indicating if the legend should be plotted
 #'
 #' @return A ggplot object
 #'
 #' @export
-plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE, plot_legend = TRUE) {
+plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE, plot_legend = FALSE) {
 
   if (length(counts) != 96) {
     stop("The counts vector must have 96 elements")
@@ -173,11 +176,12 @@ plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE, plot_
 #'
 #' @param sample_types A vector with 96 sample types
 #' @param plate_name The name of the plate
+#' @param plot_legend Logical indicating if the legend should be plotted
 #'
 #' @return A ggplot object
 #'
 #' @export
-plot_layout <- function(sample_types, plate_name = NULL, plot_legend=TRUE) {
+plot_layout <- function(sample_types, plate_name = NULL, plot_legend = TRUE) {
 
   if (length(sample_types) != 96) {
     stop("The sample_types vector must have 96 elements")
@@ -213,4 +217,3 @@ plot_layout <- function(sample_types, plate_name = NULL, plot_legend=TRUE) {
 
   plot_plate(colors, plot_title = title, plot_numbers = FALSE, plot_legend = plot_legend, legend_mapping = color_map)
 }
-
