@@ -124,18 +124,30 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' The function uses the plot_plate function to plot the counts.
 #'
 #' @param counts A vector with 96 counts
-#' @param antibody_name The name of the antibody
+#' @param analyte_name The name of the analyte
 #' @param plot_counts Logical indicating if the counts should be plotted
 #' @param plot_legend Logical indicating if the legend should be plotted
 #'
 #' @return A ggplot object
 #'
 #' @examples
-#' counts = c(40:135)
-#' plot_counts(counts, plot_legend = TRUE, plot_counts = TRUE)
 #'
 #' @export
-plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE, plot_legend = FALSE) {
+plot_counts <- function(plate, analyte_name = NULL, plot_counts = FALSE, plot_legend = FALSE) {
+
+  if (is.null(plate)) {
+    stop("The plate object must be provided")
+  }
+
+  if (is.null(plate$data)) {
+    stop("The plate object must have data")
+  }
+
+  if (is.null(analyte_name)){
+    stop("The analyte_name must be provided")
+  }
+
+  counts <- plate$get_data(analyte_name, data_type = "Count")
 
   if (length(counts) != 96) {
     stop("The counts vector must have 96 elements")
@@ -162,12 +174,7 @@ plot_counts <- function(counts, antibody_name = NULL, plot_counts = FALSE, plot_
 
   # Apply the mapping function to the counts vector
   colors <- sapply(counts, map_to_color)
-
-  if (is.null(antibody_name)) {
-    title <- "Counts"
-  } else {
-    title <- paste("Counts for", antibody_name)
-  }
+  title <- paste("Counts for", analyte_name)
 
   plot_plate(colors, plot_title = title, plot_numbers = plot_counts, numbers = counts, plot_legend = plot_legend, legend_mapping = color_map)
 }
@@ -230,4 +237,22 @@ plot_layout <- function(sample_types, plate_name = NULL, plot_legend = TRUE) {
   }
 
   plot_plate(colors, plot_title = title, plot_numbers = FALSE, plot_legend = plot_legend, legend_mapping = color_map)
+}
+
+create_vector_without_holes <- function(vector, locations) {
+  # Create a vector with all the locations
+  rows <- LETTERS[1:8]
+  columns <- 1:12
+  all_locations <- as.vector(outer(rows, columns, paste0))
+
+  # Create a vector with all the locations and set the missing values
+  without_holes <- rep("missing", length(all_locations))
+  names(without_holes) <- all_locations
+
+  # Update the present positions with the corresponding values
+  without_holes[locations] <- vector
+
+  # Output vector
+  without_holes <- unname(without_holes)
+  without_holes
 }
