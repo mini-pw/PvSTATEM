@@ -4,14 +4,21 @@
 \alias{plot_counts}
 \title{Plot counts in a 96-well plate}
 \usage{
-plot_counts(counts, antibody_name = NULL, plot_counts = FALSE)
+plot_counts(
+  plate,
+  analyte_name = NULL,
+  plot_counts = FALSE,
+  plot_legend = FALSE
+)
 }
 \arguments{
-\item{counts}{A vector with 96 counts}
+\item{plate}{The plate object with the counts data}
 
-\item{antibody_name}{The name of the antibody}
+\item{analyte_name}{The name of the analyte}
 
 \item{plot_counts}{Logical indicating if the counts should be plotted}
+
+\item{plot_legend}{Logical indicating if the legend should be plotted}
 }
 \value{
 A ggplot object
@@ -21,4 +28,11 @@ It is a function to plot counts in a 96-well plate using a color scale.
 The function uses a color scale to map the counts to colors and plot them
 in a 96-well plate.
 The function uses the plot_plate function to plot the counts.
+}
+\examples{
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+plate <- read_luminex_data(plate_filepath, layout_filepath)
+plot_counts(plate = plate, analyte_name = "OC43_NP_NA", plot_counts = T, plot_legend = F)
+
 }

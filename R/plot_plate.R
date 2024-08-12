@@ -123,7 +123,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' in a 96-well plate.
 #' The function uses the plot_plate function to plot the counts.
 #'
-#' @param counts A vector with 96 counts
+#' @param plate The plate object with the counts data
 #' @param analyte_name The name of the analyte
 #' @param plot_counts Logical indicating if the counts should be plotted
 #' @param plot_legend Logical indicating if the legend should be plotted
@@ -195,8 +195,7 @@ plot_counts <- function(plate, analyte_name = NULL, plot_counts = FALSE, plot_le
 #' It is a function to plot the layout of a 96-well plate using a color scale.
 #' The function uses the plot_plate function to plot the layout.
 #'
-#' @param sample_types A vector with 96 sample types
-#' @param plate_name The name of the plate
+#' @param plate The plate object with the layout information
 #' @param plot_legend Logical indicating if the legend should be plotted
 #'
 #' @return A ggplot object

@@ -4,7 +4,14 @@
 \alias{plot_plate}
 \title{Plot a 96-well plate with colored wells}
 \usage{
-plot_plate(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate")
+plot_plate(
+  colors,
+  plot_numbers = FALSE,
+  numbers = NULL,
+  plot_title = "Plate",
+  plot_legend = FALSE,
+  legend_mapping = NULL
+)
 }
 \arguments{
 \item{colors}{A vector with 96 colors}
@@ -14,6 +21,10 @@ plot_plate(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate")
 \item{numbers}{A vector with 96 numbers}
 
 \item{plot_title}{The title of the plot (default is "Plate")}
+
+\item{plot_legend}{Logical indicating if the legend should be plotted}
+
+\item{legend_mapping}{A named vector with the colors mapping}
 }
 \value{
 A ggplot object

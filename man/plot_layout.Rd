@@ -4,12 +4,12 @@
 \alias{plot_layout}
 \title{Plot layout of a 96-well plate}
 \usage{
-plot_layout(sample_types, plate_name = NULL)
+plot_layout(plate, plot_legend = TRUE)
 }
 \arguments{
-\item{sample_types}{A vector with 96 sample types}
+\item{plate}{The plate object with the layout information}
 
-\item{plate_name}{The name of the plate}
+\item{plot_legend}{Logical indicating if the legend should be plotted}
 }
 \value{
 A ggplot object
@@ -17,4 +17,11 @@ A ggplot object
 \description{
 It is a function to plot the layout of a 96-well plate using a color scale.
 The function uses the plot_plate function to plot the layout.
+}
+\examples{
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+plate <- read_luminex_data(plate_filepath, layout_filepath)
+plot_layout(plate = plate, plot_legend = T)
+
 }
