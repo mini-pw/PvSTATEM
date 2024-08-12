@@ -50,18 +50,31 @@ PlateBuilder <- R6::R6Class(
     },
 
     #' @description
-    #' Set the dilutions (end extract numeric values) used during the examination
-    #' @param dilutions vector of dilutions used during the examination
-    #' due to the nature of data it's a vector of strings,
-    #' the numeric vales are created from those strings
-    set_dilutions = function(dilutions) {
-      stopifnot(is.character(dilutions) && length(dilutions) > 0)
-      stopifnot(length(dilutions) == length(self$sample_names))
+    #' Extract the dilutions from layout, sample names or use a provided vector of values.
+    #' The provided vector should be the same length as the number of samples
+    #' and should contain dilution factors saved as strings
+    #' @param use_layout_dilutions logical value indicating whether to use names
+    #' extracted from layout files to extract dilutions. If set to `FALSE` the
+    #' function uses the sample names as a source for dilution
+    #'
+    #' @param values a vector of dilutions to overwrite the extraction process
+    #'
+    extract_dilutions = function(use_layout_dilutions = TRUE, values = NULL) {
+      stopifnot(is.null(self$dilutions))
+      if (!is.null(values)) {
+        dilutions <- set_dilutions(values)
+      } else if (use_layout_dilutions) {
+        if (is.null(self$layout)) {
+          stop("Layout is not provided, but `use_layout_dilutions` is set to `TRUE` - cannot extract the dilutions from the layout")
+        }
+        layout_names <- c(t(self$layout))
+        dilutions <- set_dilutions(layout_names)
+      } else {
+        if (is.null(self$sample_names)) {
+          stop("Sample names are not provided and `use_layout_dilutions` is set to `FALSE` - cannot extract the dilutions from sample names")
+        }
 
-      is_dilution_filter <- is_dilution(dilutions)
-      dilutions[!is_dilution_filter] <- NA
-      if (all(is.na(dilutions))) {
-        warning("No valid dilutions found")
+        dilutions <- sapply(self$sample_names, extract_dilution_from_name)
       }
 
       self$dilutions <- dilutions
@@ -81,7 +94,7 @@ PlateBuilder <- R6::R6Class(
         sample_types <- values
       } else if (use_layout_types) {
         if (is.null(self$layout)) {
-          stop("Layout is not provided. But `use_layout_types` is set to `TRUE`")
+          stop("Layout is not provided. But `use_layout_types` is set to `TRUE` - cannot extract the sample types from the layout")
         }
         layout_names <- c(t(self$layout)) # TODO: Make it into a function and explain
         sample_types <- translate_sample_names_to_sample_types(self$sample_names, layout_names)
@@ -211,6 +224,32 @@ PlateBuilder <- R6::R6Class(
     }
   )
 )
+#' @description
+#' function extracts dilution factor from the sample name - useful for detecting
+#' dilution from sample names
+extract_dilution_from_name <- function(sample_name) {
+  dilution_regex <- "1/\\d+"
+
+  dilution_factor <- stringr::str_extract(sample_name, dilution_regex)
+
+  dilution_factor
+}
+
+#' @description
+#' Set the dilutions (end extract numeric values) used during the examination
+#' @param dilutions vector of dilutions used during the examination
+#' due to the nature of data it's a vector of strings,
+#' the numeric vales are created from those strings
+set_dilutions = function(dilutions) {
+  stopifnot(is.character(dilutions) && length(dilutions) > 0)
+  stopifnot(length(dilutions) == length(self$sample_names))
+
+  is_dilution_filter <- is_dilution(dilutions)
+  dilutions[!is_dilution_filter] <- NA
+  if (all(is.na(dilutions))) {
+    warning("No valid dilutions found")
+  }
+}
 
 is_dilution <- function(character_vector) {
   stopifnot(is.character(character_vector))
