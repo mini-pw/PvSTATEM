@@ -18,6 +18,7 @@ PlateBuilder
 \item \href{#method-PlateBuilder-set_data}{\code{PlateBuilder$set_data()}}
 \item \href{#method-PlateBuilder-set_default_data_type}{\code{PlateBuilder$set_default_data_type()}}
 \item \href{#method-PlateBuilder-set_batch_info}{\code{PlateBuilder$set_batch_info()}}
+\item \href{#method-PlateBuilder-set_layout}{\code{PlateBuilder$set_layout()}}
 \item \href{#method-PlateBuilder-build}{\code{PlateBuilder$build()}}
 \item \href{#method-PlateBuilder-clone}{\code{PlateBuilder$clone()}}
 }
@@ -82,7 +83,8 @@ Set the dilutions (end extract numeric values) used during the examination
 \describe{
 \item{\code{dilutions}}{vector of dilutions used during the examination
 due to the nature of data it's a vector of strings,
-the numeric vales are created from those strings}
+the numeric vales are created from those strings
+Use the sample names to extract the sample types}
 }
 \if{html}{\out{</div>}}
 }
@@ -91,11 +93,20 @@ the numeric vales are created from those strings}
 \if{html}{\out{<a id="method-PlateBuilder-extract_sample_types"></a>}}
 \if{latex}{\out{\hypertarget{method-PlateBuilder-extract_sample_types}{}}}
 \subsection{Method \code{extract_sample_types()}}{
-Use the sample names to extract the sample types
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$extract_sample_types()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$extract_sample_types(use_layout_types = TRUE, values = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{use_layout_types}}{logical value indicating whether to use names extracted from layout files
+to extract sample types}
+
+\item{\code{values}}{a vector of sample types to overwrite the extraction process}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PlateBuilder-set_data"></a>}}
@@ -158,6 +169,23 @@ Set the batch info for the plate
 \describe{
 \item{\code{batch_info}}{a raw list containing metadata about
 the plate read from the Luminex file}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PlateBuilder-set_layout"></a>}}
+\if{latex}{\out{\hypertarget{method-PlateBuilder-set_layout}{}}}
+\subsection{Method \code{set_layout()}}{
+Set the layout matrix for the plate
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$set_layout(layout_matrix)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{layout_matrix}}{a matrix containing information about the}
 }
 \if{html}{\out{</div>}}
 }

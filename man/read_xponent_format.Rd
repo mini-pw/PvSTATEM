@@ -4,7 +4,12 @@
 \alias{read_xponent_format}
 \title{Read the xPONENT format data}
 \usage{
-read_xponent_format(path, exact_parse = FALSE, encoding = "utf-8", sep = ",")
+read_xponent_format(
+  path,
+  exact_parse = FALSE,
+  encoding = "utf-8",
+  separator = ","
+)
 }
 \arguments{
 \item{path}{Path to the xPONENT file}
@@ -14,7 +19,7 @@ Exact parsing means that the batch, calibration and assay metadata will be parse
 
 \item{encoding}{Encoding of the file}
 
-\item{sep}{Separator for the CSV values}
+\item{separator}{Separator for the CSV values}
 }
 \description{
 Read the xPONENT format data

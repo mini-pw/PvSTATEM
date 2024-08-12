@@ -14,11 +14,9 @@ VALID_DATA_TYPES <- c(
   "Median",
   "Net MFI",
   "Count",
-  "Avg net MFI",
+  "Avg Net MFI",
   "Mean",
-  "%CV",
-  "Peak",
-  "Std Dev"
+  "Peak"
 )
 
 globalVariables(c("VALID_SAMPLE_TYPES", "VALID_DATA_TYPES"))
@@ -46,11 +44,15 @@ is_valid_data_type <- function(data_type) {
 }
 
 
-#' @title Plate
+#' Plate
+#'
 #' @description
 #' A class to represent the luminex plate. It contains information about
 #' the samples and analytes that were examined on the plate as well as
 #' some additional metadata and batch info
+#'
+#' @importFrom R6 R6Class
+#'
 Plate <- R6::R6Class(
   "Plate",
   public = list(
@@ -68,6 +70,10 @@ Plate <- R6::R6Class(
     data = NULL,
     default_data_type = NULL,
     batch_info = NULL,
+    layout = NULL,
+
+    ## Fields that will be set by the methods ---
+    blank_adjusted = FALSE,
 
     ## Methods ---------------------------------------------------------------
 
@@ -76,7 +82,8 @@ Plate <- R6::R6Class(
     initialize = function(plate_name, sample_names, analyte_names,
                           dilutions = NULL, dilution_values = NULL,
                           sample_types = NULL, data = NULL,
-                          sample_locations = NULL, default_data_type = NULL, batch_info = NULL) {
+                          sample_locations = NULL, default_data_type = NULL,
+                          batch_info = NULL, layout = NULL) {
       self$plate_name <- plate_name
       self$analyte_names <- analyte_names
       self$sample_names <- sample_names
@@ -87,6 +94,7 @@ Plate <- R6::R6Class(
       if (!is.null(data)) self$data <- data
       if (!is.null(default_data_type)) self$default_data_type <- default_data_type
       if (!is.null(batch_info)) self$batch_info <- batch_info
+      if (!is.null(layout)) self$layout <- layout
     },
 
     #' @description
@@ -120,10 +128,10 @@ Plate <- R6::R6Class(
     #' @param sample sample name or id
     #' @param data_type if `NULL` returns whole column of the dataframe
     #' containing information about the sample. Default value is plate's
-    #' `data_type_used` usually `Median`.
+    #' `default_data_type` usually `Median`.
     #'
     #' @return Data about a sample and analyte
-    get_data = function(analyte, sample_type = "ALL", data_type = self$data_type_used) {
+    get_data = function(analyte, sample_type = "ALL", data_type = self$default_data_type) {
       # check if the analyte exists in analytes_names
       if (!is.null(analyte) && !is.na(analyte)) {
         if (!analyte %in% self$analyte_names) {
@@ -202,24 +210,56 @@ Plate <- R6::R6Class(
     #' By default `avg`. For now it is the only available method
     #' @param inplace Whether the method should produce new plate with adjusted
     #' values or not, By default `TRUE` - operates on the current plate.
-    blank_adjustment = function(method = "avg", in_place = "TRUE") {},
+    blank_adjustment = function(method = "avg", in_place = TRUE) {
+      if (self$blank_adjusted) {
+        stop("Blank values have been already adjusted in this plate, If you want to try doing it using different method consider reversing this process")
+      }
 
-    #' @description
-    #' Function takes the data 1D array and returns the data in the form of
-    #' a 2D array, that represents the spatial arrangement of the samples
-    #' on the plate, ie. 12x8 grid.
-    #'
-    #' @param data 1D array of data represents for example counts, dilutions
-    #' or sample types
-    #'
-    #' @return A 2D array representing data with the spatial arrangement
-    #' of the samples
-    layout = function(data) {}
+      available_methods <- c("avg")
+      if (!method %in% available_methods) {
+        stop(paste0(method, "not available for now, consider using one of the following: ", available_methods))
+      }
+
+      plate <- if (in_place) self else self$clone()
+
+      blanks_filter <- plate$sample_types == "BLANK"
+      if (!any(blanks_filter)) {
+        stop("No blanks found in the plate")
+      }
+      for (datatype in names(plate$data)) {
+        df <- plate$data[[datatype]]
+        blanks_df <- df[blanks_filter, ]
+        blank_values <- switch(method,
+          "avg" = {
+            apply(blanks_df, 2, mean)
+          },
+          {
+            stop("Method ", method, " is not supported")
+          }
+        )
+        new_df <- sweep(df, 2, blank_values, "-")
+
+        if (any(new_df < 0)) {
+          warning("Some values are below 0 after blank adjustment for ", datatype, "\n")
+          row_col_indices <- which(new_df < 0, arr.ind = TRUE)
+          for (idx in seq_len(nrow(row_col_indices))) {
+            row <- row_col_indices[idx, 1]
+            col <- row_col_indices[idx, 2]
+            sample_name <- plate$sample_names[row]
+            analyte_name <- plate$analyte_names[col]
+            stopifnot(analyte_name == colnames(new_df)[col])
+            warning("Analyte:", analyte_name, "Row:", row, "Sample Name:", sample_name, "\n")
+          }
+        }
+        plate$data[[datatype]] <- new_df
+      }
+      plate$blank_adjusted <- TRUE
+      return(plate)
+    }
   ),
   private = list(
 
     ## Private Fields ---------------------------------------------------------
-    blank_adjusted = FALSE,
     verbose = TRUE
   )
 )

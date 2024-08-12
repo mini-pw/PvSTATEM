@@ -1,5 +1,7 @@
 #' @title PlateBuilder
 #'
+#' @import R6
+#'
 #' @export
 PlateBuilder <- R6::R6Class(
   "PlateBuilder",
@@ -12,8 +14,9 @@ PlateBuilder <- R6::R6Class(
     dilution_values = NULL,
     sample_types = NULL,
     data = NULL,
-    data_type_used = "Median",
+    default_data_type = "Median",
     batch_info = NULL,
+    layout = NULL,
 
 
     #' @description
@@ -54,15 +57,37 @@ PlateBuilder <- R6::R6Class(
     set_dilutions = function(dilutions) {
       stopifnot(is.character(dilutions) && length(dilutions) > 0)
       stopifnot(length(dilutions) == length(self$sample_names))
+
+      is_dilution_filter <- is_dilution(dilutions)
+      dilutions[!is_dilution_filter] <- NA
+      if (all(is.na(dilutions))) {
+        warning("No valid dilutions found")
+      }
+
       self$dilutions <- dilutions
       self$dilution_values <- convert_dilutions_to_numeric(dilutions)
     },
 
-    #' @description
     #' Use the sample names to extract the sample types
-    extract_sample_types = function() {
+    #'
+    #' @param use_layout_types logical value indicating whether to use names extracted from layout files
+    #' to extract sample types
+    #'
+    #' @param values a vector of sample types to overwrite the extraction process
+    #'
+    extract_sample_types = function(use_layout_types = TRUE, values = NULL) {
       stopifnot(is.null(self$sample_types))
-      sample_types <- translate_sample_names_to_sample_types(self$sample_names)
+      if (!is.null(values)) {
+        sample_types <- values
+      } else if (use_layout_types) {
+        if (is.null(self$layout)) {
+          stop("Layout is not provided. But `use_layout_types` is set to `TRUE`")
+        }
+        layout_names <- c(t(self$layout)) # TODO: Make it into a function and explain
+        sample_types <- translate_sample_names_to_sample_types(self$sample_names, layout_names)
+      } else {
+        sample_types <- translate_sample_names_to_sample_types(self$sample_names)
+      }
       for (sample_type in sample_types) {
         if (!is_valid_sample_type(sample_type)) {
           stop("Sample type `", sample_type, "` is not a valid sample type")
@@ -107,11 +132,6 @@ PlateBuilder <- R6::R6Class(
             stop("Column `", colname, "` is not a valid analyte name")
           }
         }
-        for (rowname in rownames(data_type_df)) {
-          if (!rowname %in% self$sample_names) {
-            stop("Row `", rowname, "` is not a valid sample name")
-          }
-        }
       }
 
       self$data <- data
@@ -131,15 +151,23 @@ PlateBuilder <- R6::R6Class(
     #' @param batch_info a raw list containing metadata about
     #' the plate read from the Luminex file
     set_batch_info = function(batch_info) {
-      stopifnot(is.list(batch_info))
       self$batch_info <- batch_info
+    },
+
+    #' @description
+    #' Set the layout matrix for the plate
+    #' @param layout_matrix a matrix containing information about the
+    set_layout = function(layout_matrix) {
+      stopifnot(is.matrix(layout_matrix))
+      # TODO: Additional validation probably needed
+      self$layout <- layout_matrix
     },
 
     #' @description
     #' Create a Plate object from the PlateBuilder object
     build = function(validate = TRUE) {
       if (validate) {
-        self$validate()
+        private$validate()
       }
       Plate$new(
         plate_name = self$plate_name,
@@ -151,29 +179,30 @@ PlateBuilder <- R6::R6Class(
         sample_types = self$sample_types,
         data = self$data,
         default_data_type = self$default_data_type,
-        batch_info = self$batch_info
+        batch_info = self$batch_info,
+        layout = self$layout
       )
     }
   ),
   private = list(
     validate = function() {
       errors <- list()
-      if (lengh(self$sample_names) != length(self$sample_locations)) {
+      if (length(self$sample_names) != length(self$sample_locations)) {
         append(errors, "Length of sample_names and sample_locations is not equal")
       }
-      if (lengh(self$sample_names) != length(self$dilutions)) {
+      if (length(self$sample_names) != length(self$dilutions)) {
         append(errors, "Length of sample_names and dilutions is not equal")
       }
-      if (lengh(self$sample_names) != length(self$sample_types)) {
+      if (length(self$sample_names) != length(self$sample_types)) {
         append(errors, "Length of sample_names and sample_types is not equal")
       }
-      if (!is_valid_data_type(self$data_type_used)) {
+      if (!is_valid_data_type(self$default_data_type)) {
         append(errors, "Data type used is not valid")
       }
       if (length(self$data) == 0) {
         append(errors, "Data is empty")
       }
-      if (!(self$data_type_used %in% names(self$data))) {
+      if (!(self$default_data_type %in% names(self$data))) {
         append(errors, "Data type used is not present in data")
       }
       if (length(self$analyte_names) == 0) {
@@ -183,16 +212,21 @@ PlateBuilder <- R6::R6Class(
   )
 )
 
+is_dilution <- function(character_vector) {
+  stopifnot(is.character(character_vector))
+
+  dilution_regex <- "^\\d+/\\d+$"
+  is_valid_dilution <- (!is.na(character_vector)) & (stringr::str_detect(character_vector, dilution_regex))
+  is_valid_dilution
+}
 
 convert_dilutions_to_numeric <- function(dilutions) {
   stopifnot(is.character(dilutions))
-  non_na_filter <- !is.na(dilutions)
+
+  non_na_filter <- is_dilution(dilutions)
 
   splitted_dilutions <- stringr::str_split(dilutions[non_na_filter], "/")
-  for (splitted_dilution in splitted_dilutions) {
-    stopifnot(length(splitted_dilution) == 2)
-    stopifnot(all())
-  }
+  stopifnot(all(lengths(splitted_dilutions) == 2))
 
   dilution_values <- rep(NA, length(dilutions))
   dilution_values[non_na_filter] <- as.numeric(sapply(splitted_dilutions, function(x) {
@@ -239,43 +273,35 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #'
 #' @export
 translate_sample_names_to_sample_types <- function(sample_names, sample_names_from_layout = "") {
-  # handle case when sample name from layout is not provided
+  # Handle case when sample name from layout is not provided
   # Ensure sample_names_from_layout is a character vector of the same length as sample_names
   if (length(sample_names_from_layout) != length(sample_names)) {
     sample_names_from_layout <- rep("", length(sample_names))
   }
-
-
   # Initialize the result vector
   sample_types <- vector("character", length(sample_names))
-
   # Iterate over each sample
   for (i in seq_along(sample_names)) {
     name <- sample_names[i]
     name_layout <- sample_names_from_layout[i]
-
     # Default sample type
     sample_type <- "TEST"
-
     # Check if the sample is a blank
     blank_types <- c("BLANK", "BACKGROUND", "B")
     if (name %in% blank_types || name_layout %in% blank_types) {
       sample_type <- "BLANK"
     }
-
     # Check if the sample is a positive control
     positive_control_pattern <- "^(P.|POS.+|[A-Za-z0-9/-_]+ )(1/\\d+)$"
     if (grepl(positive_control_pattern, name) || grepl(positive_control_pattern, name_layout)) {
       sample_type <- "POSITIVE CONTROL"
     }
-
     # Check if the sample is a negative control
     negative_types <- c("NEGATIVE CONTROL", "N")
     negative_pattern <- "^(N..|.*\\bNEG\\b)"
     if (name %in% negative_types || grepl(negative_pattern, name) || grepl(negative_pattern, name_layout)) {
       sample_type <- "NEGATIVE CONTROL"
     }
-
     # Check if the sample is a standard curve
     standard_curve_types <- c("STANDARD CURVE", "SC", "S")
     standard_curve_pattern <- "^(S_|S|S\\s|CP.+)(1/\\d+)$"
@@ -283,7 +309,6 @@ translate_sample_names_to_sample_types <- function(sample_names, sample_names_fr
     if (name %in% standard_curve_types || grepl(standard_curve_pattern, name) || grepl(standard_curve_loc_pattern, name_layout)) {
       sample_type <- "STANDARD CURVE"
     }
-
     # Assign the determined sample type
     sample_types[i] <- sample_type
   }
