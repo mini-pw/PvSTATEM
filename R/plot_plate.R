@@ -62,7 +62,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   # values obtained using trial and error
   well_positions <- expand.grid(
     x = seq(0.075, 0.927, length.out = 12),
-    y = seq(0.095, 0.904, length.out = 8)
+    y = seq(0.904, 0.095, length.out = 8)
   )
 
   # Add colors to the well positions data frame
@@ -148,6 +148,8 @@ plot_counts <- function(plate, analyte_name = NULL, plot_counts = FALSE, plot_le
   }
 
   counts <- plate$get_data(analyte_name, data_type = "Count")
+  location <- plate$sample_locations
+  counts <- create_vector_without_holes(counts, location)
 
   if (length(counts) != 96) {
     stop("The counts vector must have 96 elements")
@@ -155,6 +157,10 @@ plot_counts <- function(plate, analyte_name = NULL, plot_counts = FALSE, plot_le
 
   # mapping function from counts to colors
   map_to_color <- function(count) {
+    if (count < 0) {
+      return("white")
+    }
+
     if (count < 50) {
       return("#cc3232")
     } else if (count >= 50 && count <= 70) {
@@ -169,7 +175,7 @@ plot_counts <- function(plate, analyte_name = NULL, plot_counts = FALSE, plot_le
     "TO LITTLE" = "#cc3232",
     "WARNING" = "#e5e50f",
     "CORRECT" = "#2dc937",
-    "default" = "black"
+    " " = "white"
   )
 
   # Apply the mapping function to the counts vector
@@ -215,7 +221,7 @@ plot_layout <- function(sample_types, plate_name = NULL, plot_legend = TRUE) {
     "NEGATIVE CONTROL" = "#FFE9D0",
     "TEST" = "#BBE9FF",
     "STANDARD CURVE" = "#F7B5CA",
-    "default" = "black"
+    "default" = "white"
   )
 
   # Mapping function using the named vector
@@ -251,7 +257,7 @@ create_vector_without_holes <- function(vector, locations) {
                      "H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "H11", "H12")
 
   # Create a vector with all the locations and set the missing values
-  without_holes <- rep("missing", length(all_locations))
+  without_holes <- rep(" ", length(all_locations))
   names(without_holes) <- all_locations
 
   # Update the present positions with the corresponding values
