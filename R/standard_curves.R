@@ -20,7 +20,7 @@
 #' @export
 plot_standard_curve_analyte <- function(plate, analyte_name,
                                         data_type = "Median", decreasing_dilution_order = TRUE,
-                                        log_scale = c("all"), plot_line = TRUE, verbose = TRUE) {
+                                        log_scale = c("dilutions"), plot_line = TRUE, verbose = TRUE) {
   AVAILABLE_LOG_SCALE_VALUES <- c("all", "dilutions", "MFI")
 
   if (!inherits(plate, "Plate")) {
@@ -42,15 +42,14 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
   )
 
   # Scale x and y if needed
-  x_log_scale <- "dilution" %in% log_scale || "all" %in% log_scale
+  x_log_scale <- "dilutions" %in% log_scale || "all" %in% log_scale
   if (x_log_scale) {
     plot_data$dilution <- log(plot_data$dilution)
   }
   xlab <- ifelse(x_log_scale, "log(dilution)", "dilution")
+
   y_log_scale <- "MFI" %in% log_scale || "all" %in% log_scale
-  if (y_log_scale) {
-    plot_data$MFI <- log(plot_data$MFI)
-  }
+  y_trans <- ifelse(y_log_scale, "log10", "identity")
   ylab <- ifelse(y_log_scale, paste0("log(", data_type, ")"), data_type)
 
   x_ticks <- c(plot_data$dilution, max(plot_data$dilution) + 1)
@@ -84,7 +83,7 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
       breaks = x_ticks, labels = x_labels,
       trans = ifelse(decreasing_dilution_order, "reverse", "identity")
     ) +
-    scale_y_continuous() +
+    scale_y_continuous(trans=y_trans) +
     theme_minimal() +
     theme(
       axis.line = element_line(colour = "black"),
@@ -237,15 +236,10 @@ plot_standard_curve_analyte_with_model <- function(plate, analyte_name, model, d
 
   y <- seq(bottom_asymptote, top_asymptote, length.out = 1000)
   estimates <- nplr::getEstimates(model, y, B = 1e4, conf.level = .95)
-  x <- estimates$x
 
-  x_log_scale <- "dilution" %in% log_scale || "all" %in% log_scale
+  x_log_scale <- "dilutions" %in% log_scale || "all" %in% log_scale
   if (x_log_scale) {
-    x <- log(x)
-  }
-  y_log_scale <- "MFI" %in% log_scale || "all" %in% log_scale
-  if (y_log_scale) {
-    y <- log(y)
+    estimates$x <- log(estimates$x)
   }
 
   p <- p + geom_line(
