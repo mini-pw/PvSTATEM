@@ -208,7 +208,16 @@ plot_counts <- function(plate, analyte_name = NULL, plot_counts = FALSE, plot_le
 #'
 #'
 #' @export
-plot_layout <- function(sample_types, plate_name = NULL, plot_legend = TRUE) {
+plot_layout <- function(plate, plot_legend = TRUE) {
+
+  if (is.null(plate)) {
+    stop("The plate object must be provided")
+  }
+
+  plate_name <- plate$plate_name
+  sample_types <- plate$sample_types
+  location <- plate$sample_locations
+  sample_types <- create_vector_without_holes(sample_types, location)
 
   if (length(sample_types) != 96) {
     stop("The sample_types vector must have 96 elements")
@@ -221,7 +230,7 @@ plot_layout <- function(sample_types, plate_name = NULL, plot_legend = TRUE) {
     "NEGATIVE CONTROL" = "#FFE9D0",
     "TEST" = "#BBE9FF",
     "STANDARD CURVE" = "#F7B5CA",
-    "default" = "white"
+    " " = "white"
   )
 
   # Mapping function using the named vector
@@ -229,18 +238,14 @@ plot_layout <- function(sample_types, plate_name = NULL, plot_legend = TRUE) {
     if (!is.null(color_map[sample_type])) {
       return(color_map[sample_type])
     } else {
-      return(color_map["default"])
+      return(color_map[" "])
     }
   }
 
   # Apply the mapping function to the sample_types vector
   colors <- sapply(sample_types, map_to_color)
 
-  if (is.null(plate_name)) {
-    title <- "Layout"
-  } else {
-    title <- paste("Layout of", plate_name)
-  }
+  title <- paste("Layout of", plate_name)
 
   plot_plate(colors, plot_title = title, plot_numbers = FALSE, plot_legend = plot_legend, legend_mapping = color_map)
 }
