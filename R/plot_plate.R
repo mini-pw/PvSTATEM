@@ -131,6 +131,10 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' @return A ggplot object
 #'
 #' @examples
+#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)
+#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+#' plate <- read_luminex_data(plate_filepath, layout_filepath)
+#' plot_counts(plate = plate, analyte_name = "OC43_NP_NA", plot_counts = T, plot_legend = F)
 #'
 #' @export
 plot_counts <- function(plate, analyte_name = NULL, plot_counts = FALSE, plot_legend = FALSE) {
@@ -198,14 +202,10 @@ plot_counts <- function(plate, analyte_name = NULL, plot_counts = FALSE, plot_le
 #' @return A ggplot object
 #'
 #' @examples
-#' types = c(rep("BLANK", 12),
-#'           rep("TEST", 14),
-#'           rep("NEGATIVE CONTROL", 30),
-#'           rep("STANDARD CURVE", 35),
-#'           rep("POSITIVE CONTROL", 5))
-#'
-#' plot_layout(sample_types = types, plate_name = "Plate 1")
-#'
+#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)
+#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+#' plate <- read_luminex_data(plate_filepath, layout_filepath)
+#' plot_layout(plate = plate, plot_legend = T)
 #'
 #' @export
 plot_layout <- function(plate, plot_legend = TRUE) {
