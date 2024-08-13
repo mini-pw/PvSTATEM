@@ -50,7 +50,7 @@ PlateBuilder <- R6::R6Class(
     },
 
     #' @description
-    #' Extract the dilutions from layout, sample names or use a provided vector of values.
+    #' Extract and set the dilutions from layout, sample names or use a provided vector of values.
     #' The provided vector should be the same length as the number of samples
     #' and should contain dilution factors saved as strings
     #' @param use_layout_dilutions logical value indicating whether to use names
@@ -59,15 +59,15 @@ PlateBuilder <- R6::R6Class(
     #'
     #' @param values a vector of dilutions to overwrite the extraction process
     #'
-    extract_dilutions = function(use_layout_dilutions = TRUE, values = NULL) {
+    set_dilutions = function(use_layout_dilutions = TRUE, values = NULL) {
       stopifnot(is.null(self$dilutions))
       if (!is.null(values)) {
-        dilutions <- set_dilutions(values)
+        dilutions <- extract_dilutions_from_layout(values)
       } else if (use_layout_dilutions) {
         if (is.null(self$layout)) {
           stop("Layout is not provided, but `use_layout_dilutions` is set to `TRUE` - cannot extract the dilutions from the layout")
         }
-        layout_names <- c(t(self$layout))
+        layout_names <- self$layout_as_vector
         dilutions <- set_dilutions(layout_names)
       } else {
         if (is.null(self$sample_names)) {
@@ -77,18 +77,35 @@ PlateBuilder <- R6::R6Class(
         dilutions <- sapply(self$sample_names, extract_dilution_from_name)
       }
 
+      if (dilutions %in% "NA") {
+        verbose_cat(
+          "(",
+          color_codes$red_start,
+          "WARNING",
+          color_codes$red_end,
+          ")",
+          "\nAll dilutions in the plate are set to NA. Please check the dilutions in the layout file or sample names.",
+          verbose = private$verbose
+        )
+      }
+
+      if (length(dilutions) != length(self$sample_names)) {
+        stop("Number of dilutions does not match the number of samples")
+      })
+
       self$dilutions <- dilutions
       self$dilution_values <- convert_dilutions_to_numeric(dilutions)
     },
 
-    #' Use the sample names to extract the sample types
+    #' Set and extract sample types from the sample names.
+    #' Optionally use the layout file to extract the sample types
     #'
     #' @param use_layout_types logical value indicating whether to use names extracted from layout files
     #' to extract sample types
     #'
     #' @param values a vector of sample types to overwrite the extraction process
     #'
-    extract_sample_types = function(use_layout_types = TRUE, values = NULL) {
+    set_sample_types = function(use_layout_types = TRUE, values = NULL) {
       stopifnot(is.null(self$sample_types))
       if (!is.null(values)) {
         sample_types <- values
@@ -96,7 +113,7 @@ PlateBuilder <- R6::R6Class(
         if (is.null(self$layout)) {
           stop("Layout is not provided. But `use_layout_types` is set to `TRUE` - cannot extract the sample types from the layout")
         }
-        layout_names <- c(t(self$layout)) # TODO: Make it into a function and explain
+        layout_names <- self$layout_as_vector
         sample_types <- translate_sample_names_to_sample_types(self$sample_names, layout_names)
       } else {
         sample_types <- translate_sample_names_to_sample_types(self$sample_names)
@@ -197,7 +214,17 @@ PlateBuilder <- R6::R6Class(
       )
     }
   ),
+  active = list(
+    #' @description
+    #' Print the layout associated with the plate as a flattened vector of values.
+    layout_as_vector = function() {
+      c(t(self$layout))
+    }
+  ),
+
   private = list(
+    verbose = TRUE,
+
     validate = function() {
       errors <- list()
       if (length(self$sample_names) != length(self$sample_locations)) {
@@ -240,15 +267,15 @@ extract_dilution_from_name <- function(sample_name) {
 #' @param dilutions vector of dilutions used during the examination
 #' due to the nature of data it's a vector of strings,
 #' the numeric vales are created from those strings
-set_dilutions = function(dilutions) {
+extract_dilutions_from_layout = function(dilutions) {
   stopifnot(is.character(dilutions) && length(dilutions) > 0)
-  stopifnot(length(dilutions) == length(self$sample_names))
 
   is_dilution_filter <- is_dilution(dilutions)
   dilutions[!is_dilution_filter] <- NA
   if (all(is.na(dilutions))) {
     warning("No valid dilutions found")
   }
+  dilutions
 }
 
 is_dilution <- function(character_vector) {
@@ -284,17 +311,22 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' to the sample types.
 #'
 #' It parses the names as follows:
+#'
 #' If `sample_names` or `sample_names_from_layout` equals to `BLANK`, `BACKGROUND` or `B`,
 #' then SampleType equals to `BLANK`
+#'
 #' If `sample_names` or `sample_names_from_layout` equals to `STANDARD CURVE`,
 #' `SC`, `S`, contains substring `1/\d+` and has prefix ` `, `S_`, `S `,
 #' `S` or `CP3`, then SampleType equals to `STANDARD CURVE`
+#'
 #' If `sample_names` or `sample_names_from_layout` equals to `NEGATIVE CONTROL`, `N`,
 #' or contains substring `NEG`, then SampleType equals to `NEGATIVE CONTROL`
+#'
 #' If `sample_names` or `sample_names_from_layout` starts with `P` followed by
 #' whitespace, `POS` followed by whitespace, some sample name followed by
 #' substring `1/\d+` SampleType equals to `POSITIVE CONTROL`
-#' otherwise, the returned SampleType is `TEST`
+#'
+#' Otherwise, the returned SampleType is `TEST`
 #'
 #' @param sample_names (`character`)\cr
 #' Vector of sample names from Luminex file
@@ -304,10 +336,10 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' values in this vector may be different than `sample_names` and may
 #' contain additional information about the sample type like dilution
 #'
-#' @return A vector of valid sample_type strings
+#' @return A vector of valid sample_type strings of length equal to the length of `sample_names`
 #'
 #' @examples
-#' translate_sample_names_to_sample_types(c("B", "BLANK", "TEST1"))
+#' translate_sample_names_to_sample_types(c("B", "BLANK", "NEG",  TEST1"))
 #' translate_sample_names_to_sample_types(c("S", "CP3"))
 #'
 #' @export
