@@ -33,8 +33,7 @@ Imports:
     stringr,
     tools
 Suggests:
-    testthat (>= 3.0.0),
-    knitr
+    testthat (>= 3.0.0)
 Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 VignetteBuilder: knitr
