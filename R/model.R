@@ -1,15 +1,7 @@
-#' Logisic regresion model for the standard curve
-#'
-#' @param dilutions Diltuions used to fit the model
-#' @param mfi MFI values used to fit the model
-#' @param npars Number of parameters to use in the model
-#' @param verbose If `TRUE` prints messages, `TRUE` by default
-#' @param log_dilution If `TRUE` the dilutions are transformed using the `log10` function, `TRUE` by default
-#' @param log_mfi If `TRUE` the MFI values are transformed using the `log10` function, `TRUE` by default
-#' @param scale_mfi If `TRUE` the MFI values are scaled to the range \[0, 1\], `TRUE` by default
+#' @title Logisic regresion model for the standard curve
 #'
 #' @description
-#' This function uses the `nplr` package to fit the model. The model is fitted using the formula:
+#' This model uses the `nplr` package to fit the model. The model is fitted using the formula:
 #'
 #' \deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s},}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s,}
 #'
@@ -30,15 +22,56 @@
 Model <- R6::R6Class(
   "Model",
   public = list(
+    #' @field dilutions (`numeric()`)\cr
+    #'  Diltuions used to fit the model
     dilutions = NULL,
+
+    #' @field mfi (`numeric()`)\cr
+    #'  MFI values used to fit the model
     mfi = NULL,
+
+    #' @field mfi_min (`numeric(1)`)\cr
+    #' Minimum MFI used for scaling MFI values to the range \[0, 1\]
     mfi_min = NULL,
+
+    #' @field mfi_max (`numeric(1)`)\cr
+    #' Maximum MFI used for scaling MFI values to the range \[0, 1\]
     mfi_max = NULL,
+
+    #' @field model (`nplr`)\cr
+    #' Instance of the `nplr` model fitted to the data
     model = NULL,
+
+    #' @field log_dilution (`logical()`)\cr
+    #' Indicator should the dilutions be transformed using the `log10` function
     log_dilution = TRUE,
+
+    #' @field log_mfi (`logical()`)\cr
+    #' Indicator should the MFI values be transformed using the `log10` function
     log_mfi = TRUE,
+
+    #' @field scale_mfi (`logical()`)\cr
+    #' Indicator should the MFI values be scaled to the range \[0, 1\]
     scale_mfi = TRUE,
-    # ------------
+
+    #' @description
+    #' Create a new instance of Model [R6][R6::R6Class] class
+    #'
+    #' @param dilutions (`numeric()`)\cr
+    #'   Diltuions used to fit the model
+    #' @param mfi MFI (`numeric()`)\cr
+    #'   values used to fit the model
+    #' @param npars (`numeric(1)`)\cr
+    #'   Number of parameters to use in the model
+    #' @param verbose (`logical()`)\cr
+    #'   If `TRUE` prints messages, `TRUE` by default
+    #' @param log_dilution (`logical()`)\cr
+    #'   If `TRUE` the dilutions are transformed using the `log10` function, `TRUE` by default
+    #' @param log_mfi (`logical()`)\cr
+    #'   If `TRUE` the MFI values are transformed using the `log10` function, `TRUE` by default
+    #' @param scale_mfi (`logical()`)\cr
+    #'   If `TRUE` the MFI values are scaled to the range \[0, 1\], `TRUE` by default
+    #'
     initialize = function(dilutions, mfi, npars = 5, verbose = TRUE, log_dilution = TRUE, log_mfi = TRUE, scale_mfi = TRUE) {
       stopifnot(length(dilutions) == length(mfi))
       stopifnot(all((dilutions > 0) & (dilutions < 1)))
@@ -67,6 +100,20 @@ Model <- R6::R6Class(
         useLog = log_dilution
       )
     },
+
+    #' @description
+    #' Predict the dilutions from the MFI values
+    #'
+    #' @param mfi (`numeric()`)\cr
+    #' MFI values for which we want to predict the dilutions.
+    #'
+    #' @return (`data.frame()`)\cr
+    #' Dataframe with the predicted dilutions, MFI values and the 97.5% confidence intervals
+    #' The columns are named as follows:
+    #' - `dilution` - the dilution value
+    #' - `dilution.025` - the lower bound of the confidence interval
+    #' - `dilution.975` - the upper bound of the confidence interval
+    #' - `MFI` - the predicted MFI value
     #'
     predict = function(mfi) {
       if (is.null(self$model)) {
@@ -84,6 +131,13 @@ Model <- R6::R6Class(
       colnames(df) <- sub("^y", "MFI", colnames(df))
       df
     },
+
+    #' @description
+    #' Data that can be used to plot the standard curve.
+    #'
+    #' @return (`data.frame()`)\cr
+    #' Prediction dataframe for scaled MFI (or logMFI) values in the range \[0, 1\].
+    #' Columns are named as in the `predict` method
     plot_data = function() {
       if (is.null(self$model)) {
         stop("Model class was not properly initialized. Missing model")
@@ -104,6 +158,7 @@ Model <- R6::R6Class(
       asymptote <- nplr::getPar(self$model)$params$top
       private$mfi_reverse_transform(asymptote)
     },
+
     #'
     bottom_asymptote = function() {
       if (is.null(self$model)) {

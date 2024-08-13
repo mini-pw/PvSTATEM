@@ -4,7 +4,7 @@
 \alias{Model}
 \title{Logisic regresion model for the standard curve}
 \description{
-This function uses the \code{nplr} package to fit the model. The model is fitted using the formula:
+This model uses the \code{nplr} package to fit the model. The model is fitted using the formula:
 
 \deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s},}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s,}
 
@@ -21,6 +21,35 @@ where:
 
 This equation is refereed as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{dilutions}}{(\code{numeric()})\cr
+Diltuions used to fit the model}
+
+\item{\code{mfi}}{(\code{numeric()})\cr
+MFI values used to fit the model}
+
+\item{\code{mfi_min}}{(\code{numeric(1)})\cr
+Minimum MFI used for scaling MFI values to the range [0, 1]}
+
+\item{\code{mfi_max}}{(\code{numeric(1)})\cr
+Maximum MFI used for scaling MFI values to the range [0, 1]}
+
+\item{\code{model}}{(\code{nplr})\cr
+Instance of the \code{nplr} model fitted to the data}
+
+\item{\code{log_dilution}}{(\code{logical()})\cr
+Indicator should the dilutions be transformed using the \code{log10} function}
+
+\item{\code{log_mfi}}{(\code{logical()})\cr
+Indicator should the MFI values be transformed using the \code{log10} function}
+
+\item{\code{scale_mfi}}{(\code{logical()})\cr
+Indicator should the MFI values be scaled to the range [0, 1]}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -36,6 +65,7 @@ This equation is refereed as the Richards' equation. More information about the 
 \if{html}{\out{<a id="method-Model-new"></a>}}
 \if{latex}{\out{\hypertarget{method-Model-new}{}}}
 \subsection{Method \code{new()}}{
+Create a new instance of Model \link[R6:R6Class]{R6} class
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Model$new(
   dilutions,
@@ -51,19 +81,26 @@ This equation is refereed as the Richards' equation. More information about the 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{dilutions}}{Diltuions used to fit the model}
+\item{\code{dilutions}}{(\code{numeric()})\cr
+Diltuions used to fit the model}
 
-\item{\code{mfi}}{MFI values used to fit the model}
+\item{\code{mfi}}{MFI (\code{numeric()})\cr
+values used to fit the model}
 
-\item{\code{npars}}{Number of parameters to use in the model}
+\item{\code{npars}}{(\code{numeric(1)})\cr
+Number of parameters to use in the model}
 
-\item{\code{verbose}}{If \code{TRUE} prints messages, \code{TRUE} by default}
+\item{\code{verbose}}{(\code{logical()})\cr
+If \code{TRUE} prints messages, \code{TRUE} by default}
 
-\item{\code{log_dilution}}{If \code{TRUE} the dilutions are transformed using the \code{log10} function, \code{TRUE} by default}
+\item{\code{log_dilution}}{(\code{logical()})\cr
+If \code{TRUE} the dilutions are transformed using the \code{log10} function, \code{TRUE} by default}
 
-\item{\code{log_mfi}}{If \code{TRUE} the MFI values are transformed using the \code{log10} function, \code{TRUE} by default}
+\item{\code{log_mfi}}{(\code{logical()})\cr
+If \code{TRUE} the MFI values are transformed using the \code{log10} function, \code{TRUE} by default}
 
-\item{\code{scale_mfi}}{If \code{TRUE} the MFI values are scaled to the range [0, 1], \code{TRUE} by default}
+\item{\code{scale_mfi}}{(\code{logical()})\cr
+If \code{TRUE} the MFI values are scaled to the range [0, 1], \code{TRUE} by default}
 }
 \if{html}{\out{</div>}}
 }
@@ -72,6 +109,7 @@ This equation is refereed as the Richards' equation. More information about the 
 \if{html}{\out{<a id="method-Model-predict"></a>}}
 \if{latex}{\out{\hypertarget{method-Model-predict}{}}}
 \subsection{Method \code{predict()}}{
+Predict the dilutions from the MFI values
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Model$predict(mfi)}\if{html}{\out{</div>}}
 }
@@ -79,19 +117,37 @@ This equation is refereed as the Richards' equation. More information about the 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{mfi}}{MFI values used to fit the model}
+\item{\code{mfi}}{(\code{numeric()})\cr
+MFI values for which we want to predict the dilutions.}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(\code{data.frame()})\cr
+Dataframe with the predicted dilutions, MFI values and the 97.5\% confidence intervals
+The columns are named as follows:
+\itemize{
+\item \code{dilution} - the dilution value
+\item \code{dilution.025} - the lower bound of the confidence interval
+\item \code{dilution.975} - the upper bound of the confidence interval
+\item \code{MFI} - the predicted MFI value
+}
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Model-plot_data"></a>}}
 \if{latex}{\out{\hypertarget{method-Model-plot_data}{}}}
 \subsection{Method \code{plot_data()}}{
+Data that can be used to plot the standard curve.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Model$plot_data()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+(\code{data.frame()})\cr
+Prediction dataframe for scaled MFI (or logMFI) values in the range [0, 1].
+Columns are named as in the \code{predict} method
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Model-top_asymptote"></a>}}
