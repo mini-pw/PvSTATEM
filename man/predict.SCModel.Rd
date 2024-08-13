@@ -7,6 +7,8 @@
 \method{predict}{SCModel}(object, mfi)
 }
 \arguments{
+\item{object}{SCModel object}
+
 \item{mfi}{MFI values for which we want to predict the dilutions.
 Should be in the same scale as the MFI values used to fit the model}
 }

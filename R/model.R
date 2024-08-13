@@ -6,7 +6,7 @@
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #' @param log_dilution If `TRUE` the dilutions are transformed using the `log10` function, `TRUE` by default
 #' @param log_mfi If `TRUE` the MFI values are transformed using the `log10` function, `TRUE` by default
-#' @param scale_mfi If `TRUE` the MFI values are scaled to the range [0, 1], `TRUE` by default
+#' @param scale_mfi If `TRUE` the MFI values are scaled to the range \[0, 1\], `TRUE` by default
 #'
 #' @description
 #' This function uses the `nplr` package to fit the model. The model is fitted using the formula:
@@ -81,18 +81,18 @@ SCModel <- R6::R6Class(
       df[, "y"] <- original_mfi
 
       colnames(df) <- sub("^x", "dilution", colnames(df))
-      colnames(df) <- sub("^y", "mfi", colnames(df))
+      colnames(df) <- sub("^y", "MFI", colnames(df))
       df
     },
     plot_data = function() {
       if (is.null(self$model)) {
         stop("SCModel class was not properly initialized. Missing model")
       }
-      targets <- seq(.99, .01, by = -0.1)
-      df <- nplr::getEstimates(self$model, targets)
+      targets <- seq(.99, .01, by = -0.01)
+      df <- nplr::getEstimates(self$model, targets = targets)
       df[, "y"] <- private$mfi_reverse_transform(df[, "y"])
       colnames(df) <- sub("^x", "dilution", colnames(df))
-      colnames(df) <- sub("^y", "mfi", colnames(df))
+      colnames(df) <- sub("^y", "MFI", colnames(df))
       df
     },
 
@@ -141,12 +141,14 @@ SCModel <- R6::R6Class(
       if (self$log_mfi) {
         mfi <- 10^mfi
       }
+      mfi
     }
   )
 )
 
 #' Predict the dilutions from the MFI values
 #'
+#' @param object SCModel object
 #' @param mfi MFI values for which we want to predict the dilutions.
 #' Should be in the same scale as the MFI values used to fit the model
 #'

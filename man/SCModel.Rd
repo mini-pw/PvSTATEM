@@ -63,7 +63,7 @@ This equation is refereed as the Richards' equation. More information about the 
 
 \item{\code{log_mfi}}{If \code{TRUE} the MFI values are transformed using the \code{log10} function, \code{TRUE} by default}
 
-\item{\code{scale_mfi}}{If \code{TRUE} the MFI values are scaled to the range \link{0, 1}, \code{TRUE} by default}
+\item{\code{scale_mfi}}{If \code{TRUE} the MFI values are scaled to the range [0, 1], \code{TRUE} by default}
 }
 \if{html}{\out{</div>}}
 }
