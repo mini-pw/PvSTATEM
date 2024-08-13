@@ -56,8 +56,6 @@ Indicator should the MFI values be scaled to the range [0, 1]}
 \item \href{#method-Model-new}{\code{Model$new()}}
 \item \href{#method-Model-predict}{\code{Model$predict()}}
 \item \href{#method-Model-plot_data}{\code{Model$plot_data()}}
-\item \href{#method-Model-top_asymptote}{\code{Model$top_asymptote()}}
-\item \href{#method-Model-bottom_asymptote}{\code{Model$bottom_asymptote()}}
 \item \href{#method-Model-clone}{\code{Model$clone()}}
 }
 }
@@ -148,24 +146,6 @@ Data that can be used to plot the standard curve.
 Prediction dataframe for scaled MFI (or logMFI) values in the range [0, 1].
 Columns are named as in the \code{predict} method
 }
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Model-top_asymptote"></a>}}
-\if{latex}{\out{\hypertarget{method-Model-top_asymptote}{}}}
-\subsection{Method \code{top_asymptote()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Model$top_asymptote()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Model-bottom_asymptote"></a>}}
-\if{latex}{\out{\hypertarget{method-Model-bottom_asymptote}{}}}
-\subsection{Method \code{bottom_asymptote()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Model$bottom_asymptote()}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Model-clone"></a>}}

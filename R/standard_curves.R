@@ -126,9 +126,6 @@ plot_standard_curve_analyte_with_model <- function(plate, analyte_name, model, d
   plot_name <- paste0("Fitted standard curve for analyte: ", analyte_name)
   p$labels$title <- plot_name
 
-  top_asymptote <- model$top_asymptote()
-  bottom_asymptote <- model$bottom_asymptote()
-
   estimates <- model$plot_data()
   p <- p + geom_line(
     aes(x = dilution, y = MFI),
@@ -136,10 +133,10 @@ plot_standard_curve_analyte_with_model <- function(plate, analyte_name, model, d
   )
   if (plot_asymptote) {
     p <- p + geom_hline(
-      yintercept = top_asymptote, linetype = "dashed", color = "gray"
+      yintercept = model$top_asymptote, linetype = "dashed", color = "gray"
     ) +
       geom_hline(
-        yintercept = bottom_asymptote, linetype = "dashed", color = "gray"
+        yintercept = model$bottom_asymptote, linetype = "dashed", color = "gray"
       )
   }
   return(p)

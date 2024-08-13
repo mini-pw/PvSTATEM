@@ -148,9 +148,11 @@ Model <- R6::R6Class(
       colnames(df) <- sub("^x", "dilution", colnames(df))
       colnames(df) <- sub("^y", "MFI", colnames(df))
       df
-    },
-
-    #'
+    }
+  ),
+  active = list(
+    #' @filed top_asymptote (`numeric(1)`)\cr
+    #' The top asymptote of the logistic curve
     top_asymptote = function() {
       if (is.null(self$model)) {
         stop("Model class was not properly initialized. Missing model")
@@ -159,7 +161,8 @@ Model <- R6::R6Class(
       private$mfi_reverse_transform(asymptote)
     },
 
-    #'
+    #' @filed bottom_asymptote (`numeric(1)`)\cr
+    #' The bottom asymptote of the logistic curve
     bottom_asymptote = function() {
       if (is.null(self$model)) {
         stop("Model class was not properly initialized. Missing model")
