@@ -27,14 +27,19 @@ PlateBuilder <- R6::R6Class(
     #' an examination in the same order as in the data
     #' @param analyte_names - vector of analytes names measured during
     #' an examination in the same order as in the data
+    #' @param verbose - logical value indicating whether to print additional
+    #' information. This parameter is stored as a private attribute of the object
+    #' and reused in other methods
     #'
-    initialize = function(plate_name, sample_names, analyte_names) {
+    initialize = function(plate_name, sample_names, analyte_names, verbose = TRUE) {
       stopifnot(is.character(plate_name) && is.scalar(plate_name))
       self$plate_name <- plate_name
       stopifnot(is.character(sample_names) && length(sample_names) > 0)
       self$sample_names <- sample_names
       stopifnot(is.character(analyte_names) && length(analyte_names) > 0)
       self$analyte_names <- analyte_names
+
+      private$verbose <- verbose
     },
 
 
@@ -65,10 +70,26 @@ PlateBuilder <- R6::R6Class(
         dilutions <- extract_dilutions_from_layout(values)
       } else if (use_layout_dilutions) {
         if (is.null(self$layout)) {
-          stop("Layout is not provided, but `use_layout_dilutions` is set to `TRUE` - cannot extract the dilutions from the layout")
+          stop("Layout is not provided, but `use_layout_dilutions` is set to `TRUE` - cannot extract the dilutions from the layout\n")
         }
         layout_names <- self$layout_as_vector
-        dilutions <- set_dilutions(layout_names)
+        dilutions <- extract_dilutions_from_layout(layout_names)
+        if (length(dilutions) > length(self$sample_names)) {
+          dilutions <- dilutions[1:length(self$sample_names)]
+          verbose_cat(
+            "(",
+            color_codes$red_start,
+            "WARNING",
+            color_codes$red_end,
+            ")",
+            "\nNumber of layout fields is higher than the number of samples. Please check the layout file. Using only first ", length(self$sample_names), " dilutions from the layout file. \n",
+            verbose = private$verbose
+          )
+        }
+        else if (length(dilutions) < length(self$sample_names)) {
+          stop("Number of layout fields is lower than the number of samples. Can't extract the dilution values")
+        }
+
       } else {
         if (is.null(self$sample_names)) {
           stop("Sample names are not provided and `use_layout_dilutions` is set to `FALSE` - cannot extract the dilutions from sample names")
@@ -77,7 +98,7 @@ PlateBuilder <- R6::R6Class(
         dilutions <- sapply(self$sample_names, extract_dilution_from_name)
       }
 
-      if (dilutions %in% "NA") {
+      if (all(is.na(dilutions))) {
         verbose_cat(
           "(",
           color_codes$red_start,
@@ -91,7 +112,7 @@ PlateBuilder <- R6::R6Class(
 
       if (length(dilutions) != length(self$sample_names)) {
         stop("Number of dilutions does not match the number of samples")
-      })
+      }
 
       self$dilutions <- dilutions
       self$dilution_values <- convert_dilutions_to_numeric(dilutions)
@@ -199,7 +220,8 @@ PlateBuilder <- R6::R6Class(
       if (validate) {
         private$validate()
       }
-      Plate$new(
+
+      plate <- Plate$new(
         plate_name = self$plate_name,
         analyte_names = self$analyte_names,
         sample_names = self$sample_names,
@@ -212,6 +234,17 @@ PlateBuilder <- R6::R6Class(
         batch_info = self$batch_info,
         layout = self$layout
       )
+      verbose_cat(
+        color_codes$green_start,
+        "Plate `",
+        self$plate_name,
+        "` has been successfully created\n",
+        color_codes$green_end,
+        verbose = private$verbose
+      )
+
+      plate
+
     }
   ),
   active = list(

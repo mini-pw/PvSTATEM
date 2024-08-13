@@ -152,19 +152,19 @@ read_luminex_data <- function(plate_filepath,
       "WARNING",
       color_codes$red_end,
       ")",
-      "\nLayout file not provided. Setting use_layout_types and use_layout_dilutions to FALSE.",
+      "\nLayout file not provided. Setting use_layout_types and use_layout_dilutions to FALSE.\n",
       verbose = verbose
     )
   }
 
-  plate_builder$extract_sample_types(use_layout_types, sample_types)
+  plate_builder$set_sample_types(use_layout_types, sample_types)
 
   plate_builder$set_data(parser_output$data)
   plate_builder$set_default_data_type(default_data_type)
   plate_builder$set_batch_info(parser_output$batch_info)
   plate_builder$set_data(parser_output$data)
 
-  plate_builder$extract_dilutions(use_layout_dilutions, dilutions)
+  plate_builder$set_dilutions(use_layout_dilutions, dilutions)
 
 
   plate <- plate_builder$build(validate = TRUE)
