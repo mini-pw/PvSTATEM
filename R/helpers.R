@@ -104,12 +104,11 @@ verbose_cat <- function(..., verbose = TRUE) {
 #
 # colors for WARNING, NOTE, DEFAULT
 #
-color_codes <-
-  list(
-    yellow_start = "\033[33m",
-    yellow_end = "\033[39m",
-    red_start = "\033[31m",
-    red_end = "\033[39m",
-    green_start = "\033[32m",
-    green_end = "\033[39m"
-  )
+color_codes <- list(
+  yellow_start = "\033[33m",
+  yellow_end = "\033[39m",
+  red_start = "\033[31m",
+  red_end = "\033[39m",
+  green_start = "\033[32m",
+  green_end = "\033[39m"
+)
