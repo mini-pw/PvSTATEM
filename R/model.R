@@ -27,8 +27,8 @@
 #' @import nplr
 #' @import dplyr
 #'
-SCModel <- R6::R6Class(
-  "SCModel",
+Model <- R6::R6Class(
+  "Model",
   public = list(
     dilutions = NULL,
     mfi = NULL,
@@ -70,7 +70,7 @@ SCModel <- R6::R6Class(
     #'
     predict = function(mfi) {
       if (is.null(self$model)) {
-        stop("SCModel class was not properly initialized. Missing model")
+        stop("Model class was not properly initialized. Missing model")
       }
       original_mfi <- mfi
       mfi <- private$mfi_transform(mfi)
@@ -86,7 +86,7 @@ SCModel <- R6::R6Class(
     },
     plot_data = function() {
       if (is.null(self$model)) {
-        stop("SCModel class was not properly initialized. Missing model")
+        stop("Model class was not properly initialized. Missing model")
       }
       targets <- seq(.99, .01, by = -0.01)
       df <- nplr::getEstimates(self$model, targets = targets)
@@ -99,7 +99,7 @@ SCModel <- R6::R6Class(
     #'
     top_asymptote = function() {
       if (is.null(self$model)) {
-        stop("SCModel class was not properly initialized. Missing model")
+        stop("Model class was not properly initialized. Missing model")
       }
       asymptote <- nplr::getPar(self$model)$params$top
       private$mfi_reverse_transform(asymptote)
@@ -107,7 +107,7 @@ SCModel <- R6::R6Class(
     #'
     bottom_asymptote = function() {
       if (is.null(self$model)) {
-        stop("SCModel class was not properly initialized. Missing model")
+        stop("Model class was not properly initialized. Missing model")
       }
       asymptote <- nplr::getPar(self$model)$params$bottom
       private$mfi_reverse_transform(asymptote)
@@ -148,12 +148,12 @@ SCModel <- R6::R6Class(
 
 #' Predict the dilutions from the MFI values
 #'
-#' @param object SCModel object
+#' @param object Model object
 #' @param mfi MFI values for which we want to predict the dilutions.
 #' Should be in the same scale as the MFI values used to fit the model
 #'
 #' @export
-predict.SCModel <- function(object, mfi) {
+predict.Model <- function(object, mfi) {
   object$predict(mfi)
 }
 
@@ -171,5 +171,5 @@ create_standard_curve_model_analyte <- function(plate, analyte_name, data_type =
   # Create a dataframe with the data
   mfi <- plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type)
   dilutions_numeric <- plate$get_dilution_values("STANDARD CURVE")
-  SCModel$new(dilutions_numeric, mfi, ...)
+  Model$new(dilutions_numeric, mfi, ...)
 }
