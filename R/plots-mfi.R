@@ -29,29 +29,43 @@ plot_mfi_for_analyte <- function(plate, analyte,
     }
   )
 
-  df <- plate$data[[data_type]]
-  df %>%
+  df <- plate$data[["Median"]] %>%
     dplyr::select(analyte) %>%
     dplyr::rename("MFI" = analyte) %>%
     dplyr::mutate(
       SampleId = paste0("SampleId: ", seq_len(nrow(.))),
-      SampleTypes = plate$sample_types,
-    ) %>%
-    dplyr::group_by(SampleTypes) %>%
+      SampleType = plate$sample_types,
+    )
+
+  blanks_df <- df %>% dplyr::filter(SampleType == "BLANK")
+  blank_mean <- mean(blanks_df$MFI)
+  sc_df <- df %>% dplyr::filter(SampleType == "STANDARD CURVE")
+  test_df <- df %>% dplyr::filter(SampleType == "TEST")
+
+  p <- test_df %>%
     dplyr::mutate(
       outlier = ifelse(is_outlier(MFI), SampleId, as.character(NA))
     ) %>%
-    ggplot2::ggplot(aes(x = SampleTypes, y = MFI)) +
-    main_geom() +
+    ggplot2::ggplot(aes(x = SampleType, y = MFI)) +
+    main_geom(color = "blue") +
     ggplot2::geom_text(aes(label = outlier), na.rm = TRUE, hjust = -0.1) +
-    ggplot2::xlab("Sample Types") +
-    ggplot2::ylab("MFI (Median)") +
-    ggplot2::ggtitle(
-      paste0("Boxplot of MFI per sample type for analyte: ", analyte)
+    ggplot2::geom_hline(
+      aes(yintercept = blank_mean, linetype = "BLANK MEAN"),
+      color = "dark grey", linewidth = 1
     ) +
+    ggplot2::geom_point(data = sc_df, size = 3, color = "red") +
+    ggplot2::scale_linetype_manual(
+      name = "Boundries", values = c("BLANK MEAN" = "dashed")
+    ) +
+    ggplot2::guides(color = ggplot2::guide_legend(title = "Sample Type")) +
+    ggplot2::ggtitle(
+      paste0("MFI Boxplot of test sample coverage\n for analyte: ", analyte)
+    ) +
+    ggplot2::xlab("Sample Type") +
+    ggplot2::ylab("MFI (Median)") +
     ggplot2::theme_minimal() +
     ggplot2::theme(
-      plot.title = element_text(hjust = 0.5), # Center title
-      axis.title.x = element_text(margin = margin(t = 10)) # Adjust x-axis title
+      plot.title = element_text(hjust = 0.5) # Center title
     )
+  p
 }
