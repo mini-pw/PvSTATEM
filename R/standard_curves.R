@@ -34,26 +34,24 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
   }
 
   plot_name <- paste0("Sample values of standard curve for analyte: ", analyte_name)
-  mfi <- plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type)
   plot_data <- data.frame(
-    dilution = plate$get_dilution_values("STANDARD CURVE"),
-    MFI = mfi,
-    plate = plate$plate_name
+    MFI = plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type),
+    plate = plate$plate_name,
+    dilution_values = plate$get_dilution_values("STANDARD CURVE"),
+    dilutions = plate$get_dilution("STANDARD CURVE")
   )
 
   # Scale x and y if needed
   x_log_scale <- "dilutions" %in% log_scale || "all" %in% log_scale
-  if (x_log_scale) {
-    plot_data$dilution <- log(plot_data$dilution)
-  }
-  xlab <- ifelse(x_log_scale, "log(dilution)", "dilution")
-
   y_log_scale <- "MFI" %in% log_scale || "all" %in% log_scale
+  x_trans <- ifelse(x_log_scale, "log10", "identity")
+  x_cords_trans <- ifelse(decreasing_dilution_order, "reverse", "identity")
   y_trans <- ifelse(y_log_scale, "log10", "identity")
-  ylab <- ifelse(y_log_scale, paste0("log(", data_type, ")"), data_type)
 
-  x_ticks <- c(plot_data$dilution, max(plot_data$dilution) + 1)
-  x_labels <- c(plate$get_dilution("STANDARD CURVE"), "")
+  xlab <- ifelse(x_log_scale, "dilution (log scale)", "dilution")
+  x_ticks <- c(plot_data$dilution_values, max(plot_data$dilution_values) + 1)
+  x_labels <- c(plot_data$dilutions, "")
+  ylab <- ifelse(y_log_scale, paste(data_type, "(log scale)"), data_type)
 
   # Automatically position the legend
   legend_position <- c(0.8, 0.2)
@@ -71,19 +69,19 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
     }
   }
 
-  p <- ggplot2::ggplot(plot_data, aes(x = dilution, y = mfi, color = plate))
-
+  options(scipen = 30)
+  p <- ggplot2::ggplot(plot_data, aes(x = dilution_values, y = MFI))
   if (plot_line) {
-    p <- p + geom_line(linewidth = 1.2)
+    p <- p + geom_line(linewidth = 1.2, color = "blue")
   }
-
-  p <- p + geom_point(size = 3) +
+  p <- p + geom_point(size = 3, color = "blue") +
     labs(title = plot_name, x = xlab, y = ylab) +
     scale_x_continuous(
       breaks = x_ticks, labels = x_labels,
-      trans = ifelse(decreasing_dilution_order, "reverse", "identity")
+      trans = x_trans
     ) +
     scale_y_continuous(trans = y_trans) +
+    coord_trans(x = x_cords_trans) +
     theme_minimal() +
     theme(
       axis.line = element_line(colour = "black"),
@@ -118,27 +116,24 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
 #'
 #' @export
 plot_standard_curve_analyte_with_model <- function(plate, analyte_name, model, data_type = "Median", decreasing_dilution_order = TRUE, log_scale = c("all"), plot_asymptote = TRUE, verbose = TRUE) {
-  # p <- plot_standard_curve_analyte(
-  #   plate,
-  #   analyte_name = analyte_name, data_type = data_type,
-  #   decreasing_dilution_order = decreasing_dilution_order,
-  #   log_scale = log_scale, verbose = verbose, plot_line = FALSE
-  # )
+  p <- plot_standard_curve_analyte(
+    plate,
+    analyte_name = analyte_name, data_type = data_type,
+    decreasing_dilution_order = decreasing_dilution_order,
+    log_scale = log_scale, verbose = verbose, plot_line = FALSE
+  )
 
-  # plot_name <- paste0("Fitted standard curve for analyte: ", analyte_name)
-  # p$labels$title <- plot_name
+  plot_name <- paste0("Fitted standard curve for analyte: ", analyte_name)
+  p$labels$title <- plot_name
 
   top_asymptote <- model$top_asymptote()
   bottom_asymptote <- model$bottom_asymptote()
 
   estimates <- model$plot_data()
-  p <- ggplot2::ggplot() +
-    geom_line(
-      aes(x = dilution, y = mfi),
-      color = "red", data = estimates, linewidth = 1
-    ) +
-    scale_x_continuous(trans = "log10") +
-    scale_y_continuous(trans = "log10")
+  p <- p + geom_line(
+    aes(x = dilution, y = MFI),
+    color = "red", data = estimates, linewidth = 1
+  )
   if (plot_asymptote) {
     p <- p + geom_hline(
       yintercept = top_asymptote, linetype = "dashed", color = "gray"
@@ -147,6 +142,5 @@ plot_standard_curve_analyte_with_model <- function(plate, analyte_name, model, d
         yintercept = bottom_asymptote, linetype = "dashed", color = "gray"
       )
   }
-
-  p
+  return(p)
 }
