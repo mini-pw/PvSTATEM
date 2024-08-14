@@ -16,6 +16,13 @@
 #'
 #' This equation is refereed as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
 #'
+#' @examples
+#' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
+#' layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
+#' plate <- read_luminex_data(plate_file, layout_filepath = layout_file, dilutions_from = "layout")
+#' model <- create_standard_curve_model_analyte(plate, "S2", log_mfi = TRUE)
+#' print(model)
+#'
 #' @import nplr
 #' @import dplyr
 #'
@@ -148,6 +155,23 @@ Model <- R6::R6Class(
       colnames(df) <- sub("^x", "dilution", colnames(df))
       colnames(df) <- sub("^y", "MFI", colnames(df))
       df
+    },
+
+    #' @description
+    #' Function prints the basic information about the model
+    #' such as the number of parameters or samples used
+    print = function() {
+      cat(
+        "Instance of the Model class: \n",
+        "- fitted with", nplr::getPar(self$model)$npar, "parameters\n",
+        "- using", length(nplr::getX(self$model)), "samples\n",
+        "- using log residuals (mfi): ", self$log_mfi, "\n",
+        "- using log dilution: ", self$log_dilution, "\n",
+        "- top asymptote:", self$top_asymptote, "\n",
+        "- bottom asymptote:", self$bottom_asymptote, "\n",
+        "- goodness of fit:", nplr::getGoodness(self$model)$gof, "\n",
+        "- weighted goodness of fit:", nplr::getGoodness(self$model)$wgof, "\n"
+      )
     }
   ),
   active = list(

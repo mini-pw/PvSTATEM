@@ -21,6 +21,14 @@ where:
 
 This equation is refereed as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
 }
+\examples{
+plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
+layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
+plate <- read_luminex_data(plate_file, layout_filepath = layout_file, dilutions_from = "layout")
+model <- create_standard_curve_model_analyte(plate, "S2", log_mfi = TRUE)
+print(model)
+
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -67,6 +75,7 @@ The bottom asymptote of the logistic curve}
 \item \href{#method-Model-new}{\code{Model$new()}}
 \item \href{#method-Model-predict}{\code{Model$predict()}}
 \item \href{#method-Model-plot_data}{\code{Model$plot_data()}}
+\item \href{#method-Model-print}{\code{Model$print()}}
 \item \href{#method-Model-clone}{\code{Model$clone()}}
 }
 }
@@ -157,6 +166,17 @@ Data that can be used to plot the standard curve.
 Prediction dataframe for scaled MFI (or logMFI) values in the range [0, 1].
 Columns are named as in the \code{predict} method
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Model-print"></a>}}
+\if{latex}{\out{\hypertarget{method-Model-print}{}}}
+\subsection{Method \code{print()}}{
+Function prints the basic information about the model
+such as the number of parameters or samples used
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Model$print()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Model-clone"></a>}}
