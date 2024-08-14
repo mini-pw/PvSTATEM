@@ -175,13 +175,15 @@ Plate <- R6::R6Class(
     #' @description
     #' Function prints the basic information about the plate
     #' such as the number of samples and analytes
+    #' @param ... Additional parameters to be passed to the print function
     print = function(...) {
       cat(
         "Plate with",
         length(self$sample_names),
         "samples and",
         length(self$analyte_names),
-        "analytes\n"
+        "analytes\n",
+        ... = ...
       )
     },
 
@@ -193,6 +195,7 @@ Plate <- R6::R6Class(
     #' @param include_names If `include_names` parameter is `TRUE`, a
     #' part from count of control samples, provides also their names.
     #' By default `FALSE`
+    #' @param ... Additional parameters to be passed to the print function
     summary = function(..., include_names = FALSE) {},
 
 
