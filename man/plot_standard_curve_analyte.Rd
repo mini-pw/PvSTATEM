@@ -11,7 +11,7 @@ plot_standard_curve_analyte(
   analyte_name,
   data_type = "Median",
   decreasing_dilution_order = TRUE,
-  log_scale = c("all"),
+  log_scale = c("dilutions"),
   plot_line = TRUE,
   verbose = TRUE
 )
