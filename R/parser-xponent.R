@@ -510,10 +510,11 @@ crc32_parser <- function(separator) {
 #' Exact parsing means that the batch, calibration and assay metadata will be parsed as well
 #' @param encoding Encoding of the file
 #' @param separator Separator for the CSV values
+#' @param verbose Whether to print the progress. Default is `TRUE`
 #'
 #' @import stringr
 #' @import readr
-read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", separator = ",") {
+read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", separator = ",", verbose = TRUE) {
   lines <- readr::read_lines(
     path,
     locale = readr::locale(encoding = encoding),

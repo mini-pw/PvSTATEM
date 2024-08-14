@@ -1,5 +1,9 @@
 #' @title PlateBuilder
 #'
+#' @description
+#' This class helps creating the Plate object.
+#' It is used to store the data and validate the final fields.
+#'
 #' @import R6
 #'
 #' @export
