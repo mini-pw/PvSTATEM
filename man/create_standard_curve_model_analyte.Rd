@@ -12,16 +12,19 @@ create_standard_curve_model_analyte(
 )
 }
 \arguments{
-\item{plate}{Plate object}
+\item{plate}{(\code{Plate()})
+Object of the Plate class}
 
-\item{analyte_name}{Name of the analyte for which we want to create the model}
+\item{analyte_name}{(\code{character(1)})
+Name of the analyte for which we want to create the model}
 
-\item{data_type}{Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default equals to \code{Median}}
+\item{data_type}{(\code{character(1)})
+Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default equals to \code{Median}}
 
 \item{...}{Additional arguments passed to the model}
 }
 \value{
-Standard Curve model
+(\code{Model()}) Standard Curve model
 }
 \description{
 Create standard curve model for a certain analyte

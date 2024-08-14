@@ -206,9 +206,11 @@ Model <- R6::R6Class(
 
 #' Predict the dilutions from the MFI values
 #'
-#' @param object Model object
-#' @param mfi MFI values for which we want to predict the dilutions.
-#' Should be in the same scale as the MFI values used to fit the model
+#' @param object (`Model()`)
+#'   Object of the Model class
+#' @param mfi (`numeric()`)
+#'   MFI values for which we want to predict the dilutions.
+#'   Should be in the same scale as the MFI values used to fit the model
 #'
 #' @export
 predict.Model <- function(object, mfi) {
@@ -217,16 +219,18 @@ predict.Model <- function(object, mfi) {
 
 #' Create standard curve model for a certain analyte
 #'
-#' @param plate Plate object
-#' @param analyte_name Name of the analyte for which we want to create the model
-#' @param data_type Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default equals to `Median`
+#' @param plate (`Plate()`)
+#'   Object of the Plate class
+#' @param analyte_name (`character(1)`)
+#'   Name of the analyte for which we want to create the model
+#' @param data_type (`character(1)`)
+#'   Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default equals to `Median`
 #' @param ... Additional arguments passed to the model
 #'
-#' @return Standard Curve model
+#' @return (`Model()`) Standard Curve model
 #'
 #' @export
 create_standard_curve_model_analyte <- function(plate, analyte_name, data_type = "Median", ...) {
-  # Create a dataframe with the data
   mfi <- plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type)
   dilutions_numeric <- plate$get_dilution_values("STANDARD CURVE")
   Model$new(dilutions_numeric, mfi, ...)

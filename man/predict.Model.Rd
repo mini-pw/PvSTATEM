@@ -7,9 +7,11 @@
 \method{predict}{Model}(object, mfi)
 }
 \arguments{
-\item{object}{Model object}
+\item{object}{(\code{Model()})
+Object of the Model class}
 
-\item{mfi}{MFI values for which we want to predict the dilutions.
+\item{mfi}{(\code{numeric()})
+MFI values for which we want to predict the dilutions.
 Should be in the same scale as the MFI values used to fit the model}
 }
 \description{
