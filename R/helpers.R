@@ -113,3 +113,15 @@ color_codes <-
     green_start = "\033[32m",
     green_end = "\033[39m"
   )
+
+
+#' Check if a value is an outlier
+#'
+#' @param x Vector of numeric values from which the outliers are to be detected.
+#'
+#' @return A logical vector indicating whether each value is an outlier.
+#'
+#' @importFrom stats IQR quantile
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5 * IQR(x))
+}

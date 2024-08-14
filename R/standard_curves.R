@@ -254,6 +254,4 @@ plot_standard_curve_analyte_with_model <- function(plate, analyte_name, model, d
         yintercept = bottom_asymptote, linetype = "dashed", color = "gray"
       )
   }
-
-  print(p)
 }
