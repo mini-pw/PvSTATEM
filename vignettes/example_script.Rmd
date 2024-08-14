@@ -1,0 +1,142 @@
+---
+title: "Basic PvSTATEM functionalities"
+author: "Tymoteusz Kwieciński"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{Simple example of basic PvSTATEM package pre-release version functionalities}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{ggplot2}
+  %\VignetteDepends{nplr}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+# Introduction
+
+The basic functionality of the `PvSTATEM` package is reading raw MBA data. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. Firsly, let us load the dataset as the `plate` object.
+
+```{r}
+library(PvSTATEM)
+library(ggplot2)
+
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+
+
+plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
+
+plate
+```
+
+After the plate is successfully loaded, we can look at some basic information about it.
+
+```{r}
+plate$summary()
+
+plate$summary(include_names = TRUE) # more detailed summary
+
+plate$sample_names
+plate$analyte_names
+```
+
+## Normalization
+
+The package can plot the dilutions along the MFI values, allowing manual inspecting of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
+
+```{r}
+plot_standard_curve_analyte(plate, analyte_name = "Spike_6P_IPP")
+
+plate$blank_adjustment()
+
+print(plate$blank_adjusted)
+
+plot_standard_curve_analyte(plate, analyte_name = "Spike_6P_IPP")
+```
+
+We can also plot the standard curve for different analytes and data types. A list of all available analytes on the plate can be accessed using the command `plate$analyte_names`.
+
+By default, all the operations are performed on the `Median` value of the samples; this option can be selected from the `data_type` parameter of the function.
+
+```{r}
+plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan_IPP", data_type = "Mean")
+plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan_IPP", data_type = "Avg Net MFI")
+```
+
+The plotting function has more options, such as selecting which axis the log scale should be applied or reversing the curve. More detailed information can be found in the function documentation, accessed by executing the command `?plot_standard_curve_analyte`.
+
+After inspection, we may create the model for the standard curve of a certain antibody. 
+The model is fitted using the `nplr` package, which provides a simple interface 
+for fitting n-parameter logistic regression models, 
+but to create clearer interface for the user, 
+we encapsulated this model into our own class called `Model` for simplicity. 
+The detailed documentation of the `Model` class can be found by executing the command `?Model`.
+
+The model is then used to predict the dilutions of the samples based on the MFI values.
+
+`nplr` package fits the model using the formula:
+
+$$ y = B + \frac{T - B}{[1 + 10^{b \cdot (x_{mid} - x)}]^s} $$
+
+Where:
+
+-   $y$ is the predicted value, MFI in our case,
+
+-   $x$ is the independent variable, dilution in our case,
+
+-   $B$ is the bottom plateau - the right horizontal asymptote,
+
+-   $T$ is the top plateau - the left horizontal asymptote,
+
+-   $b$ is the slope of the curve at the inflection point,
+
+-   $x_{mid}$ is x-coordinate at the inflection point,
+
+-   $s$ is the asymmetric coefficient.
+
+This equation is referred to as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
+
+By default, the `nplr` model transforms the x values using the log10 function.
+
+```{r}
+model <- create_standard_curve_model_analyte(plate, analyte_name = "Spike_6P_IPP")
+
+model
+```
+
+Since our `model` object contains all the characteristics and parameters of the fitted regression model. 
+The model can be used to predict the dilutions of the samples based on the MFI values. 
+The output above shows the most important parameters of the fitted model.
+
+The predicted values may be used to plot the standard curve, which can be compared to the sample values.
+
+```{r}
+plot_standard_curve_analyte_with_model(plate, analyte_name = "Spike_6P_IPP", model)
+
+plot_standard_curve_analyte_with_model(plate, analyte_name = "Spike_6P_IPP", model, log_scale = c("dilutions"))
+```
+
+Apart from the plotting, the package can predict values of all the samples on the plate.
+
+```{r}
+mfi_values <- plate$data$Median$Spike_6P_IPP
+head(mfi_values)
+
+predicted_dilutions <- predict(model, mfi_values)
+
+head(predicted_dilutions)
+
+```
+The dataframe contains original MFI values and the predicted dilutions based on the model.
+Since the dilution values are obtained by reversing the logistic model formula, 
+the predictions also include the confidence intervals for the dilutions.
+The interval is represented as its upper and bottom bounds, which are stored in columns `dilution.025` and `dilution.975`, respectively.
