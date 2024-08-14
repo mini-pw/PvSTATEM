@@ -279,7 +279,7 @@ is_the_end_of_csv_section <- function(line, separator, empty_line_stop = TRUE) {
   } else if (is_line_blank(line)) {
     return(empty_line_stop)
   } else {
-    regex <- '^[\\s,;"]*(DataType:|Samples|-- CRC --)'
+    regex <- '^[\\s,;"\']*(DataType:|Samples|-- CRC --)'
     return(stringr::str_detect(line, regex))
   }
 }
