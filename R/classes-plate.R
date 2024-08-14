@@ -319,3 +319,7 @@ Plate <- R6::R6Class(
     verbose = TRUE
   )
 )
+
+summary.Plate = function(object, ...) {
+  object$summary(...)
+}
