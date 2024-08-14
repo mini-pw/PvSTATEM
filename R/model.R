@@ -151,7 +151,7 @@ Model <- R6::R6Class(
     }
   ),
   active = list(
-    #' @filed top_asymptote (`numeric(1)`)\cr
+    #' @field top_asymptote (`numeric(1)`)\cr
     #' The top asymptote of the logistic curve
     top_asymptote = function() {
       if (is.null(self$model)) {
@@ -161,7 +161,7 @@ Model <- R6::R6Class(
       private$mfi_reverse_transform(asymptote)
     },
 
-    #' @filed bottom_asymptote (`numeric(1)`)\cr
+    #' @field bottom_asymptote (`numeric(1)`)\cr
     #' The bottom asymptote of the logistic curve
     bottom_asymptote = function() {
       if (is.null(self$model)) {

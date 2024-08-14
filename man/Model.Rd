@@ -50,6 +50,17 @@ Indicator should the MFI values be scaled to the range [0, 1]}
 }
 \if{html}{\out{</div>}}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{top_asymptote}}{(\code{numeric(1)})\cr
+The top asymptote of the logistic curve}
+
+\item{\code{bottom_asymptote}}{(\code{numeric(1)})\cr
+The bottom asymptote of the logistic curve}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
