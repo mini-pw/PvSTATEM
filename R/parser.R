@@ -1,5 +1,5 @@
 unified_datatypes <- c("Median", "Count", "Net MFI", "Avg Net MFI", "Mean")
-intelliflex_to_xponent_mapping <- unified_datatypes
+intelliflex_to_xponent_mapping <- VALID_DATA_TYPES
 names(intelliflex_to_xponent_mapping) <- c(
   "MEDIAN", "COUNT", "NET.MEDIAN", "NET.AVERAGE.MEDIAN", "AVERAGE.MFI"
 )
@@ -48,7 +48,7 @@ parse_xponent_locations <- function(xponent_locations) {
 postprocess_intelliflex <- function(intelliflex_output) {
   data <- intelliflex_output$Results
   names(data) <- intelliflex_to_xponent_mapping[names(data)]
-  data <- filter_list(data, unified_datatypes)
+  data <- filter_list(data, VALID_DATA_TYPES)
   check_data(data)
 
   analyte_names <- find_analyte_names(data$Median)
@@ -66,7 +66,7 @@ postprocess_intelliflex <- function(intelliflex_output) {
 
 postprocess_xponent <- function(xponent_output) {
   data <- xponent_output$Results
-  data <- filter_list(data, unified_datatypes)
+  data <- filter_list(data, VALID_DATA_TYPES)
   check_data(data)
 
   xponent_locations <- data$Median[[location_column_name]]
