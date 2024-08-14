@@ -33,7 +33,7 @@ print(model)
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
 \item{\code{dilutions}}{(\code{numeric()})\cr
-Diltuions used to fit the model}
+Dilutions used to fit the model}
 
 \item{\code{mfi}}{(\code{numeric()})\cr
 MFI values used to fit the model}
@@ -100,7 +100,7 @@ Create a new instance of Model \link[R6:R6Class]{R6} class
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{dilutions}}{(\code{numeric()})\cr
-Diltuions used to fit the model}
+Dilutions used to fit the model}
 
 \item{\code{mfi}}{MFI (\code{numeric()})\cr
 values used to fit the model}

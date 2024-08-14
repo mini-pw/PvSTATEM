@@ -30,7 +30,7 @@ Model <- R6::R6Class(
   "Model",
   public = list(
     #' @field dilutions (`numeric()`)\cr
-    #'  Diltuions used to fit the model
+    #'  Dilutions used to fit the model
     dilutions = NULL,
 
     #' @field mfi (`numeric()`)\cr
@@ -65,7 +65,7 @@ Model <- R6::R6Class(
     #' Create a new instance of Model [R6][R6::R6Class] class
     #'
     #' @param dilutions (`numeric()`)\cr
-    #'   Diltuions used to fit the model
+    #'   Dilutions used to fit the model
     #' @param mfi MFI (`numeric()`)\cr
     #'   values used to fit the model
     #' @param npars (`numeric(1)`)\cr
