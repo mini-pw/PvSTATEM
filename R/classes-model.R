@@ -143,7 +143,7 @@ Model <- R6::R6Class(
     #' @return (`data.frame()`)\cr
     #' Prediction dataframe for scaled MFI (or logMFI) values in the range \[0, 1\].
     #' Columns are named as in the `predict` method
-    plot_data = function() {
+    get_plot_data = function() {
       private$assert_model_fitted()
       targets <- seq(.99, .01, by = -0.01)
       df <- nplr::getEstimates(self$model, targets = targets)

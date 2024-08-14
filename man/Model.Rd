@@ -74,7 +74,7 @@ The bottom asymptote of the logistic curve}
 \itemize{
 \item \href{#method-Model-new}{\code{Model$new()}}
 \item \href{#method-Model-predict}{\code{Model$predict()}}
-\item \href{#method-Model-plot_data}{\code{Model$plot_data()}}
+\item \href{#method-Model-get_plot_data}{\code{Model$get_plot_data()}}
 \item \href{#method-Model-print}{\code{Model$print()}}
 \item \href{#method-Model-clone}{\code{Model$clone()}}
 }
@@ -153,12 +153,12 @@ The columns are named as follows:
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Model-plot_data"></a>}}
-\if{latex}{\out{\hypertarget{method-Model-plot_data}{}}}
-\subsection{Method \code{plot_data()}}{
+\if{html}{\out{<a id="method-Model-get_plot_data"></a>}}
+\if{latex}{\out{\hypertarget{method-Model-get_plot_data}{}}}
+\subsection{Method \code{get_plot_data()}}{
 Data that can be used to plot the standard curve.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Model$plot_data()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Model$get_plot_data()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

@@ -126,7 +126,7 @@ plot_standard_curve_analyte_with_model <- function(plate, analyte_name, model, d
   plot_name <- paste0("Fitted standard curve for analyte: ", analyte_name)
   p$labels$title <- plot_name
 
-  estimates <- model$plot_data()
+  estimates <- model$get_plot_data()
   p <- p + geom_line(
     aes(x = dilution, y = MFI),
     color = "red", data = estimates, linewidth = 1
