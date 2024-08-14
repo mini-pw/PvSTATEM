@@ -1,14 +1,13 @@
 test_that("Dilution extraction from sample names", {
   expect_equal(
-    as.vector(sapply(c("POS 1/40", "Unknown4", "CP3 1/50", "P1/2"),
-             extract_dilution_from_name)),
+    as.vector(extract_dilution_from_names(c("POS 1/40", "Unknown4", "CP3 1/50", "P1/2"))),
     c("1/40", NA, "1/50", "1/2")
   )
 })
 
 test_that("Dilution extraction from layout", {
   values <-  c("1/40", "1/50", "BLANK", "Unknown", "NN 1/5")
-  dilutions <- PvSTATEM:::extract_dilutions_from_layout(values)
+  dilutions <- extract_dilutions_from_layout(values)
   expect_equal(dilutions, c("1/40", "1/50", NA, NA, NA))
 })
 

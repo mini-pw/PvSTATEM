@@ -95,7 +95,7 @@ PlateBuilder <- R6::R6Class(
           stop("Sample names are not provided and `use_layout_dilutions` is set to `FALSE` - cannot extract the dilutions from sample names")
         }
 
-        dilutions <- sapply(self$sample_names, extract_dilution_from_name)
+        dilutions <- extract_dilution_from_names(self$sample_names)
       }
 
       if (all(is.na(dilutions))) {
@@ -248,9 +248,12 @@ PlateBuilder <- R6::R6Class(
     }
   ),
   active = list(
-    #' @description
+    #' @field layout_as_vector
     #' Print the layout associated with the plate as a flattened vector of values.
     layout_as_vector = function() {
+      if (is.null(self$layout)) {
+        stop("Layout is not provided")
+      }
       c(t(self$layout))
     }
   ),
@@ -284,10 +287,17 @@ PlateBuilder <- R6::R6Class(
     }
   )
 )
+#' Extract dilution factor from the sample name
 #' @description
 #' function extracts dilution factor from the sample name - useful for detecting
 #' dilution from sample names
-extract_dilution_from_name <- function(sample_name) {
+#' @param sample_name a vector of sample names from which we want to extract the dilutions
+#' @examples
+#' raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
+#' extract_dilution_from_names(raw_dilutions)
+#'
+#' @return a vector of dilutions represented as strings extracted from the sample names
+extract_dilution_from_names <- function(sample_name) {
   dilution_regex <- "1/\\d+"
 
   dilution_factor <- stringr::str_extract(sample_name, dilution_regex)
@@ -296,10 +306,15 @@ extract_dilution_from_name <- function(sample_name) {
 }
 
 #' @description
-#' Set the dilutions (end extract numeric values) used during the examination
+#' Extract dilution factor represented as string from vector of characters.
+#' The matches has to be exact and the dilution factor has to be in the form of `1/\d+`
 #' @param dilutions vector of dilutions used during the examination
 #' due to the nature of data it's a vector of strings,
 #' the numeric vales are created from those strings
+#'
+#' @examples
+#' raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
+#' extract_dilutions_from_layout(raw_dilutions)
 extract_dilutions_from_layout = function(dilutions) {
   stopifnot(is.character(dilutions) && length(dilutions) > 0)
 
