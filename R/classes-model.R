@@ -123,9 +123,7 @@ Model <- R6::R6Class(
     #' - `MFI` - the predicted MFI value
     #'
     predict = function(mfi) {
-      if (is.null(self$model)) {
-        stop("Model class was not properly initialized. Missing model")
-      }
+      private$assert_model_fitted()
       original_mfi <- mfi
       mfi <- private$mfi_transform(mfi)
 
@@ -146,9 +144,7 @@ Model <- R6::R6Class(
     #' Prediction dataframe for scaled MFI (or logMFI) values in the range \[0, 1\].
     #' Columns are named as in the `predict` method
     plot_data = function() {
-      if (is.null(self$model)) {
-        stop("Model class was not properly initialized. Missing model")
-      }
+      private$assert_model_fitted()
       targets <- seq(.99, .01, by = -0.01)
       df <- nplr::getEstimates(self$model, targets = targets)
       df[, "y"] <- private$mfi_reverse_transform(df[, "y"])
@@ -178,9 +174,7 @@ Model <- R6::R6Class(
     #' @field top_asymptote (`numeric(1)`)\cr
     #' The top asymptote of the logistic curve
     top_asymptote = function() {
-      if (is.null(self$model)) {
-        stop("Model class was not properly initialized. Missing model")
-      }
+      private$assert_model_fitted()
       asymptote <- nplr::getPar(self$model)$params$top
       private$mfi_reverse_transform(asymptote)
     },
@@ -188,14 +182,17 @@ Model <- R6::R6Class(
     #' @field bottom_asymptote (`numeric(1)`)\cr
     #' The bottom asymptote of the logistic curve
     bottom_asymptote = function() {
-      if (is.null(self$model)) {
-        stop("Model class was not properly initialized. Missing model")
-      }
+      private$assert_model_fitted()
       asymptote <- nplr::getPar(self$model)$params$bottom
       private$mfi_reverse_transform(asymptote)
     }
   ),
   private = list(
+    assert_model_fitted = function() {
+      if (is.null(self$model)) {
+        stop("Model class was not properly initialized. Missing nplr model")
+      }
+    },
     mfi_fit_transform = function(mfi) {
       if (self$log_mfi) {
         mfi <- log(mfi, base = 10)
