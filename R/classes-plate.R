@@ -21,9 +21,12 @@ VALID_DATA_TYPES <- c(
 
 globalVariables(c("VALID_SAMPLE_TYPES", "VALID_DATA_TYPES"))
 
+#' Check validity of given sample type
+#' @description
 #' Check if the sample type is valid. The sample type is valid if it is one of the
 #' elements of the `VALID_SAMPLE_TYPES` vector. The valid sample types are:
-#' `r toString(VALID_SAMPLE_TYPES)`.
+#'
+#' \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
 #'
 #' @param sample_type A string representing the sample type.
 #' @return `TRUE` if the sample type is valid, `FALSE` otherwise.
@@ -33,9 +36,11 @@ is_valid_sample_type <- function(sample_type) {
   sample_type %in% VALID_SAMPLE_TYPES
 }
 
+#' Check validity of given data type
+#' @description
 #' Check if the data type is valid. The data type is valid if it is one of the
 #' elements of the `VALID_DATA_TYPES` vector. The valid data types are:
-#' `r toString(VALID_DATA_TYPES)`.
+#' \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
 #'
 #' @param data_type A string representing the data type.
 #' @return `TRUE` if the data type is valid, `FALSE` otherwise.
@@ -79,7 +84,7 @@ Plate <- R6::R6Class(
     sample_locations = NULL,
     #' @field sample_types (`character()`)\cr
     #' Types of the samples that were examined on the plate.
-    #' The possible values are `r toString(VALID_SAMPLE_TYPES)`.
+    #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
     sample_types = NULL,
     #' @field dilutions (`character()`)\cr
     #' A list containing names of the samples as keys and string representing dilutions as values.
@@ -90,7 +95,9 @@ Plate <- R6::R6Class(
     dilution_values = NULL,
     #' @field data (`list()`)\cr
     #' A list containing dataframes with the data for each sample and analyte.
-    #' The possible data types - the keys of the list are `r toString(VALID_DATA_TYPES)`.
+    #' The possible data types - the keys of the list are:
+    #' \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
+    #'
     #' In each dataframe, the rows represent samples and the columns represent analytes.
     data = NULL,
     #' @field default_data_type (`character(1)`)\cr
@@ -108,6 +115,8 @@ Plate <- R6::R6Class(
     layout = NULL,
 
     ## Fields that will be set by the methods ---
+    #' @field blank_adjusted (`logical`)\cr
+    #' A flag indicating whether the blank values have been adjusted.
     blank_adjusted = FALSE,
 
 
@@ -128,10 +137,10 @@ Plate <- R6::R6Class(
     #'  A list containing names of the samples as keys and numeric values representing dilutions as values.
     #' @param sample_types (`character()`)\cr
     #'  Types of the samples that were examined on the plate.
-    #'  The possible values are `r toString(VALID_SAMPLE_TYPES)`.
+    #'  The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
     #' @param data (`list()`)\cr
     #'  A list containing dataframes with the data for each sample and analyte.
-    #'  The possible data types - the keys of the list are `r toString(VALID_DATA_TYPES)`.
+    #'  The possible data types - the keys of the list are \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
     #'  In each dataframe, the rows represent samples and the columns represent analytes.
     #' @param sample_locations (`character()`)\cr
     #'  Locations of the samples on the plate.
@@ -176,6 +185,7 @@ Plate <- R6::R6Class(
       )
     },
 
+    #' Print the summary of the plate
     #' @description
     #' Function outputs basic information about the plate, such as
     #' examination date, batch name, and sample types
@@ -186,15 +196,16 @@ Plate <- R6::R6Class(
     summary = function(..., include_names = FALSE) {},
 
 
+    #' Get data for a specific analyte and sample type
     #' @description
     #' Function returns data for a specific analyte and sample.
     #'
     #' @param analyte An analyte name or its id of which data we want to extract
     #'
     #' @param sample_type is a type of the sample we want to extract data from.
-    #'  The possible values are `r toString(VALID_SAMPLE_TYPES)`. Default value is `ALL`.
+    #'  The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}. Default value is `ALL`.
     #' @param data_type The parameter specifying which data type should be returned.
-    #'  This parameter has to take one of values: `r toString(VALID_DATA_TYPES)`.
+    #'  This parameter has to take one of values: \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
     #'  What's more, the `data_type` has to be present in the plate's data
     #'  Default value is plate's `default_data_type`, which is usually `Median`.
     #'
@@ -239,10 +250,11 @@ Plate <- R6::R6Class(
       return(data_of_specified_type[valid_samples, analyte])
     },
 
+    #' Get the string representation of dilutions
     #' @description
     #' Function returns the dilution represented as strings for a specific sample type.
     #' @param sample_type type of the samples that we want to obtain the dilution for.
-    #' The possible values are `r toString(VALID_SAMPLE_TYPES)`. Default value is `ALL`.
+    #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)} Default value is `ALL`.
     #' @return
     #' A list containing names of the samples as keys and string representing dilutions as values.
     get_dilution = function(sample_type) {
@@ -261,10 +273,11 @@ Plate <- R6::R6Class(
       }
     },
 
+    #' Get the numeric representation of dilutions
     #' @description
     #' Function returns the dilution values for a specific sample type.
     #' @param sample_type type of the samples that we want to obtain the dilution values for.
-    #' The possible values are `r toString(VALID_SAMPLE_TYPES)`. Default value is `ALL`.
+    #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)} Default value is `ALL`.
     #' @return
     #' A list containing names of the samples as keys and numeric values representing dilutions as values.
     #'
@@ -284,6 +297,7 @@ Plate <- R6::R6Class(
       }
     },
 
+    #' Adjust the MFI values by subtracting the background
     #' @description
     #' Function adjusts the values of test samples by subtracting aggegation of
     #' `BLANK` samples. The purpose of this operation is to remove background light,
@@ -313,7 +327,7 @@ Plate <- R6::R6Class(
         stop(method, "not available for now, consider using one of the following: ", available_methods)
       }
 
-      plate <- if (in_place) self else self$clone()
+      plate <- if (in_place) self else self$clone(deep=TRUE)
 
       blanks_filter <- plate$sample_types == "BLANK"
       if (!any(blanks_filter)) {
