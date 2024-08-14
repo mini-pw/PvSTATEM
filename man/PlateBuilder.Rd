@@ -14,7 +14,7 @@ PlateBuilder
 \item \href{#method-PlateBuilder-new}{\code{PlateBuilder$new()}}
 \item \href{#method-PlateBuilder-set_sample_locations}{\code{PlateBuilder$set_sample_locations()}}
 \item \href{#method-PlateBuilder-set_dilutions}{\code{PlateBuilder$set_dilutions()}}
-\item \href{#method-PlateBuilder-extract_sample_types}{\code{PlateBuilder$extract_sample_types()}}
+\item \href{#method-PlateBuilder-set_sample_types}{\code{PlateBuilder$set_sample_types()}}
 \item \href{#method-PlateBuilder-set_data}{\code{PlateBuilder$set_data()}}
 \item \href{#method-PlateBuilder-set_default_data_type}{\code{PlateBuilder$set_default_data_type()}}
 \item \href{#method-PlateBuilder-set_batch_info}{\code{PlateBuilder$set_batch_info()}}
@@ -29,7 +29,7 @@ PlateBuilder
 \subsection{Method \code{new()}}{
 Initialize the PlateBuilder object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$new(plate_name, sample_names, analyte_names)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$new(plate_name, sample_names, analyte_names, verbose = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -47,6 +47,12 @@ an examination in the same order as in the data
 \item{\code{analyte_names}}{\itemize{
 \item vector of analytes names measured during
 an examination in the same order as in the data
+}}
+
+\item{\code{verbose}}{\itemize{
+\item logical value indicating whether to print additional
+information. This parameter is stored as a private attribute of the object
+and reused in other methods
 }}
 }
 \if{html}{\out{</div>}}
@@ -73,28 +79,34 @@ Set the sample types used during the examination
 \if{html}{\out{<a id="method-PlateBuilder-set_dilutions"></a>}}
 \if{latex}{\out{\hypertarget{method-PlateBuilder-set_dilutions}{}}}
 \subsection{Method \code{set_dilutions()}}{
-Set the dilutions (end extract numeric values) used during the examination
+Extract and set the dilutions from layout, sample names or use a provided vector of values.
+The provided vector should be the same length as the number of samples
+and should contain dilution factors saved as strings
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$set_dilutions(dilutions)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$set_dilutions(use_layout_dilutions = TRUE, values = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{dilutions}}{vector of dilutions used during the examination
-due to the nature of data it's a vector of strings,
-the numeric vales are created from those strings
-Use the sample names to extract the sample types}
+\item{\code{use_layout_dilutions}}{logical value indicating whether to use names
+extracted from layout files to extract dilutions. If set to \code{FALSE} the
+function uses the sample names as a source for dilution}
+
+\item{\code{values}}{a vector of dilutions to overwrite the extraction process
+
+Set and extract sample types from the sample names.
+Optionally use the layout file to extract the sample types}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PlateBuilder-extract_sample_types"></a>}}
-\if{latex}{\out{\hypertarget{method-PlateBuilder-extract_sample_types}{}}}
-\subsection{Method \code{extract_sample_types()}}{
+\if{html}{\out{<a id="method-PlateBuilder-set_sample_types"></a>}}
+\if{latex}{\out{\hypertarget{method-PlateBuilder-set_sample_types}{}}}
+\subsection{Method \code{set_sample_types()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$extract_sample_types(use_layout_types = TRUE, values = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$set_sample_types(use_layout_types = TRUE, values = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
