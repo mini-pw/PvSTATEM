@@ -4,12 +4,7 @@
 \alias{plot_counts}
 \title{Plot counts in a 96-well plate}
 \usage{
-plot_counts(
-  plate,
-  analyte_name = NULL,
-  plot_counts = FALSE,
-  plot_legend = FALSE
-)
+plot_counts(plate, analyte_name, plot_counts = TRUE, plot_legend = FALSE)
 }
 \arguments{
 \item{plate}{The plate object with the counts data}
