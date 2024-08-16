@@ -20,23 +20,23 @@ LazyData: true
 RoxygenNote: 7.3.2
 Imports:
     dplyr,
-    R6,
-    tools,
-    qpdf,
-    readxl,
-    RColorBrewer,
-    knitr,
-    rmarkdown,
     ggplot2,
+    knitr,
+    nplr,
+    qpdf,
+    R6,
+    RColorBrewer,
     readr,
+    readxl,
+    rmarkdown,
     stringi,
     stringr,
     nplr,
     grid,
-    png
+    png,
+    tools,
 Suggests:
-    testthat (>= 3.0.0),
-    knitr
+    testthat (>= 3.0.0)
 Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 VignetteBuilder: knitr
