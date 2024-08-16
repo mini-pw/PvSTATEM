@@ -112,7 +112,7 @@ Plate <- R6::R6Class(
 
     #' @description
     #' Function outputs basic information about the plate, such as
-    #' examination date, batch name, and sample types
+    #' examination date, batch name, and sample types.
     #'
     #' @param include_names If `include_names` parameter is `TRUE`, a
     #' part from count of control samples, provides also their names.
@@ -323,6 +323,8 @@ Plate <- R6::R6Class(
   )
 )
 
-summary.Plate = function(object, ...) {
-  object$summary(...)
+
+#' @export
+summary.Plate = function(object, include_names = FALSE) {
+  object$summary(include_names = include_names)
 }
