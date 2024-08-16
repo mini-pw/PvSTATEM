@@ -162,7 +162,8 @@ Model <- R6::R6Class(
       lower_bound <- nplr::getPar(self$model)$params$bottom
       bound_width <- upper_bound - lower_bound
       upper_bound <- upper_bound - 0.05 * bound_width
-      lower_bound <- lower_bound + 0.05 * bound_width
+      lower_bound <- private$mfi_transform(1) # Sclaed MFI for MFI = 1
+
       uniform_targets <- seq(lower_bound, upper_bound, length.out = 100)
       df <- nplr::getEstimates(self$model, targets = uniform_targets)
       df[, "y"] <- private$mfi_reverse_transform(df[, "y"])
