@@ -238,14 +238,6 @@ PlateBuilder <- R6::R6Class(
         batch_info = self$batch_info,
         layout = self$layout
       )
-      verbose_cat(
-        color_codes$green_start,
-        "Plate `",
-        self$plate_name,
-        "` has been successfully created\n",
-        color_codes$green_end,
-        verbose = private$verbose
-      )
 
       plate
 
