@@ -15,6 +15,8 @@ test_that("Fully Parse CovidOISExPONTENT.csv plate data", {
   expect_equal(plate$sample_types[1], "BLANK")
   expect_true(all(is.na(plate$dilutions)))
 
+  expect_equal(plate$plate_name , "CovidOISExPONTENT")
+
 })
 
 test_that("Fully Parse CovidOISExPONTENT_CO.csv plate data with layout", {
@@ -23,4 +25,6 @@ test_that("Fully Parse CovidOISExPONTENT_CO.csv plate data with layout", {
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
 
   expect_equal(plate$dilutions[1:4], c(NA, "1/50", "1/100", "1/200"))
+
+  expect_equal(plate$plate_name , "CovidOISExPONTENT_CO")
 })
