@@ -11,6 +11,7 @@ PlateBuilder <- R6::R6Class(
   "PlateBuilder",
   public = list(
     plate_name = NULL,
+    batch_name = NULL,
     analyte_names = NULL,
     sample_names = NULL,
     sample_locations = NULL,
@@ -26,7 +27,7 @@ PlateBuilder <- R6::R6Class(
     #' @description
     #' Initialize the PlateBuilder object
     #'
-    #' @param plate_name - plate name obtained from filename
+    #' @param batch_name - plate name obtained from the plate info
     #' @param sample_names - vector of sample names measured during
     #' an examination in the same order as in the data
     #' @param analyte_names - vector of analytes names measured during
@@ -35,9 +36,9 @@ PlateBuilder <- R6::R6Class(
     #' information. This parameter is stored as a private attribute of the object
     #' and reused in other methods
     #'
-    initialize = function(plate_name, sample_names, analyte_names, verbose = TRUE) {
-      stopifnot(is.character(plate_name) && is.scalar(plate_name))
-      self$plate_name <- plate_name
+    initialize = function(batch_name, sample_names, analyte_names, verbose = TRUE) {
+      stopifnot(is.character(batch_name) && is.scalar(batch_name))
+      self$batch_name <- batch_name
       stopifnot(is.character(sample_names) && length(sample_names) > 0)
       self$sample_names <- sample_names
       stopifnot(is.character(analyte_names) && length(analyte_names) > 0)
@@ -210,6 +211,15 @@ PlateBuilder <- R6::R6Class(
     },
 
     #' @description
+    #' Set the plate name for the plate.
+    #' The plate name is extracted from the filepath
+    set_plate_name = function(file_path) {
+      stopifnot(is.character(file_path) && is.scalar(file_path))
+      file_name_without_extension <- sub("\\.[^.]*$", "", basename(file_path))
+      self$plate_name <- file_name_without_extension
+    },
+
+    #' @description
     #' Set the layout matrix for the plate
     #' @param layout_matrix a matrix containing information about the
     set_layout = function(layout_matrix) {
@@ -227,6 +237,7 @@ PlateBuilder <- R6::R6Class(
 
       plate <- Plate$new(
         plate_name = self$plate_name,
+        batch_name = self$batch_name,
         analyte_names = self$analyte_names,
         sample_names = self$sample_names,
         sample_locations = self$sample_locations,

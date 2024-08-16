@@ -55,7 +55,7 @@ postprocess_intelliflex <- function(intelliflex_output, verbose = TRUE) {
   data <- remove_non_analyte_columns(data)
 
   list(
-    plate_name = intelliflex_output$SystemMetadata[["PLATE.NAME"]],
+    batch_name = intelliflex_output$SystemMetadata[["PLATE.NAME"]],
     sample_locations = intelliflex_output$SampleMetadata[["WELL.LOCATION"]],
     sample_names = intelliflex_output$SampleMetadata[["SAMPLE.ID"]],
     analyte_names = analyte_names,
@@ -76,7 +76,7 @@ postprocess_xponent <- function(xponent_output, verbose = TRUE) {
   data <- remove_non_analyte_columns(data)
 
   list(
-    plate_name = xponent_output$ProgramMetadata[["Batch"]],
+    batch_name = xponent_output$ProgramMetadata[["Batch"]],
     sample_locations = sample_locations,
     sample_names = sample_names,
     analyte_names = analyte_names,
@@ -147,11 +147,14 @@ read_luminex_data <- function(plate_filepath,
   )
 
   plate_builder <- PlateBuilder$new(
-    parser_output$plate_name,
+    parser_output$batch_name,
     parser_output$sample_names,
     parser_output$analyte_names,
     verbose = verbose
   )
+
+  plate_builder$set_plate_name(plate_filepath) # set a new plate name based on the file name
+
   plate_builder$set_sample_locations(parser_output$sample_locations)
   layout_matrix <- NULL
   if (!is.null(layout_filepath)) {
@@ -180,6 +183,7 @@ read_luminex_data <- function(plate_filepath,
   plate_builder$set_data(parser_output$data)
 
   plate_builder$set_dilutions(use_layout_dilutions, dilutions)
+
 
 
   plate <- plate_builder$build(validate = TRUE)

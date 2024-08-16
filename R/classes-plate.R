@@ -78,7 +78,9 @@ Plate <- R6::R6Class(
     #' Names of the samples that were examined on the plate.
     sample_names = character(),
     ## Must be set if validated ---
-
+    #' @field batch_name (`character(1)`)\cr
+    #' Name of the batch to which the plate belongs.
+    batch_name = "",
     #' @field sample_locations (`character()`)\cr
     #' Locations of the samples on the plate.
     sample_locations = NULL,
@@ -125,11 +127,17 @@ Plate <- R6::R6Class(
     #'
     #' @param plate_name  (`character(1)`)\cr
     #'  Name of the plate.
-    #'  By default is set to the name of the file from which the plate was read.
+    #'  By default is set to an empty string,
+    #'  during the reading process it is set to the name
+    #'  of the file from which the plate was read.
     #' @param sample_names (`character()`)\cr
     #'  Names of the samples that were examined on the plate.
     #' @param analyte_names (`character()`)\cr
     #'  Names of the analytes that were examined on the plate.
+    #' @param batch_name (`character(1)`)\cr
+    #'  Name of the batch to which the plate belongs.
+    #'  By default is set to an empty string, during the reading process it is set to
+    #'  the `batch` field of the plate
     #' @param dilutions (`character()`)\cr
     #'  A list containing names of the samples as keys and string representing dilutions as values.
     #'  The dilutions are represented as strings.
@@ -154,7 +162,7 @@ Plate <- R6::R6Class(
     #'  The layout is read from the separate file and usually provides additional
     #'  information about the dilutions, sample names, and the sample layout
     #'  on the actual plate.
-    initialize = function(plate_name, sample_names, analyte_names,
+    initialize = function(plate_name, sample_names, analyte_names, batch_name = "",
                           dilutions = NULL, dilution_values = NULL,
                           sample_types = NULL, data = NULL,
                           sample_locations = NULL, default_data_type = NULL,
@@ -162,6 +170,7 @@ Plate <- R6::R6Class(
       self$plate_name <- plate_name
       self$analyte_names <- analyte_names
       self$sample_names <- sample_names
+      if (!is.null(batch_name) && length(batch_name) != 0) self$batch_name <- batch_name
       if (!is.null(sample_locations)) self$sample_locations <- sample_locations
       if (!is.null(dilutions)) self$dilutions <- dilutions
       if (!is.null(dilution_values)) self$dilution_values <- dilution_values
