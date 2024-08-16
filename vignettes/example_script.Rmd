@@ -28,9 +28,9 @@ The basic functionality of the `PvSTATEM` package is reading raw MBA data. To pr
 library(PvSTATEM)
 library(ggplot2)
 
-plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
-layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
 
 
 plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
@@ -49,18 +49,18 @@ plate$sample_names
 plate$analyte_names
 ```
 
-## Normalization
+## Quality control
 
 The package can plot the dilutions along the MFI values, allowing manual inspecting of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
 
 ```{r}
-plot_standard_curve_analyte(plate, analyte_name = "Spike_6P_IPP")
+plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
 
 plate$blank_adjustment()
 
 print(plate$blank_adjusted)
 
-plot_standard_curve_analyte(plate, analyte_name = "Spike_6P_IPP")
+plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
 ```
 
 We can also plot the standard curve for different analytes and data types. A list of all available analytes on the plate can be accessed using the command `plate$analyte_names`.
@@ -68,11 +68,36 @@ We can also plot the standard curve for different analytes and data types. A lis
 By default, all the operations are performed on the `Median` value of the samples; this option can be selected from the `data_type` parameter of the function.
 
 ```{r}
-plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan_IPP", data_type = "Mean")
-plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan_IPP", data_type = "Avg Net MFI")
+plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan", data_type = "Mean")
+plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan", data_type = "Avg Net MFI")
+```
+This plot may be used to assess the quality of the standard curve and anticipate some of the potential issues with the data.
+For instance, if we plotted the standard curve for the analyte `ME` we could notice that the `Median` value of sample with dilution of `1/25600` is abnormally large, which may indicate a problem with the data.
+
+
+```{r}
+
+plot_standard_curve_analyte(plate, analyte_name = "ME")
+plot_standard_curve_analyte(plate, analyte_name = "ME", log_scale = "all")
 ```
 
 The plotting function has more options, such as selecting which axis the log scale should be applied or reversing the curve. More detailed information can be found in the function documentation, accessed by executing the command `?plot_standard_curve_analyte`.
+
+Another useful method of inspecting the potential errors of the data is `plot_mfi_for_analyte`. 
+This method plots the MFI values of standard curve samples for a given analyte along the boxplot of the MFI values of the test samples.
+
+It helps identifying the outlier samples and checking if the tests samples are within the range of the standard curve samples. 
+
+```{r}
+plot_mfi_for_analyte(plate, analyte_name = "OC43_S")
+
+plot_mfi_for_analyte(plate, analyte_name = "Spike_6P")
+
+```
+It can be seen, that for the `Spike_6P` analyte, the MFI values don't fall within the range of the standard curve samples, which could be problematic for the model. The values of test dilutions will be extrapolated from the standard curve, which may lead to incorrect results.
+
+## Normalization
+
 
 After inspection, we may create the model for the standard curve of a certain antibody. 
 The model is fitted using the `nplr` package, which provides a simple interface 
@@ -108,7 +133,7 @@ This equation is referred to as the Richards' equation. More information about t
 By default, the `nplr` model transforms the x values using the log10 function.
 
 ```{r}
-model <- create_standard_curve_model_analyte(plate, analyte_name = "Spike_6P_IPP")
+model <- create_standard_curve_model_analyte(plate, analyte_name = "OC43_S")
 
 model
 ```
@@ -120,15 +145,15 @@ The output above shows the most important parameters of the fitted model.
 The predicted values may be used to plot the standard curve, which can be compared to the sample values.
 
 ```{r}
-plot_standard_curve_analyte_with_model(plate, analyte_name = "Spike_6P_IPP", model)
 
-plot_standard_curve_analyte_with_model(plate, analyte_name = "Spike_6P_IPP", model, log_scale = c("dilutions"))
+plot_standard_curve_analyte_with_model(plate, analyte_name = "OC43_S", model, log_scale = c("all"))
+plot_standard_curve_analyte_with_model(plate, analyte_name = "OC43_S", model, log_scale = c("all"), plot_asymptote = FALSE)
 ```
 
 Apart from the plotting, the package can predict values of all the samples on the plate.
 
 ```{r}
-mfi_values <- plate$data$Median$Spike_6P_IPP
+mfi_values <- plate$data$Median$OC43_S
 head(mfi_values)
 
 predicted_dilutions <- predict(model, mfi_values)
