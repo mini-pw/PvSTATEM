@@ -52,9 +52,9 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   plate_img <- readPNG(image_path)
   rgb_image <- array(0, dim = c(dim(plate_img)[1], dim(plate_img)[2], 3))
 
-  # Fill each channel with the gray scale values
-  # this step is necessary because the image have two channels
-  # this is unusual and R complains about it
+  # this step is necessary because the image is black and white
+  # and R works with either RGB or RGBA images
+  # so I have to convert it
   rgb_image[,,1] <- plate_img[,,1]  # Red channel
   rgb_image[,,2] <- plate_img[,,1]  # Green channel
   rgb_image[,,3] <- plate_img[,,1]  # Blue channel
@@ -137,7 +137,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' plot_counts(plate = plate, analyte_name = "OC43_NP_NA", plot_counts = T, plot_legend = F)
 #'
 #' @export
-plot_counts <- function(plate, analyte_name, plot_counts = FALSE, plot_legend = FALSE) {
+plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = FALSE) {
 
   if (is.null(plate)) {
     stop("The plate object must be provided")
@@ -159,28 +159,30 @@ plot_counts <- function(plate, analyte_name, plot_counts = FALSE, plot_legend = 
     stop("The counts vector must have 96 elements")
   }
 
-  # mapping function from counts to colors
-  map_to_color <- function(count) {
-    if (count < 0) {
-      return("white")
-    }
-
-    if (count < 50) {
-      return("#cc3232")
-    } else if (count >= 50 && count <= 70) {
-      return("#e5e50f")
-    } else {
-      return("#2dc937")
-    }
-  }
-
-  # Define the mapping using a named vector
+  # Define the mapping
   color_map <- c(
     "TO LITTLE" = "#cc3232",
     "WARNING" = "#e5e50f",
     "CORRECT" = "#2dc937",
-    " " = "white"
+    " " = "white" # default for missing values,
+    # it is a space because otherwise "missing" would be included in legend
   )
+
+  # mapping function from counts to colors
+  map_to_color <- function(count) {
+    if (count < 0) {
+      return(color_map[" "])
+    }
+
+    if (count < 50) {
+      return(color_map["TO LITTLE"])
+    } else if (count >= 50 && count <= 70) {
+      return(color_map["WARNING"])
+    } else {
+      return(color_map["CORRECT"])
+    }
+  }
+
 
   # Apply the mapping function to the counts vector
   colors <- sapply(counts, map_to_color)
@@ -229,7 +231,8 @@ plot_layout <- function(plate, plot_legend = TRUE) {
     "NEGATIVE CONTROL" = "#FFE9D0",
     "TEST" = "#BBE9FF",
     "STANDARD CURVE" = "#F7B5CA",
-    " " = "white"
+    " " = "white"  # default for missing values,
+    # it is a space because otherwise "missing" would be included in legend
   )
 
   # Mapping function using the named vector
