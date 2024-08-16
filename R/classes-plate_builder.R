@@ -27,14 +27,19 @@ PlateBuilder <- R6::R6Class(
     #' an examination in the same order as in the data
     #' @param analyte_names - vector of analytes names measured during
     #' an examination in the same order as in the data
+    #' @param verbose - logical value indicating whether to print additional
+    #' information. This parameter is stored as a private attribute of the object
+    #' and reused in other methods
     #'
-    initialize = function(plate_name, sample_names, analyte_names) {
+    initialize = function(plate_name, sample_names, analyte_names, verbose = TRUE) {
       stopifnot(is.character(plate_name) && is.scalar(plate_name))
       self$plate_name <- plate_name
       stopifnot(is.character(sample_names) && length(sample_names) > 0)
       self$sample_names <- sample_names
       stopifnot(is.character(analyte_names) && length(analyte_names) > 0)
       self$analyte_names <- analyte_names
+
+      private$verbose <- verbose
     },
 
 
@@ -50,40 +55,86 @@ PlateBuilder <- R6::R6Class(
     },
 
     #' @description
-    #' Set the dilutions (end extract numeric values) used during the examination
-    #' @param dilutions vector of dilutions used during the examination
-    #' due to the nature of data it's a vector of strings,
-    #' the numeric vales are created from those strings
-    set_dilutions = function(dilutions) {
-      stopifnot(is.character(dilutions) && length(dilutions) > 0)
-      stopifnot(length(dilutions) == length(self$sample_names))
+    #' Extract and set the dilutions from layout, sample names or use a provided vector of values.
+    #' The provided vector should be the same length as the number of samples
+    #' and should contain dilution factors saved as strings
+    #' @param use_layout_dilutions logical value indicating whether to use names
+    #' extracted from layout files to extract dilutions. If set to `FALSE` the
+    #' function uses the sample names as a source for dilution
+    #'
+    #' @param values a vector of dilutions to overwrite the extraction process
+    #'
+    set_dilutions = function(use_layout_dilutions = TRUE, values = NULL) {
+      stopifnot(is.null(self$dilutions))
+      if (!is.null(values)) {
+        dilutions <- extract_dilutions_from_layout(values)
+      } else if (use_layout_dilutions) {
+        if (is.null(self$layout)) {
+          stop("Layout is not provided, but `use_layout_dilutions` is set to `TRUE` - cannot extract the dilutions from the layout\n")
+        }
+        layout_names <- self$layout_as_vector
+        dilutions <- extract_dilutions_from_layout(layout_names)
+        if (length(dilutions) > length(self$sample_names)) {
+          dilutions <- dilutions[1:length(self$sample_names)]
+          verbose_cat(
+            "(",
+            color_codes$red_start,
+            "WARNING",
+            color_codes$red_end,
+            ")",
+            "\nNumber of layout fields is higher than the number of samples. Please check the layout file. Using only first ", length(self$sample_names), " dilutions from the layout file. \n",
+            verbose = private$verbose
+          )
+        }
+        else if (length(dilutions) < length(self$sample_names)) {
+          stop("Number of layout fields is lower than the number of samples. Can't extract the dilution values")
+        }
 
-      is_dilution_filter <- is_dilution(dilutions)
-      dilutions[!is_dilution_filter] <- NA
+      } else {
+        if (is.null(self$sample_names)) {
+          stop("Sample names are not provided and `use_layout_dilutions` is set to `FALSE` - cannot extract the dilutions from sample names")
+        }
+
+        dilutions <- extract_dilution_from_names(self$sample_names)
+      }
+
       if (all(is.na(dilutions))) {
-        warning("No valid dilutions found")
+        verbose_cat(
+          "(",
+          color_codes$red_start,
+          "WARNING",
+          color_codes$red_end,
+          ")",
+          "\nAll dilutions in the plate are set to NA. Please check the dilutions in the layout file or sample names.",
+          verbose = private$verbose
+        )
+      }
+
+      if (length(dilutions) != length(self$sample_names)) {
+        stop("Number of dilutions does not match the number of samples")
       }
 
       self$dilutions <- dilutions
       self$dilution_values <- convert_dilutions_to_numeric(dilutions)
     },
 
-    #' Use the sample names to extract the sample types
+    #' Set and extract sample types from the sample names.
+    #' Optionally use the layout file to extract the sample types
     #'
     #' @param use_layout_types logical value indicating whether to use names extracted from layout files
     #' to extract sample types
     #'
     #' @param values a vector of sample types to overwrite the extraction process
     #'
-    extract_sample_types = function(use_layout_types = TRUE, values = NULL) {
+    set_sample_types = function(use_layout_types = TRUE, values = NULL) {
       stopifnot(is.null(self$sample_types))
       if (!is.null(values)) {
         sample_types <- values
       } else if (use_layout_types) {
         if (is.null(self$layout)) {
-          stop("Layout is not provided. But `use_layout_types` is set to `TRUE`")
+          stop("Layout is not provided. But `use_layout_types` is set to `TRUE` - cannot extract the sample types from the layout")
         }
-        layout_names <- c(t(self$layout)) # TODO: Make it into a function and explain
+        layout_names <- self$layout_as_vector
         sample_types <- translate_sample_names_to_sample_types(self$sample_names, layout_names)
       } else {
         sample_types <- translate_sample_names_to_sample_types(self$sample_names)
@@ -169,7 +220,8 @@ PlateBuilder <- R6::R6Class(
       if (validate) {
         private$validate()
       }
-      Plate$new(
+
+      plate <- Plate$new(
         plate_name = self$plate_name,
         analyte_names = self$analyte_names,
         sample_names = self$sample_names,
@@ -182,9 +234,33 @@ PlateBuilder <- R6::R6Class(
         batch_info = self$batch_info,
         layout = self$layout
       )
+      verbose_cat(
+        color_codes$green_start,
+        "Plate `",
+        self$plate_name,
+        "` has been successfully created\n",
+        color_codes$green_end,
+        verbose = private$verbose
+      )
+
+      plate
+
     }
   ),
+  active = list(
+    #' @field layout_as_vector
+    #' Print the layout associated with the plate as a flattened vector of values.
+    layout_as_vector = function() {
+      if (is.null(self$layout)) {
+        stop("Layout is not provided")
+      }
+      c(t(self$layout))
+    }
+  ),
+
   private = list(
+    verbose = TRUE,
+
     validate = function() {
       errors <- list()
       if (length(self$sample_names) != length(self$sample_locations)) {
@@ -211,6 +287,44 @@ PlateBuilder <- R6::R6Class(
     }
   )
 )
+#' Extract dilution factor from the sample name
+#' @description
+#' function extracts dilution factor from the sample name - useful for detecting
+#' dilution from sample names
+#' @param sample_name a vector of sample names from which we want to extract the dilutions
+#' @examples
+#' raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
+#' extract_dilution_from_names(raw_dilutions)
+#'
+#' @return a vector of dilutions represented as strings extracted from the sample names
+extract_dilution_from_names <- function(sample_name) {
+  dilution_regex <- "1/\\d+"
+
+  dilution_factor <- stringr::str_extract(sample_name, dilution_regex)
+
+  dilution_factor
+}
+
+#' @description
+#' Extract dilution factor represented as string from vector of characters.
+#' The matches has to be exact and the dilution factor has to be in the form of `1/\d+`
+#' @param dilutions vector of dilutions used during the examination
+#' due to the nature of data it's a vector of strings,
+#' the numeric vales are created from those strings
+#'
+#' @examples
+#' raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
+#' extract_dilutions_from_layout(raw_dilutions)
+extract_dilutions_from_layout = function(dilutions) {
+  stopifnot(is.character(dilutions) && length(dilutions) > 0)
+
+  is_dilution_filter <- is_dilution(dilutions)
+  dilutions[!is_dilution_filter] <- NA
+  if (all(is.na(dilutions))) {
+    warning("No valid dilutions found")
+  }
+  dilutions
+}
 
 is_dilution <- function(character_vector) {
   stopifnot(is.character(character_vector))
@@ -245,17 +359,22 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' to the sample types.
 #'
 #' It parses the names as follows:
+#'
 #' If `sample_names` or `sample_names_from_layout` equals to `BLANK`, `BACKGROUND` or `B`,
 #' then SampleType equals to `BLANK`
+#'
 #' If `sample_names` or `sample_names_from_layout` equals to `STANDARD CURVE`,
 #' `SC`, `S`, contains substring `1/\d+` and has prefix ` `, `S_`, `S `,
 #' `S` or `CP3`, then SampleType equals to `STANDARD CURVE`
+#'
 #' If `sample_names` or `sample_names_from_layout` equals to `NEGATIVE CONTROL`, `N`,
 #' or contains substring `NEG`, then SampleType equals to `NEGATIVE CONTROL`
+#'
 #' If `sample_names` or `sample_names_from_layout` starts with `P` followed by
 #' whitespace, `POS` followed by whitespace, some sample name followed by
 #' substring `1/\d+` SampleType equals to `POSITIVE CONTROL`
-#' otherwise, the returned SampleType is `TEST`
+#'
+#' Otherwise, the returned SampleType is `TEST`
 #'
 #' @param sample_names (`character`)\cr
 #' Vector of sample names from Luminex file
@@ -265,10 +384,10 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' values in this vector may be different than `sample_names` and may
 #' contain additional information about the sample type like dilution
 #'
-#' @return A vector of valid sample_type strings
+#' @return A vector of valid sample_type strings of length equal to the length of `sample_names`
 #'
 #' @examples
-#' translate_sample_names_to_sample_types(c("B", "BLANK", "TEST1"))
+#' translate_sample_names_to_sample_types(c("B", "BLANK", "NEG",  TEST1"))
 #' translate_sample_names_to_sample_types(c("S", "CP3"))
 #'
 #' @export

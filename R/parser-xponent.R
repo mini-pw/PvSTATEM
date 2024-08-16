@@ -279,12 +279,8 @@ is_the_end_of_csv_section <- function(line, separator, empty_line_stop = TRUE) {
   } else if (is_line_blank(line)) {
     return(empty_line_stop)
   } else {
-    first_value <- vectorize_csv_line(line, separator)[1]
-    return(
-      stringr::str_detect(first_value, "^DataType:") ||
-        stringr::str_detect(first_value, "^Samples") ||
-        stringr::str_detect(first_value, "^-- CRC --")
-    )
+    regex <- '^[\\s,;"\']*(DataType:|Samples|-- CRC --)'
+    return(stringr::str_detect(line, regex))
   }
 }
 

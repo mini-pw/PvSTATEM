@@ -19,7 +19,7 @@ values in this vector may be different than \code{sample_names} and may
 contain additional information about the sample type like dilution}
 }
 \value{
-A vector of valid sample_type strings
+A vector of valid sample_type strings of length equal to the length of \code{sample_names}
 }
 \description{
 Function translates sample names to sample types based on the sample name
@@ -28,20 +28,20 @@ be provided. The function uses regular expressions to match the sample names
 to the sample types.
 
 It parses the names as follows:
+
 If \code{sample_names} or \code{sample_names_from_layout} equals to \code{BLANK}, \code{BACKGROUND} or \code{B},
 then SampleType equals to \code{BLANK}
+
 If \code{sample_names} or \code{sample_names_from_layout} equals to \verb{STANDARD CURVE},
 \code{SC}, \code{S}, contains substring \verb{1/\\d+} and has prefix \verb{ }, \code{S_}, \code{S },
 \code{S} or \code{CP3}, then SampleType equals to \verb{STANDARD CURVE}
+
 If \code{sample_names} or \code{sample_names_from_layout} equals to \verb{NEGATIVE CONTROL}, \code{N},
 or contains substring \code{NEG}, then SampleType equals to \verb{NEGATIVE CONTROL}
+
 If \code{sample_names} or \code{sample_names_from_layout} starts with \code{P} followed by
 whitespace, \code{POS} followed by whitespace, some sample name followed by
 substring \verb{1/\\d+} SampleType equals to \verb{POSITIVE CONTROL}
-otherwise, the returned SampleType is \code{TEST}
-}
-\examples{
-translate_sample_names_to_sample_types(c("B", "BLANK", "TEST1"))
-translate_sample_names_to_sample_types(c("S", "CP3"))
 
+Otherwise, the returned SampleType is \code{TEST}
 }
