@@ -123,7 +123,8 @@ Plate <- R6::R6Class(
     #' @description
     #' Function returns data for a specific analyte and sample.
     #'
-    #' @param analyte An analyte name or its id of which data we want to extract
+    #' @param analyte An analyte name or its id of which data we want to extract.
+    #'  If set to 'ALL' returns data for all analytes.
     #'
     #' @param sample sample name or id
     #' @param data_type if `NULL` returns whole column of the dataframe
@@ -134,7 +135,7 @@ Plate <- R6::R6Class(
     get_data = function(analyte, sample_type = "ALL", data_type = self$default_data_type) {
       # check if the analyte exists in analytes_names
       if (!is.null(analyte) && !is.na(analyte)) {
-        if (!analyte %in% self$analyte_names) {
+        if (!(analyte %in% c(self$analyte_names, "ALL"))) {
           stop("Analyte does not exist in analytes_names")
         }
       } else {
@@ -165,8 +166,13 @@ Plate <- R6::R6Class(
       } else {
         valid_samples <- self$sample_types == sample_type
       }
+
       data_of_specified_type <- self$data[[data_type]]
-      return(data_of_specified_type[valid_samples, analyte])
+      if (analyte == "ALL") {
+        return(data_of_specified_type[valid_samples, ])
+      } else {
+        return(data_of_specified_type[valid_samples, analyte])
+      }
     },
 
     #'

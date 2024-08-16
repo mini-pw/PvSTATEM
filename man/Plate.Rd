@@ -90,7 +90,8 @@ Function returns data for a specific analyte and sample.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{analyte}}{An analyte name or its id of which data we want to extract}
+\item{\code{analyte}}{An analyte name or its id of which data we want to extract.
+If set to 'ALL' returns data for all analytes.}
 
 \item{\code{data_type}}{if \code{NULL} returns whole column of the dataframe
 containing information about the sample. Default value is plate's
