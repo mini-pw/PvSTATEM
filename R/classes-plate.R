@@ -129,25 +129,28 @@ Plate <- R6::R6Class(
       negative_control_names <- ""
       standard_curve_names <- ""
 
-      # if (include_names) {
-      #   if (positive_control_num > 0) {
-      #     positive_control_names <- paste(sapply(positive_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
-      #     positive_control_names <- paste0("\nSample names: ", positive_control_names)
-      #   }
+      if (include_names) {
+        if (positive_control_num > 0) {
+          positive_control_names <- self$sample_names[self$sample_types == "POSITIVE CONTROL"]
+          positive_control_names <- paste(sapply(positive_control_names, function(sample) paste0("'", sample, "'")), collapse = ", ")
+          positive_control_names <- paste0("\nSample names: ", positive_control_names)
+        }
 
-      #   if (negative_control_num > 0) {
-      #     negative_control_names <- paste(sapply(negative_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
-      #     negative_control_names <- paste0("\nSample names: ", negative_control_names)
-      #   }
-      #   if (standard_curve_num > 0) {
-      #     standard_curve_names <- paste(sapply(standard_curve_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
-      #     standard_curve_names <- paste0("\nSample names: ", standard_curve_names)
-      #   }
-      # }
+        if (negative_control_num > 0) {
+          negative_control_names <- self$sample_names[self$sample_types == "NEGATIVE CONTROL"]
+          negative_control_names <- paste(sapply(negative_control_names, function(sample) paste0("'", sample, "'")), collapse = ", ")
+          negative_control_names <- paste0("\nSample names: ", negative_control_names)
+
+        }
+        if (standard_curve_num > 0) {
+          standard_curve_names <- self$sample_names[self$sample_types == "STANDARD CURVE"]
+          standard_curve_names <- paste(sapply(standard_curve_names, function(sample) paste0("'", sample, "'")), collapse = ", ")
+          standard_curve_names <- paste0("\nSample names: ", standard_curve_names)
+        }
+      }
 
       cat(
-        # "Summary of the plate generated on ", as.character(self$examination_date),
-        "\nwith name '", self$plate_name, "':\n",
+        "Summary of the plate with name '", self$plate_name, "':\n",
         "Total number of samples: ",
         length(self$sample_names),
         "\n",
