@@ -78,8 +78,14 @@ Model <- R6::R6Class(
     #'   If `TRUE` the MFI values are transformed using the `log10` function, `TRUE` by default
     #' @param scale_mfi (`logical()`)\cr
     #'   If `TRUE` the MFI values are scaled to the range \[0, 1\], `TRUE` by default
+    #' @param mfi_min (`numeric(1)`)\cr
+    #'   Enables to set the minimum MFI value used for scaling MFI values to the range \[0, 1\].
+    #'   Use a values before any transformations (e.g. before the `log10` transformation)
+    #' @param mfi_max (`numeric(1)`)\cr
+    #'   Enables to set the maximum MFI value used for scaling MFI values to the range \[0, 1\].
+    #'   Use a values before any transformations (e.g. before the `log10` transformation)
     #'
-    initialize = function(dilutions, mfi, npars = 5, verbose = TRUE, log_dilution = TRUE, log_mfi = TRUE, scale_mfi = TRUE) {
+    initialize = function(dilutions, mfi, npars = 5, verbose = TRUE, log_dilution = TRUE, log_mfi = TRUE, scale_mfi = TRUE, mfi_min = NULL, mfi_max = NULL) {
       stopifnot(length(dilutions) == length(mfi))
       stopifnot(all((dilutions > 0) & (dilutions < 1)))
       stopifnot(all(mfi > 0))
@@ -87,6 +93,13 @@ Model <- R6::R6Class(
       self$log_mfi <- log_mfi
       self$scale_mfi <- scale_mfi
       self$log_dilution <- log_dilution
+
+      if (!is.null(mfi_min)) {
+        self$mfi_min <- ifelse(self$log_mfi, log10(mfi_min), mfi_min)
+      }
+      if (!is.null(mfi_max)) {
+        self$mfi_max <- ifelse(self$log_mfi, log10(mfi_max), mfi_max)
+      }
 
       number_of_samples <- length(dilutions)
       if (number_of_samples < 5) {
@@ -145,8 +158,13 @@ Model <- R6::R6Class(
     #' Columns are named as in the `predict` method
     get_plot_data = function() {
       private$assert_model_fitted()
-      targets <- seq(.99, .01, by = -0.01)
-      df <- nplr::getEstimates(self$model, targets = targets)
+      upper_bound <- nplr::getPar(self$model)$params$top
+      lower_bound <- nplr::getPar(self$model)$params$bottom
+      bound_width <- upper_bound - lower_bound
+      upper_bound <- upper_bound - 0.05 * bound_width
+      lower_bound <- lower_bound + 0.05 * bound_width
+      uniform_targets <- seq(lower_bound, upper_bound, length.out = 100)
+      df <- nplr::getEstimates(self$model, targets = uniform_targets)
       df[, "y"] <- private$mfi_reverse_transform(df[, "y"])
       colnames(df) <- sub("^x", "dilution", colnames(df))
       colnames(df) <- sub("^y", "MFI", colnames(df))
@@ -195,18 +213,24 @@ Model <- R6::R6Class(
     },
     mfi_fit_transform = function(mfi) {
       if (self$log_mfi) {
-        mfi <- log(mfi, base = 10)
+        mfi <- log10(mfi)
       }
       if (self$scale_mfi) {
-        self$mfi_min <- min(mfi)
-        self$mfi_max <- max(mfi)
+        if (is.null(self$mfi_min)) {
+          self$mfi_min <- min(mfi)
+        }
+        if (is.null(self$mfi_max)) {
+          self$mfi_max <- max(mfi)
+        }
+        stopifnot(self$mfi_max > self$mfi_min)
+
         mfi <- (mfi - self$mfi_min) / (self$mfi_max - self$mfi_min)
       }
       mfi
     },
     mfi_transform = function(mfi) {
       if (self$log_mfi) {
-        mfi <- log(mfi, base = 10)
+        mfi <- log10(mfi)
       }
       if (self$scale_mfi) {
         mfi <- (mfi - self$mfi_min) / (self$mfi_max - self$mfi_min)
@@ -254,5 +278,9 @@ predict.Model <- function(object, mfi) {
 create_standard_curve_model_analyte <- function(plate, analyte_name, data_type = "Median", ...) {
   mfi <- plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type)
   dilutions_numeric <- plate$get_dilution_values("STANDARD CURVE")
-  Model$new(dilutions_numeric, mfi, ...)
+
+  mfi_min <- min(plate$get_data("ALL", "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
+  mfi_max <- max(plate$get_data("ALL", "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
+
+  Model$new(dilutions_numeric, mfi, mfi_min = mfi_min, mfi_max = mfi_max, ...)
 }
