@@ -169,7 +169,7 @@ plot_standard_curve_analyte_with_model <- function(plate,
   test_sample_estimates <- predict(model, test_samples_mfi)
 
   p <- p + geom_line(
-    aes(x = dilution, y = MFI, color = "Fitted model"),
+    aes(x = dilution, y = MFI, color = "Fitted model predictions"),
     data = model$get_plot_data(), linewidth = 1
   )
   if (plot_test_predictions) {
