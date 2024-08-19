@@ -80,45 +80,45 @@ plot_standard_curve_analyte <- function(plate,
   }
 
   options(scipen = 30)
-  p <- ggplot(plot_data, aes(x = dilution_values, y = MFI)) +
-    geom_point(aes(color = "Standard curve samples"), size = 3)
+  p <- ggplot2::ggplot(plot_data, aes(x = dilution_values, y = MFI)) +
+    ggplot2::geom_point(aes(color = "Standard curve samples"), size = 3)
   if (plot_line) {
-    p <- p + geom_line(aes(color = "Standard curve samples"), linewidth = 1.2)
+    p <- p + ggplot2::geom_line(aes(color = "Standard curve samples"), linewidth = 1.2)
   }
   if (plot_blank_mean) {
-    p <- p + geom_hline(
+    p <- p + ggplot2::geom_hline(
       aes(yintercept = blank_mean, color = "Blank mean"),
       linetype = "solid"
     )
   }
   if (plot_dilution_bounds) {
-    p <- p + geom_vline(
-      aes(color = "Min-max dilution bounds", xintercept = min(dilution_values)),
+    p <- p + ggplot2::geom_vline(
+      ggplot2::aes(color = "Min-max dilution bounds", xintercept = min(dilution_values)),
       linetype = "dashed"
-    ) + geom_vline(
-      aes(color = "Min-max dilution bounds", xintercept = max(dilution_values)),
+    ) + ggplot2::geom_vline(
+      ggplot2::aes(color = "Min-max dilution bounds", xintercept = max(dilution_values)),
       linetype = "dashed"
     )
   }
-  p <- p + labs(title = plot_name, x = xlab, y = ylab) +
-    scale_x_continuous(
+  p <- p +ggplot2::labs(title = plot_name, x = xlab, y = ylab) +
+    ggplot2::scale_x_continuous(
       breaks = x_ticks, labels = x_labels,
       trans = x_trans
     ) +
-    scale_y_continuous(trans = y_trans) +
-    coord_trans(x = x_cords_trans) +
-    theme_minimal() +
-    theme(
+    ggplot2::scale_y_continuous(trans = y_trans) +
+    ggplot2::coord_trans(x = x_cords_trans) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
       axis.line = element_line(colour = "black"),
       axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
       axis.text.y = element_text(size = 9),
       legend.position.inside = legend_position,
       legend.background = element_rect(fill = "white", color = "black")
     ) +
-    scale_color_manual(
+    ggplot2::scale_color_manual(
       values = c("Standard curve samples" = "blue", "Blank mean" = "red", "Min-max dilution bounds" = "gray")
     ) +
-    guides(color = guide_legend(title = "Plot object"))
+    ggplot2::guides(color = guide_legend(title = "Plot object"))
 
   p
 }
@@ -135,6 +135,8 @@ plot_standard_curve_analyte <- function(plate,
 #' @param plot_asymptote If `TRUE` the asymptotes are plotted, `TRUE` by default
 #' @param plot_test_predictions If `TRUE` the predictions for the test samples are plotted, `TRUE` by default
 #' The predictions are obtained through extrapolation of the model
+#' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
+#' @param plot_dilution_bounds If `TRUE` the dilution bounds are plotted, `TRUE` by default
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #'
 #' @return a ggplot object with the plot
@@ -154,12 +156,15 @@ plot_standard_curve_analyte_with_model <- function(plate,
                                                    log_scale = c("all"),
                                                    plot_asymptote = TRUE,
                                                    plot_test_predictions = TRUE,
+                                                   plot_blank_mean = TRUE,
+                                                   plot_dilution_bounds = TRUE,
                                                    verbose = TRUE) {
   p <- plot_standard_curve_analyte(
     plate,
     analyte_name = analyte_name, data_type = data_type,
     decreasing_dilution_order = decreasing_dilution_order,
-    log_scale = log_scale, verbose = verbose, plot_line = FALSE
+    log_scale = log_scale, verbose = verbose, plot_line = FALSE,
+    plot_blank_mean = plot_blank_mean, plot_dilution_bounds = plot_dilution_bounds
   )
 
   plot_name <- paste0("Fitted standard curve for analyte: ", analyte_name)
@@ -168,29 +173,29 @@ plot_standard_curve_analyte_with_model <- function(plate,
   test_samples_mfi <- plate$get_data(analyte_name, "TEST", data_type = data_type)
   test_sample_estimates <- predict(model, test_samples_mfi)
 
-  p <- p + geom_line(
-    aes(x = dilution, y = MFI, color = "Fitted model predictions"),
+  p <- p + ggplot2::geom_line(
+    ggplot2::aes(x = dilution, y = MFI, color = "Fitted model predictions"),
     data = model$get_plot_data(), linewidth = 1
   )
   if (plot_test_predictions) {
-    p <- p + geom_point(
-      aes(x = dilution, y = MFI, color = "Test sample predictions"),
+    p <- p + ggplot2::geom_point(
+      ggplot2::aes(x = dilution, y = MFI, color = "Test sample predictions"),
       data = test_sample_estimates, shape = 4,
       size = 3
     )
   }
 
   if (plot_asymptote) {
-    p <- p + geom_hline(
-      aes(yintercept = model$top_asymptote, color = "Asymptotes"),
+    p <- p + ggplot2::geom_hline(
+      ggplot2::aes(yintercept = model$top_asymptote, color = "Asymptotes"),
       linetype = "dashed"
     ) +
-      geom_hline(
-        aes(yintercept = model$bottom_asymptote, color = "Asymptotes"),
+      ggplot2::geom_hline(
+        ggplot2::aes(yintercept = model$bottom_asymptote, color = "Asymptotes"),
         linetype = "dashed"
       )
   }
-  p <- p + scale_color_manual(
+  p <- p + ggplot2::scale_color_manual(
     values = c(
       "Standard curve samples" = "blue", "Blank mean" = "red", "Min-max dilution bounds" = "gray",
       "Fitted model" = "green", "Asymptotes" = "gray", "Test sample predictions" = "dark green"
