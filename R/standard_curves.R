@@ -132,7 +132,7 @@ plot_standard_curve_analyte <- function(plate,
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Median`
 #' @param decreasing_dilution_order If `TRUE` the dilutions are plotted in decreasing order, `TRUE` by default.
 #' @param log_scale Which elements on the plot should be displayed in log scale. By default `"all"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
-#' @param plot_asymptote If `TRUE` the asymptotes are plotted, `TRU` by default
+#' @param plot_asymptote If `TRUE` the asymptotes are plotted, `TRUE` by default
 #' @param plot_test_predictions If `TRUE` the predictions for the test samples are plotted, `TRUE` by default
 #' The predictions are obtained through extrapolation of the model
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
