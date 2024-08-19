@@ -27,23 +27,28 @@ PlateBuilder <- R6::R6Class(
     #' @description
     #' Initialize the PlateBuilder object
     #'
-    #' @param batch_name - plate name obtained from the plate info
     #' @param sample_names - vector of sample names measured during
     #' an examination in the same order as in the data
     #' @param analyte_names - vector of analytes names measured during
     #' an examination in the same order as in the data
+    #' @param batch_name - name of the batch during which the plate was examined
+    #' obtained from the plate info. An optional parameter, by default set to
+    #' `""` - an empty string.
     #' @param verbose - logical value indicating whether to print additional
     #' information. This parameter is stored as a private attribute of the object
     #' and reused in other methods
     #'
-    initialize = function(batch_name, sample_names, analyte_names, verbose = TRUE) {
-      stopifnot(is.character(batch_name) && is.scalar(batch_name))
-      self$batch_name <- batch_name
+    initialize = function(sample_names, analyte_names, batch_name = "", verbose = TRUE) {
+
       stopifnot(is.character(sample_names) && length(sample_names) > 0)
       self$sample_names <- sample_names
       stopifnot(is.character(analyte_names) && length(analyte_names) > 0)
       self$analyte_names <- analyte_names
 
+      stopifnot(is.character(batch_name) && is.scalar(batch_name))
+      self$batch_name <- batch_name
+
+      stopifnot(is.logical(verbose) && is.scalar(verbose))
       private$verbose <- verbose
     },
 
@@ -221,7 +226,7 @@ PlateBuilder <- R6::R6Class(
 
     #' @description
     #' Set the layout matrix for the plate
-    #' @param layout_matrix a matrix containing information about the
+    #' @param layout_matrix a matrix containing information about the sample names. dilutions, etc.
     set_layout = function(layout_matrix) {
       stopifnot(is.matrix(layout_matrix))
       # TODO: Additional validation probably needed
@@ -312,6 +317,7 @@ extract_dilution_from_names <- function(sample_name) {
   dilution_factor
 }
 
+#' Extract dilutions from the layout representation
 #' @description
 #' Extract dilution factor represented as string from vector of characters.
 #' The matches has to be exact and the dilution factor has to be in the form of `1/\d+`
@@ -394,7 +400,7 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' @return A vector of valid sample_type strings of length equal to the length of `sample_names`
 #'
 #' @examples
-#' translate_sample_names_to_sample_types(c("B", "BLANK", "NEG",  TEST1"))
+#' translate_sample_names_to_sample_types(c("B", "BLANK", "NEG",  "TEST1"))
 #' translate_sample_names_to_sample_types(c("S", "CP3"))
 #'
 #' @export

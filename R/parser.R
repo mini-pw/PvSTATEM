@@ -1,4 +1,3 @@
-unified_datatypes <- c("Median", "Count", "Net MFI", "Avg Net MFI", "Mean")
 intelliflex_to_xponent_mapping <- VALID_DATA_TYPES
 names(intelliflex_to_xponent_mapping) <- c(
   "MEDIAN", "COUNT", "NET.MEDIAN", "NET.AVERAGE.MEDIAN", "AVERAGE.MFI"
@@ -147,9 +146,9 @@ read_luminex_data <- function(plate_filepath,
   )
 
   plate_builder <- PlateBuilder$new(
-    parser_output$batch_name,
-    parser_output$sample_names,
-    parser_output$analyte_names,
+    batch_name = parser_output$batch_name,
+    sample_names = parser_output$sample_names,
+    analyte_names = parser_output$analyte_names,
     verbose = verbose
   )
 

@@ -60,7 +60,6 @@ is_valid_data_type <- function(data_type) {
 #'
 #' @importFrom R6 R6Class
 #'
-#' @export
 Plate <- R6::R6Class(
   "Plate",
   public = list(
@@ -299,8 +298,8 @@ Plate <- R6::R6Class(
       }
       if (is.null(self$dilution_values)) {
         stop("Plate does not have dilution values set.
-             The plate object is probably not initialized properly,
-             or your data is incorrectly formatted.")
+             Check your layout or luminex file,
+             and ensure it contains dilution information that is correctly formatted")
       }
       if (sample_type == "ALL") {
         return(self$dilution_values)
