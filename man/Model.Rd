@@ -92,7 +92,9 @@ Create a new instance of Model \link[R6:R6Class]{R6} class
   verbose = TRUE,
   log_dilution = TRUE,
   log_mfi = TRUE,
-  scale_mfi = TRUE
+  scale_mfi = TRUE,
+  mfi_min = NULL,
+  mfi_max = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -119,6 +121,14 @@ If \code{TRUE} the MFI values are transformed using the \code{log10} function, \
 
 \item{\code{scale_mfi}}{(\code{logical()})\cr
 If \code{TRUE} the MFI values are scaled to the range [0, 1], \code{TRUE} by default}
+
+\item{\code{mfi_min}}{(\code{numeric(1)})\cr
+Enables to set the minimum MFI value used for scaling MFI values to the range [0, 1].
+Use a values before any transformations (e.g. before the \code{log10} transformation)}
+
+\item{\code{mfi_max}}{(\code{numeric(1)})\cr
+Enables to set the maximum MFI value used for scaling MFI values to the range [0, 1].
+Use a values before any transformations (e.g. before the \code{log10} transformation)}
 }
 \if{html}{\out{</div>}}
 }

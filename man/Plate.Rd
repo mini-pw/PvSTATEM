@@ -2,11 +2,62 @@
 % Please edit documentation in R/classes-plate.R
 \name{Plate}
 \alias{Plate}
-\title{Plate}
+\title{Plate object}
 \description{
 A class to represent the luminex plate. It contains information about
 the samples and analytes that were examined on the plate as well as
 some additional metadata and batch info
+}
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{plate_name}}{(\code{character(1)})\cr
+Name of the plate.}
+
+\item{\code{analyte_names}}{(\code{character()})\cr
+Names of the analytes that were examined on the plate.}
+
+\item{\code{sample_names}}{(\code{character()})\cr
+Names of the samples that were examined on the plate.}
+
+\item{\code{sample_locations}}{(\code{character()})\cr
+Locations of the samples on the plate.}
+
+\item{\code{sample_types}}{(\code{character()})\cr
+Types of the samples that were examined on the plate.
+The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.}
+
+\item{\code{dilutions}}{(\code{character()})\cr
+A list containing names of the samples as keys and string representing dilutions as values.
+The dilutions are represented as strings.}
+
+\item{\code{dilution_values}}{(\code{numeric()})\cr
+A list containing names of the samples as keys and numeric values representing dilutions as values.}
+
+\item{\code{data}}{(\code{list()})\cr
+A list containing dataframes with the data for each sample and analyte.
+The possible data types - the keys of the list are:
+\cr \code{c(Median, Net MFI, Count, Avg Net MFI, Mean, Peak)}.
+
+In each dataframe, the rows represent samples and the columns represent analytes.}
+
+\item{\code{default_data_type}}{(\code{character(1)})\cr
+The default data type that will be returned by the \code{get_data} method.
+By default is set to \code{Median}.}
+
+\item{\code{batch_info}}{(\code{list()})\cr
+A list containing additional, technical information about the batch.}
+
+\item{\code{layout}}{(\code{character()})\cr
+A list containing information about the layout of the plate.
+The layout is read from the separate file and usually provides additional
+information about the dilutions, sample names, and the sample layout
+on the actual plate.}
+
+\item{\code{blank_adjusted}}{(\code{logical})\cr
+A flag indicating whether the blank values have been adjusted.}
+}
+\if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -42,6 +93,53 @@ Method to initialize the Plate object
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{plate_name}}{(\code{character(1)})\cr
+Name of the plate.
+By default is set to the name of the file from which the plate was read.}
+
+\item{\code{sample_names}}{(\code{character()})\cr
+Names of the samples that were examined on the plate.}
+
+\item{\code{analyte_names}}{(\code{character()})\cr
+Names of the analytes that were examined on the plate.}
+
+\item{\code{dilutions}}{(\code{character()})\cr
+A list containing names of the samples as keys and string representing dilutions as values.
+The dilutions are represented as strings.}
+
+\item{\code{dilution_values}}{(\code{numeric()})\cr
+A list containing names of the samples as keys and numeric values representing dilutions as values.}
+
+\item{\code{sample_types}}{(\code{character()})\cr
+Types of the samples that were examined on the plate.
+The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.}
+
+\item{\code{data}}{(\code{list()})\cr
+A list containing dataframes with the data for each sample and analyte.
+The possible data types - the keys of the list are \cr \code{c(Median, Net MFI, Count, Avg Net MFI, Mean, Peak)}.
+In each dataframe, the rows represent samples and the columns represent analytes.}
+
+\item{\code{sample_locations}}{(\code{character()})\cr
+Locations of the samples on the plate.}
+
+\item{\code{default_data_type}}{(\code{character(1)})\cr
+The default data type that will be returned by the \code{get_data} method.
+By default is set to \code{Median}.}
+
+\item{\code{batch_info}}{(\code{list()})\cr
+A list containing additional, technical information about the batch.}
+
+\item{\code{layout}}{(\code{character()})\cr
+A list containing information about the layout of the plate.
+The layout is read from the separate file and usually provides additional
+information about the dilutions, sample names, and the sample layout
+on the actual plate.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-print"></a>}}
@@ -49,6 +147,7 @@ Method to initialize the Plate object
 \subsection{Method \code{print()}}{
 Function prints the basic information about the plate
 such as the number of samples and analytes
+Print the summary of the plate
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$print(...)}\if{html}{\out{</div>}}
 }
@@ -69,7 +168,8 @@ examination date, batch name, and sample types
 \describe{
 \item{\code{include_names}}{If \code{include_names} parameter is \code{TRUE}, a
 part from count of control samples, provides also their names.
-By default \code{FALSE}}
+By default \code{FALSE}
+Get data for a specific analyte and sample type}
 }
 \if{html}{\out{</div>}}
 }
@@ -90,47 +190,85 @@ Function returns data for a specific analyte and sample.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{analyte}}{An analyte name or its id of which data we want to extract}
+\item{\code{analyte}}{An analyte name or its id of which data we want to extract.
+If set to 'ALL' returns data for all analytes.}
 
-\item{\code{data_type}}{if \code{NULL} returns whole column of the dataframe
-containing information about the sample. Default value is plate's
-\code{default_data_type} usually \code{Median}.}
+\item{\code{sample_type}}{is a type of the sample we want to extract data from.
+The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}. Default value is \code{ALL}.}
 
-\item{\code{sample}}{sample name or id}
+\item{\code{data_type}}{The parameter specifying which data type should be returned.
+This parameter has to take one of values: \cr \code{c(Median, Net MFI, Count, Avg Net MFI, Mean, Peak)}.
+What's more, the \code{data_type} has to be present in the plate's data
+Default value is plate's \code{default_data_type}, which is usually \code{Median}.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Data about a sample and analyte
+Dataframe containing information about a given sample type and analyte
+Get the string representation of dilutions
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-get_dilution"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-get_dilution}{}}}
 \subsection{Method \code{get_dilution()}}{
+Function returns the dilution represented as strings for a specific sample type.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$get_dilution(sample_type)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{sample_type}}{type of the samples that we want to obtain the dilution for.
+The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)} Default value is \code{ALL}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list containing names of the samples as keys and string representing dilutions as values.
+Get the numeric representation of dilutions
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-get_dilution_values"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-get_dilution_values}{}}}
 \subsection{Method \code{get_dilution_values()}}{
+Function returns the dilution values for a specific sample type.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$get_dilution_values(sample_type)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{sample_type}}{type of the samples that we want to obtain the dilution values for.
+The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)} Default value is \code{ALL}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list containing names of the samples as keys and numeric values representing dilutions as values.
+
+Adjust the MFI values by subtracting the background
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-blank_adjustment"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-blank_adjustment}{}}}
 \subsection{Method \code{blank_adjustment()}}{
-Function adjusts the values of test samples by subtracting average of
-BLANK samples purpose of this operation is to remove background light
-In short it subtracts the values from data in all samples, except from
-Blanks. It does not subtract values from \code{Count} values, even if this
-step seems logical, people from the lab do not do it always.
+Function adjusts the values of test samples by subtracting aggegation of
+\code{BLANK} samples. The purpose of this operation is to remove background light,
+which could falsely inflate the MFI values.
+
+In short, this operation firstly calculates the aggregate of MFI in the \code{BLANK} samples
+(for now the only available aggreation method is average),
+and then subtracts the calculated value from MFI data in all non-background samples.
+
+Method does not modifies the data of type \code{Count}.
+
+This operation is recommended to be performed before any further analysis, but is optional.
+Skipping it before further analysis is allowed, but will result in a warning.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$blank_adjustment(method = "avg", in_place = TRUE)}\if{html}{\out{</div>}}
 }

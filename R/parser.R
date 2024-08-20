@@ -1,5 +1,4 @@
-unified_datatypes <- c("Median", "Count", "Net MFI", "Avg Net MFI", "Mean")
-intelliflex_to_xponent_mapping <- unified_datatypes
+intelliflex_to_xponent_mapping <- VALID_DATA_TYPES
 names(intelliflex_to_xponent_mapping) <- c(
   "MEDIAN", "COUNT", "NET.MEDIAN", "NET.AVERAGE.MEDIAN", "AVERAGE.MFI"
 )
@@ -45,17 +44,17 @@ parse_xponent_locations <- function(xponent_locations) {
   locations
 }
 
-postprocess_intelliflex <- function(intelliflex_output) {
+postprocess_intelliflex <- function(intelliflex_output, verbose = TRUE) {
   data <- intelliflex_output$Results
   names(data) <- intelliflex_to_xponent_mapping[names(data)]
-  data <- filter_list(data, unified_datatypes)
+  data <- filter_list(data, VALID_DATA_TYPES)
   check_data(data)
 
   analyte_names <- find_analyte_names(data$Median)
   data <- remove_non_analyte_columns(data)
 
   list(
-    plate_name = intelliflex_output$SystemMetadata[["PLATE.NAME"]],
+    batch_name = intelliflex_output$SystemMetadata[["PLATE.NAME"]],
     sample_locations = intelliflex_output$SampleMetadata[["WELL.LOCATION"]],
     sample_names = intelliflex_output$SampleMetadata[["SAMPLE.ID"]],
     analyte_names = analyte_names,
@@ -64,9 +63,9 @@ postprocess_intelliflex <- function(intelliflex_output) {
   )
 }
 
-postprocess_xponent <- function(xponent_output) {
+postprocess_xponent <- function(xponent_output, verbose = TRUE) {
   data <- xponent_output$Results
-  data <- filter_list(data, unified_datatypes)
+  data <- filter_list(data, VALID_DATA_TYPES)
   check_data(data)
 
   xponent_locations <- data$Median[[location_column_name]]
@@ -76,7 +75,7 @@ postprocess_xponent <- function(xponent_output) {
   data <- remove_non_analyte_columns(data)
 
   list(
-    plate_name = xponent_output$ProgramMetadata[["Batch"]],
+    batch_name = xponent_output$ProgramMetadata[["Batch"]],
     sample_locations = sample_locations,
     sample_names = sample_names,
     analyte_names = analyte_names,
@@ -90,6 +89,17 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 
 #' Read Luminex Data
 #'
+#' @description
+#' Reads a file containing Luminex data and returns a Plate object.
+#' If provided, can also read a layout file, which usually contains
+#' information about the sample names, sample types or its dilutions.
+#'
+#' The function is capable of reading data in two different formats:
+#' - xPONENT
+#' - INTELLIFLEX
+#' which are produced by two different Luminex machines.
+#'
+#'
 #' @param plate_filepath Path to the Luminex plate file
 #' @param layout_filepath Path to the Luminex layout file
 #' @param format The format of the Luminex data. Select from: xPONENT, INTELLIFLEX
@@ -102,7 +112,7 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #' @param default_data_type The default data type to use if none is specified
 #' @param sample_types a vector of sample types to use instead of the extracted ones
 #' @param dilutions a vector of dilutions to use instead of the extracted ones
-#' @param verbose Whether to print warnings and additional messages
+#' @param verbose Whether to print additional information and warnings. `TRUE` by default
 #'
 #' @return Plate file containing the Luminex data
 #'
@@ -121,23 +131,29 @@ read_luminex_data <- function(plate_filepath,
   if (!(format %in% valid_formats)) {
     stop("Invalid format: ", format, ". Select from: ", paste(valid_formats, collapse = ", "))
   }
+
+  verbose_cat("Reading Luminex data from: ", plate_filepath, "\nusing format ", format, "\n", verbose = verbose)
+
   parser_output <- switch(format,
     "xPONENT" = {
-      output <- read_xponent_format(plate_filepath)
-      postprocess_xponent(output)
+      output <- read_xponent_format(plate_filepath, verbose = verbose)
+      postprocess_xponent(output, verbose = verbose)
     },
     "INTELLIFLEX" = {
-      output <- read_intelliflex_format(plate_filepath)
-      postprocess_intelliflex(output)
+      output <- read_intelliflex_format(plate_filepath, verbose = verbose)
+      postprocess_intelliflex(output, verbose = verbose)
     }
   )
 
   plate_builder <- PlateBuilder$new(
-    parser_output$plate_name,
-    parser_output$sample_names,
-    parser_output$analyte_names,
+    batch_name = parser_output$batch_name,
+    sample_names = parser_output$sample_names,
+    analyte_names = parser_output$analyte_names,
     verbose = verbose
   )
+
+  plate_builder$set_plate_name(plate_filepath) # set a new plate name based on the file name
+
   plate_builder$set_sample_locations(parser_output$sample_locations)
   layout_matrix <- NULL
   if (!is.null(layout_filepath)) {
@@ -168,7 +184,11 @@ read_luminex_data <- function(plate_filepath,
   plate_builder$set_dilutions(use_layout_dilutions, dilutions)
 
 
+
   plate <- plate_builder$build(validate = TRUE)
+
+  verbose_cat(color_codes$green_start,"\nNew plate object has been created with name: ",
+              plate$plate_name, "!\n", color_codes$green_end, "\n", verbose = verbose)
 
   plate
 }

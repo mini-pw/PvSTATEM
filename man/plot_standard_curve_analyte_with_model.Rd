@@ -12,6 +12,7 @@ plot_standard_curve_analyte_with_model(
   decreasing_dilution_order = TRUE,
   log_scale = c("all"),
   plot_asymptote = TRUE,
+  plot_test_predictions = TRUE,
   verbose = TRUE
 )
 }
@@ -29,6 +30,9 @@ plot_standard_curve_analyte_with_model(
 \item{log_scale}{Which elements on the plot should be displayed in log scale. By default \code{"all"}. If \code{NULL} or \code{c()} no log scale is used, if \code{"all"} or \code{c("dilutions", "MFI")} all elements are displayed in log scale.}
 
 \item{plot_asymptote}{If \code{TRUE} the asymptotes are plotted, \code{TRUE} by default}
+
+\item{plot_test_predictions}{If \code{TRUE} the predictions for the test samples are plotted, \code{TRUE} by default
+The predictions are obtained through extrapolation of the model}
 
 \item{verbose}{If \code{TRUE} prints messages, \code{TRUE} by default}
 }

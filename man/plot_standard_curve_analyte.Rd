@@ -13,6 +13,8 @@ plot_standard_curve_analyte(
   decreasing_dilution_order = TRUE,
   log_scale = c("dilutions"),
   plot_line = TRUE,
+  plot_blank_mean = TRUE,
+  plot_dilution_bounds = TRUE,
   verbose = TRUE
 )
 }
@@ -28,6 +30,10 @@ plot_standard_curve_analyte(
 \item{log_scale}{Which elements on the plot should be displayed in log scale. By default \code{"dilutions"}. If \code{NULL} or \code{c()} no log scale is used, if \code{"all"} or \code{c("dilutions", "MFI")} all elements are displayed in log scale.}
 
 \item{plot_line}{If \code{TRUE} a line is plotted, \code{TRUE} by default}
+
+\item{plot_blank_mean}{If \code{TRUE} the mean of the blank samples is plotted, \code{TRUE} by default}
+
+\item{plot_dilution_bounds}{If \code{TRUE} the dilution bounds are plotted, \code{TRUE} by default}
 
 \item{verbose}{If \code{TRUE} prints messages, \code{TRUE} by default}
 }
