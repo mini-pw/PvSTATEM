@@ -190,7 +190,8 @@ Function returns data for a specific analyte and sample.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{analyte}}{An analyte name or its id of which data we want to extract}
+\item{\code{analyte}}{An analyte name or its id of which data we want to extract.
+If set to 'ALL' returns data for all analytes.}
 
 \item{\code{sample_type}}{is a type of the sample we want to extract data from.
 The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}. Default value is \code{ALL}.}

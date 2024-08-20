@@ -211,7 +211,8 @@ Plate <- R6::R6Class(
     #' @description
     #' Function returns data for a specific analyte and sample.
     #'
-    #' @param analyte An analyte name or its id of which data we want to extract
+    #' @param analyte An analyte name or its id of which data we want to extract.
+    #'  If set to 'ALL' returns data for all analytes.
     #'
     #' @param sample_type is a type of the sample we want to extract data from.
     #'  The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}. Default value is `ALL`.
@@ -224,7 +225,7 @@ Plate <- R6::R6Class(
     get_data = function(analyte, sample_type = "ALL", data_type = self$default_data_type) {
       # check if the analyte exists in analytes_names
       if (!is.null(analyte) && !is.na(analyte)) {
-        if (!analyte %in% self$analyte_names) {
+        if (!(analyte %in% c(self$analyte_names, "ALL"))) {
           stop("Analyte ",  analyte, " does not exist in plate's field analyte_names")
         }
       } else {
@@ -257,8 +258,13 @@ Plate <- R6::R6Class(
       } else {
         valid_samples <- self$sample_types == sample_type
       }
+
       data_of_specified_type <- self$data[[data_type]]
-      return(data_of_specified_type[valid_samples, analyte])
+      if (analyte == "ALL") {
+        return(data_of_specified_type[valid_samples, ])
+      } else {
+        return(data_of_specified_type[valid_samples, analyte])
+      }
     },
 
     #' Get the string representation of dilutions
