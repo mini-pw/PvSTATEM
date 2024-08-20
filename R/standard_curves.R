@@ -11,6 +11,8 @@
 #' @param decreasing_dilution_order If `TRUE` the dilutions are plotted in decreasing order, `TRUE` by default
 #' @param log_scale Which elements on the plot should be displayed in log scale. By default `"dilutions"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
 #' @param plot_line If `TRUE` a line is plotted, `TRUE` by default
+#' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
+#' @param plot_dilution_bounds If `TRUE` the dilution bounds are plotted, `TRUE` by default
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #'
 #' @return ggplot object with the plot
@@ -18,9 +20,15 @@
 #' @import ggplot2
 #'
 #' @export
-plot_standard_curve_analyte <- function(plate, analyte_name,
-                                        data_type = "Median", decreasing_dilution_order = TRUE,
-                                        log_scale = c("dilutions"), plot_line = TRUE, verbose = TRUE) {
+plot_standard_curve_analyte <- function(plate,
+                                        analyte_name,
+                                        data_type = "Median",
+                                        decreasing_dilution_order = TRUE,
+                                        log_scale = c("dilutions"),
+                                        plot_line = TRUE,
+                                        plot_blank_mean = TRUE,
+                                        plot_dilution_bounds = TRUE,
+                                        verbose = TRUE) {
   AVAILABLE_LOG_SCALE_VALUES <- c("all", "dilutions", "MFI")
 
   if (!inherits(plate, "Plate")) {
@@ -40,6 +48,8 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
     dilution_values = plate$get_dilution_values("STANDARD CURVE"),
     dilutions = plate$get_dilution("STANDARD CURVE")
   )
+  blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
+
 
   # Scale x and y if needed
   x_log_scale <- "dilutions" %in% log_scale || "all" %in% log_scale
@@ -70,26 +80,45 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
   }
 
   options(scipen = 30)
-  p <- ggplot2::ggplot(plot_data, aes(x = dilution_values, y = MFI))
+  p <- ggplot2::ggplot(plot_data, aes(x = dilution_values, y = MFI)) +
+    ggplot2::geom_point(aes(color = "Standard curve samples"), size = 3)
   if (plot_line) {
-    p <- p + geom_line(linewidth = 1.2, color = "blue")
+    p <- p + ggplot2::geom_line(aes(color = "Standard curve samples"), linewidth = 1.2)
   }
-  p <- p + geom_point(size = 3, color = "blue") +
-    labs(title = plot_name, x = xlab, y = ylab) +
-    scale_x_continuous(
+  if (plot_blank_mean) {
+    p <- p + ggplot2::geom_hline(
+      aes(yintercept = blank_mean, color = "Blank mean"),
+      linetype = "solid"
+    )
+  }
+  if (plot_dilution_bounds) {
+    p <- p + ggplot2::geom_vline(
+      ggplot2::aes(color = "Min-max dilution bounds", xintercept = min(dilution_values)),
+      linetype = "dashed"
+    ) + ggplot2::geom_vline(
+      ggplot2::aes(color = "Min-max dilution bounds", xintercept = max(dilution_values)),
+      linetype = "dashed"
+    )
+  }
+  p <- p +ggplot2::labs(title = plot_name, x = xlab, y = ylab) +
+    ggplot2::scale_x_continuous(
       breaks = x_ticks, labels = x_labels,
       trans = x_trans
     ) +
-    scale_y_continuous(trans = y_trans) +
-    coord_trans(x = x_cords_trans) +
-    theme_minimal() +
-    theme(
+    ggplot2::scale_y_continuous(trans = y_trans) +
+    ggplot2::coord_trans(x = x_cords_trans) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
       axis.line = element_line(colour = "black"),
       axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
       axis.text.y = element_text(size = 9),
       legend.position.inside = legend_position,
       legend.background = element_rect(fill = "white", color = "black")
-    )
+    ) +
+    ggplot2::scale_color_manual(
+      values = c("Standard curve samples" = "blue", "Blank mean" = "red", "Min-max dilution bounds" = "gray")
+    ) +
+    ggplot2::guides(color = guide_legend(title = "Plot object"))
 
   p
 }
@@ -104,6 +133,10 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
 #' @param decreasing_dilution_order If `TRUE` the dilutions are plotted in decreasing order, `TRUE` by default.
 #' @param log_scale Which elements on the plot should be displayed in log scale. By default `"all"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
 #' @param plot_asymptote If `TRUE` the asymptotes are plotted, `TRUE` by default
+#' @param plot_test_predictions If `TRUE` the predictions for the test samples are plotted, `TRUE` by default
+#' The predictions are obtained through extrapolation of the model
+#' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
+#' @param plot_dilution_bounds If `TRUE` the dilution bounds are plotted, `TRUE` by default
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #'
 #' @return a ggplot object with the plot
@@ -115,29 +148,58 @@ plot_standard_curve_analyte <- function(plate, analyte_name,
 #' @import ggplot2
 #'
 #' @export
-plot_standard_curve_analyte_with_model <- function(plate, analyte_name, model, data_type = "Median", decreasing_dilution_order = TRUE, log_scale = c("all"), plot_asymptote = TRUE, verbose = TRUE) {
+plot_standard_curve_analyte_with_model <- function(plate,
+                                                   analyte_name,
+                                                   model,
+                                                   data_type = "Median",
+                                                   decreasing_dilution_order = TRUE,
+                                                   log_scale = c("all"),
+                                                   plot_asymptote = TRUE,
+                                                   plot_test_predictions = TRUE,
+                                                   plot_blank_mean = TRUE,
+                                                   plot_dilution_bounds = TRUE,
+                                                   verbose = TRUE) {
   p <- plot_standard_curve_analyte(
     plate,
     analyte_name = analyte_name, data_type = data_type,
     decreasing_dilution_order = decreasing_dilution_order,
-    log_scale = log_scale, verbose = verbose, plot_line = FALSE
+    log_scale = log_scale, verbose = verbose, plot_line = FALSE,
+    plot_blank_mean = plot_blank_mean, plot_dilution_bounds = plot_dilution_bounds
   )
 
   plot_name <- paste0("Fitted standard curve for analyte: ", analyte_name)
   p$labels$title <- plot_name
 
-  estimates <- model$get_plot_data()
-  p <- p + geom_line(
-    aes(x = dilution, y = MFI),
-    color = "red", data = estimates, linewidth = 1
+  test_samples_mfi <- plate$get_data(analyte_name, "TEST", data_type = data_type)
+  test_sample_estimates <- predict(model, test_samples_mfi)
+
+  p <- p + ggplot2::geom_line(
+    ggplot2::aes(x = dilution, y = MFI, color = "Fitted model predictions"),
+    data = model$get_plot_data(), linewidth = 1
   )
+  if (plot_test_predictions) {
+    p <- p + ggplot2::geom_point(
+      ggplot2::aes(x = dilution, y = MFI, color = "Test sample predictions"),
+      data = test_sample_estimates, shape = 4,
+      size = 3
+    )
+  }
+
   if (plot_asymptote) {
-    p <- p + geom_hline(
-      yintercept = model$top_asymptote, linetype = "dashed", color = "gray"
+    p <- p + ggplot2::geom_hline(
+      ggplot2::aes(yintercept = model$top_asymptote, color = "Asymptotes"),
+      linetype = "dashed"
     ) +
-      geom_hline(
-        yintercept = model$bottom_asymptote, linetype = "dashed", color = "gray"
+      ggplot2::geom_hline(
+        ggplot2::aes(yintercept = model$bottom_asymptote, color = "Asymptotes"),
+        linetype = "dashed"
       )
   }
+  p <- p + ggplot2::scale_color_manual(
+    values = c(
+      "Standard curve samples" = "blue", "Blank mean" = "red", "Min-max dilution bounds" = "gray",
+      "Fitted model" = "green", "Asymptotes" = "gray", "Test sample predictions" = "dark green"
+    )
+  )
   return(p)
 }
