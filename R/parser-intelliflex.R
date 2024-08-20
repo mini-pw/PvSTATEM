@@ -3,11 +3,12 @@ require(dplyr)
 #' Read the Intelliflex format data
 #'
 #' @param path Path to the INTELLIFLEX file
+#' @param vebose Print additional information. Default is `TRUE`
 #'
 #' @import dplyr
 #' @import utils
 #' @import stringr
-read_intelliflex_format <- function(path) {
+read_intelliflex_format <- function(path, verbose = TRUE) {
   df <- utils::read.csv(path, stringsAsFactors = FALSE)
   system_end_index <- which(colnames(df) == "PLATE.START")
   sample_end_index <- which(colnames(df) == "TOTAL.EVENTS")

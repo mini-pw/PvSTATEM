@@ -1,8 +1,7 @@
 #' @title Standard curves
 #'
-
-#' Plot standard curve samples of a plate
-#'
+#' @description
+#' Plot standard curve samples of a plate of a given analyte.
 #'
 #' @param plate A plate object
 #'
@@ -35,7 +34,7 @@ plot_standard_curve_analyte <- function(plate,
     stop("plate object should be a Plate")
   }
   if (!is.null(log_scale) && !all(log_scale %in% AVAILABLE_LOG_SCALE_VALUES)) {
-    stop("log_scale should be a character vector containing elements from set: ", paste(AVAILABLE_LOG_SCALE_VALUES, collapse = ", "))
+    stop("log_scale should be a character vector containing elements from set: ", paste(AVAILABLE_LOG_SCALE_VALUES, collapse = ", ", "\nInstead passed: ", log_scale))
   }
   if (!(analyte_name %in% plate$analyte_names)) {
     stop(analyte_name, " not found in the plate object")

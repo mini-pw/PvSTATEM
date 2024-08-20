@@ -12,10 +12,10 @@
 #' @import ggplot2
 #'
 #' @export
-plot_mfi_for_analyte <- function(plate, analyte,
+plot_mfi_for_analyte <- function(plate, analyte_name,
                                  data_type = "Median", plot_type = "boxplot") {
-  if (!(analyte %in% plate$analyte_names)) {
-    stop("Analyte not found in the plate")
+  if (!(analyte_name %in% plate$analyte_names)) {
+    stop("Analyte ", analyte_name," not found in the plate")
   }
   if (!is_valid_data_type(data_type)) {
     stop("Datatype not supported.")
@@ -25,13 +25,13 @@ plot_mfi_for_analyte <- function(plate, analyte,
     "boxplot" = ggplot2::geom_boxplot,
     "violin" = ggplot2::geom_violin,
     {
-      stop("Plot type not supported. Use either 'boxplot' or 'violin'")
+      stop("Plot type ", plot_type, "  not supported. Use either 'boxplot' or 'violin'")
     }
   )
 
   df <- plate$data[["Median"]] %>%
-    dplyr::select(analyte) %>%
-    dplyr::rename("MFI" = analyte) %>%
+    dplyr::select(analyte_name) %>%
+    dplyr::rename("MFI" = analyte_name) %>%
     dplyr::mutate(
       SampleId = paste0("SampleId: ", seq_len(nrow(.))),
       SampleType = plate$sample_types,
@@ -55,11 +55,11 @@ plot_mfi_for_analyte <- function(plate, analyte,
     ) +
     ggplot2::geom_point(data = sc_df, size = 3, color = "red") +
     ggplot2::scale_linetype_manual(
-      name = "Boundries", values = c("BLANK MEAN" = "dashed")
+      name = "Boundaries", values = c("BLANK MEAN" = "dashed")
     ) +
     ggplot2::guides(color = ggplot2::guide_legend(title = "Sample Type")) +
     ggplot2::ggtitle(
-      paste0("MFI Boxplot of test sample coverage\n for analyte: ", analyte)
+      paste0("MFI Boxplot of test sample coverage\n for analyte: ", analyte_name)
     ) +
     ggplot2::xlab("Sample Type") +
     ggplot2::ylab("MFI (Median)") +

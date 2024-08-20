@@ -1,5 +1,9 @@
 #' @title PlateBuilder
 #'
+#' @description
+#' This class helps creating the Plate object.
+#' It is used to store the data and validate the final fields.
+#'
 #' @import R6
 #'
 #' @export
@@ -7,6 +11,7 @@ PlateBuilder <- R6::R6Class(
   "PlateBuilder",
   public = list(
     plate_name = NULL,
+    batch_name = NULL,
     analyte_names = NULL,
     sample_names = NULL,
     sample_locations = NULL,
@@ -22,23 +27,28 @@ PlateBuilder <- R6::R6Class(
     #' @description
     #' Initialize the PlateBuilder object
     #'
-    #' @param plate_name - plate name obtained from filename
     #' @param sample_names - vector of sample names measured during
     #' an examination in the same order as in the data
     #' @param analyte_names - vector of analytes names measured during
     #' an examination in the same order as in the data
+    #' @param batch_name - name of the batch during which the plate was examined
+    #' obtained from the plate info. An optional parameter, by default set to
+    #' `""` - an empty string.
     #' @param verbose - logical value indicating whether to print additional
     #' information. This parameter is stored as a private attribute of the object
     #' and reused in other methods
     #'
-    initialize = function(plate_name, sample_names, analyte_names, verbose = TRUE) {
-      stopifnot(is.character(plate_name) && is.scalar(plate_name))
-      self$plate_name <- plate_name
+    initialize = function(sample_names, analyte_names, batch_name = "", verbose = TRUE) {
+
       stopifnot(is.character(sample_names) && length(sample_names) > 0)
       self$sample_names <- sample_names
       stopifnot(is.character(analyte_names) && length(analyte_names) > 0)
       self$analyte_names <- analyte_names
 
+      stopifnot(is.character(batch_name) && is.scalar(batch_name))
+      self$batch_name <- batch_name
+
+      stopifnot(is.logical(verbose) && is.scalar(verbose))
       private$verbose <- verbose
     },
 
@@ -206,8 +216,17 @@ PlateBuilder <- R6::R6Class(
     },
 
     #' @description
+    #' Set the plate name for the plate.
+    #' The plate name is extracted from the filepath
+    set_plate_name = function(file_path) {
+      stopifnot(is.character(file_path) && is.scalar(file_path))
+      file_name_without_extension <- sub("\\.[^.]*$", "", basename(file_path))
+      self$plate_name <- file_name_without_extension
+    },
+
+    #' @description
     #' Set the layout matrix for the plate
-    #' @param layout_matrix a matrix containing information about the
+    #' @param layout_matrix a matrix containing information about the sample names. dilutions, etc.
     set_layout = function(layout_matrix) {
       stopifnot(is.matrix(layout_matrix))
       # TODO: Additional validation probably needed
@@ -223,6 +242,7 @@ PlateBuilder <- R6::R6Class(
 
       plate <- Plate$new(
         plate_name = self$plate_name,
+        batch_name = self$batch_name,
         analyte_names = self$analyte_names,
         sample_names = self$sample_names,
         sample_locations = self$sample_locations,
@@ -233,14 +253,6 @@ PlateBuilder <- R6::R6Class(
         default_data_type = self$default_data_type,
         batch_info = self$batch_info,
         layout = self$layout
-      )
-      verbose_cat(
-        color_codes$green_start,
-        "Plate `",
-        self$plate_name,
-        "` has been successfully created\n",
-        color_codes$green_end,
-        verbose = private$verbose
       )
 
       plate
@@ -305,6 +317,7 @@ extract_dilution_from_names <- function(sample_name) {
   dilution_factor
 }
 
+#' Extract dilutions from the layout representation
 #' @description
 #' Extract dilution factor represented as string from vector of characters.
 #' The matches has to be exact and the dilution factor has to be in the form of `1/\d+`
@@ -387,7 +400,7 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' @return A vector of valid sample_type strings of length equal to the length of `sample_names`
 #'
 #' @examples
-#' translate_sample_names_to_sample_types(c("B", "BLANK", "NEG",  TEST1"))
+#' translate_sample_names_to_sample_types(c("B", "BLANK", "NEG",  "TEST1"))
 #' translate_sample_names_to_sample_types(c("S", "CP3"))
 #'
 #' @export

@@ -2,8 +2,7 @@
 % Please edit documentation in R/classes-plate.R
 \name{is_valid_sample_type}
 \alias{is_valid_sample_type}
-\title{Check if the sample type is valid. The sample type is valid if it is one of the
-elements of the \code{VALID_SAMPLE_TYPES} vector.}
+\title{Check validity of given sample type}
 \usage{
 is_valid_sample_type(sample_type)
 }
@@ -15,5 +14,7 @@ is_valid_sample_type(sample_type)
 }
 \description{
 Check if the sample type is valid. The sample type is valid if it is one of the
-elements of the \code{VALID_SAMPLE_TYPES} vector.
+elements of the \code{VALID_SAMPLE_TYPES} vector. The valid sample types are:
+
+\code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.
 }
