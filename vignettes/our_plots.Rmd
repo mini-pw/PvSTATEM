@@ -1,0 +1,44 @@
+---
+title: "Quick introduction to plots created by our package"
+author: "Mateusz Nizwantowski"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{Quick introduction to plots created by our package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{ggplot2}
+  %\VignetteDepends{nplr}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+# Introduction
+
+The `PvSTATEM` package provides a variety of plots that can be used to visualize the Luminex data. In this vignette, we will show how to use them. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. Firsly, let us load the dataset as the `plate` object.
+
+```{r}
+library(PvSTATEM)
+library(ggplot2)
+
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+
+
+plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
+
+plate
+```
+
+In this vignette, we will omit some validation funcionality and focus on the plots. 
+After the plate is successfully loaded, we should validate it by looking at some basic information about it using summary function.
+But we can also 
+
