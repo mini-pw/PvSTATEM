@@ -20,9 +20,7 @@ A ggplot object
 }
 \description{
 This is a function used to plot counts in a 96-well plate using a color to represent the count ranges.
-There is possibility to plot exact counts in each well.
-}
-\details{
+There is possibility to plot exact counts in each well. \cr \cr
 If plot window is resized, it's best to re-run the function to adjust the scaling.
 Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted atutomatically.
 }

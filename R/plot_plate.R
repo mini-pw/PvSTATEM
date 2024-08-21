@@ -121,8 +121,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' Plot counts in a 96-well plate
 #'
 #' This is a function used to plot counts in a 96-well plate using a color to represent the count ranges.
-#' There is possibility to plot exact counts in each well.
-#'
+#' There is possibility to plot exact counts in each well. \cr \cr
 #' If plot window is resized, it's best to re-run the function to adjust the scaling.
 #' Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted atutomatically.
 #'
@@ -197,8 +196,7 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 
 #' Plot layout of a 96-well plate
 #'
-#' This is a function used to plot the layout of a 96-well plate using a color to represent the sample types.
-#'
+#' This is a function used to plot the layout of a 96-well plate using a color to represent the sample types. \cr \cr
 #' If plot window is resized, it's best to re-run the function to adjust the scaling.
 #' Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted atutomatically.
 #'
