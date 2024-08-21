@@ -38,7 +38,30 @@ plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
 plate
 ```
 
+
+# Plate layout
 In this vignette, we will omit some validation funcionality and focus on the plots. 
 After the plate is successfully loaded, we should validate it by looking at some basic information about it using summary function.
-But we can also 
+But we can also obtain similar information in a more visual way by using the `plot_layout` function.
+It helps to quickly asses wheather the layout of the plate is correctly read from luminex or layout file.
+
+```{r}
+plot_layout(plate)
+```
+
+The plot above shows the layout of the plate. The wells are colored according to the type of the sample. 
+If user is familiar with color scheme of this package, there is an option to disable legend. 
+This can be done by setting `show_legend` parameter to `FALSE`.
+
+If plot window is resized, it is recomended to rerun the function to adjust the scaling of the plot.
+Sometimes when legend is plotted, whole layout may be shifted, in order to solve this issue one has to stretch the window in the direction of layout shift, and everything will be adjusted automatically.
+
+# Counts for given analyte
+The `plot_counts` function allows to visualize the counts of the analyte in the plate.
+The function takes the `plate` object and the analyte name as the arguments.
+If there is error in the analyte name, the function will return an error message.
+
+```{r}
+plot_counts(plate, "OC43_NP_NA")
+```
 
