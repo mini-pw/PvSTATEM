@@ -44,6 +44,7 @@ In this vignette, we will omit some validation funcionality and focus on the plo
 After the plate is successfully loaded, we should validate it by looking at some basic information about it using summary function.
 But we can also obtain similar information in a more visual way by using the `plot_layout` function.
 It helps to quickly asses wheather the layout of the plate is correctly read from luminex or layout file.
+The function takes the `plate` object as the argument.
 
 ```{r}
 plot_layout(plate)
@@ -57,11 +58,24 @@ If plot window is resized, it is recomended to rerun the function to adjust the 
 Sometimes when legend is plotted, whole layout may be shifted, in order to solve this issue one has to stretch the window in the direction of layout shift, and everything will be adjusted automatically.
 
 # Counts for given analyte
-The `plot_counts` function allows to visualize the counts of the analyte in the plate.
+The `plot_counts` function allows to visualize the counts of the analyte in the plate. 
+This plot is useful to quickly spot wells with too low count.
 The function takes the `plate` object and the analyte name as the arguments.
 If there is error in the analyte name, the function will return an error message.
 
 ```{r}
 plot_counts(plate, "OC43_NP_NA")
 ```
+
+The plot above shows the counts of the analyte "OC43_NP_NA" in the plate. The wells are colored according to the count of the analyte.
+Too low values are marked with red color, values on the edge of the threshold are marked with yellow color, and the rest are marked with green color.
+There is an option to show legend by setting `show_legend` parameter to `TRUE`.
+There is also an option to show just the colors without the counts by setting `show_counts` parameter to `FALSE`.
+This provides a cleaner plot, without the counts.
+
+```{r}
+plot_counts(plate, "OC43_NP_NA", show_counts = FALSE)
+```
+
+# Distribution of MFI values
 
