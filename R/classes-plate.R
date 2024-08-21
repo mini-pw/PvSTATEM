@@ -198,13 +198,72 @@ Plate <- R6::R6Class(
     #' Print the summary of the plate
     #' @description
     #' Function outputs basic information about the plate, such as
-    #' examination date, batch name, and sample types
+    #' examination date, batch name, and sample types.
     #'
     #' @param include_names If `include_names` parameter is `TRUE`, a
     #' part from count of control samples, provides also their names.
     #' By default `FALSE`
     #' @param ... Additional parameters to be passed to the print function
-    summary = function(..., include_names = FALSE) {},
+    summary = function(..., include_names = FALSE) {
+
+      positive_control_num <- sum(self$sample_types == "POSITIVE CONTROL")
+      negative_control_num <- sum(self$sample_types == "NEGATIVE CONTROL")
+      standard_curve_num <- sum(self$sample_types == "STANDARD CURVE")
+      test_samples_num <- sum(self$sample_types == "TEST")
+      blank_samples_num <- sum(self$sample_types == "BLANK")
+
+      positive_control_names <- ""
+      negative_control_names <- ""
+      standard_curve_names <- ""
+
+      if (include_names) {
+        if (positive_control_num > 0) {
+          positive_control_names <- self$sample_names[self$sample_types == "POSITIVE CONTROL"]
+          positive_control_names <- paste(sapply(positive_control_names, function(sample) paste0("'", sample, "'")), collapse = ", ")
+          positive_control_names <- paste0("\nSample names: ", positive_control_names)
+        }
+
+        if (negative_control_num > 0) {
+          negative_control_names <- self$sample_names[self$sample_types == "NEGATIVE CONTROL"]
+          negative_control_names <- paste(sapply(negative_control_names, function(sample) paste0("'", sample, "'")), collapse = ", ")
+          negative_control_names <- paste0("\nSample names: ", negative_control_names)
+
+        }
+        if (standard_curve_num > 0) {
+          standard_curve_names <- self$sample_names[self$sample_types == "STANDARD CURVE"]
+          standard_curve_names <- paste(sapply(standard_curve_names, function(sample) paste0("'", sample, "'")), collapse = ", ")
+          standard_curve_names <- paste0("\nSample names: ", standard_curve_names)
+        }
+      }
+
+      cat(
+        "Summary of the plate with name '", self$plate_name, "':\n",
+        "Total number of samples: ",
+        length(self$sample_names),
+        "\n",
+        "Number of blank samples: ",
+        blank_samples_num,
+        "\n",
+        "Number of standard curve samples: ",
+        standard_curve_num,
+        standard_curve_names, "\n",
+        "Number of positive control samples: ",
+        positive_control_num,
+        positive_control_names, "\n",
+        "Number of negative control samples: ",
+        negative_control_num,
+        negative_control_names, "\n",
+        "Number of test samples: ",
+        test_samples_num, "\n",
+        "Number of analytes: ",
+        length(self$analyte_names), "\n",
+        sep = ""
+      )
+
+      invisible(self)
+
+
+    },
 
 
     #' Get data for a specific analyte and sample type
@@ -387,3 +446,9 @@ Plate <- R6::R6Class(
     verbose = TRUE
   )
 )
+
+
+#' @export
+summary.Plate = function(object, include_names = FALSE) {
+  object$summary(include_names = include_names)
+}
