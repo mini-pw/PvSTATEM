@@ -9,13 +9,15 @@ require(png)
 #' used by other functions in this package, mainly to plot layout and counts.
 #' The function uses a background image of a 96-well plate and
 #' plots the colors in the wells using ggplot2.
+#' This function is not intended to be used directly by the user.
+#' Rather, it is used by other functions, specified in this file.
 #'
-#' @param colors A vector with 96 colors
-#' @param plot_numbers Logical indicating if the well numbers should be plotted
-#' @param numbers A vector with 96 numbers
+#' @param colors A vector with 96 colors that will be used to color the wells, order is from left to right and top to bottom
+#' @param plot_numbers Logical value indicating if the well numbers should be plotted, default is `FALSE`
+#' @param numbers An optional vector with 96 numbers, plotted on the wells. Order is from left to right and top to bottom, must have the same length as colors. It could be used, for instance, to plot the bead count of each well. Must be provided in case the `plot_numbers` parameters is set to `TRUE`
 #' @param plot_title The title of the plot (default is "Plate")
-#' @param plot_legend Logical indicating if the legend should be plotted
-#' @param legend_mapping A named vector with the colors mapping
+#' @param plot_legend Logical value indicating if the legend should be plotted, default is `FALSE`
+#' @param legend_mapping A named vector with the colors mapping used to create the legend
 #'
 #' @return A ggplot object
 #'
