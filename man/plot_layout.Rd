@@ -15,8 +15,11 @@ plot_layout(plate, plot_legend = TRUE)
 A ggplot object
 }
 \description{
-It is a function to plot the layout of a 96-well plate using a color scale.
-The function uses the plot_plate function to plot the layout.
+This is a function used to plot the layout of a 96-well plate using a color to represent the sample types.
+}
+\details{
+If plot window is resized, it's best to re-run the function to adjust the scaling.
+Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted atutomatically.
 }
 \examples{
 plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)

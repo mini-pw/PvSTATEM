@@ -19,10 +19,12 @@ plot_counts(plate, analyte_name, plot_counts = TRUE, plot_legend = FALSE)
 A ggplot object
 }
 \description{
-It is a function to plot counts in a 96-well plate using a color scale.
-The function uses a color scale to map the counts to colors and plot them
-in a 96-well plate.
-The function uses the plot_plate function to plot the counts.
+This is a function used to plot counts in a 96-well plate using a color to represent the count ranges.
+There is possibility to plot exact counts in each well.
+}
+\details{
+If plot window is resized, it's best to re-run the function to adjust the scaling.
+Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted atutomatically.
 }
 \examples{
 plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)
