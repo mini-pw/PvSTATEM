@@ -29,6 +29,10 @@
 Model <- R6::R6Class(
   "Model",
   public = list(
+
+    #' @field analyte (`character(1)`)\cr
+    #' Name of the analyte for which the model was fitted
+    analyte = NULL,
     #' @field dilutions (`numeric()`)\cr
     #'  Dilutions used to fit the model
     dilutions = NULL,
@@ -64,6 +68,8 @@ Model <- R6::R6Class(
     #' @description
     #' Create a new instance of Model [R6][R6::R6Class] class
     #'
+    #' @param analyte (`character(1)`)\cr
+    #'  Name of the analyte for which the model was fitted.
     #' @param dilutions (`numeric()`)\cr
     #'   Dilutions used to fit the model
     #' @param mfi MFI (`numeric()`)\cr
@@ -85,14 +91,18 @@ Model <- R6::R6Class(
     #'   Enables to set the maximum MFI value used for scaling MFI values to the range \[0, 1\].
     #'   Use a values before any transformations (e.g. before the `log10` transformation)
     #'
-    initialize = function(dilutions, mfi, npars = 5, verbose = TRUE, log_dilution = TRUE, log_mfi = TRUE, scale_mfi = TRUE, mfi_min = NULL, mfi_max = NULL) {
+    initialize = function(analyte, dilutions, mfi, npars = 5, verbose = TRUE, log_dilution = TRUE, log_mfi = TRUE, scale_mfi = TRUE, mfi_min = NULL, mfi_max = NULL) {
+      stopifnot(is.character(analyte) && !is.null(analyte) && nchar(analyte) > 0)
       stopifnot(length(dilutions) == length(mfi))
       stopifnot(all((dilutions > 0) & (dilutions < 1)))
-      stopifnot(all(mfi > 0))
+      stopifnot(all(mfi > 0) & mfi_min >= 0)
+
+      self$analyte <- analyte
 
       self$log_mfi <- log_mfi
       self$scale_mfi <- scale_mfi
       self$log_dilution <- log_dilution
+
 
       if (!is.null(mfi_min)) {
         self$mfi_min <- ifelse(self$log_mfi, log10(mfi_min), mfi_min)
@@ -177,7 +187,7 @@ Model <- R6::R6Class(
     #' such as the number of parameters or samples used
     print = function() {
       cat(
-        "Instance of the Model class: \n",
+        "Instance of the Model class fitted for analyte '", self$analyte, "': \n",
         "- fitted with", nplr::getPar(self$model)$npar, "parameters\n",
         "- using", length(nplr::getX(self$model)), "samples\n",
         "- using log residuals (mfi): ", self$log_mfi, "\n",
@@ -271,17 +281,23 @@ predict.Model <- function(object, mfi) {
 #'   Name of the analyte for which we want to create the model
 #' @param data_type (`character(1)`)
 #'   Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default equals to `Median`
+#'
+#' @param source_mfi_range_from_all_analytes (`logical(1)`)
+#'   If `TRUE` the MFI range is calculated from all analytes, if `FALSE` the MFI range is calculated only for the current analyte
+#'   Defaults to `FALSE`
 #' @param ... Additional arguments passed to the model
 #'
 #' @return (`Model()`) Standard Curve model
 #'
 #' @export
-create_standard_curve_model_analyte <- function(plate, analyte_name, data_type = "Median", ...) {
+create_standard_curve_model_analyte <- function(plate, analyte_name, data_type = "Median", source_mfi_range_from_all_analytes = FALSE, ...) {
   mfi <- plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type)
   dilutions_numeric <- plate$get_dilution_values("STANDARD CURVE")
 
-  mfi_min <- min(plate$get_data("ALL", "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
-  mfi_max <- max(plate$get_data("ALL", "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
+  mfi_source <- ifelse(source_mfi_range_from_all_analytes, "ALL", analyte_name)
 
-  Model$new(dilutions_numeric, mfi, mfi_min = mfi_min, mfi_max = mfi_max, ...)
+  mfi_min <- min(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
+  mfi_max <- max(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
+
+  Model$new(analyte_name, dilutions_numeric, mfi, mfi_min = mfi_min, mfi_max = mfi_max, ...)
 }

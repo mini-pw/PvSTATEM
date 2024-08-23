@@ -146,8 +146,8 @@ The predicted values may be used to plot the standard curve, which can be compar
 
 ```{r}
 
-plot_standard_curve_analyte_with_model(plate, analyte_name = "OC43_S", model, log_scale = c("all"))
-plot_standard_curve_analyte_with_model(plate, analyte_name = "OC43_S", model, log_scale = c("all"), plot_asymptote = FALSE)
+plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"))
+plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), plot_asymptote = FALSE)
 ```
 
 Apart from the plotting, the package can predict values of all the samples on the plate.

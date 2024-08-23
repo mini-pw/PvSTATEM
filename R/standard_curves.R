@@ -126,8 +126,7 @@ plot_standard_curve_analyte <- function(plate,
 #' Plot standard curve of a certain analyte with fitted model
 #'
 #' @param plate Plate object
-#' @param analyte_name Name of the analyte for which we want to plot the standard curve - the same for which the model was fitted
-#' @param model nplr object with the model
+#' @param model fitted `Model` object, which predictions we want to plot
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Median`
 #' @param decreasing_dilution_order If `TRUE` the dilutions are plotted in decreasing order, `TRUE` by default.
 #' @param log_scale Which elements on the plot should be displayed in log scale. By default `"all"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
@@ -148,7 +147,6 @@ plot_standard_curve_analyte <- function(plate,
 #'
 #' @export
 plot_standard_curve_analyte_with_model <- function(plate,
-                                                   analyte_name,
                                                    model,
                                                    data_type = "Median",
                                                    decreasing_dilution_order = TRUE,
@@ -158,6 +156,14 @@ plot_standard_curve_analyte_with_model <- function(plate,
                                                    plot_blank_mean = TRUE,
                                                    plot_dilution_bounds = TRUE,
                                                    verbose = TRUE) {
+  analyte_name <- model$analyte
+  if (!inherits(model, "Model")) {
+    stop("model object should be a Model")
+  }
+  if (is.null(analyte_name)) {
+    stop("analyte name should be provided in the model object. Try to fit the model first.")
+  }
+
   p <- plot_standard_curve_analyte(
     plate,
     analyte_name = analyte_name, data_type = data_type,
