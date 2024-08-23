@@ -26,7 +26,6 @@ The `PvSTATEM` package provides a variety of plots that can be used to visualize
 
 ```{r}
 library(PvSTATEM)
-library(ggplot2)
 
 plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
@@ -78,4 +77,6 @@ plot_counts(plate, "OC43_NP_NA", show_counts = FALSE)
 ```
 
 # Distribution of MFI values
+
+# 
 
