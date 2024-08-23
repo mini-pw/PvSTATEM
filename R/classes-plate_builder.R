@@ -246,7 +246,9 @@ PlateBuilder <- R6::R6Class(
     #' @param layout_matrix a matrix containing information about the sample names. dilutions, etc.
     set_layout = function(layout_matrix) {
       stopifnot(is.matrix(layout_matrix))
-      # TODO: Additional validation probably needed
+      if (nrow(layout_matrix) != 8 || ncol(layout_matrix) != 12) {
+        stop("Layout matrix has to be 8x12 - a standard layout for a 96-well plate")
+      }
       self$layout <- layout_matrix
     },
 
