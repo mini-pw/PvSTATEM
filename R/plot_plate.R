@@ -256,6 +256,12 @@ plot_layout <- function(plate, plot_legend = TRUE) {
   plot_plate(colors, plot_title = title, plot_numbers = FALSE, plot_legend = plot_legend, legend_mapping = color_map)
 }
 
+#' @title Remove holes from a vector
+#' @description
+#' Function selects the values from the vector at the given locations
+#' and creates a vector "without holes". Works only for 96-plate.
+#' @param vector A vector with values
+#' @param locations A vector with locations where the values should be placed
 create_vector_without_holes <- function(vector, locations) {
   # Create a vector with all the locations
   rows <- rep(LETTERS[1:8], each = 12)
