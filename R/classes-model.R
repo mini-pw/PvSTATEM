@@ -292,5 +292,5 @@ create_standard_curve_model_analyte <- function(plate, analyte_name, data_type =
   mfi_min <- min(plate$get_data("ALL", "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
   mfi_max <- max(plate$get_data("ALL", "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
 
-  Model$new(dilutions_numeric, mfi, mfi_min = mfi_min, mfi_max = mfi_max, ...)
+  Model$new(analyte_name, dilutions_numeric, mfi, mfi_min = mfi_min, mfi_max = mfi_max, ...)
 }
