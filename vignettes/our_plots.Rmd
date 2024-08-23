@@ -73,7 +73,7 @@ There is also an option to show just the colors without the counts by setting `s
 This provides a cleaner plot, without the counts.
 
 ```{r}
-plot_counts(plate, "Spike_B16172", plot_counts = FALSE)
+plot_counts(plate, "FluA", plot_counts = FALSE)
 ```
 
 # Distribution of MFI values
@@ -95,5 +95,37 @@ plot_mfi_for_analyte(plate, "FluA", plot_type = "violin")
 ```
 
 
-# Standard curve plot
+# Standard curve plots
+
+
+Finaly we arrive at the the most important visualization in our package - the standard curve related plots.
+Those plot are useful to asses the quality of the fit which will be crucial to us in the next step of development of the package.
+It comes in two flavours: `plot_standard_curve_analyte` and `plot_standard_curve_analyte_with_model`.
+The first one does not incorporate the model, while the second one does.
+
+## Standard curve plot without model
+
+```{r}
+plot_standard_curve_analyte(plate, "Spike_B16172")
+```
+
+plot_standard_curve_analyte_with_model <- function(plate,
+                                                   model,
+                                                   data_type = "Median",
+                                                   decreasing_dilution_order = TRUE,
+                                                   log_scale = c("all"),
+                                                   plot_line = TRUE,
+                                                  plot_blank_mean = TRUE,
+                                                  plot_dilution_bounds = TRUE,) 
+
+Above we see the default plot for the analyte "Spike_B16172". We can modify this plot by setting the parameters of the function.
+For example, we can change the direction of x axis by setting `decreasing_dilution_order` parameter to `FALSE`.
+Other parameters worth mentioning are `log_scale`, default value is `c("all")`, which means that both x and y axis are in log scale.
+Other possible values for this parameter are `c("dilutions")` and `c("MFI")` which means that only x or y axis is in log scale.
+There is also an option to disable some parts of the plot by setting parameters `plot_line`, `plot_blank_mean` and `plot_dilution_bounds` to `FALSE`.
+First one disables drawint the line between standard curve points, second one disables plotting the mean of blank samples, and the last one disables plotting the dilution bounds.
+
+## Standard curve plot with model
+
+
 
