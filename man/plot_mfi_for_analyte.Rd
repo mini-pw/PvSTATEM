@@ -6,7 +6,7 @@
 \usage{
 plot_mfi_for_analyte(
   plate,
-  analyte,
+  analyte_name,
   data_type = "Median",
   plot_type = "boxplot"
 )
@@ -14,12 +14,12 @@ plot_mfi_for_analyte(
 \arguments{
 \item{plate}{A plate object}
 
-\item{analyte}{The analyte to plot}
-
 \item{data_type}{The type of data to plot. Default is "Median"}
 
 \item{plot_type}{The type of plot to generate. Default is "boxplot".
 Available options are "boxplot" and "violin".}
+
+\item{analyte}{The analyte to plot}
 }
 \value{
 A ggplot object

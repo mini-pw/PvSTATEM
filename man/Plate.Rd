@@ -20,6 +20,9 @@ Names of the analytes that were examined on the plate.}
 \item{\code{sample_names}}{(\code{character()})\cr
 Names of the samples that were examined on the plate.}
 
+\item{\code{batch_name}}{(\code{character(1)})\cr
+Name of the batch to which the plate belongs.}
+
 \item{\code{sample_locations}}{(\code{character()})\cr
 Locations of the samples on the plate.}
 
@@ -82,6 +85,7 @@ Method to initialize the Plate object
   plate_name,
   sample_names,
   analyte_names,
+  batch_name = "",
   dilutions = NULL,
   dilution_values = NULL,
   sample_types = NULL,
@@ -98,13 +102,20 @@ Method to initialize the Plate object
 \describe{
 \item{\code{plate_name}}{(\code{character(1)})\cr
 Name of the plate.
-By default is set to the name of the file from which the plate was read.}
+By default is set to an empty string,
+during the reading process it is set to the name
+of the file from which the plate was read.}
 
 \item{\code{sample_names}}{(\code{character()})\cr
 Names of the samples that were examined on the plate.}
 
 \item{\code{analyte_names}}{(\code{character()})\cr
 Names of the analytes that were examined on the plate.}
+
+\item{\code{batch_name}}{(\code{character(1)})\cr
+Name of the batch to which the plate belongs.
+By default is set to an empty string, during the reading process it is set to
+the \code{batch} field of the plate}
 
 \item{\code{dilutions}}{(\code{character()})\cr
 A list containing names of the samples as keys and string representing dilutions as values.
@@ -147,18 +158,25 @@ on the actual plate.}
 \subsection{Method \code{print()}}{
 Function prints the basic information about the plate
 such as the number of samples and analytes
-Print the summary of the plate
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$print(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Additional parameters to be passed to the print function
+Print the summary of the plate}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Plate-summary"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-summary}{}}}
 \subsection{Method \code{summary()}}{
 Function outputs basic information about the plate, such as
-examination date, batch name, and sample types
+examination date, batch name, and sample types.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Plate$summary(..., include_names = FALSE)}\if{html}{\out{</div>}}
 }
@@ -166,10 +184,12 @@ examination date, batch name, and sample types
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
+\item{\code{...}}{Additional parameters to be passed to the print function
+Get data for a specific analyte and sample type}
+
 \item{\code{include_names}}{If \code{include_names} parameter is \code{TRUE}, a
 part from count of control samples, provides also their names.
-By default \code{FALSE}
-Get data for a specific analyte and sample type}
+By default \code{FALSE}}
 }
 \if{html}{\out{</div>}}
 }

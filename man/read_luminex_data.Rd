@@ -10,6 +10,7 @@ read_luminex_data(
   format = "xPONENT",
   plate_file_separator = ",",
   plate_file_encoding = "UTF-8",
+  use_layout_sample_names = TRUE,
   use_layout_types = TRUE,
   use_layout_dilutions = TRUE,
   default_data_type = "Median",
@@ -29,6 +30,8 @@ read_luminex_data(
 
 \item{plate_file_encoding}{The encoding used in the plate file}
 
+\item{use_layout_sample_names}{Whether to use names from the layout file in extracting sample names.}
+
 \item{use_layout_types}{Whether to use names from the layout file in extracting sample types.
 Works only when layout file is provided}
 
@@ -41,11 +44,20 @@ Works only when layout file is provided}
 
 \item{dilutions}{a vector of dilutions to use instead of the extracted ones}
 
-\item{verbose}{Whether to print warnings and additional messages}
+\item{verbose}{Whether to print additional information and warnings. \code{TRUE} by default}
 }
 \value{
 Plate file containing the Luminex data
 }
 \description{
-Read Luminex Data
+Reads a file containing Luminex data and returns a Plate object.
+If provided, can also read a layout file, which usually contains
+information about the sample names, sample types or its dilutions.
+
+The function is capable of reading data in two different formats:
+\itemize{
+\item xPONENT
+\item INTELLIFLEX
+which are produced by two different Luminex machines.
+}
 }

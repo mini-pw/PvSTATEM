@@ -8,7 +8,8 @@ read_xponent_format(
   path,
   exact_parse = FALSE,
   encoding = "utf-8",
-  separator = ","
+  separator = ",",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -20,6 +21,8 @@ Exact parsing means that the batch, calibration and assay metadata will be parse
 \item{encoding}{Encoding of the file}
 
 \item{separator}{Separator for the CSV values}
+
+\item{verbose}{Whether to print the progress. Default is \code{TRUE}}
 }
 \description{
 Read the xPONENT format data
