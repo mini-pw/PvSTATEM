@@ -158,6 +158,24 @@ PlateBuilder <- R6::R6Class(
     },
 
     #' @description
+    #' Set the sample names used during the examination. If the layout is provided,
+    #' extract the sample names from the layout file. Otherwise, uses the original sample names from the Luminex file
+    #'
+    #' @param use_layout_sample_names logical value indicating whether
+    #' to use names extracted from layout files. If set to false, this function only checks if the sample names are provided in the plate
+    set_sample_names = function(use_layout_sample_names = TRUE) {
+      if (use_layout_sample_names) {
+        if (is.null(self$layout)) {
+          stop("Layout is not provided. But `use_layout_sample_names` is set to `TRUE` - cannot extract the sample names from the layout")
+        }
+        locations <- self$sample_locations
+        layout_names <- self$layout_as_vector
+        self$sample_names <- extract_sample_names_from_layout(layout_names, locations)
+      }
+      stopifnot(!is.null(self$sample_names))
+    },
+
+    #' @description
     #' Set the data used during the examination
     #' @param data a named list of data frames containing information about
     #' the samples and analytes. The list is named by the type of the data
@@ -225,11 +243,14 @@ PlateBuilder <- R6::R6Class(
     },
 
     #' @description
-    #' Set the layout matrix for the plate
+    #' Set the layout matrix for the plate. This function performs basic validation
+    #' - verifies if the plate is a matrix of shape 8x12 with 96 wells
     #' @param layout_matrix a matrix containing information about the sample names. dilutions, etc.
     set_layout = function(layout_matrix) {
       stopifnot(is.matrix(layout_matrix))
-      # TODO: Additional validation probably needed
+      if (nrow(layout_matrix) != 8 || ncol(layout_matrix) != 12) {
+        stop("Layout matrix has to be 8x12 - a standard layout for a 96-well plate")
+      }
       self$layout <- layout_matrix
     },
 
@@ -299,6 +320,30 @@ PlateBuilder <- R6::R6Class(
     }
   )
 )
+
+#' Extract sample names from layout
+#' @description
+#' Function extracts sample names from the layout file based on the provided locations.
+#' Function assumes that the plate is 96-well and extracts
+#' the sample names according to the provided location strings.
+#' @examples
+#' layout_names <- paste0(c("SAMPLE"), 1:96)
+#' locations <- c("A1", "A2", "A3", "B4")
+#' extract_sample_names_from_layout(layout_names, locations)
+extract_sample_names_from_layout <- function(layout_names, locations) {
+  stopifnot(is.character(layout_names) && length(layout_names) > 0)
+  stopifnot(is.character(locations) && length(locations) > 0)
+  stopifnot(length(layout_names) == 96)
+
+
+  rows <- rep(LETTERS[1:8], each = 12)
+  columns <- as.character(1:12)
+  all_locations <- paste0(rows, columns)
+
+  sample_names <- layout_names[all_locations %in% locations]
+  sample_names
+}
+
 #' Extract dilution factor from the sample name
 #' @description
 #' function extracts dilution factor from the sample name - useful for detecting
