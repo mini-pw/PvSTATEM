@@ -105,6 +105,7 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #' @param format The format of the Luminex data. Select from: xPONENT, INTELLIFLEX
 #' @param plate_file_separator The separator used in the plate file
 #' @param plate_file_encoding The encoding used in the plate file
+#' @param use_layout_sample_names Whether to use names from the layout file in extracting sample names.
 #' @param use_layout_types Whether to use names from the layout file in extracting sample types.
 #' Works only when layout file is provided
 #' @param use_layout_dilutions Whether to use dilutions from the layout file in extracting dilutions.
@@ -122,6 +123,7 @@ read_luminex_data <- function(plate_filepath,
                               format = "xPONENT",
                               plate_file_separator = ",",
                               plate_file_encoding = "UTF-8",
+                              use_layout_sample_names = TRUE,
                               use_layout_types = TRUE,
                               use_layout_dilutions = TRUE,
                               default_data_type = "Median",
@@ -160,8 +162,9 @@ read_luminex_data <- function(plate_filepath,
     layout_matrix <- read_layout_data(layout_filepath)
     plate_builder$set_layout(layout_matrix)
   }
-  if (is.null(layout_filepath) && (use_layout_types || use_layout_dilutions)) {
+  if (is.null(layout_filepath) && (use_layout_types || use_layout_dilutions || use_layout_sample_names)) {
     use_layout_types <- FALSE
+    use_layout_sample_names <- FALSE
     use_layout_dilutions <- FALSE
     verbose_cat(
       "(",
@@ -169,10 +172,13 @@ read_luminex_data <- function(plate_filepath,
       "WARNING",
       color_codes$red_end,
       ")",
-      "\nLayout file not provided. Setting use_layout_types and use_layout_dilutions to FALSE.\n",
+      "\nLayout file not provided. Setting `use_layout_sample_names`,
+      `use_layout_types` and `use_layout_dilutions` to FALSE.\n",
       verbose = verbose
     )
   }
+
+  plate_builder$set_sample_names(use_layout_sample_names)
 
   plate_builder$set_sample_types(use_layout_types, sample_types)
 
