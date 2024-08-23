@@ -63,7 +63,7 @@ The function takes the `plate` object and the analyte name as the arguments.
 If there is typo in the analyte name, the function will return an error message.
 
 ```{r}
-plot_counts(plate, "OC43_NP_NA")
+plot_counts(plate, "Spike_B16172")
 ```
 
 The plot above shows the counts of the analyte "OC43_NP_NA" in the plate. The wells are colored according to the count of the analyte.
@@ -73,7 +73,7 @@ There is also an option to show just the colors without the counts by setting `s
 This provides a cleaner plot, without the counts.
 
 ```{r}
-plot_counts(plate, "OC43_NP_NA", show_counts = FALSE)
+plot_counts(plate, "Spike_B16172", plot_counts = FALSE)
 ```
 
 # Distribution of MFI values
@@ -84,14 +84,14 @@ The function takes the `plate` object and the analyte name as the arguments.
 If there is typo in the analyte name, the function will return an error message.
 
 ```{r}
-plot_mfi_for_analyte(plate, "OC43_NP_NA")
+plot_mfi_for_analyte(plate, "Spike_B16172")
 ```
 
 This plot shows the distribution of the MFI values for test samples for the analyte "OC43_NP_NA". The test samples are colored in blue, and the standard curve samples are colored in red.
 Deafult plot type is boxplot, but there is an option to change it to violin plot by setting `plot_type` parameter to `violin`.
 
 ```{r}
-plot_mfi_for_analyte(plate, "OC43_NP_NA", plot_type = "violin")
+plot_mfi_for_analyte(plate, "FluA", plot_type = "violin")
 ```
 
 
