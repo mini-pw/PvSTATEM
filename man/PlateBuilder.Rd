@@ -8,6 +8,13 @@ PlateBuilder
 
 PlateBuilder
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{layout_as_vector}}{Print the layout associated with the plate as a flattened vector of values.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{

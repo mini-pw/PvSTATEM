@@ -31,7 +31,10 @@ Imports:
     rmarkdown,
     stringi,
     stringr,
-    tools
+    nplr,
+    grid,
+    png,
+    tools,
 Suggests:
     testthat (>= 3.0.0)
 Config/testfhat/edition: 3
