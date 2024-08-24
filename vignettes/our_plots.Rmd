@@ -52,27 +52,28 @@ plot_layout(plate)
 ```
 
 The plot above shows the layout of the plate. The wells are colored according to the type of the sample. 
-If user is familiar with color scheme of this package, there is an option to disable legend. 
+If the user is familiar with the color scheme of this package, there is an option to turn off the legend. 
 This can be done by setting `show_legend` parameter to `FALSE`.
 
-If plot window is resized, it is recomended to rerun the function to adjust the scaling of the plot.
-Sometimes when legend is plotted, whole layout may be shifted, in order to solve this issue one has to stretch the window in the direction of layout shift, and everything will be adjusted automatically.
+If the plot window is resized, it is recommended that the function be rerun to adjust the scaling of the plot.
+Sometimes, the whole layout may be shifted when a legend is plotted. 
+To solve this issue, one has to stretch the window in the direction of the layout shift, and everything will be adjusted automatically.
 
-# Counts for given analyte
-The `plot_counts` function allows to visualize the counts of the analyte in the plate. 
-This plot is useful to quickly spot wells with too low count.
+# Counts for a given analyte
+The `plot_counts` function allows us to visualize the counts of the analyte in the plate. 
+This plot is useful for quickly spotting wells with a count that is too low.
 The function takes the `plate` object and the analyte name as the arguments.
-If there is typo in the analyte name, the function will return an error message.
+The function will return an error message if there is a typo in the analyte name.
 
 ```{r}
 plot_counts(plate, "Spike_B16172")
 ```
 
 The plot above shows the counts of the analyte "OC43_NP_NA" in the plate. The wells are colored according to the count of the analyte.
-Too low values are marked with red color, values on the edge of the threshold are marked with yellow color, and the rest are marked with green color.
+Too-low values are marked with red, values on the edge of the threshold are marked with yellow, and the rest are marked with green.
 There is an option to show legend by setting `show_legend` parameter to `TRUE`.
 There is also an option to show just the colors without the counts by setting `show_counts` parameter to `FALSE`.
-This provides a cleaner plot, without the counts.
+This provides a cleaner plot without the counts.
 
 ```{r}
 plot_counts(plate, "FluA", plot_counts = FALSE)
@@ -80,17 +81,17 @@ plot_counts(plate, "FluA", plot_counts = FALSE)
 
 # Distribution of MFI values
 
-The `plot_mfi_distribution` function allows to visualize the distribution of the MFI values for test samples for the given analyte. And how they compare to standard curve samples on a given plate.
-This plot is useful to asses if the standard curve samples cover the whole range of MFI of test samples.
+The `plot_mfi_distribution` function allows us to visualize the distribution of the MFI values for test samples for the given analyte. And how they compare to standard curve samples on a given plate.
+This plot is helpful to asses if the standard curve samples cover the whole range of MFI of test samples.
 The function takes the `plate` object and the analyte name as the arguments. 
-If there is typo in the analyte name, the function will return an error message.
+The function will return an error message if there is a typo in the analyte name.
 
 ```{r}
 plot_mfi_for_analyte(plate, "Spike_B16172")
 ```
 
 This plot shows the distribution of the MFI values for test samples for the analyte "OC43_NP_NA". The test samples are colored in blue, and the standard curve samples are colored in red.
-Deafult plot type is boxplot, but there is an option to change it to violin plot by setting `plot_type` parameter to `violin`.
+The default plot type is boxplot, but there is an option to change it to violin plot by setting the `plot_type` parameter to `violin`.
 
 ```{r}
 plot_mfi_for_analyte(plate, "FluA", plot_type = "violin")
