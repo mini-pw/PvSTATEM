@@ -22,7 +22,9 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The `PvSTATEM` package provides a variety of plots that can be used to visualize the Luminex data. In this vignette, we will show how to use them. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. Firsly, let us load the dataset as the `plate` object.
+The `PvSTATEM` package provides a variety of plots that can be used to visualize the Luminex data. In this vignette, we will show how to use them. 
+To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. 
+Firstly, let us load the dataset as the `plate` object.
 
 ```{r}
 library(PvSTATEM)
@@ -39,10 +41,10 @@ plate
 
 
 # Plate layout
-In this vignette, we will omit some validation funcionality and focus on the plots. 
-After the plate is successfully loaded, we should validate it by looking at some basic information about it using summary function.
-But we can also obtain similar information in a more visual way by using the `plot_layout` function.
-It helps to quickly asses wheather the layout of the plate is correctly read from luminex or layout file.
+In this vignette, we will omit some validation functionality and focus on the plots. 
+After the plate is successfully loaded, we should validate it by looking at some basic information about it using the summary function.
+However, we can also obtain similar information in a more visual way by using the `plot_layout` function.
+It helps to quickly asses whether the layout of the plate is correctly read from Luminex or the layout file.
 The function takes the `plate` object as the argument.
 
 ```{r}
