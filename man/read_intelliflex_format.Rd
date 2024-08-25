@@ -4,10 +4,12 @@
 \alias{read_intelliflex_format}
 \title{Read the Intelliflex format data}
 \usage{
-read_intelliflex_format(path)
+read_intelliflex_format(path, verbose = TRUE)
 }
 \arguments{
 \item{path}{Path to the INTELLIFLEX file}
+
+\item{vebose}{Print additional information. Default is \code{TRUE}}
 }
 \description{
 Read the Intelliflex format data

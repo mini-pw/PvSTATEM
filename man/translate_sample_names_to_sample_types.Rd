@@ -45,3 +45,8 @@ substring \verb{1/\\d+} SampleType equals to \verb{POSITIVE CONTROL}
 
 Otherwise, the returned SampleType is \code{TEST}
 }
+\examples{
+translate_sample_names_to_sample_types(c("B", "BLANK", "NEG",  "TEST1"))
+translate_sample_names_to_sample_types(c("S", "CP3"))
+
+}

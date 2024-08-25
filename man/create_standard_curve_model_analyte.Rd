@@ -8,6 +8,7 @@ create_standard_curve_model_analyte(
   plate,
   analyte_name,
   data_type = "Median",
+  source_mfi_range_from_all_analytes = FALSE,
   ...
 )
 }
@@ -20,6 +21,10 @@ Name of the analyte for which we want to create the model}
 
 \item{data_type}{(\code{character(1)})
 Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default equals to \code{Median}}
+
+\item{source_mfi_range_from_all_analytes}{(\code{logical(1)})
+If \code{TRUE} the MFI range is calculated from all analytes, if \code{FALSE} the MFI range is calculated only for the current analyte
+Defaults to \code{FALSE}}
 
 \item{...}{Additional arguments passed to the model}
 }

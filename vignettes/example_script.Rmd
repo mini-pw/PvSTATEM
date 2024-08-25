@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The basic functionality of the `PvSTATEM` package is reading raw MBA data. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. Firsly, let us load the dataset as the `plate` object.
+The basic functionality of the `PvSTATEM` package is reading raw MBA data. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. Firstly, let us load the dataset as the `plate` object.
 
 ```{r}
 library(PvSTATEM)

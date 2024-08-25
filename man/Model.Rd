@@ -32,6 +32,9 @@ print(model)
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
+\item{\code{analyte}}{(\code{character(1)})\cr
+Name of the analyte for which the model was fitted}
+
 \item{\code{dilutions}}{(\code{numeric()})\cr
 Dilutions used to fit the model}
 
@@ -86,6 +89,7 @@ The bottom asymptote of the logistic curve}
 Create a new instance of Model \link[R6:R6Class]{R6} class
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Model$new(
+  analyte,
   dilutions,
   mfi,
   npars = 5,
@@ -101,6 +105,9 @@ Create a new instance of Model \link[R6:R6Class]{R6} class
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
+\item{\code{analyte}}{(\code{character(1)})\cr
+Name of the analyte for which the model was fitted.}
+
 \item{\code{dilutions}}{(\code{numeric()})\cr
 Dilutions used to fit the model}
 

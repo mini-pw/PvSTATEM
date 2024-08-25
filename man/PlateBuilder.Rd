@@ -4,9 +4,8 @@
 \alias{PlateBuilder}
 \title{PlateBuilder}
 \description{
-PlateBuilder
-
-PlateBuilder
+This class helps creating the Plate object.
+It is used to store the data and validate the final fields.
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
@@ -22,9 +21,11 @@ PlateBuilder
 \item \href{#method-PlateBuilder-set_sample_locations}{\code{PlateBuilder$set_sample_locations()}}
 \item \href{#method-PlateBuilder-set_dilutions}{\code{PlateBuilder$set_dilutions()}}
 \item \href{#method-PlateBuilder-set_sample_types}{\code{PlateBuilder$set_sample_types()}}
+\item \href{#method-PlateBuilder-set_sample_names}{\code{PlateBuilder$set_sample_names()}}
 \item \href{#method-PlateBuilder-set_data}{\code{PlateBuilder$set_data()}}
 \item \href{#method-PlateBuilder-set_default_data_type}{\code{PlateBuilder$set_default_data_type()}}
 \item \href{#method-PlateBuilder-set_batch_info}{\code{PlateBuilder$set_batch_info()}}
+\item \href{#method-PlateBuilder-set_plate_name}{\code{PlateBuilder$set_plate_name()}}
 \item \href{#method-PlateBuilder-set_layout}{\code{PlateBuilder$set_layout()}}
 \item \href{#method-PlateBuilder-build}{\code{PlateBuilder$build()}}
 \item \href{#method-PlateBuilder-clone}{\code{PlateBuilder$clone()}}
@@ -36,16 +37,12 @@ PlateBuilder
 \subsection{Method \code{new()}}{
 Initialize the PlateBuilder object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$new(plate_name, sample_names, analyte_names, verbose = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$new(sample_names, analyte_names, batch_name = "", verbose = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{plate_name}}{\itemize{
-\item plate name obtained from filename
-}}
-
 \item{\code{sample_names}}{\itemize{
 \item vector of sample names measured during
 an examination in the same order as in the data
@@ -54,6 +51,12 @@ an examination in the same order as in the data
 \item{\code{analyte_names}}{\itemize{
 \item vector of analytes names measured during
 an examination in the same order as in the data
+}}
+
+\item{\code{batch_name}}{\itemize{
+\item name of the batch during which the plate was examined
+obtained from the plate info. An optional parameter, by default set to
+\code{""} - an empty string.
 }}
 
 \item{\code{verbose}}{\itemize{
@@ -128,6 +131,25 @@ to extract sample types}
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PlateBuilder-set_sample_names"></a>}}
+\if{latex}{\out{\hypertarget{method-PlateBuilder-set_sample_names}{}}}
+\subsection{Method \code{set_sample_names()}}{
+Set the sample names used during the examination. If the layout is provided,
+extract the sample names from the layout file. Otherwise, uses the original sample names from the Luminex file
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$set_sample_names(use_layout_sample_names = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{use_layout_sample_names}}{logical value indicating whether
+to use names extracted from layout files. If set to false, this function only checks if the sample names are provided in the plate}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PlateBuilder-set_data"></a>}}
 \if{latex}{\out{\hypertarget{method-PlateBuilder-set_data}{}}}
 \subsection{Method \code{set_data()}}{
@@ -193,10 +215,24 @@ the plate read from the Luminex file}
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PlateBuilder-set_plate_name"></a>}}
+\if{latex}{\out{\hypertarget{method-PlateBuilder-set_plate_name}{}}}
+\subsection{Method \code{set_plate_name()}}{
+Set the plate name for the plate.
+The plate name is extracted from the filepath
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$set_plate_name(file_path)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PlateBuilder-set_layout"></a>}}
 \if{latex}{\out{\hypertarget{method-PlateBuilder-set_layout}{}}}
 \subsection{Method \code{set_layout()}}{
-Set the layout matrix for the plate
+Set the layout matrix for the plate. This function performs basic validation
+\itemize{
+\item verifies if the plate is a matrix of shape 8x12 with 96 wells
+}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$set_layout(layout_matrix)}\if{html}{\out{</div>}}
 }
@@ -204,7 +240,7 @@ Set the layout matrix for the plate
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{layout_matrix}}{a matrix containing information about the}
+\item{\code{layout_matrix}}{a matrix containing information about the sample names. dilutions, etc.}
 }
 \if{html}{\out{</div>}}
 }
