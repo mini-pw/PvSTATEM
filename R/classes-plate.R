@@ -449,6 +449,6 @@ Plate <- R6::R6Class(
 
 
 #' @export
-summary.Plate = function(object, include_names = FALSE) {
-  object$summary(include_names = include_names)
+summary.Plate = function(object, ...) {
+  object$summary(...)
 }

@@ -25,7 +25,7 @@ require(png)
 #' @import grid
 #' @import png
 #'
-#' @internal
+#' @keywords internal
 plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate",
                        plot_legend = FALSE, legend_mapping = NULL) {
 
@@ -133,10 +133,13 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' @return A ggplot object
 #'
 #' @examples
-#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)
-#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
+#'   package = "PvSTATEM", mustWork = TRUE)
+#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
+#'   package = "PvSTATEM", mustWork = TRUE)
 #' plate <- read_luminex_data(plate_filepath, layout_filepath)
-#' plot_counts(plate = plate, analyte_name = "OC43_NP_NA", plot_counts = T, plot_legend = F)
+#' plot_counts(plate = plate, analyte_name = "OC43_NP_NA",
+#'   plot_counts = TRUE, plot_legend = FALSE)
 #'
 #' @export
 plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = FALSE) {
@@ -207,10 +210,12 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 #' @return A ggplot object
 #'
 #' @examples
-#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)
-#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+#' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
+#'   package = "PvSTATEM", mustWork = TRUE)
+#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
+#'   package = "PvSTATEM", mustWork = TRUE)
 #' plate <- read_luminex_data(plate_filepath, layout_filepath)
-#' plot_layout(plate = plate, plot_legend = T)
+#' plot_layout(plate = plate, plot_legend = TRUE)
 #'
 #' @export
 plot_layout <- function(plate, plot_legend = TRUE) {

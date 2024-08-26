@@ -326,10 +326,13 @@ PlateBuilder <- R6::R6Class(
 #' Function extracts sample names from the layout file based on the provided locations.
 #' Function assumes that the plate is 96-well and extracts
 #' the sample names according to the provided location strings.
+#' @param layout_names a vector of sample names from the layout file
+#' @param locations a vector of locations in the form of A1, B2, etc.
 #' @examples
 #' layout_names <- paste0(c("SAMPLE"), 1:96)
 #' locations <- c("A1", "A2", "A3", "B4")
-#' extract_sample_names_from_layout(layout_names, locations)
+#' PvSTATEM:::extract_sample_names_from_layout(layout_names, locations) # execute an internal function
+#' @keywords internal
 extract_sample_names_from_layout <- function(layout_names, locations) {
   stopifnot(is.character(layout_names) && length(layout_names) > 0)
   stopifnot(is.character(locations) && length(locations) > 0)
@@ -351,9 +354,10 @@ extract_sample_names_from_layout <- function(layout_names, locations) {
 #' @param sample_name a vector of sample names from which we want to extract the dilutions
 #' @examples
 #' raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
-#' extract_dilution_from_names(raw_dilutions)
+#' PvSTATEM:::extract_dilution_from_names(raw_dilutions) # execute an internal function
 #'
 #' @return a vector of dilutions represented as strings extracted from the sample names
+#' @keywords internal
 extract_dilution_from_names <- function(sample_name) {
   dilution_regex <- "1/\\d+"
 
@@ -372,7 +376,8 @@ extract_dilution_from_names <- function(sample_name) {
 #'
 #' @examples
 #' raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
-#' extract_dilutions_from_layout(raw_dilutions)
+#' PvSTATEM:::extract_dilutions_from_layout(raw_dilutions) # execute an internal function
+#' @keywords internal
 extract_dilutions_from_layout = function(dilutions) {
   stopifnot(is.character(dilutions) && length(dilutions) > 0)
 

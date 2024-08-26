@@ -1,7 +1,7 @@
 #' Plot MFI value distribution for a given analyte
 #'
 #' @param plate A plate object
-#' @param analyte The analyte to plot
+#' @param analyte_name The analyte to plot
 #' @param data_type The type of data to plot. Default is "Median"
 #' @param plot_type The type of plot to generate. Default is "boxplot".
 #' Available options are "boxplot" and "violin".

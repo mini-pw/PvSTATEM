@@ -3,7 +3,7 @@ require(dplyr)
 #' Read the Intelliflex format data
 #'
 #' @param path Path to the INTELLIFLEX file
-#' @param vebose Print additional information. Default is `TRUE`
+#' @param verbose Print additional information. Default is `TRUE`
 #'
 #' @import dplyr
 #' @import utils
