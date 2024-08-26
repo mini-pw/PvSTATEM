@@ -1,5 +1,3 @@
-require(dplyr)
-
 #' Read the Intelliflex format data
 #'
 #' @param path Path to the INTELLIFLEX file

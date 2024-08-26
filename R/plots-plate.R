@@ -1,7 +1,3 @@
-require(ggplot2)
-require(grid)
-require(png)
-
 
 #' Plot a 96-well plate with colored wells
 #'
@@ -197,8 +193,10 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 }
 
 
+#' @title
 #' Plot layout of a 96-well plate
 #'
+#' @description
 #' This is a function used to plot the layout of a 96-well plate using a color to represent the sample types. \cr \cr
 #' If plot window is resized, it's best to re-run the function to adjust the scaling.
 #' Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted atutomatically.
