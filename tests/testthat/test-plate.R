@@ -28,7 +28,7 @@ test_that("Test printing the plate and misc functions", {
   plate <- get_test_plate()
   expect_no_error(print(plate))
   expect_no_error(summary(plate))
-  expect_equal(summary(plate, include_names = TRUE))
+  expect_no_error(summary(plate, include_names = TRUE))
 })
 
 test_that("Blank adjustments", {
