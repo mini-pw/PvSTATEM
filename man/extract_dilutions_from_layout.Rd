@@ -17,5 +17,6 @@ The matches has to be exact and the dilution factor has to be in the form of \ve
 }
 \examples{
 raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
-extract_dilutions_from_layout(raw_dilutions)
+PvSTATEM:::extract_dilutions_from_layout(raw_dilutions) # execute an internal function
 }
+\keyword{internal}

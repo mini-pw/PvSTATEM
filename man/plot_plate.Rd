@@ -37,3 +37,4 @@ plots the colors in the wells using ggplot2.
 This function is not intended to be used directly by the user.
 Rather, it is used by other functions, specified in this file.
 }
+\keyword{internal}

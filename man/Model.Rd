@@ -24,7 +24,7 @@ This equation is refereed as the Richards' equation. More information about the 
 \examples{
 plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
 layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
-plate <- read_luminex_data(plate_file, layout_filepath = layout_file, dilutions_from = "layout")
+plate <- read_luminex_data(plate_file, layout_filepath = layout_file)
 model <- create_standard_curve_model_analyte(plate, "S2", log_mfi = TRUE)
 print(model)
 
