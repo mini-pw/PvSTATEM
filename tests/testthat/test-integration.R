@@ -27,4 +27,7 @@ test_that("Fully Parse CovidOISExPONTENT_CO.csv plate data with layout", {
   expect_equal(plate$dilutions[1:4], c(NA, "1/50", "1/100", "1/200"))
 
   expect_equal(plate$plate_name , "CovidOISExPONTENT_CO")
+
+  expect_no_error(print(plate))
+  expect_no_error(summary(plate))
 })
