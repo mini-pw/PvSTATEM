@@ -31,7 +31,6 @@ Imports:
     rmarkdown,
     stringi,
     stringr,
-    nplr,
     grid,
     png,
     tools,
