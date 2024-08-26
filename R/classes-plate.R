@@ -414,7 +414,11 @@ Plate <- R6::R6Class(
         blanks_df <- df[blanks_filter, ]
         blank_values <- switch(method,
           "avg" = {
-            apply(blanks_df, 2, mean)
+            if (is.null(dim(blanks_df))) {
+              mean(blanks_df)
+            } else {
+              apply(blanks_df, 2, mean)
+            }
           },
           {
             stop("Method ", method, " is not supported")
