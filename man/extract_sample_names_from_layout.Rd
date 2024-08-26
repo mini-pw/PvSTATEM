@@ -19,6 +19,6 @@ the sample names according to the provided location strings.
 \examples{
 layout_names <- paste0(c("SAMPLE"), 1:96)
 locations <- c("A1", "A2", "A3", "B4")
-extract_sample_names_from_layout(layout_names, locations) # execute an internal function
+PvSTATEM:::extract_sample_names_from_layout(layout_names, locations) # execute an internal function
 }
 \keyword{internal}
