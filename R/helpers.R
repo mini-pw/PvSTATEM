@@ -66,6 +66,27 @@ remove_empty_lists <- function(lst) {
   return(result)
 }
 
+
+#' Check if a string is a number
+#'
+#' @param x A string to be checked.
+#' @return `TRUE` if the string is a number, `FALSE` otherwise.
+is.str.number <- function(x) {
+  stopifnot(is.character(x))
+  all(sapply(x, function(x) grepl("^[0-9]+$", x)))
+}
+
+
+#' Check if a value is a scalar
+#'
+#' This will return FALSE for NULL and vectors of length bigger than 2.
+#'
+#' @param x Object to be checked.
+#' @return `TRUE` if the object is a scalar, `FALSE` otherwise.
+is.scalar <- function(x) {
+  is.atomic(x) && length(x) == 1L
+}
+
 #' Verbose Cat
 #'
 #' This function prints the input to the console if the `verbose` argument is `TRUE`.
@@ -83,12 +104,22 @@ verbose_cat <- function(..., verbose = TRUE) {
 #
 # colors for WARNING, NOTE, DEFAULT
 #
-color_codes <-
-  list(
-    yellow_start = "\033[33m",
-    yellow_end = "\033[39m",
-    red_start = "\033[31m",
-    red_end = "\033[39m",
-    green_start = "\033[32m",
-    green_end = "\033[39m"
-  )
+color_codes <- list(
+  yellow_start = "\033[33m",
+  yellow_end = "\033[39m",
+  red_start = "\033[31m",
+  red_end = "\033[39m",
+  green_start = "\033[32m",
+  green_end = "\033[39m"
+)
+
+#' Check if a value is an outlier
+#'
+#' @param x Vector of numeric values from which the outliers are to be detected.
+#'
+#' @return A logical vector indicating whether each value is an outlier.
+#'
+#' @importFrom stats IQR quantile
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5 * IQR(x))
+}

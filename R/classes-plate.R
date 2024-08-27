@@ -1,118 +1,216 @@
-#' @title Plate
+#'
+#'
+
+VALID_SAMPLE_TYPES <- c(
+  "ALL",
+  "BLANK",
+  "TEST",
+  "NEGATIVE CONTROL",
+  "STANDARD CURVE",
+  "POSITIVE CONTROL"
+)
+
+VALID_DATA_TYPES <- c(
+  "Median",
+  "Net MFI",
+  "Count",
+  "Avg Net MFI",
+  "Mean",
+  "Peak"
+)
+
+globalVariables(c("VALID_SAMPLE_TYPES", "VALID_DATA_TYPES"))
+
+#' Check validity of given sample type
+#' @description
+#' Check if the sample type is valid. The sample type is valid if it is one of the
+#' elements of the `VALID_SAMPLE_TYPES` vector. The valid sample types are:
+#'
+#' \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
+#'
+#' @param sample_type A string representing the sample type.
+#' @return `TRUE` if the sample type is valid, `FALSE` otherwise.
+#'
+#' @export
+is_valid_sample_type <- function(sample_type) {
+  sample_type %in% VALID_SAMPLE_TYPES
+}
+
+#' Check validity of given data type
+#' @description
+#' Check if the data type is valid. The data type is valid if it is one of the
+#' elements of the `VALID_DATA_TYPES` vector. The valid data types are:
+#' \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
+#'
+#' @param data_type A string representing the data type.
+#' @return `TRUE` if the data type is valid, `FALSE` otherwise.
+#'
+#' @export
+is_valid_data_type <- function(data_type) {
+  data_type %in% VALID_DATA_TYPES
+}
+
+
+#' @title Plate object
+#'
 #' @description
 #' A class to represent the luminex plate. It contains information about
 #' the samples and analytes that were examined on the plate as well as
 #' some additional metadata and batch info
 #'
+#' @importFrom R6 R6Class
 #'
-#'
-#' @examples
-#'
-#' plate_filepath <- system.file("extdata",
-#'   "CovidOISExPONTENT_CO.csv",
-#'   package = "PvSTATEM",
-#'   mustWork = TRUE
-#' ) # get the filepath of the csv dataset
-#' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-#'   package = "PvSTATEM", mustWork = TRUE
-#' ) # get the filepath of the layout file
-#'
-#' plate <- read_data(plate_filepath, layout_filepath)
-#'
-#' plate$summary()
-#'
-#' @export
 Plate <- R6::R6Class(
   "Plate",
   public = list(
 
-    #' @field analytes list of all analytes measured during an examination
-    analytes = list(),
+    ## Fields ----------------------------------------------------------------
+    ## Must be set ---
 
-    #' @field samples list of all samples examined on a plate
-    samples = list(),
-
-    #' @field batch_info a raw list containing all the metadata about
-    #' the plate read from the Luminex file
-    batch_info = list(),
-
-    #' @field calibration_info a list containing calibration logs read from
-    #' the Luminex file
-    calibration_info = list(),
-
-    #' @field audit_logs a list containing audit logs read from Luminex file
-    audit_logs = list(),
-
-    #' @field plate_name - plate name obtained from filename
+    #' @field plate_name  (`character(1)`)\cr
+    #'  Name of the plate.
     plate_name = "",
+    #' @field analyte_names (`character()`)\cr
+    #' Names of the analytes that were examined on the plate.
+    analyte_names = character(),
+    #' @field sample_names (`character()`)\cr
+    #' Names of the samples that were examined on the plate.
+    sample_names = character(),
+    ## Must be set if validated ---
+    #' @field batch_name (`character(1)`)\cr
+    #' Name of the batch to which the plate belongs.
+    batch_name = "",
+    #' @field sample_locations (`character()`)\cr
+    #' Locations of the samples on the plate.
+    sample_locations = NULL,
+    #' @field sample_types (`character()`)\cr
+    #' Types of the samples that were examined on the plate.
+    #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
+    sample_types = NULL,
+    #' @field dilutions (`character()`)\cr
+    #' A list containing names of the samples as keys and string representing dilutions as values.
+    #' The dilutions are represented as strings.
+    dilutions = NULL,
+    #' @field dilution_values (`numeric()`)\cr
+    #' A list containing names of the samples as keys and numeric values representing dilutions as values.
+    dilution_values = NULL,
+    #' @field data (`list()`)\cr
+    #' A list containing dataframes with the data for each sample and analyte.
+    #' The possible data types - the keys of the list are:
+    #' \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
+    #'
+    #' In each dataframe, the rows represent samples and the columns represent analytes.
+    data = NULL,
+    #' @field default_data_type (`character(1)`)\cr
+    #' The default data type that will be returned by the `get_data` method.
+    #' By default is set to `Median`.
+    default_data_type = NULL,
+    #' @field batch_info (`list()`)\cr
+    #' A list containing additional, technical information about the batch.
+    batch_info = NULL,
+    #' @field layout (`character()`)\cr
+    #' A list containing information about the layout of the plate.
+    #' The layout is read from the separate file and usually provides additional
+    #' information about the dilutions, sample names, and the sample layout
+    #' on the actual plate.
+    layout = NULL,
+
+    ## Fields that will be set by the methods ---
+    #' @field blank_adjusted (`logical`)\cr
+    #' A flag indicating whether the blank values have been adjusted.
+    blank_adjusted = FALSE,
 
 
     #' @description
-    #' creates a new `Plate` object
+    #' Method to initialize the Plate object
     #'
-    #' @param analytes (`list`)
-    #' list of all analytes measured during an examination
-
-    #' @param samples (`list`)
-    #' list of all samples examined on a plate
-
-    #' @param batch_info (`list`) \cr
-    #' a raw list containing all the metadata about the plate read from
-    #' the Luminex file
-
-    #' @param calibration_info (`list`) \cr
-    #' a list containing calibration logs read from Luminex file
-
-    #' @param audit_logs (`list`)
-    #' a list containing audit logs read from Luminex file
-    initialize = function(analytes = list(),
-                          samples = list(),
-                          batch_info = list(),
-                          calibration_info = list(),
-                          audit_logs = list(),
-                          plate_name = "") {
-      # check for valid input
-      self$analytes <- analytes
-      self$samples <- samples
-      self$batch_info <- batch_info
-      self$calibration_info <- calibration_info
-      self$audit_logs <- audit_logs
+    #' @param plate_name  (`character(1)`)\cr
+    #'  Name of the plate.
+    #'  By default is set to an empty string,
+    #'  during the reading process it is set to the name
+    #'  of the file from which the plate was read.
+    #' @param sample_names (`character()`)\cr
+    #'  Names of the samples that were examined on the plate.
+    #' @param analyte_names (`character()`)\cr
+    #'  Names of the analytes that were examined on the plate.
+    #' @param batch_name (`character(1)`)\cr
+    #'  Name of the batch to which the plate belongs.
+    #'  By default is set to an empty string, during the reading process it is set to
+    #'  the `batch` field of the plate
+    #' @param dilutions (`character()`)\cr
+    #'  A list containing names of the samples as keys and string representing dilutions as values.
+    #'  The dilutions are represented as strings.
+    #' @param dilution_values (`numeric()`)\cr
+    #'  A list containing names of the samples as keys and numeric values representing dilutions as values.
+    #' @param sample_types (`character()`)\cr
+    #'  Types of the samples that were examined on the plate.
+    #'  The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
+    #' @param data (`list()`)\cr
+    #'  A list containing dataframes with the data for each sample and analyte.
+    #'  The possible data types - the keys of the list are \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
+    #'  In each dataframe, the rows represent samples and the columns represent analytes.
+    #' @param sample_locations (`character()`)\cr
+    #'  Locations of the samples on the plate.
+    #' @param default_data_type (`character(1)`)\cr
+    #'  The default data type that will be returned by the `get_data` method.
+    #'  By default is set to `Median`.
+    #' @param batch_info (`list()`)\cr
+    #'  A list containing additional, technical information about the batch.
+    #' @param layout (`character()`)\cr
+    #'  A list containing information about the layout of the plate.
+    #'  The layout is read from the separate file and usually provides additional
+    #'  information about the dilutions, sample names, and the sample layout
+    #'  on the actual plate.
+    initialize = function(plate_name, sample_names, analyte_names, batch_name = "",
+                          dilutions = NULL, dilution_values = NULL,
+                          sample_types = NULL, data = NULL,
+                          sample_locations = NULL, default_data_type = NULL,
+                          batch_info = NULL, layout = NULL) {
       self$plate_name <- plate_name
+      self$analyte_names <- analyte_names
+      self$sample_names <- sample_names
+      if (!is.null(batch_name) && length(batch_name) != 0) self$batch_name <- batch_name
+      if (!is.null(sample_locations)) self$sample_locations <- sample_locations
+      if (!is.null(dilutions)) self$dilutions <- dilutions
+      if (!is.null(dilution_values)) self$dilution_values <- dilution_values
+      if (!is.null(sample_types)) self$sample_types <- sample_types
+      if (!is.null(data)) self$data <- data
+      if (!is.null(default_data_type)) self$default_data_type <- default_data_type
+      if (!is.null(batch_info)) self$batch_info <- batch_info
+      if (!is.null(layout)) self$layout <- layout
     },
 
     #' @description
     #' Function prints the basic information about the plate
     #' such as the number of samples and analytes
-    #' @return invisible object
+    #' @param ... Additional parameters to be passed to the print function
     print = function(...) {
       cat(
         "Plate with",
-        length(self$samples),
+        length(self$sample_names),
         "samples and",
-        length(self$analytes),
-        "analytes\n"
+        length(self$analyte_names),
+        "analytes\n",
+        ... = ...
       )
-      invisible(self)
     },
 
-
+    #' Print the summary of the plate
     #' @description
-    #' Function outputs basic information about the plate, such as examination date,
-    #' batch name, and sample types
+    #' Function outputs basic information about the plate, such as
+    #' examination date, batch name, and sample types.
     #'
     #' @param include_names If `include_names` parameter is `TRUE`, a
     #' part from count of control samples, provides also their names.
     #' By default `FALSE`
+    #' @param ... Additional parameters to be passed to the print function
     summary = function(..., include_names = FALSE) {
-      positive_control_samples_list <- self$get_sample_by_type("POSITIVE CONTROL")
-      negative_control_samples_list <- self$get_sample_by_type("NEGATIVE CONTROL")
-      standard_curve_samples_list <- self$get_sample_by_type("STANDARD CURVE")
 
-      blank_samples_num <-
-        length(self$get_sample_by_type("BLANK"))
-      positive_control_num <- length(positive_control_samples_list)
-      negative_control_num <- length(negative_control_samples_list)
-      standard_curve_num <- length(standard_curve_samples_list)
+      positive_control_num <- sum(self$sample_types == "POSITIVE CONTROL")
+      negative_control_num <- sum(self$sample_types == "NEGATIVE CONTROL")
+      standard_curve_num <- sum(self$sample_types == "STANDARD CURVE")
+      test_samples_num <- sum(self$sample_types == "TEST")
+      blank_samples_num <- sum(self$sample_types == "BLANK")
 
       positive_control_names <- ""
       negative_control_names <- ""
@@ -120,25 +218,28 @@ Plate <- R6::R6Class(
 
       if (include_names) {
         if (positive_control_num > 0) {
-          positive_control_names <- paste(sapply(positive_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+          positive_control_names <- self$sample_names[self$sample_types == "POSITIVE CONTROL"]
+          positive_control_names <- paste(sapply(positive_control_names, function(sample) paste0("'", sample, "'")), collapse = ", ")
           positive_control_names <- paste0("\nSample names: ", positive_control_names)
         }
 
         if (negative_control_num > 0) {
-          negative_control_names <- paste(sapply(negative_control_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+          negative_control_names <- self$sample_names[self$sample_types == "NEGATIVE CONTROL"]
+          negative_control_names <- paste(sapply(negative_control_names, function(sample) paste0("'", sample, "'")), collapse = ", ")
           negative_control_names <- paste0("\nSample names: ", negative_control_names)
+
         }
         if (standard_curve_num > 0) {
-          standard_curve_names <- paste(sapply(standard_curve_samples_list, function(sample) paste0("'", sample$sample_name, "'")), collapse = ", ")
+          standard_curve_names <- self$sample_names[self$sample_types == "STANDARD CURVE"]
+          standard_curve_names <- paste(sapply(standard_curve_names, function(sample) paste0("'", sample, "'")), collapse = ", ")
           standard_curve_names <- paste0("\nSample names: ", standard_curve_names)
         }
       }
 
       cat(
-        "Summary of the plate generated on ", as.character(self$examination_date),
-        "\nwith name '", plate$plate_name, "':\n",
+        "Summary of the plate with name '", self$plate_name, "':\n",
         "Total number of samples: ",
-        self$number_of_samples,
+        length(self$sample_names),
         "\n",
         "Number of blank samples: ",
         blank_samples_num,
@@ -152,499 +253,206 @@ Plate <- R6::R6Class(
         "Number of negative control samples: ",
         negative_control_num,
         negative_control_names, "\n",
+        "Number of test samples: ",
+        test_samples_num, "\n",
+        "Number of analytes: ",
+        length(self$analyte_names), "\n",
         sep = ""
       )
 
       invisible(self)
+
+
     },
 
-    #' @description
-    #' function adds block of information to the current plate
-    #'
-    #'
-    #' the analysis type should be added after the analysis,
-    #' otherwise there is no enough information about samples
-    add_results_block = function(data_type, parsed_block) {
-      # verify the data type
-      if (data_type == "CRC") {
-        return(0)
-      }
-      if (data_type == "Audit Logs") {
-        self$audit_logs <- parsed_block
-        return(0)
-      }
-      if (data_type == "Warnings/Errors") {
-        # warnings should be at the end of the file, thus we assume that there exists samples in given locations
-        for (warning in parsed_block) {
-          location <- SampleLocation$parse_sample_location(warning$Location)
-          sample <- self$get_sample(location)
-          if (warning$Status == "Warning") {
-            sample$warnings <- c(sample$warnings, warning$Message)
-          } else if (warning$Status == "Error") {
-            sample$errors <- c(sample$errors, warning$Message)
-          }
-        }
-      }
-      if (data_type == "samples") {
-        if (length(self$samples) == 0) {
-          self$samples <- parsed_block
-        } else {
-          # join the lists of analytes
-          new_samples <- parsed_block
-          for (i in seq_along(new_samples)) {
-            new_sample <- new_samples[[i]]
-            if (new_sample$id %in% sapply(self$samples, function(x) {
-              x$id
-            })) {
-              # add new data to the existing sample
-              self$samples[[new_sample$id]]$join(new_sample)
-            } else {
-              self$samples[[new_sample$id]] <- new_sample
-            }
-          }
-        }
-        return(0)
-      }
-      if (data_type == "analytes") {
-        if (length(self$analytes) == 0) {
-          self$analytes <- parsed_block
-        }
-        # join the lists of analytes
-        new_analytes <- parsed_block
-        for (i in seq_along(new_analytes)) {
-          new_analyte <- new_analytes[[i]]
-          if (new_analyte$id %in% sapply(self$analytes, function(x) {
-            x$id
-          })) {
-            # add new data to the existing sample
-            self$analytes[[as.character(new_analyte$id)]]$join(new_analyte)
-          } else {
-            self$analytes[[as.character(new_analyte$id)]] <- new_analyte
-          }
-        }
-        return(0)
-      }
-      if (data_type == "analyte_types") {
-        parsed_block <- Filter(Negate(is.null), parsed_block)
 
-        if (length(self$analytes) == 0 || length(parsed_block)) {
-          return(0)
-        } # nothing to add
-
-        for (analyte_name in names(parsed_block)) {
-          analyte_type <- parsed_block[[analyte_name]]
-
-          analyte_id <- self$get_analyte_id(analyte_name)
-          if (length(analyte_id) > 0) {
-            self$analytes[[analyte_id]]$analysis_type <- analyte_type
-          }
-        }
-        return(0)
-      }
-    },
-
-    #' @description
-    #' Function verifies if the batch info contain valid information
-    check_batch_info = function() {
-      # we will require only some of the fields
-
-      if (is.null(self$examination_date)) {
-        stop("No examination date provided or in bad format")
-      }
-
-      if (is.null(self$batch_name)) {
-        stop("No batch name provided or is in bad format")
-      }
-
-
-      return(TRUE)
-    },
-
-    #' @description
-    #' checks analyte consistency - verifies if all of the analytes contained within the samples are listed in the `analytes` list of the plate object
-    check_analyte_consistency = function() {
-      additional_column_names <- c("Total Events")
-
-      is_consistent <- TRUE
-
-      analytes_in_plate <- self$analyte_names
-
-      analytes_in_plate <- c(analytes_in_plate, additional_column_names)
-
-      # check if all analytes in self$samples are saved in self$analytes
-      for (sample in self$samples) {
-        analytes_in_sample <- colnames(sample$data)
-        diff_elements <-
-          setdiff(analytes_in_sample, analytes_in_plate)
-
-
-        if (length(diff_elements) > 0) {
-          # Print differing elements
-          warning_message <- paste0(
-            "Analytes in the sample ",
-            sample$sample_name,
-            " that are not in plate: ",
-            diff_elements
-          )
-          sample$warnings <- append(sample$warnings, warning_message)
-
-          # Raise an error
-          is_consistent <- FALSE
-          # stop("Error: There are analytes in the sample not defined in the plate.")
-        }
-      }
-
-      return(is_consistent)
-    },
-
-    #' @description
-    #' function performs validity check - verifies which samples and analytes saved in the plate have the bead count lower than `min_events_per_bead`
-    #'
-    #' @param min_events_per_bead lower bound of acceptable number of events. By default equals to `min_events_per_bead` parameter saved in the plate object
-    #'
-    #' @return returns `TRUE` if there are samples with bead count lower than `min_events_per_bead`, otherwise `FALSE`
-    check_beads_number = function(min_events_per_bead = self$min_events_per_bead) {
-      below_min_list <- list()
-
-      below_min_flag <- FALSE
-
-      for (sample in self$samples) {
-        if ("Count" %in% row.names(sample$data)) { # TODO there should be option for lowercase
-          below_min <- which(sample$data["Count", ] < min_events_per_bead, arr.ind = TRUE)
-          if (length(below_min) > 0) {
-            below_min_analytes <- names(sample$data["Count", ])[below_min[, "col"]]
-            new_warnings <- paste0("An analyte ", below_min_analytes, " did not reach the specified count in the given sample")
-            sample$warnings <- c(sample$warnings, new_warnings)
-          }
-        }
-      }
-
-      return(below_min_flag)
-    },
-
-    #'
-    #' @param sample sample name or its id
-    #' @return sample object of given sample name or id
-    get_sample = function(sample) {
-      # get the sample by its name, id or location
-      if ("SampleLocation" %in% class(sample)) {
-        sample <-
-          which(sapply(self$samples, function(x) {
-            x$sample_location$location_name
-          }) == sample$location_name)
-      } else if (is.numeric(sample)) {
-        if (sample < 0 || sample > plate$number_of_samples) {
-          stop("Sample ID out of range")
-        }
-      } else {
-        sample <-
-          which(sapply(self$samples, function(x) {
-            x$sample_name
-          }) == sample)
-
-        sample_by_loc <-
-          which(sapply(self$samples, function(x) {
-            x$sample_location$location_name
-          }) == sample)
-
-        sample <- c(sample, sample_by_loc)
-
-        if (length(sample) == 0) {
-          stop("Sample of given name nor location not found")
-        }
-      }
-      return(self$samples[[sample]])
-    },
-
-    #' @description
-    #' Function returns list of samples filtered by the type
-    #'
-    #' @param sample_type type of the sample to be filtered. Possible values are:
-    #' SampleType$valid_sample_types
-    #'
-    #'
-    #' @param exclude If `FALSE` returns list of samples with given `sample_type`,
-    #' otherwise returns all samples except for the specified `sample_type`
-    #'
-    get_sample_by_type = function(sample_type, exclude = FALSE) {
-      stopifnot(sample_type %in% SampleType$valid_sample_types)
-
-      samples_by_type <- list()
-      for (sample in self$samples) {
-        if (sample$sample_type$sample_type == sample_type && !exclude) {
-          samples_by_type <- append(samples_by_type, sample)
-        } else if (sample$sample_type$sample_type != sample_type && exclude) {
-          samples_by_type <- append(samples_by_type, sample)
-        }
-      }
-
-      return(samples_by_type)
-    },
-
-    #'
-    #' @return  analyte id of given name
-    get_analyte_id = function(analyte_name) {
-      analyte_id <-
-        which(sapply(self$analytes, function(x) {
-          x$analyte_name
-        }) == analyte_name)
-    },
-
+    #' Get data for a specific analyte and sample type
     #' @description
     #' Function returns data for a specific analyte and sample.
     #'
-    #' @param analyte An analyte name or its id of which data we want to extract
+    #' @param analyte An analyte name or its id of which data we want to extract.
+    #'  If set to 'ALL' returns data for all analytes.
     #'
-    #' @param sample sample name or id
-    #' @param data_type if `NULL` returns whole column of the dataframe containing information about the sample.
-    #' Otherwise tries to select the exact `data_type` from the dataframe and returns a single value
+    #' @param sample_type is a type of the sample we want to extract data from.
+    #'  The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}. Default value is `ALL`.
+    #' @param data_type The parameter specifying which data type should be returned.
+    #'  This parameter has to take one of values: \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
+    #'  What's more, the `data_type` has to be present in the plate's data
+    #'  Default value is plate's `default_data_type`, which is usually `Median`.
     #'
-    #' @return Data about a sample and analyte
-    get = function(analyte, sample, data_type = NULL) {
-      # get the data for a specific analyte and sample
-
-      if (length(sample) != 1) {
-        stop("Only one sample can be passed, for now.")
-      }
-
-      if (is.numeric(analyte)) {
-        # if there is passed id of analyte
-        analyte <- as.character(analyte)
-        analyte_name <- self$analytes[[analyte]]$analyte_name
-      } else {
-        analyte_name <- analyte
-      }
-      analyte_id <- self$get_analyte_id(analyte_name)
-      if (length(analyte_id) == 0) {
-        stop("Analyte of given name not found")
-      }
-
-      sample <- self$get_sample(sample)
-
-      if (is.null(data_type)) {
-        return(sample$data[analyte_name])
-      } else {
-        if (!data_type %in% row.names(sample$data[analyte_name])) {
-          stop(paste0("Incorrect value for `data_type`: ", data_type))
+    #' @return Dataframe containing information about a given sample type and analyte
+    get_data = function(analyte, sample_type = "ALL", data_type = self$default_data_type) {
+      # check if the analyte exists in analytes_names
+      if (!is.null(analyte) && !is.na(analyte)) {
+        if (!(analyte %in% c(self$analyte_names, "ALL"))) {
+          stop("Analyte ",  analyte, " does not exist in plate's field analyte_names")
         }
-        return(sample$data[data_type, analyte_name])
+      } else {
+        stop("Passed analyte is either NULL or NA")
       }
 
+      # check if the sample_type is a valid sample type
+      if (!is.null(sample_type) && !is.na(sample_type)) {
+        if (!is_valid_sample_type(sample_type)) {
+          stop("Sample type ", sample_type , " is not a valid sample type")
+        }
+      } else {
+        stop("Passed sample type is either NULL or NA")
+      }
 
-      return(sample)
+      # check if the data_type is a valid data type
+      if (!is.null(data_type) && !is.na(data_type)) {
+        if (!is_valid_data_type(data_type)) {
+          stop("Data type ", data_type, " is not a valid data type")
+        } else if (!data_type %in% names(self$data)) {
+          stop("Data type ", data_type, " does not exist in the plate")
+        }
+      } else {
+        stop("Passed data type is either NULL or NA")
+      }
+
+      # get samples of the given type, data_type and analyte and return them
+      if (sample_type == "ALL") {
+        valid_samples <- rep(TRUE, length(self$sample_types))
+      } else {
+        valid_samples <- self$sample_types == sample_type
+      }
+
+      data_of_specified_type <- self$data[[data_type]]
+      if (analyte == "ALL") {
+        return(data_of_specified_type[valid_samples, ])
+      } else {
+        return(data_of_specified_type[valid_samples, analyte])
+      }
     },
 
+    #' Get the string representation of dilutions
     #' @description
-    #' Function adjusts the values of test samples by subtracting average of BLANK samples
-    #' purpose of this operation is to remove background light
-    #' In short it subtracts the values from data in all samples, except from Blanks. It does not subtract values from
-    #' `Count` values
+    #' Function returns the dilution represented as strings for a specific sample type.
+    #' @param sample_type type of the samples that we want to obtain the dilution for.
+    #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)} Default value is `ALL`.
+    #' @return
+    #' A list containing names of the samples as keys and string representing dilutions as values.
+    get_dilution = function(sample_type) {
+      if (!is_valid_sample_type(sample_type)) {
+        stop("Sample type ", sample_type, " is not a valid sample type")
+      }
+      if (is.null(self$dilutions)) {
+        stop("Plate does not have dilutions set.
+             The plate object is probably not initialized properly,
+             or your data is incorrectly formatted.")
+      }
+      if (sample_type == "ALL") {
+        return(self$dilutions)
+      } else {
+        return(self$dilutions[self$sample_types == sample_type])
+      }
+    },
+
+    #' Get the numeric representation of dilutions
+    #' @description
+    #' Function returns the dilution values for a specific sample type.
+    #' @param sample_type type of the samples that we want to obtain the dilution values for.
+    #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)} Default value is `ALL`.
+    #' @return
+    #' A list containing names of the samples as keys and numeric values representing dilutions as values.
     #'
-    #' @param method How the values of different blanks should be aggregated. By default `avg`. For now it is the only available method
-    #' @param inplace Whether the method should produce new plate with adjusted values or not, By default `TRUE` - operates on the current plate.
-    blank_adjustment = function(method = "avg", inplace = "TRUE") {
-      if (private$blank_already_adjusted) {
-        stop("Blank values have been already adjusted in this plate, if you want to try doing it using different method consider reversing this process")
+    get_dilution_values = function(sample_type) {
+      if (!is_valid_sample_type(sample_type)) {
+        stop("Sample type ", sample_type, " is not a valid sample type")
+      }
+      if (is.null(self$dilution_values)) {
+        stop("Plate does not have dilution values set.
+             Check your layout or luminex file,
+             and ensure it contains dilution information that is correctly formatted")
+      }
+      if (sample_type == "ALL") {
+        return(self$dilution_values)
+      } else {
+        return(self$dilution_values[self$sample_types == sample_type])
+      }
+    },
+
+    #' Adjust the MFI values by subtracting the background
+    #' @description
+    #' Function adjusts the values of test samples by subtracting aggegation of
+    #' `BLANK` samples. The purpose of this operation is to remove background light,
+    #' which could falsely inflate the MFI values.
+    #'
+    #' In short, this operation firstly calculates the aggregate of MFI in the `BLANK` samples
+    #' (for now the only available aggreation method is average),
+    #' and then subtracts the calculated value from MFI data in all non-background samples.
+    #'
+    #' Method does not modifies the data of type `Count`.
+    #'
+    #'  This operation is recommended to be performed before any further analysis, but is optional.
+    #'  Skipping it before further analysis is allowed, but will result in a warning.
+    #'
+    #' @param method How the values of different blanks should be aggregated.
+    #' By default `avg`. For now it is the only available method
+    #' @param inplace Whether the method should produce new plate with adjusted
+    #' values or not, By default `TRUE` - operates on the current plate.
+    blank_adjustment = function(method = "avg", in_place = TRUE) {
+      if (self$blank_adjusted) {
+        stop("Blank values have been already adjusted in this plate,
+             If you want to try doing it using different method, consider reversing this process")
       }
 
-      private$standard_curve_private <- NULL
-      private$blank_already_adjusted <- TRUE
       available_methods <- c("avg")
       if (!method %in% available_methods) {
-        stop(paste0(method, "not available for now, consider using one of the following: ", available_methods))
+        stop(method, "not available for now, consider using one of the following: ", available_methods)
       }
 
-      if (inplace == FALSE) {
-        newplate <- self$copy()
-      } else {
-        newplate <- self
+      plate <- if (in_place) self else self$clone(deep=TRUE)
+
+      blanks_filter <- plate$sample_types == "BLANK"
+      if (!any(blanks_filter)) {
+        stop("No blank samples found in the plate, cannot perform blank adjustment")
       }
+      for (datatype in names(plate$data)) {
+        df <- plate$data[[datatype]]
+        blanks_df <- df[blanks_filter, ]
+        blank_values <- switch(method,
+          "avg" = {
+            if (is.null(dim(blanks_df))) {
+              mean(blanks_df)
+            } else {
+              apply(blanks_df, 2, mean)
+            }
+          },
+          {
+            stop("Method ", method, " is not supported")
+          }
+        )
+        new_df <- sweep(df, 2, blank_values, "-")
 
-      blank_samples <- self$get_sample_by_type("BLANK") # these values will be subtracted
-      non_blank_samples <- self$get_sample_by_type("BLANK",
-        exclude = TRUE
-      ) # from these values
-
-      # aggregate blank values
-
-      if (method == "avg") {
-        agg_dataframe <- NULL
-        for (sample in blank_samples) {
-          if (is.null(agg_dataframe)) {
-            agg_dataframe <- sample$data
-          } else {
-            agg_dataframe <- agg_dataframe + sample$data
+        if (any(new_df < 0)) {
+          warning("Some values are below 0 after blank adjustment for ", datatype, "\n")
+          row_col_indices <- which(new_df < 0, arr.ind = TRUE)
+          for (idx in seq_len(nrow(row_col_indices))) {
+            row <- row_col_indices[idx, 1]
+            col <- row_col_indices[idx, 2]
+            sample_name <- plate$sample_names[row]
+            analyte_name <- plate$analyte_names[col]
+            stopifnot(analyte_name == colnames(new_df)[col])
+            warning("Analyte:", analyte_name, "Row:", row, "Sample Name:", sample_name, "\n")
           }
         }
-        if ("Count" %in% rownames(agg_dataframe)) {
-          agg_dataframe["Count", ] <- 0 # count row is omitted
-        }
-        if ("Total Events" %in% colnames(agg_dataframe)) {
-          agg_dataframe["Total Events"] <- 0
-        }
-
-        agg_dataframe <- agg_dataframe / length(blank_samples)
-        # average the results
-
-
-        for (sample in non_blank_samples) {
-          sample$data <- sample$data - agg_dataframe
-          # subtract the aggregated values
-        }
+        plate$data[[datatype]] <- new_df
       }
-    },
-
-
-    #' @description
-    #' Function verifies if there are any MFI values below zero
-    #' after blank removal
-    check_MFI_after_adjustment = function() {
-      if (!self$check_if_blanks_already_adjusted) {
-        stop("Consider adjusting the blanks first")
-      }
-
-      below_zero_list <- list()
-
-      below_zero_flag <- FALSE
-
-      for (sample in self$get_sample_by_type("BLANK", exclude = TRUE)) {
-        below_min <- which(sample$data < 0, arr.ind = TRUE)
-        if (length(below_min) > 0) {
-          below_min_analytes <- names(sample$data)[below_min[, "col"]]
-          new_warnings <- paste0(
-            "An analyte ", below_min_analytes,
-            " has value below 0 after blank adjustment"
-          )
-          sample$warnings <- c(sample$warnings, new_warnings)
-        }
-      }
-
-      return(below_zero_flag)
-    },
-
-
-    #' @description performs copy of the plate
-    copy = function() {
-      stop("Not implemented yet")
+      plate$blank_adjusted <- TRUE
+      return(plate)
     }
   ),
   private = list(
-    blank_already_adjusted = FALSE,
-    verbose = TRUE,
-    standard_curve_private = NULL
-  ),
-  active = list(
-    #' @field number_of_samples number of samples stored in the current plate
-    number_of_samples = function() {
-      return(length(self$samples))
-    },
 
-    #' @field analyte_names list of all analyte names saved in the plate
-    analyte_names = function() {
-      analyte_names <- c()
-      for (analyte in self$analytes) {
-        analyte_names <- c(analyte_names, analyte$analyte_name)
-      }
-      return(analyte_names)
-    },
-
-    #' @field sample_names list of all sample names
-    sample_names = function() {
-      sample_names <- c()
-      for (sample in self$samples) {
-        sample_names <- c(sample_names, sample$sample_name)
-      }
-      return(sample_names)
-    },
-
-    #' @field examination_date Metadata: date of the examination
-    examination_date = function() {
-      return(self$batch_info$Date)
-    },
-
-    #' @field batch_name Metdata: batch name
-    batch_name = function() {
-      if (!is.null(self$batch_info$batch_name) && !is.na(self$batch_info$batch_name)) {
-        return(self$batch_info$batch_name)
-      }
-      return("___")
-    },
-
-    #' @field min_events_per_bead minimal number of events that is valid for one bead - sample and analyte
-    min_events_per_bead = function() {
-      if (is.null(self$batch_info$min_events_per_bead)) {
-        return(50)
-      }
-      return(self$batch_info$min_events_per_bead)
-    },
-    #' @field check_if_blanks_already_adjusted flag that specifies
-    #' if the blanks were already adjusted and its MFI values subtracted from
-    #' remaining samples
-    check_if_blanks_already_adjusted = function() {
-      return(private$blank_already_adjusted)
-    },
-
-    #' @field warnings list of lists of all warnings from all samples
-    warnings = function() {
-      warnings <- lapply(self$samples, function(sample) sample$warnings)
-      remove_empty_lists(warnings)
-    },
-
-    #' @field errors list of lists of all errors from all samples
-    errors = function() {
-      errors <- lapply(self$samples, function(sample) sample$errors)
-      remove_empty_lists(errors)
-    },
-    standard_curve = function() {
-      if (!is.null(private$standard_curve_private)) {
-        return(private$standard_curve_private)
-      }
-
-      if (!self$check_if_blanks_already_adjusted) {
-        verbose_cat(
-          "(",
-          color_codes$red_start,
-          "WARNING",
-          color_codes$red_end,
-          ")",
-          "\nBlank values not adjusted -
-          Consider adjusting the blank values using function
-          `plate$blank_adjustment`\n",
-          verbose = private$verbose
-        )
-      }
-
-      standard_curves <- self$get_sample_by_type("STANDARD CURVE")
-      if (length(standard_curves) == 0) {
-        verbose_cat(
-          "(",
-          color_codes$red_start,
-          "WARNING",
-          color_codes$red_end,
-          ")",
-          "\nNo standard curve samples found in the plate\n
-          Using positive control samples",
-          verbose = private$verbose
-        )
-        standard_curves <- plate$get_sample_by_type("POSITIVE CONTROL")
-      }
-
-
-      dilutions <- sapply(standard_curves, function(sample) {
-        sample$sample_type$character_dilution_factor
-      })
-      dilutions_numeric <- sapply(standard_curves, function(sample) {
-        sample$sample_type$dilution_factor
-      })
-      # sort values according to dilutions
-      sorted_order <- order(dilutions_numeric)
-
-      # Sort the vectors according to the sorted order of the reference vector
-      dilutions_numeric <- dilutions_numeric[sorted_order]
-      dilutions <- dilutions[sorted_order]
-      standard_curves <- standard_curves[sorted_order]
-      private$standard_curve_private <- standard_curves
-      return(standard_curves)
-    }
+    ## Private Fields ---------------------------------------------------------
+    verbose = TRUE
   )
 )
+
+
+#' @export
+summary.Plate = function(object, ...) {
+  object$summary(...)
+}
