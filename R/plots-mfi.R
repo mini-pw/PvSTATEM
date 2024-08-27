@@ -40,12 +40,13 @@ plot_mfi_for_analyte <- function(plate, analyte_name,
   blanks_df <- df %>% dplyr::filter(SampleType == "BLANK")
   blank_mean <- mean(blanks_df$MFI)
   sc_df <- df %>% dplyr::filter(SampleType == "STANDARD CURVE")
-  test_df <- df %>% dplyr::filter(SampleType == "TEST")
-
-  p <- test_df %>%
+  test_df <- df %>%
+    dplyr::filter(SampleType == "TEST") %>%
     dplyr::mutate(
       outlier = ifelse(is_outlier(MFI), SampleId, as.character(NA))
-    ) %>%
+    )
+
+  p <- test_df %>%
     ggplot2::ggplot(aes(x = SampleType, y = MFI)) +
     main_geom(color = "blue") +
     ggplot2::geom_hline(
@@ -68,7 +69,10 @@ plot_mfi_for_analyte <- function(plate, analyte_name,
     )
 
   if (plot_type == "boxplot") {
-    p <- p + ggplot2::geom_text(aes(label = outlier), na.rm = TRUE, hjust = -0.1)
+    hjust <- rep(NA, nrow(test_df))
+    is_out <- !is.na(test_df$outlier)
+    hjust[is_out] <- ifelse(seq_len(sum(is_out)) %% 2 == 0, -0.1, 1.1)
+    p <- p + ggplot2::geom_text(aes(label = outlier), na.rm = TRUE, hjust = hjust, color = "grey")
   }
 
   p
