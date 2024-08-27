@@ -48,7 +48,6 @@ plot_mfi_for_analyte <- function(plate, analyte_name,
     ) %>%
     ggplot2::ggplot(aes(x = SampleType, y = MFI)) +
     main_geom(color = "blue") +
-    ggplot2::geom_text(aes(label = outlier), na.rm = TRUE, hjust = -0.1) +
     ggplot2::geom_hline(
       aes(yintercept = blank_mean, linetype = "BLANK MEAN"),
       color = "dark grey", linewidth = 1
@@ -67,5 +66,10 @@ plot_mfi_for_analyte <- function(plate, analyte_name,
     ggplot2::theme(
       plot.title = element_text(hjust = 0.5) # Center title
     )
+
+  if (plot_type == "boxplot") {
+    p <- p + ggplot2::geom_text(aes(label = outlier), na.rm = TRUE, hjust = -0.1)
+  }
+
   p
 }
