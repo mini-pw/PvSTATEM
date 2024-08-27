@@ -41,3 +41,10 @@ test_that("Test verbose cat", {
   expect_output(verbose_cat("a", "b"), "ab")
   expect_null(verbose_cat("a", "b", verbose = F))
 })
+
+test_that("Test clamp function", {
+  expect_equal(clamp(c(1, 0, 2), lower = 1), c(1, 1, 2))
+  expect_equal(clamp(c(1, -1, NA), lower = 0), c(1, 0, NA))
+  expect_equal(clamp(c(1, 2.2, 3), upper = 2), c(1, 2, 2))
+  expect_equal(clamp(c(2, 10, NA), upper = 2), c(2, 2, NA))
+})

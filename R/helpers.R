@@ -123,3 +123,19 @@ color_codes <- list(
 is_outlier <- function(x) {
   return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5 * IQR(x))
 }
+
+
+#' Clamp a value to a range
+#'
+#' @param x (`numeric()`) A numeric value to be clamped.
+#' @param lower ('numeric(1)') The lower bound of the range.
+#' @param upper (`numeric(1)`) The upper bound of the range.
+#'
+#' @return A numeric value clamped to the range \[`lower`, `upper`\].
+#'
+clamp <- function(x, lower = -Inf, upper = Inf) {
+  stopifnot(is.numeric(x), is.numeric(lower), is.numeric(upper))
+  x[x < lower] <- lower
+  x[x > upper] <- upper
+  x
+}
