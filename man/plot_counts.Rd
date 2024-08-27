@@ -26,11 +26,15 @@ Sometimes when legend is plotted, whole layout may be shifted, then it's best to
 }
 \examples{
 plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
-  package = "PvSTATEM", mustWork = TRUE)
+  package = "PvSTATEM", mustWork = TRUE
+)
 layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-  package = "PvSTATEM", mustWork = TRUE)
+  package = "PvSTATEM", mustWork = TRUE
+)
 plate <- read_luminex_data(plate_filepath, layout_filepath)
-plot_counts(plate = plate, analyte_name = "OC43_NP_NA",
-  plot_counts = TRUE, plot_legend = FALSE)
+plot_counts(
+  plate = plate, analyte_name = "OC43_NP_NA",
+  plot_counts = TRUE, plot_legend = FALSE
+)
 
 }
