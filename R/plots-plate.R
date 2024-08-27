@@ -68,12 +68,11 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   # Define the aspect ratio of the background image
   background_image_resolution <- c(dim(plate_img)[2], dim(plate_img)[1])
   aspect_ratio <- background_image_resolution[2] / background_image_resolution[1]
-  area_size <- min(dev.size("px") / background_image_resolution)
-
+  # A size unit relative to the device width in mm
+  runit <- 10 * dev.size("cm")[1] / 1000
 
   categories <- names(legend_mapping)
   well_positions$category <- factor(well_positions$color, levels = legend_mapping, labels = categories)
-
 
   # Plot the plate with colored wells
   p <- ggplot(well_positions, aes(x = x, y = y)) +
@@ -81,7 +80,10 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
       rasterGrob(rgb_image, width = unit(1, "npc"), height = unit(1, "npc")),
       -Inf, Inf, -Inf, Inf
     ) +
-    geom_point(aes(fill = category), size = area_size * 19 - 1, shape = 21, color = "black", stroke = 0) +
+    geom_point(
+      aes(fill = category),
+      size = 80 * runit, shape = 21, color = "black", stroke = 0
+    ) +
     scale_fill_manual(values = legend_mapping) +
     theme_void() +
     scale_x_continuous(limits = c(0, 1)) +
@@ -89,19 +91,19 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
     ggtitle(plot_title) +
     theme(
       aspect.ratio = aspect_ratio,
-      plot.title = element_text(hjust = 0.5, size = area_size * 20 + 5, vjust = -1),
+      plot.title = element_text(hjust = 0.5, size = 100 * runit, vjust = -1),
       legend.title = element_text(size = 0),
-      legend.text = element_text(size = 12, face = "bold"),
+      legend.text = element_text(size = 60 * runit, face = "bold"),
       legend.background = element_rect(fill = "white", linewidth = 0),
-      legend.key = element_rect(fill = "white", color = "white")
+      legend.key = element_rect(fill = "white", color = "white"),
+      legend.position = "bottom"
     )
 
-  if ((dev.size("px") / background_image_resolution)[1] < (dev.size("px") / background_image_resolution)[2]) {
-    p <- p + theme(legend.position = "bottom")
-  }
-
   if (plot_numbers) {
-    p <- p + geom_text(aes(label = numbers), size = area_size * 8 - 0.5, color = "black", vjust = 0.5, hjust = 0.5, fontface = "bold")
+    p <- p + geom_text(
+      aes(label = numbers),
+      size = 30 * runit, color = "black", vjust = 0.5, hjust = 0.5, fontface = "bold"
+    )
   }
 
   if (!plot_legend) {

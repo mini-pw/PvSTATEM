@@ -34,7 +34,8 @@ test_that("Test plotting the mfi plot ", {
 
   plate <- read_luminex_data(plate_filepath, layout_filepath)
   expect_no_error(plot_layout(plate))
-  expect_no_error(plot_counts(plate, "OC43_NP_NA"))
+  expect_no_error(p <- plot_counts(plate, "OC43_NP_NA", plot_counts = TRUE, plot_legend = TRUE))
+  print(p)
 })
 
 
