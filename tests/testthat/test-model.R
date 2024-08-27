@@ -16,5 +16,4 @@ test_that("Artificial model with insufficient number of analytes", {
 
   expect_equal(model$top_asymptote, 100)
   expect_equal(model$bottom_asymptote, 50)
-
 })

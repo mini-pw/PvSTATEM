@@ -193,8 +193,10 @@ read_luminex_data <- function(plate_filepath,
 
   plate <- plate_builder$build(validate = TRUE)
 
-  verbose_cat(color_codes$green_start,"\nNew plate object has been created with name: ",
-              plate$plate_name, "!\n", color_codes$green_end, "\n", verbose = verbose)
+  verbose_cat(color_codes$green_start, "\nNew plate object has been created with name: ",
+    plate$plate_name, "!\n", color_codes$green_end, "\n",
+    verbose = verbose
+  )
 
   plate
 }

@@ -76,7 +76,6 @@ For instance, if we plotted the standard curve for the analyte `ME` we could not
 
 
 ```{r}
-
 plot_standard_curve_analyte(plate, analyte_name = "ME")
 plot_standard_curve_analyte(plate, analyte_name = "ME", log_scale = "all")
 ```
@@ -92,7 +91,6 @@ It helps identifying the outlier samples and checking if the tests samples are w
 plot_mfi_for_analyte(plate, analyte_name = "OC43_S")
 
 plot_mfi_for_analyte(plate, analyte_name = "Spike_6P")
-
 ```
 It can be seen, that for the `Spike_6P` analyte, the MFI values don't fall within the range of the standard curve samples, which could be problematic for the model. The values of test dilutions will be extrapolated from the standard curve, which may lead to incorrect results.
 
@@ -145,7 +143,6 @@ The output above shows the most important parameters of the fitted model.
 The predicted values may be used to plot the standard curve, which can be compared to the sample values.
 
 ```{r}
-
 plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"))
 plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), plot_asymptote = FALSE)
 ```
@@ -159,7 +156,6 @@ head(mfi_values)
 predicted_dilutions <- predict(model, mfi_values)
 
 head(predicted_dilutions)
-
 ```
 The dataframe contains original MFI values and the predicted dilutions based on the model.
 Since the dilution values are obtained by reversing the logistic model formula, 

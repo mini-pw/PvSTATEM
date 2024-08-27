@@ -45,10 +45,10 @@ test_that("Blank adjustments", {
     plate_name = "empty_plate",
     sample_names = c("S"),
     analyte_names = "analyte",
-    dilutions = c("1/1"))
+    dilutions = c("1/1")
+  )
 
   expect_error(empty_plate$blank_adjustment())
-
 })
 
 test_that("Getters in plate object", {
@@ -56,7 +56,8 @@ test_that("Getters in plate object", {
   empty_plate <- Plate$new(
     plate_name = "empty_plate",
     sample_names = c("S"),
-    analyte_names = "analyte")
+    analyte_names = "analyte"
+  )
 
   # get_dilutions
   expect_error(plate$get_dilution("incorrect sample type"))
@@ -74,6 +75,4 @@ test_that("Getters in plate object", {
   expect_error(plate$get_data(NULL))
   expect_error(plate$get_data("Spike_6P_IPP", sample_type = "incorrect sample"))
   expect_error(plate$get_data("Spike_6P_IPP", data_type = "average"))
-
 })
-

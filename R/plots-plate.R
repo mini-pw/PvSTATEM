@@ -1,4 +1,3 @@
-
 #' Plot a 96-well plate with colored wells
 #'
 #' It is a generic function to plot a 96-well plate with colored wells
@@ -24,12 +23,11 @@
 #' @keywords internal
 plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate",
                        plot_legend = FALSE, legend_mapping = NULL) {
-
   if (length(colors) != 96) {
     stop("The colors vector must have 96 elements")
   }
 
-  if (plot_numbers && is.null(numbers))  {
+  if (plot_numbers && is.null(numbers)) {
     stop("The numbers vector must be provided if plot_numbers is TRUE")
   }
 
@@ -53,9 +51,9 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   # this step is necessary because the image is black and white
   # and R works with either RGB or RGBA images
   # so I have to convert it
-  rgb_image[,,1] <- plate_img[,,1]  # Red channel
-  rgb_image[,,2] <- plate_img[,,1]  # Green channel
-  rgb_image[,,3] <- plate_img[,,1]  # Blue channel
+  rgb_image[, , 1] <- plate_img[, , 1] # Red channel
+  rgb_image[, , 2] <- plate_img[, , 1] # Green channel
+  rgb_image[, , 3] <- plate_img[, , 1] # Blue channel
 
   # values obtained using trial and error
   well_positions <- expand.grid(
@@ -98,7 +96,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
       legend.key = element_rect(fill = "white", color = "white")
     )
 
-  if ((dev.size("px") / background_image_resolution)[1] < (dev.size("px") / background_image_resolution)[2]){
+  if ((dev.size("px") / background_image_resolution)[1] < (dev.size("px") / background_image_resolution)[2]) {
     p <- p + theme(legend.position = "bottom")
   }
 
@@ -130,16 +128,19 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #'
 #' @examples
 #' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
-#'   package = "PvSTATEM", mustWork = TRUE)
+#'   package = "PvSTATEM", mustWork = TRUE
+#' )
 #' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-#'   package = "PvSTATEM", mustWork = TRUE)
+#'   package = "PvSTATEM", mustWork = TRUE
+#' )
 #' plate <- read_luminex_data(plate_filepath, layout_filepath)
-#' plot_counts(plate = plate, analyte_name = "OC43_NP_NA",
-#'   plot_counts = TRUE, plot_legend = FALSE)
+#' plot_counts(
+#'   plate = plate, analyte_name = "OC43_NP_NA",
+#'   plot_counts = TRUE, plot_legend = FALSE
+#' )
 #'
 #' @export
 plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = FALSE) {
-
   if (is.null(plate)) {
     stop("The plate object must be provided")
   }
@@ -148,7 +149,7 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
     stop("The plate object must have data")
   }
 
-  if (is.null(analyte_name)){
+  if (is.null(analyte_name)) {
     stop("The analyte_name must be provided")
   }
 
@@ -209,15 +210,16 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 #'
 #' @examples
 #' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
-#'   package = "PvSTATEM", mustWork = TRUE)
+#'   package = "PvSTATEM", mustWork = TRUE
+#' )
 #' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-#'   package = "PvSTATEM", mustWork = TRUE)
+#'   package = "PvSTATEM", mustWork = TRUE
+#' )
 #' plate <- read_luminex_data(plate_filepath, layout_filepath)
 #' plot_layout(plate = plate, plot_legend = TRUE)
 #'
 #' @export
 plot_layout <- function(plate, plot_legend = TRUE) {
-
   if (is.null(plate)) {
     stop("The plate object must be provided")
   }
@@ -238,7 +240,7 @@ plot_layout <- function(plate, plot_legend = TRUE) {
     "NEGATIVE CONTROL" = "#FFE9D0",
     "TEST" = "#BBE9FF",
     "STANDARD CURVE" = "#F7B5CA",
-    " " = "white"  # default for missing values,
+    " " = "white" # default for missing values,
     # it is a space because otherwise "missing" would be included in legend
   )
 

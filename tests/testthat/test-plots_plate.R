@@ -25,11 +25,12 @@ get_test_plate <- function() {
 }
 
 test_that("Test plotting the mfi plot ", {
-
   plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
-                                 package = "PvSTATEM")
+    package = "PvSTATEM"
+  )
   layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-                                 package = "PvSTATEM")
+    package = "PvSTATEM"
+  )
 
   plate <- read_luminex_data(plate_filepath, layout_filepath)
   expect_no_error(plot_layout(plate))
@@ -42,7 +43,3 @@ test_that("Misc errors of plate plots", {
 
   expect_error(plot_counts(plate, "Spike_6P_IPP"))
 })
-
-
-
-

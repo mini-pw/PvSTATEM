@@ -35,4 +35,3 @@ test_that("Edge incorrect parameters", {
   expect_error(plot_mfi_for_analyte(plate, "Spike_6P_IPP", data_type = "Average"))
   expect_error(plot_mfi_for_analyte(plate, "incorrect analyte"))
 })
-

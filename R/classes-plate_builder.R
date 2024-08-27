@@ -39,7 +39,6 @@ PlateBuilder <- R6::R6Class(
     #' and reused in other methods
     #'
     initialize = function(sample_names, analyte_names, batch_name = "", verbose = TRUE) {
-
       stopifnot(is.character(sample_names) && length(sample_names) > 0)
       self$sample_names <- sample_names
       stopifnot(is.character(analyte_names) && length(analyte_names) > 0)
@@ -95,11 +94,9 @@ PlateBuilder <- R6::R6Class(
             "\nNumber of layout fields is higher than the number of samples. Please check the layout file. Using only first ", length(self$sample_names), " dilutions from the layout file. \n",
             verbose = private$verbose
           )
-        }
-        else if (length(dilutions) < length(self$sample_names)) {
+        } else if (length(dilutions) < length(self$sample_names)) {
           stop("Number of layout fields is lower than the number of samples. Can't extract the dilution values")
         }
-
       } else {
         if (is.null(self$sample_names)) {
           stop("Sample names are not provided and `use_layout_dilutions` is set to `FALSE` - cannot extract the dilutions from sample names")
@@ -277,7 +274,6 @@ PlateBuilder <- R6::R6Class(
       )
 
       plate
-
     }
   ),
   active = list(
@@ -290,10 +286,8 @@ PlateBuilder <- R6::R6Class(
       c(t(self$layout))
     }
   ),
-
   private = list(
     verbose = TRUE,
-
     validate = function() {
       errors <- list()
       if (length(self$sample_names) != length(self$sample_locations)) {
@@ -378,7 +372,7 @@ extract_dilution_from_names <- function(sample_name) {
 #' raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
 #' PvSTATEM:::extract_dilutions_from_layout(raw_dilutions) # execute an internal function
 #' @keywords internal
-extract_dilutions_from_layout = function(dilutions) {
+extract_dilutions_from_layout <- function(dilutions) {
   stopifnot(is.character(dilutions) && length(dilutions) > 0)
 
   is_dilution_filter <- is_dilution(dilutions)
@@ -450,7 +444,7 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' @return A vector of valid sample_type strings of length equal to the length of `sample_names`
 #'
 #' @examples
-#' translate_sample_names_to_sample_types(c("B", "BLANK", "NEG",  "TEST1"))
+#' translate_sample_names_to_sample_types(c("B", "BLANK", "NEG", "TEST1"))
 #' translate_sample_names_to_sample_types(c("S", "CP3"))
 #'
 #' @export

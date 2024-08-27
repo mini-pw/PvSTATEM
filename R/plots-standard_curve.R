@@ -99,7 +99,7 @@ plot_standard_curve_analyte <- function(plate,
       linetype = "dashed"
     )
   }
-  p <- p +ggplot2::labs(title = plot_name, x = xlab, y = ylab) +
+  p <- p + ggplot2::labs(title = plot_name, x = xlab, y = ylab) +
     ggplot2::scale_x_continuous(
       breaks = x_ticks, labels = x_labels,
       trans = x_trans

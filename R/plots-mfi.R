@@ -15,7 +15,7 @@
 plot_mfi_for_analyte <- function(plate, analyte_name,
                                  data_type = "Median", plot_type = "boxplot") {
   if (!(analyte_name %in% plate$analyte_names)) {
-    stop("Analyte ", analyte_name," not found in the plate")
+    stop("Analyte ", analyte_name, " not found in the plate")
   }
   if (!is_valid_data_type(data_type)) {
     stop("Datatype not supported.")

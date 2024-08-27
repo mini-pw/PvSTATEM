@@ -205,7 +205,6 @@ Plate <- R6::R6Class(
     #' By default `FALSE`
     #' @param ... Additional parameters to be passed to the print function
     summary = function(..., include_names = FALSE) {
-
       positive_control_num <- sum(self$sample_types == "POSITIVE CONTROL")
       negative_control_num <- sum(self$sample_types == "NEGATIVE CONTROL")
       standard_curve_num <- sum(self$sample_types == "STANDARD CURVE")
@@ -227,7 +226,6 @@ Plate <- R6::R6Class(
           negative_control_names <- self$sample_names[self$sample_types == "NEGATIVE CONTROL"]
           negative_control_names <- paste(sapply(negative_control_names, function(sample) paste0("'", sample, "'")), collapse = ", ")
           negative_control_names <- paste0("\nSample names: ", negative_control_names)
-
         }
         if (standard_curve_num > 0) {
           standard_curve_names <- self$sample_names[self$sample_types == "STANDARD CURVE"]
@@ -261,8 +259,6 @@ Plate <- R6::R6Class(
       )
 
       invisible(self)
-
-
     },
 
 
@@ -285,7 +281,7 @@ Plate <- R6::R6Class(
       # check if the analyte exists in analytes_names
       if (!is.null(analyte) && !is.na(analyte)) {
         if (!(analyte %in% c(self$analyte_names, "ALL"))) {
-          stop("Analyte ",  analyte, " does not exist in plate's field analyte_names")
+          stop("Analyte ", analyte, " does not exist in plate's field analyte_names")
         }
       } else {
         stop("Passed analyte is either NULL or NA")
@@ -294,7 +290,7 @@ Plate <- R6::R6Class(
       # check if the sample_type is a valid sample type
       if (!is.null(sample_type) && !is.na(sample_type)) {
         if (!is_valid_sample_type(sample_type)) {
-          stop("Sample type ", sample_type , " is not a valid sample type")
+          stop("Sample type ", sample_type, " is not a valid sample type")
         }
       } else {
         stop("Passed sample type is either NULL or NA")
@@ -403,7 +399,7 @@ Plate <- R6::R6Class(
         stop(method, "not available for now, consider using one of the following: ", available_methods)
       }
 
-      plate <- if (in_place) self else self$clone(deep=TRUE)
+      plate <- if (in_place) self else self$clone(deep = TRUE)
 
       blanks_filter <- plate$sample_types == "BLANK"
       if (!any(blanks_filter)) {
@@ -453,6 +449,6 @@ Plate <- R6::R6Class(
 
 
 #' @export
-summary.Plate = function(object, ...) {
+summary.Plate <- function(object, ...) {
   object$summary(...)
 }
