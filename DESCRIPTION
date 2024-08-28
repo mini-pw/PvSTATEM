@@ -34,6 +34,7 @@ Imports:
     grid,
     png,
     tools,
+    ggrepel,
 Suggests:
     testthat (>= 3.0.0)
 Config/testfhat/edition: 3

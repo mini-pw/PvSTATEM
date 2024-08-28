@@ -74,7 +74,7 @@ plot_mfi_for_analyte <- function(plate, analyte_name,
     is_out <- !is.na(test_df$outlier)
     hjust[is_out] <- ifelse(seq_len(sum(is_out)) %% 2 == 0, -0.18, 1.18)
 
-    p <- p + geom_text_repel(aes(label = outlier), na.rm = TRUE, hjust = hjust, color = "grey", min.segment.length=0.3)
+    p <- p + ggrepel::geom_text_repel(aes(label = outlier), na.rm = TRUE, hjust = hjust, color = "grey", min.segment.length=0.3)
   }
 
   p
