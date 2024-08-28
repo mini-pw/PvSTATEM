@@ -49,6 +49,12 @@ plate$sample_names
 plate$analyte_names
 ```
 
+The summary can also the accessed using the built-in generic method `summary`.
+
+```{r}
+summary(plate)
+```
+
 ## Quality control
 
 The package can plot the dilutions along the MFI values, allowing manual inspecting of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
