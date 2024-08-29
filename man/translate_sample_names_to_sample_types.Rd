@@ -6,17 +6,18 @@
 \usage{
 translate_sample_names_to_sample_types(
   sample_names,
-  sample_names_from_layout = ""
+  sample_names_from_layout = NULL
 )
 }
 \arguments{
-\item{sample_names}{(\code{character})\cr
+\item{sample_names}{(\code{character()})\cr
 Vector of sample names from Luminex file}
 
-\item{sample_names_from_layout}{(\code{character})\cr
+\item{sample_names_from_layout}{(\code{character()})\cr
 Vector of sample names from Layout file
 values in this vector may be different than \code{sample_names} and may
-contain additional information about the sample type like dilution}
+contain additional information about the sample type like dilution.
+This vector when set has to have at least the length of \code{sample_names}.}
 }
 \value{
 A vector of valid sample_type strings of length equal to the length of \code{sample_names}
