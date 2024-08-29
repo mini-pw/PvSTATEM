@@ -34,12 +34,18 @@ test_that("Test printing the plate and misc functions", {
 test_that("Blank adjustments", {
   plate <- get_test_plate()
 
+  plate$data$Median[[12, "Spike_6P_IPP"]] <- 10
+
   expect_no_error(plate_adj <- plate$blank_adjustment(in_place = FALSE))
+
+  expect_equal(plate_adj$data$Median[[12, "Spike_6P_IPP"]], plate_adj$data$Median[[1, "Spike_6P_IPP"]])
 
 
   expect_error(plate_adj$blank_adjustment())
 
   expect_error(plate$blank_adjustment(method = "wrong method"))
+
+  expect_no_error(plate$blank_adjustment(method = "avg"))
 
   empty_plate <- Plate$new(
     plate_name = "empty_plate",
