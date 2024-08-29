@@ -43,9 +43,9 @@ test_that("Blank adjustments", {
 
   expect_error(plate_adj$blank_adjustment())
 
-  expect_error(plate$blank_adjustment(method = "wrong method"))
+  expect_error(plate$blank_adjustment(threshold = "wrong method"))
 
-  expect_no_error(plate$blank_adjustment(method = "avg"))
+  expect_no_error(plate$blank_adjustment(threshold = "median"))
 
   empty_plate <- Plate$new(
     plate_name = "empty_plate",
