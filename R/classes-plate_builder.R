@@ -433,13 +433,14 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #'
 #' Otherwise, the returned SampleType is `TEST`
 #'
-#' @param sample_names (`character`)\cr
+#' @param sample_names (`character()`)\cr
 #' Vector of sample names from Luminex file
 #'
-#' @param sample_names_from_layout (`character`)\cr
+#' @param sample_names_from_layout (`character()`)\cr
 #' Vector of sample names from Layout file
 #' values in this vector may be different than `sample_names` and may
-#' contain additional information about the sample type like dilution
+#' contain additional information about the sample type like dilution.
+#' This vector when set has to have at least the length of `sample_names`.
 #'
 #' @return A vector of valid sample_type strings of length equal to the length of `sample_names`
 #'
@@ -448,12 +449,15 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #' translate_sample_names_to_sample_types(c("S", "CP3"))
 #'
 #' @export
-translate_sample_names_to_sample_types <- function(sample_names, sample_names_from_layout = "") {
+translate_sample_names_to_sample_types <- function(sample_names, sample_names_from_layout = NULL) {
+  stopifnot(is.character(sample_names))
   # Handle case when sample name from layout is not provided
-  # Ensure sample_names_from_layout is a character vector of the same length as sample_names
-  if (length(sample_names_from_layout) != length(sample_names)) {
+  if (is.null(sample_names_from_layout)) {
     sample_names_from_layout <- rep("", length(sample_names))
   }
+  # Ensure sample_names_from_layout is a character vector at least as long as sample_names
+  stopifnot(length(sample_names) <= length(sample_names_from_layout))
+
   # Initialize the result vector
   sample_types <- vector("character", length(sample_names))
   # Iterate over each sample
