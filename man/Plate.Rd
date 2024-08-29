@@ -281,6 +281,7 @@ Function adjusts the values of samples (all samples excluding the blanks) by cla
 values to the aggregated value of the \code{BLANK} samples for each analyte separately.
 
 The purpose of this operation is to unify the data by clamping values below the background noise.
+how this method works was inspired by the paper https://doi.org/10.1038/s41598-020-57876-0 which covers the quality control in the MBA.
 
 In short, this operation firstly calculates the aggregate of MFI in the \code{BLANK} samples
 (available methods are: \code{min}, \code{max}, \code{mean}, \code{median})
