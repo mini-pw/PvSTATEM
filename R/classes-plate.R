@@ -375,7 +375,8 @@ Plate <- R6::R6Class(
     #' values to the aggregated value of the `BLANK` samples for each analyte separately.
     #'
     #' The purpose of this operation is to unify the data by clamping values below the background noise.
-    #'
+    #' how this method works was inspired by the paper https://doi.org/10.1038/s41598-020-57876-0 which covers the quality control in the MBA.
+    #' 
     #' In short, this operation firstly calculates the aggregate of MFI in the `BLANK` samples
     #' (available methods are: `min`, `max`, `mean`, `median`)
     #' and then replaces all values below this threshold with the threshold value.
