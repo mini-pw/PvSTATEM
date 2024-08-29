@@ -277,27 +277,29 @@ Adjust the MFI values by subtracting the background
 \if{html}{\out{<a id="method-Plate-blank_adjustment"></a>}}
 \if{latex}{\out{\hypertarget{method-Plate-blank_adjustment}{}}}
 \subsection{Method \code{blank_adjustment()}}{
-Function adjusts the values of test samples by subtracting aggegation of
-\code{BLANK} samples. The purpose of this operation is to remove background light,
-which could falsely inflate the MFI values.
+Function adjusts the values of samples (all samples excluding the blanks) by clamping the
+values to the aggregated value of the \code{BLANK} samples for each analyte separately.
+
+The purpose of this operation is to unify the data by clamping values below the background noise.
 
 In short, this operation firstly calculates the aggregate of MFI in the \code{BLANK} samples
-(for now the only available aggreation method is average),
-and then subtracts the calculated value from MFI data in all non-background samples.
+(available methods are: \code{min}, \code{max}, \code{mean}, \code{median})
+and then replaces all values below this threshold with the threshold value.
 
 Method does not modifies the data of type \code{Count}.
 
 This operation is recommended to be performed before any further analysis, but is optional.
 Skipping it before further analysis is allowed, but will result in a warning.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Plate$blank_adjustment(method = "avg", in_place = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Plate$blank_adjustment(threshold = "max", in_place = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{method}}{How the values of different blanks should be aggregated.
-By default \code{avg}. For now it is the only available method}
+\item{\code{threshold}}{The method used to calculate the background value for each analyte.
+Every value below this threshold will be clamped to the threshold value.
+By default \code{max}. Available methods are: \code{min}, \code{max}, \code{mean}, \code{median}.}
 
 \item{\code{inplace}}{Whether the method should produce new plate with adjusted
 values or not, By default \code{TRUE} - operates on the current plate.}

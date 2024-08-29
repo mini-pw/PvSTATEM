@@ -77,6 +77,7 @@ By default, all the operations are performed on the `Median` value of the sample
 plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan", data_type = "Mean")
 plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan", data_type = "Avg Net MFI")
 ```
+
 This plot may be used to assess the quality of the standard curve and anticipate some of the potential issues with the data.
 For instance, if we plotted the standard curve for the analyte `ME` we could notice that the `Median` value of sample with dilution of `1/25600` is abnormally large, which may indicate a problem with the data.
 
@@ -98,6 +99,7 @@ plot_mfi_for_analyte(plate, analyte_name = "OC43_S")
 
 plot_mfi_for_analyte(plate, analyte_name = "Spike_6P")
 ```
+
 It can be seen, that for the `Spike_6P` analyte, the MFI values don't fall within the range of the standard curve samples, which could be problematic for the model. The values of test dilutions will be extrapolated from the standard curve, which may lead to incorrect results.
 
 ## Normalization

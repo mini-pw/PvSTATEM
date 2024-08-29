@@ -371,33 +371,38 @@ Plate <- R6::R6Class(
 
     #' Adjust the MFI values by subtracting the background
     #' @description
-    #' Function adjusts the values of test samples by subtracting aggegation of
-    #' `BLANK` samples. The purpose of this operation is to remove background light,
-    #' which could falsely inflate the MFI values.
+    #' Function adjusts the values of samples (all samples excluding the blanks) by clamping the
+    #' values to the aggregated value of the `BLANK` samples for each analyte separately.
     #'
+    #' The purpose of this operation is to unify the data by clamping values below the background noise.
+    #' how this method works was inspired by the paper https://doi.org/10.1038/s41598-020-57876-0 which covers the quality control in the MBA.
+    #' 
     #' In short, this operation firstly calculates the aggregate of MFI in the `BLANK` samples
-    #' (for now the only available aggreation method is average),
-    #' and then subtracts the calculated value from MFI data in all non-background samples.
+    #' (available methods are: `min`, `max`, `mean`, `median`)
+    #' and then replaces all values below this threshold with the threshold value.
     #'
     #' Method does not modifies the data of type `Count`.
     #'
     #'  This operation is recommended to be performed before any further analysis, but is optional.
     #'  Skipping it before further analysis is allowed, but will result in a warning.
     #'
-    #' @param method How the values of different blanks should be aggregated.
-    #' By default `avg`. For now it is the only available method
+    #' @param threshold The method used to calculate the background value for each analyte.
+    #' Every value below this threshold will be clamped to the threshold value.
+    #' By default `max`. Available methods are: `min`, `max`, `mean`, `median`.
     #' @param inplace Whether the method should produce new plate with adjusted
     #' values or not, By default `TRUE` - operates on the current plate.
-    blank_adjustment = function(method = "avg", in_place = TRUE) {
+    blank_adjustment = function(threshold = "max", in_place = TRUE) {
       if (self$blank_adjusted) {
         stop("Blank values have been already adjusted in this plate,
              If you want to try doing it using different method, consider reversing this process")
       }
-
-      available_methods <- c("avg")
-      if (!method %in% available_methods) {
-        stop(method, "not available for now, consider using one of the following: ", available_methods)
-      }
+      method <- switch(threshold,
+        "min" = min,
+        "max" = max,
+        "mean" = mean,
+        "median" = median,
+        stop(threshold, " not available for `threshold`, consider using one of the following: ", available_methods)
+      )
 
       plate <- if (in_place) self else self$clone(deep = TRUE)
 
@@ -405,37 +410,23 @@ Plate <- R6::R6Class(
       if (!any(blanks_filter)) {
         stop("No blank samples found in the plate, cannot perform blank adjustment")
       }
-      for (datatype in names(plate$data)) {
-        df <- plate$data[[datatype]]
-        blanks_df <- df[blanks_filter, ]
-        blank_values <- switch(method,
-          "avg" = {
-            if (is.null(dim(blanks_df))) {
-              mean(blanks_df)
-            } else {
-              apply(blanks_df, 2, mean)
-            }
-          },
-          {
-            stop("Method ", method, " is not supported")
-          }
-        )
-        new_df <- sweep(df, 2, blank_values, "-")
 
-        if (any(new_df < 0)) {
-          warning("Some values are below 0 after blank adjustment for ", datatype, "\n")
-          row_col_indices <- which(new_df < 0, arr.ind = TRUE)
-          for (idx in seq_len(nrow(row_col_indices))) {
-            row <- row_col_indices[idx, 1]
-            col <- row_col_indices[idx, 2]
-            sample_name <- plate$sample_names[row]
-            analyte_name <- plate$analyte_names[col]
-            stopifnot(analyte_name == colnames(new_df)[col])
-            warning("Analyte:", analyte_name, "Row:", row, "Sample Name:", sample_name, "\n")
-          }
+      for (datatype in names(plate$data)) {
+        if (datatype == "Count") {
+          next
         }
-        plate$data[[datatype]] <- new_df
+
+        df <- plate$data[[datatype]]
+        blanks_df <- df[blanks_filter, , drop = FALSE]
+        clamp_value <- as.numeric(apply(blanks_df, 2, method))
+
+        for (col in seq_len(ncol(df))) {
+          df[(!blanks_filter), col] <- clamp(df[(!blanks_filter), col], lower = clamp_value[col])
+        }
+
+        plate$data[[datatype]] <- df
       }
+
       plate$blank_adjusted <- TRUE
       return(plate)
     }

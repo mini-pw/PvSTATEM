@@ -7,7 +7,7 @@ test_that("Fully Parse CovidOISExPONTENT.csv plate data", {
   expect_no_error(p <- plot_mfi_for_analyte(plate, "S2"))
   expect_true(inherits(p, "ggplot"))
 
-  expect_warning(plate <- plate$blank_adjustment(in_place = FALSE))
+  plate <- plate$blank_adjustment(in_place = FALSE)
   expect_equal(plate$blank_adjusted, TRUE)
 
   expect_equal(plate$sample_names[10:13], c("S", "S", "S", "Unknown2"))
