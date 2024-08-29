@@ -10,6 +10,7 @@
 #'
 #' @import dplyr
 #' @import ggplot2
+#' @import ggrepel
 #'
 #' @export
 plot_mfi_for_analyte <- function(plate, analyte_name,
@@ -71,8 +72,9 @@ plot_mfi_for_analyte <- function(plate, analyte_name,
   if (plot_type == "boxplot") {
     hjust <- rep(NA, nrow(test_df))
     is_out <- !is.na(test_df$outlier)
-    hjust[is_out] <- ifelse(seq_len(sum(is_out)) %% 2 == 0, -0.1, 1.1)
-    p <- p + ggplot2::geom_text(aes(label = outlier), na.rm = TRUE, hjust = hjust, color = "grey")
+    hjust[is_out] <- ifelse(seq_len(sum(is_out)) %% 2 == 0, -0.18, 1.18)
+
+    p <- p + ggrepel::geom_text_repel(aes(label = outlier), na.rm = TRUE, hjust = hjust, color = "grey", min.segment.length=0.3)
   }
 
   p
