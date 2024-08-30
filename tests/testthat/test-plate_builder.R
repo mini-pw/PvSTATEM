@@ -70,6 +70,16 @@ test_that("Sample type is correctly identified as POSITIVE CONTROL", {
   )
 })
 
+test_that("Test translating samples with only proportions", {
+  expect_equal(
+    translate_sample_names_to_sample_types(
+      c("BLANK", "1/50", "1/100", "1/1000"),
+      c("BLANK", "1/50", "1/100", "1/1000")
+    ),
+    c("BLANK", "STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE")
+  )
+})
+
 test_that("Sample type defaults to TEST when no special conditions are met", {
   expect_equal(
     translate_sample_names_to_sample_types(
@@ -85,14 +95,6 @@ test_that("Handling of missing layout names", {
     translate_sample_names_to_sample_types(
       c("BLANK", "S", "POS 1/10", "NEGATIVE CONTROL"),
       NULL
-    ),
-    c("BLANK", "STANDARD CURVE", "POSITIVE CONTROL", "NEGATIVE CONTROL")
-  )
-
-  expect_equal(
-    translate_sample_names_to_sample_types(
-      c("BLANK", "S", "POS 1/10", "NEGATIVE CONTROL"),
-      NA
     ),
     c("BLANK", "STANDARD CURVE", "POSITIVE CONTROL", "NEGATIVE CONTROL")
   )

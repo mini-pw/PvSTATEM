@@ -296,6 +296,7 @@ create_standard_curve_model_analyte <- function(plate, analyte_name, data_type =
 
   mfi_source <- ifelse(source_mfi_range_from_all_analytes, "ALL", analyte_name)
 
+
   mfi_min <- min(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
   mfi_max <- max(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
 
