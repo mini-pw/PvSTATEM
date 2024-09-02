@@ -46,14 +46,6 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   # Load the background image
   image_path <- system.file("img", "96_well_plate.png", package = "PvSTATEM", mustWork = TRUE)
   plate_img <- readPNG(image_path)
-  rgb_image <- array(0, dim = c(dim(plate_img)[1], dim(plate_img)[2], 3))
-
-  # this step is necessary because the image is black and white
-  # and R works with either RGB or RGBA images
-  # so I have to convert it
-  rgb_image[, , 1] <- plate_img[, , 1] # Red channel
-  rgb_image[, , 2] <- plate_img[, , 1] # Green channel
-  rgb_image[, , 3] <- plate_img[, , 1] # Blue channel
 
   # values obtained using trial and error
   well_positions <- expand.grid(
@@ -68,40 +60,44 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   # Define the aspect ratio of the background image
   background_image_resolution <- c(dim(plate_img)[2], dim(plate_img)[1])
   aspect_ratio <- background_image_resolution[2] / background_image_resolution[1]
-  area_size <- min(dev.size("px") / background_image_resolution)
-
+  # A size unit relative to the device width in mm
+  runit <- 10 * dev.size("cm")[1] / 1000
 
   categories <- names(legend_mapping)
   well_positions$category <- factor(well_positions$color, levels = legend_mapping, labels = categories)
 
-
   # Plot the plate with colored wells
-  p <- ggplot(well_positions, aes(x = x, y = y)) +
-    annotation_custom(
-      rasterGrob(rgb_image, width = unit(1, "npc"), height = unit(1, "npc")),
+  p <- ggplot(well_positions, aes(x = x, y = y, fill=category)) +
+    geom_tile(key_glyph = "point") +
+  annotation_custom(
+      rasterGrob(plate_img, width = unit(1, "npc"), height = unit(1, "npc")),
       -Inf, Inf, -Inf, Inf
     ) +
-    geom_point(aes(fill = category), size = area_size * 19 - 1, shape = 21, color = "black", stroke = 0) +
-    scale_fill_manual(values = legend_mapping) +
     theme_void() +
     scale_x_continuous(limits = c(0, 1)) +
-    scale_y_continuous(limits = c(0, 1)) +
+    scale_y_continuous(limits = c(0, 1))  +
+    scale_fill_manual(values = legend_mapping) +
     ggtitle(plot_title) +
     theme(
       aspect.ratio = aspect_ratio,
-      plot.title = element_text(hjust = 0.5, size = area_size * 20 + 5, vjust = -1),
+      plot.title = element_text(hjust = 0.5, size = 100 * runit, vjust = -1),
       legend.title = element_text(size = 0),
       legend.text = element_text(size = 12, face = "bold"),
       legend.background = element_rect(fill = "white", linewidth = 0),
-      legend.key = element_rect(fill = "white", color = "white")
-    )
+      legend.key = element_rect(fill = "white", color = "white"),
+      legend.margin=margin(c(5,5,5,5))
+    ) +
+    guides(fill = guide_legend(title = NULL, override.aes = list(size = 6, shape = 21, stroke = 1, color = "black")))
 
   if ((dev.size("px") / background_image_resolution)[1] < (dev.size("px") / background_image_resolution)[2]) {
     p <- p + theme(legend.position = "bottom")
   }
 
   if (plot_numbers) {
-    p <- p + geom_text(aes(label = numbers), size = area_size * 8 - 0.5, color = "black", vjust = 0.5, hjust = 0.5, fontface = "bold")
+    p <- p + geom_text(
+      aes(label = numbers),
+      size = 15 * runit, color = "black", vjust = 0.5, hjust = 0.5, fontface = "bold"
+    )
   }
 
   if (!plot_legend) {
