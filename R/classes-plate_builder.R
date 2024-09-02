@@ -151,6 +151,11 @@ PlateBuilder <- R6::R6Class(
           stop("Sample type `", sample_type, "` is not a valid sample type")
         }
       }
+
+      if (!"STANDARD CURVE" %in% sample_types) {
+        stop("No standard curve samples found in the plate")
+      }
+
       self$sample_types <- sample_types
     },
 
