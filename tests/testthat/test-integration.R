@@ -18,7 +18,7 @@ test_that("Fully Parse CovidOISExPONTENT.csv plate data", {
   expect_equal(plate$plate_name, "CovidOISExPONTENT")
 })
 
-test_that("Validation works",{
+test_that("Validation works", {
   path <- system.file("extdata", "random_no_standard_curve.csv", package = "PvSTATEM", mustWork = TRUE)
   layout_path <- system.file("extdata", "random_layout_no_standard_curve.xlsx", package = "PvSTATEM", mustWork = TRUE)
 
