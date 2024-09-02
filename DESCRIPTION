@@ -9,7 +9,7 @@ Description: The package speeds up the process of loading raw data from MBA
     within the project of the same name - `PvSTATEM` - an international 
     project aiming for malaria elimination.
 BugReports: https://github.com/mini-pw/PvSTATEM/issues
-Version: 0.0.2
+Version: 0.0.3
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 Authors@R: c(
