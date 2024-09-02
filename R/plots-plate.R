@@ -67,15 +67,15 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   well_positions$category <- factor(well_positions$color, levels = legend_mapping, labels = categories)
 
   # Plot the plate with colored wells
-  p <- ggplot(well_positions, aes(x = x, y = y, fill=category)) +
+  p <- ggplot(well_positions, aes(x = x, y = y, fill = category)) +
     geom_tile(key_glyph = "point") +
-  annotation_custom(
+    annotation_custom(
       rasterGrob(plate_img, width = unit(1, "npc"), height = unit(1, "npc")),
       -Inf, Inf, -Inf, Inf
     ) +
     theme_void() +
     scale_x_continuous(limits = c(0, 1)) +
-    scale_y_continuous(limits = c(0, 1))  +
+    scale_y_continuous(limits = c(0, 1)) +
     scale_fill_manual(values = legend_mapping) +
     ggtitle(plot_title) +
     theme(
@@ -85,7 +85,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
       legend.text = element_text(size = 12, face = "bold"),
       legend.background = element_rect(fill = "white", linewidth = 0),
       legend.key = element_rect(fill = "white", color = "white"),
-      legend.margin=margin(c(5,5,5,5))
+      legend.margin = margin(c(5, 5, 5, 5))
     ) +
     guides(fill = guide_legend(title = NULL, override.aes = list(size = 6, shape = 21, stroke = 1, color = "black")))
 
