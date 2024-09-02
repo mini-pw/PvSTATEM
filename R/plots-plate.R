@@ -44,7 +44,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   }
 
   # Load the background image
-  image_path <- system.file("img", "96_well_plate_color.png", package = "PvSTATEM", mustWork = TRUE)
+  image_path <- system.file("img", "96_well_plate.png", package = "PvSTATEM", mustWork = TRUE)
   plate_img <- readPNG(image_path)
 
   # values obtained using trial and error
