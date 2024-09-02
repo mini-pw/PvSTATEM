@@ -18,14 +18,21 @@ test_that("Fully Parse CovidOISExPONTENT.csv plate data", {
   expect_equal(plate$plate_name, "CovidOISExPONTENT")
 })
 
+test_that("Validation works",{
+  path <- system.file("extdata", "random_no_standard_curve.csv", package = "PvSTATEM", mustWork = TRUE)
+  layout_path <- system.file("extdata", "random_layout_no_standard_curve.xlsx", package = "PvSTATEM", mustWork = TRUE)
+
+  expect_error(read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
+})
+
 test_that("Fully Parse CovidOISExPONTENT_CO.csv plate data with layout", {
-  path <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE)
-  layout_path <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
 
   expect_equal(plate$dilutions[1:4], c(NA, "1/50", "1/100", "1/200"))
 
-  expect_equal(plate$plate_name, "CovidOISExPONTENT_CO")
+  expect_equal(plate$plate_name, "CovidOISExPONTENT")
 
   expect_no_error(print(plate))
   expect_no_error(summary(plate))
