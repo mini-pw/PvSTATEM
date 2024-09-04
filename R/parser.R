@@ -99,11 +99,6 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #' - INTELLIFLEX
 #' which are produced by two different Luminex machines.
 #'
-#' @seealso
-#'
-#' The examples of Luminex files can be looked up in the vignette about the datasets:
-#' \code{\vignette("our_datasets", package = "PvSTATEM")}
-#'
 #'
 #' @param plate_filepath Path to the Luminex plate file
 #' @param layout_filepath Path to the Luminex layout file

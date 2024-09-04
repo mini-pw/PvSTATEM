@@ -71,7 +71,3 @@ layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.csv", package
 plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE) # suppress warnings and additional information
 
 }
-\seealso{
-The examples of Luminex files can be looked up in the vignette about the datasets:
-\code{\vignette("our_datasets", package = "PvSTATEM")}
-}
