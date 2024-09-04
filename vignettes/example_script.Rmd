@@ -1,5 +1,5 @@
 ---
-title: "Simple example of basic PvSTATEM package pre-release version functionalities"
+title: "Basic PvSTATEM functionalities"
 author: "Tymoteusz Kwieciński"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_document
@@ -22,20 +22,19 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The basic functionality of the `PvSTATEM` package is reading raw MBA data. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. Firsly, let us load the dataset as the `plate` object.
+The basic functionality of the `PvSTATEM` package is reading raw MBA data. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. You might want to replace these variables with paths to your files on your local disk. Firstly, let us load the dataset as the `plate` object.
 
 ```{r}
 library(PvSTATEM)
-library(ggplot2)
 
-plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
-layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
 
 
-plate <- read_data(plate_filepath, layout_filepath) # read the data
+plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
 
-cat("Successfully loaded plate with batch name:", plate$batch_name, "\n")
+plate
 ```
 
 After the plate is successfully loaded, we can look at some basic information about it.
@@ -43,41 +42,30 @@ After the plate is successfully loaded, we can look at some basic information ab
 ```{r}
 plate$summary()
 
-plate$summary(include_names = TRUE) # more detailed summary - names of the types
-
-plate$get_sample(1)
-plate$get_sample_by_type("STANDARD CURVE")[[1]]
+plate$summary(include_names = TRUE) # more detailed summary
 
 plate$sample_names
 plate$analyte_names
 ```
 
-## Warnings
-
-Our scripts are designed to catch potential errors in the data. If there are any warnings, they will be stored in the `warnings` field of the plate object. The warnings can be accessed by the `$warnings` field of the plate object or by the `$warnings` field of the sample object.
+The summary can also be accessed using the built-in generic method `summary`.
 
 ```{r}
-## warnings ----------------------------------------------------------------
-
-plate$warnings[[5]]
-
-plate$get_sample(5)$warnings
-
-plate$get(analyte = "Spike_6P_IPP", sample = 1)
-
-plate$get_sample_by_type("STANDARD CURVE")[[1]]$warnings
+summary(plate)
 ```
 
-## Normalization
+## Quality control
 
-The package can plot the dilutions along the MFI values, allowing manual inspecting of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
+The package can plot the dilutions along the MFI values, allowing manual inspection of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
 
 ```{r}
-plot_standard_curve_antibody(plate, antibody_name = "Spike_6P_IPP")
+plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
 
 plate$blank_adjustment()
 
-plot_standard_curve_antibody(plate, antibody_name = "Spike_6P_IPP")
+print(plate$blank_adjusted)
+
+plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
 ```
 
 We can also plot the standard curve for different analytes and data types. A list of all available analytes on the plate can be accessed using the command `plate$analyte_names`.
@@ -85,13 +73,45 @@ We can also plot the standard curve for different analytes and data types. A lis
 By default, all the operations are performed on the `Median` value of the samples; this option can be selected from the `data_type` parameter of the function.
 
 ```{r}
-plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", data_type = "Mean")
-plot_standard_curve_antibody(plate, antibody_name = "RBD_wuhan_IPP", data_type = "Avg Net MFI")
+plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan", data_type = "Mean")
+plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan", data_type = "Avg Net MFI")
 ```
 
-The plotting function has more options, such as selecting which axis the log scale should be applied or reversing the curve. More detailed information can be found in the function documentation, accessed by executing the command `?plot_standard_curve_antibody`.
+This plot may be used to assess the quality of the standard curve and anticipate some of the potential issues with the data.
+For instance, if we plotted the standard curve for the analyte `ME` we could notice that the `Median` value of sample with dilution of `1/25600` is abnormally large, which may indicate a problem with the data.
 
-After inspection, we may create the model for the standard curve of a certain antibody. The model is now fitted using the `nplr` package, which provides a simple interface for fitting n-parameter logistic regression models. The model is then used to predict the dilutions of the samples based on the MFI values.
+
+```{r}
+plot_standard_curve_analyte(plate, analyte_name = "ME")
+plot_standard_curve_analyte(plate, analyte_name = "ME", log_scale = "all")
+```
+
+The plotting function has more options, such as selecting which axis the log scale should be applied or reversing the curve. More detailed information can be found in the function documentation, accessed by executing the command `?plot_standard_curve_analyte`.
+
+Another useful method of inspecting the potential errors of the data is `plot_mfi_for_analyte`. 
+This method plots the MFI values of standard curve samples for a given analyte along the boxplot of the MFI values of the test samples.
+
+It helps identify the outlier samples and check if the test samples are within the range of the standard curve samples. 
+
+```{r}
+plot_mfi_for_analyte(plate, analyte_name = "OC43_S")
+
+plot_mfi_for_analyte(plate, analyte_name = "Spike_6P")
+```
+
+It can be seen that for the `Spike_6P` analyte, the MFI values don't fall within the range of the standard curve samples, which could be problematic for the model. The values of test dilutions will be extrapolated from the standard curve, which may lead to incorrect results.
+
+## Normalization
+
+
+After inspection, we may create the model for the standard curve of a certain antibody. 
+The model is fitted using the `nplr` package, which provides a simple interface 
+for fitting n-parameter logistic regression models, 
+but to create a clearer interface for the user, 
+we encapsulated this model into our own class called `Model` for simplicity. 
+The detailed documentation of the `Model` class can be found by executing the command `?Model`.
+
+The model is then used to predict the dilutions of the samples based on the MFI values.
 
 `nplr` package fits the model using the formula:
 
@@ -118,60 +138,33 @@ This equation is referred to as the Richards' equation. More information about t
 By default, the `nplr` model transforms the x values using the log10 function.
 
 ```{r}
-model <- create_standard_curve_model_antibody(plate, antibody_name = "Spike_6P_IPP")
+model <- create_standard_curve_model_analyte(plate, analyte_name = "OC43_S")
 
 model
 ```
 
-Since our `model` object is an instance of `nplr` class, it contains all the information about the fitted model. The model can be used to predict the dilutions of the samples based on the MFI values. The output above shows goodness of the fit, the estimated parameters and the confidence intervals for the parameters.
+Since our `model` object contains all the characteristics and parameters of the fitted regression model. 
+The model can be used to predict the dilutions of the samples based on the MFI values. 
+The output above shows the most important parameters of the fitted model.
 
 The predicted values may be used to plot the standard curve, which can be compared to the sample values.
 
 ```{r}
-plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model)
-
-plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model, log_scale = c("dilutions"))
+plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"))
+plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), plot_asymptote = FALSE)
 ```
 
-Apart from the plotting, the package can predict values of all the samples on the plate.
+Apart from the plotting, the package can predict the values of all the samples on the plate.
 
 ```{r}
-predicted_values <- predict_dilutions(plate, antibody_name = "Spike_6P_IPP", model)
+mfi_values <- plate$data$Median$OC43_S
+head(mfi_values)
 
-head(predicted_values)
+predicted_dilutions <- predict(model, mfi_values)
+
+head(predicted_dilutions)
 ```
-
-We can add this values onto the plot, to check if the predictions are valid and lay in the central part of the plot, not on the sides of the curve.
-
-```{r}
-p <- plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model, log_scale = c("dilutions"))
-
-p <- p + theme(legend.position = "none") # remove the legend
-
-
-p + geom_point(data = predicted_values, aes(x = log(dilution), y = MFI), color = "blue")
-```
-
-The new predicted values are marked with blue points. As we can see, the predictions are in the central part of the curve, which means that the model is valid. There are some outlier points above the asymptote, and their dilution is set to the maximum dilution value.
-
-### Four parameters model
-
-```{r}
-model_4npars <- create_standard_curve_model_antibody(plate, antibody_name = "Spike_6P_IPP", npars = 4)
-
-model_4npars
-```
-
-As seen from the model's output, it has a better fit than the five-parameters model. Let's investigate the plot of the standard curve with the four-parameters model.
-
-```{r}
-p <- plot_standard_curve_antibody_with_model(plate, antibody_name = "Spike_6P_IPP", model_4npars, log_scale = c("dilutions"))
-
-predicted_values_4npars <- predict_dilutions(plate, antibody_name = "Spike_6P_IPP", model_4npars)
-
-p <- p + theme(legend.position = "none") # remove the legend
-
-p + geom_point(data = predicted_values_4npars, aes(x = log(dilution), y = MFI), color = "blue")
-```
-
-We can see that even though the model supposedly has a better goodness of fit, extrapolation in the data is not desired. We need to control how the predictions are done and avoid bad practices, such as extrapolation. This is the main goal for the work in the following days
+The dataframe contains original MFI values and the predicted dilutions based on the model.
+Since the dilution values are obtained by reversing the logistic model formula, 
+the predictions also include the confidence intervals for the dilutions.
+The interval is represented as its upper and bottom bounds, which are stored in columns `dilution.025` and `dilution.975`, respectively.

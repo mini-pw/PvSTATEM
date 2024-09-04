@@ -4,7 +4,7 @@ author: "Tymoteusz Kwieciński"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_document
 vignette: >
-  %\VignetteIndexEntry{Simple example of basic PvSTATEM package pre-release version functionalities}
+  %\VignetteIndexEntry{Our datasets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,60 +20,58 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Our package main purpose is to read, perform quality control and normalize raw MBA data. Unfortunately, different devices and labs have different data formats. We gathered few datasets on which our package could be tested. This document describes the datasets and theirs sources.
+Our package's main purpose is to read, perform quality control, and normalize raw MBA data. Unfortunately, different devices and labs have different data formats. We gathered a few datasets on which our package could be tested. This document describes the datasets and their sources.
 
-The majority of our datasets, available for the public are stored in the `extdata` folder of the package. The remaining ones - both private and the larger number of publicly available datasets are stored in the `OneDrive` folder, which is accessible for the package developers.
+The majority of our datasets, available for the public are stored in the `extdata` folder of the package. The remaining ones - both private and the larger number of publicly available datasets are stored in the `OneDrive` folder, which is accessible to the package developers.
 
 ## How to access the files
 
-The simples way of accessing the files is to simply download them from our GitHub repository. 
+The simple way of accessing the files is to download them from our GitHub repository. 
 
-Another way, is to source the files using the `system.file` function. The function returns the path to the file, which can be used to read the data. The function has the following syntax:
+Another way is to source the files using the `system.file` function. The function returns the path to the file, which can be used to read the data. The function has the following syntax:
 
 ```{r}
 dataset_name <- "CovidOISExPONTENT.csv"
 
 dataset_filepath <- system.file("extdata", dataset_name, package = "PvSTATEM", mustWork = TRUE)
 ```
-The variable `dataset_filepath` contains now the path to the specified dataset on you computer. Since we know the filepath to the desired dataset, we can execute the `read_data` function to read the data. The function has the following syntax:
+The variable `dataset_filepath` now contains the path to the specified dataset on your computer. Since we know the filepath to the desired dataset, we can execute the `read_data` function to read the data. The function has the following syntax:
 
 ```{r}
 library(PvSTATEM)
 
+plate <- read_luminex_data(dataset_filepath)
 
-plate <- read_data(dataset_filepath)
-
-plate$summary()
+plate
 ```
-
 
 ## Description of the datasets
 
 Our datasets are divided into three main categories: 
 
 - **artificial** - the ones created by us for the purpose of testing the package functionalities 
-- **public** - the publicly available datasets, produced in scope of PvSTATEM project or by the laboratories participating in the project. 
-- **external** - the ones gathered from public domain, external sources, independent from PvSTATEM project
+- **public** - the publicly available datasets, produced in the scope of PvSTATEM project or by the laboratories participating in the project. 
+- **external** - the ones gathered from the public domain, external sources, independent from PvSTATEM project
 
 
 ### Artificial datasets
 
 In order to perform simple unit tests and validate the most basic reading functionalities of the package, we created a few artificial datasets. The datasets are stored in the `extdata` folder of the package. The datasets are:
 
--  `random.csv` - a simple dataset with random values, used to test the basic functionalities of the package
--  `random2.csv` - another simple dataset with random values, used to test the basic functionalities of the package. This file has a corresponding, artificial layout - `random_layout.csv`
+-  `random.csv` - a simple dataset with random values used to test the basic functionalities of the package
+-  `random2.csv` - another simple dataset with random values used to test the basic functionalities of the package. This file has a corresponding, artificial layout - `random_layout.csv`
 -  `random_broken_colB.csv` - this dataset has a broken column, which should be detected by the package and reported as a warning
 
 ### Public datasets
 
-The datasets from this category are the most important for the package development, since the main purpose of the package is to make the preprocessing of the data easier in scope of the PvSTATEM project.
+The datasets from this category are the most important for package development since the main purpose of the package is to make the preprocessing of the data easier in the scope of the PvSTATEM project.
 
-The majority of them are stored in the `OneDrive` folder of the package. The datasets available in the `extdata` folder are two files coming from Covid oise examination: 
+The majority of them are stored in the package's `OneDrive` folder. The datasets available in the `extdata` folder are two files coming from Covid oise examination: 
 
-- `CovidOISExPONTENT.csv`, which is a `IG4DC2~1.csv` plate from examination `IgG_CovidOise4_30plex`. It contains corresponding layout file `CovidOISExPONTENT_layout.xlsx`
+- `CovidOISExPONTENT.csv`, which is a `IG4DC2~1.csv` plate from examination `IgG_CovidOise4_30plex`. It contains the corresponding layout file `CovidOISExPONTENT_layout.xlsx`
 - `CovidOISExPONTENT_CO.csv`, which is a `IGG_CO~1.csv` plate from examination `IgG_CovidOise2_30plex` and corresponding layout file 
 
-Most of examples and vignettes in the package are based on these datasets.
+Most of the examples and vignettes in the package are based on these datasets.
 
 ### External datasets
 

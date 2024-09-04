@@ -1,25 +1,44 @@
 Package: PvSTATEM
 Type: Package
-Title: Reading, quality control and preprocessin of MBA assay data
-Description: Reading, quality control and preprocessin of MBA assay data.
-Version: 0.0.2
-Authors@R: person("Tymoteusz", "Kwiecinski", email = "tymoteuszkwiecinski@gmail.com", role = c("aut", "cre"))
+Title: Reading, quality control and preprocessing of MBA assay data
+Description: The package speeds up the process of loading raw data from MBA 
+    assays, performs quality control checks, and automatically normalizes the data, 
+    preparing it for more advanced downstream tasks. The main objective of the 
+    package is to create a simple environment for a user, who does not 
+    necessarily have experience with R language. The package is developed 
+    within the project of the same name - `PvSTATEM` - an international 
+    project aiming for malaria elimination.
+BugReports: https://github.com/mini-pw/PvSTATEM/issues
+Version: 0.0.3
+License: BSD_3_clause + file LICENSE
+Encoding: UTF-8
+Authors@R: c(
+        person("Tymoteusz", "Kwiecinski", email = "tymoteuszkwiecinski@gmail.com", role = c("aut", "cre")),
+        person("Jakub", "Grzywaczewski", email = "jakubzgrzywaczewski@gmail.com", role = "aut"),
+        person("Mateusz", "Nizwantowski", email = "mateusznizwantowski@gmail.com", role = "aut"))
 LazyData: true
 RoxygenNote: 7.3.2
 Imports:
     dplyr,
-    R6,
-    tools,
-    qpdf,
-    readxl,
-    RColorBrewer,
-    knitr,
-    rmarkdown,
     ggplot2,
+    knitr,
     nplr,
+    qpdf,
+    R6,
+    RColorBrewer,
+    readr,
+    readxl,
+    rmarkdown,
+    stringi,
+    stringr,
+    grid,
+    png,
+    tools,
+    ggrepel,
 Suggests:
     testthat (>= 3.0.0)
 Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)
-License: BSD_3_clause
 VignetteBuilder: knitr
+biocViews: DataImport, QualityControl, Preprocessing
+URL: https://github.com/mini-pw/PvSTATEM
