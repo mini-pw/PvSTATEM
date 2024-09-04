@@ -78,7 +78,7 @@ plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan", data_type = "Avg 
 ```
 
 This plot may be used to assess the quality of the standard curve and anticipate some of the potential issues with the data.
-For instance, if we plotted the standard curve for the analyte `ME` we could notice that the `Median` value of sample with dilution of `1/25600` is abnormally large, which may indicate a problem with the data.
+For instance, if we plotted the standard curve for the analyte, `ME` we could notice that the `Median` value of the sample with a dilution of `1/25600` is abnormally large, which may indicate a problem with the data.
 
 
 ```{r}

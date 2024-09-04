@@ -12,7 +12,7 @@ PvSTATEM 0.0.2
 ---------------------------------------------------------------
 * added new datasets to the package
 * sample standard curve plotting
-* github actions
+* GitHub actions
 * tests with coverage calculation
 
 

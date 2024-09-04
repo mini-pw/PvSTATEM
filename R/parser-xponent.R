@@ -175,7 +175,7 @@ key_value_parser <- function(key_regex, separator, check_length = TRUE) {
     if (check_length && length(read_values) > 2) {
       stop(parsing_error(
         index, lines, "Key,Value parser",
-        paste0("Expected at most 2 values at line. Error occured while trying to parse key: ", key_regex)
+        paste0("Expected at most 2 values at line. Error occurred while trying to parse key: ", key_regex)
       ))
     }
     if (!stringr::str_detect(read_values[1], key_regex)) {
