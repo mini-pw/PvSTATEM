@@ -4,7 +4,7 @@
 [![R-CMD-check](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-### 🔴 *Pre-release* version
+### 🟡 *Semi-release* version
 
 
 
