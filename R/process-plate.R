@@ -10,12 +10,23 @@
 #'
 #' @param plate (`Plate()`) a plate object
 #' @param output_path (`character(1)`) path to save the computed dilutions.
-#' If not provided the file will be saved in the working directory with the name `dilutions_\{plate_name\}.csv`.
-#' Where the \{plate_name\} is the name of the plate.
+#' If not provided the file will be saved in the working directory with the name `dilutions_{plate_name}.csv`.
+#' Where the `{plate_name}` is the name of the plate.
 #' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
+#' @param adjust_blanks (`logical(1)`) adjust blanks before computing dilutions. Default is `FALSE`
+#' @param verbose (`logical(1)`) print additional information. Default is `TRUE`
 #' @param ... Additional arguments to be passed to the fit model function (`create_standard_curve_model_analyte`)
 #'
-process_plate <- function(plate, output_path = NULL, data_type = "Median", ...) {
+#' @examples
+#'
+#' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
+#' layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
+#'
+#' plate <- read_luminex_data(plate_file, layout_file)
+#' process_plate(plate) # create and save dataframe with computed dilutions
+#'
+#' @export
+process_plate <- function(plate, output_path = NULL, data_type = "Median", adjust_blanks = FALSE, verbose = TRUE, ...) {
   stopifnot(inherits(plate, "Plate"))
   if (is.null(output_path)) {
     output_path <- paste0("dilutions_", plate$plate_name, ".csv")
@@ -23,7 +34,7 @@ process_plate <- function(plate, output_path = NULL, data_type = "Median", ...) 
   stopifnot(is.character(output_path))
   stopifnot(is.character(data_type))
 
-  if (!plate$blank_adjusted) {
+  if (!plate$blank_adjusted && adjust_blanks) {
     plate <- plate$blank_adjustment(in_place = FALSE)
   }
 
@@ -31,6 +42,8 @@ process_plate <- function(plate, output_path = NULL, data_type = "Median", ...) 
   output_list <- list(
     "SampleName" = test_sample_names
   )
+  PvSTATEM:::verbose_cat("Fitting the models and computing the dilutions for each analyte\n", verbose = verbose)
+
   for (analyte in plate$analyte_names) {
     model <- create_standard_curve_model_analyte(plate, analyte, data_type = data_type, ...)
     test_samples_mfi <- plate$get_data(analyte, "TEST", data_type = data_type)
@@ -39,5 +52,7 @@ process_plate <- function(plate, output_path = NULL, data_type = "Median", ...) 
   }
 
   output_df <- data.frame(output_list)
+
+  PvSTATEM:::verbose_cat("Saving the computed dilutions to a CSV file located in: '", output_path, "'\n", verbose = verbose)
   write.csv(output_df, output_path, row.names = FALSE)
 }
