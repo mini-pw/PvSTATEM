@@ -123,7 +123,7 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #' plate <- read_luminex_data(plate_file, layout_file)
 #'
 #' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM")
-#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.csv", package = "PvSTATEM")
+#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM")
 #' plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE) # suppress warnings and additional information
 #'
 #' @export
