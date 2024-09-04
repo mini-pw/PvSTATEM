@@ -48,7 +48,7 @@ plate$sample_names
 plate$analyte_names
 ```
 
-The summary can also the accessed using the built-in generic method `summary`.
+The summary can also be accessed using the built-in generic method `summary`.
 
 ```{r}
 summary(plate)
@@ -56,7 +56,7 @@ summary(plate)
 
 ## Quality control
 
-The package can plot the dilutions along the MFI values, allowing manual inspecting of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
+The package can plot the dilutions along the MFI values, allowing manual inspection of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
 
 ```{r}
 plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
@@ -91,7 +91,7 @@ The plotting function has more options, such as selecting which axis the log sca
 Another useful method of inspecting the potential errors of the data is `plot_mfi_for_analyte`. 
 This method plots the MFI values of standard curve samples for a given analyte along the boxplot of the MFI values of the test samples.
 
-It helps identifying the outlier samples and checking if the tests samples are within the range of the standard curve samples. 
+It helps identify the outlier samples and check if the test samples are within the range of the standard curve samples. 
 
 ```{r}
 plot_mfi_for_analyte(plate, analyte_name = "OC43_S")
@@ -99,7 +99,7 @@ plot_mfi_for_analyte(plate, analyte_name = "OC43_S")
 plot_mfi_for_analyte(plate, analyte_name = "Spike_6P")
 ```
 
-It can be seen, that for the `Spike_6P` analyte, the MFI values don't fall within the range of the standard curve samples, which could be problematic for the model. The values of test dilutions will be extrapolated from the standard curve, which may lead to incorrect results.
+It can be seen that for the `Spike_6P` analyte, the MFI values don't fall within the range of the standard curve samples, which could be problematic for the model. The values of test dilutions will be extrapolated from the standard curve, which may lead to incorrect results.
 
 ## Normalization
 
@@ -107,7 +107,7 @@ It can be seen, that for the `Spike_6P` analyte, the MFI values don't fall withi
 After inspection, we may create the model for the standard curve of a certain antibody. 
 The model is fitted using the `nplr` package, which provides a simple interface 
 for fitting n-parameter logistic regression models, 
-but to create clearer interface for the user, 
+but to create a clearer interface for the user, 
 we encapsulated this model into our own class called `Model` for simplicity. 
 The detailed documentation of the `Model` class can be found by executing the command `?Model`.
 
@@ -154,7 +154,7 @@ plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"))
 plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), plot_asymptote = FALSE)
 ```
 
-Apart from the plotting, the package can predict values of all the samples on the plate.
+Apart from the plotting, the package can predict the values of all the samples on the plate.
 
 ```{r}
 mfi_values <- plate$data$Median$OC43_S
