@@ -261,6 +261,8 @@ Model <- R6::R6Class(
 )
 
 #' Predict the dilutions from the MFI values
+#' @description
+#' More details can be found here: \link[pkg]{Model}
 #'
 #' @param object (`Model()`)
 #'   Object of the Model class
