@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PvSTATEM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -32,13 +32,25 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/example_script.html">Simple example of basic PvSTATEM package pre-release version functionalities</a>
+      <a href="../articles/example_script.html">Basic PvSTATEM functionalities</a>
     </li>
     <li>
       <a href="../articles/our_datasets.html">Our datasets</a>
     </li>
+    <li>
+      <a href="../articles/our_plots.html">Quick introduction to plots created by our package</a>
+    </li>
   </ul></li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/mini-pw/PvSTATEM/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -55,45 +67,97 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="Analyte.html">Analyte</a></code> </p>
+          <p><code><a href="Model.html">Model</a></code> </p>
         </td>
-        <td><p>Analyte Object</p></td>
+        <td><p>Logisic regresion model for the standard curve</p></td>
       </tr><tr><td>
           <p><code><a href="Plate.html">Plate</a></code> </p>
         </td>
-        <td><p>Plate</p></td>
+        <td><p>Plate object</p></td>
       </tr><tr><td>
-          <p><code><a href="Sample.html">Sample</a></code> </p>
+          <p><code><a href="PlateBuilder.html">PlateBuilder</a></code> </p>
         </td>
-        <td><p>Sample</p></td>
+        <td><p>PlateBuilder</p></td>
       </tr><tr><td>
-          <p><code><a href="SampleLocation.html">SampleLocation</a></code> </p>
+          <p><code><a href="clamp.html">clamp()</a></code> </p>
         </td>
-        <td><p>SampleLocation Object</p></td>
+        <td><p>Clamp a value to a range</p></td>
       </tr><tr><td>
-          <p><code><a href="SampleType.html">SampleType</a></code> </p>
+          <p><code><a href="create_standard_curve_model_analyte.html">create_standard_curve_model_analyte()</a></code> </p>
         </td>
-        <td><p>SampleType Object</p></td>
+        <td><p>Create standard curve model for a certain analyte</p></td>
       </tr><tr><td>
-          <p><code><a href="create_standard_curve_model_antibody.html">create_standard_curve_model_antibody()</a></code> </p>
+          <p><code><a href="create_vector_without_holes.html">create_vector_without_holes()</a></code> </p>
         </td>
-        <td><p>create model for standard curve of a certain antibody</p></td>
+        <td><p>Remove holes from a vector</p></td>
       </tr><tr><td>
-          <p><code><a href="plot_standard_curve_antibody.html">plot_standard_curve_antibody()</a></code> </p>
+          <p><code><a href="is.scalar.html">is.scalar()</a></code> </p>
         </td>
-        <td><p>Plot standard curves of plate or list of plates</p></td>
+        <td><p>Check if a value is a scalar</p></td>
       </tr><tr><td>
-          <p><code><a href="plot_standard_curve_antibody_with_model.html">plot_standard_curve_antibody_with_model()</a></code> </p>
+          <p><code><a href="is.str.number.html">is.str.number()</a></code> </p>
         </td>
-        <td><p>plot standard curve of a certain antibody with fitted model</p></td>
+        <td><p>Check if a string is a number</p></td>
       </tr><tr><td>
-          <p><code><a href="predict_dilutions.html">predict_dilutions()</a></code> </p>
+          <p><code><a href="is_outlier.html">is_outlier()</a></code> </p>
         </td>
-        <td><p>predict dilutions using fitted model</p></td>
+        <td><p>Check if a value is an outlier</p></td>
       </tr><tr><td>
-          <p><code><a href="read_data.html">read_data()</a></code> </p>
+          <p><code><a href="is_valid_data_type.html">is_valid_data_type()</a></code> </p>
         </td>
-        <td><p>Read data stored in the csv file - output of examination</p></td>
+        <td><p>Check validity of given data type</p></td>
+      </tr><tr><td>
+          <p><code><a href="is_valid_sample_type.html">is_valid_sample_type()</a></code> </p>
+        </td>
+        <td><p>Check validity of given sample type</p></td>
+      </tr><tr><td>
+          <p><code><a href="plot_counts.html">plot_counts()</a></code> </p>
+        </td>
+        <td><p>Plot counts in a 96-well plate</p></td>
+      </tr><tr><td>
+          <p><code><a href="plot_layout.html">plot_layout()</a></code> </p>
+        </td>
+        <td><p>Plot layout of a 96-well plate</p></td>
+      </tr><tr><td>
+          <p><code><a href="plot_mfi_for_analyte.html">plot_mfi_for_analyte()</a></code> </p>
+        </td>
+        <td><p>Plot MFI value distribution for a given analyte</p></td>
+      </tr><tr><td>
+          <p><code><a href="plot_standard_curve_analyte.html">plot_standard_curve_analyte()</a></code> </p>
+        </td>
+        <td><p>Standard curves</p></td>
+      </tr><tr><td>
+          <p><code><a href="plot_standard_curve_analyte_with_model.html">plot_standard_curve_analyte_with_model()</a></code> </p>
+        </td>
+        <td><p>Plot standard curve of a certain analyte with fitted model</p></td>
+      </tr><tr><td>
+          <p><code><a href="predict.Model.html">predict(<i>&lt;Model&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Predict the dilutions from the MFI values</p></td>
+      </tr><tr><td>
+          <p><code><a href="process_plate.html">process_plate()</a></code> </p>
+        </td>
+        <td><p>Process a plate and save computed dilutions to a CSV</p></td>
+      </tr><tr><td>
+          <p><code><a href="read_intelliflex_format.html">read_intelliflex_format()</a></code> </p>
+        </td>
+        <td><p>Read the Intelliflex format data</p></td>
+      </tr><tr><td>
+          <p><code><a href="read_layout_data.html">read_layout_data()</a></code> </p>
+        </td>
+        <td><p>Read layout data from a file</p></td>
+      </tr><tr><td>
+          <p><code><a href="read_luminex_data.html">read_luminex_data()</a></code> </p>
+        </td>
+        <td><p>Read Luminex Data</p></td>
+      </tr><tr><td>
+          <p><code><a href="read_xponent_format.html">read_xponent_format()</a></code> </p>
+        </td>
+        <td><p>Read the xPONENT format data</p></td>
+      </tr><tr><td>
+          <p><code><a href="translate_sample_names_to_sample_types.html">translate_sample_names_to_sample_types()</a></code> </p>
+        </td>
+        <td><p>Translate sample names to sample types</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -103,7 +167,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Tymoteusz Kwiecinski.</p>
+  <p></p><p>Developed by Tymoteusz Kwiecinski, Jakub Grzywaczewski, Mateusz Nizwantowski.</p>
 </div>
 
 <div class="pkgdown">
