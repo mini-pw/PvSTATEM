@@ -15,6 +15,7 @@ reference:
     - Plate
     - PlateBuilder
     - create_standard_curve_model_analyte
+    - predict.Model
   - title: Plots
     desc: Functions for plotting the data, quality control and the results of the analysis
     contents:
@@ -29,3 +30,6 @@ reference:
     - read_xponent_format
     - read_intelliflex_format
     - read_layout_data
+    - is_valid_data_type
+    - is_valid_sample_type
+    - translate_sample_names_to_sample_types
