@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PvSTATEM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -49,15 +49,28 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/example_script.html">Simple example of basic PvSTATEM package pre-release version functionalities</a>
+      <a href="../articles/example_script.html">Basic PvSTATEM functionalities</a>
     </li>
     <li>
       <a href="../articles/our_datasets.html">Our datasets</a>
     </li>
+    <li>
+      <a href="../articles/our_plots.html">Quick introduction to plots created by our package</a>
+    </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/mini-pw/PvSTATEM/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -76,7 +89,7 @@ Kwieciński</h4>
             
             <h4 data-toc-skip class="date">2024-09-04</h4>
       
-
+      <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/main/vignettes/our_datasets.Rmd" class="external-link"><code>vignettes/our_datasets.Rmd</code></a></small>
       <div class="hidden name"><code>our_datasets.Rmd</code></div>
 
     </div>
@@ -86,60 +99,48 @@ Kwieciński</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Our package main purpose is to read, perform quality control and
+<p>Our package’s main purpose is to read, perform quality control, and
 normalize raw MBA data. Unfortunately, different devices and labs have
-different data formats. We gathered few datasets on which our package
-could be tested. This document describes the datasets and theirs
+different data formats. We gathered a few datasets on which our package
+could be tested. This document describes the datasets and their
 sources.</p>
 <p>The majority of our datasets, available for the public are stored in
 the <code>extdata</code> folder of the package. The remaining ones -
 both private and the larger number of publicly available datasets are
-stored in the <code>OneDrive</code> folder, which is accessible for the
+stored in the <code>OneDrive</code> folder, which is accessible to the
 package developers.</p>
 <div class="section level3">
 <h3 id="how-to-access-the-files">How to access the files<a class="anchor" aria-label="anchor" href="#how-to-access-the-files"></a>
 </h3>
-<p>The simples way of accessing the files is to simply download them
-from our GitHub repository.</p>
-<p>Another way, is to source the files using the
-<code>system.file</code> function. The function returns the path to the
-file, which can be used to read the data. The function has the following
-syntax:</p>
+<p>The simple way of accessing the files is to download them from our
+GitHub repository.</p>
+<p>Another way is to source the files using the <code>system.file</code>
+function. The function returns the path to the file, which can be used
+to read the data. The function has the following syntax:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dataset_name</span> <span class="op">&lt;-</span> <span class="st">"CovidOISExPONTENT.csv"</span></span>
 <span></span>
 <span><span class="va">dataset_filepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="va">dataset_name</span>, package <span class="op">=</span> <span class="st">"PvSTATEM"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>The variable <code>dataset_filepath</code> contains now the path to
-the specified dataset on you computer. Since we know the filepath to the
-desired dataset, we can execute the <code>read_data</code> function to
-read the data. The function has the following syntax:</p>
+<p>The variable <code>dataset_filepath</code> now contains the path to
+the specified dataset on your computer. Since we know the filepath to
+the desired dataset, we can execute the <code>read_data</code> function
+to read the data. The function has the following syntax:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">PvSTATEM</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mini-pw/PvSTATEM" class="external-link">PvSTATEM</a></span><span class="op">)</span></span>
 <span></span>
-<span></span>
-<span><span class="va">plate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="va">dataset_filepath</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; Reading MBA plate csv file...</span></span>
-<span><span class="co">#&gt; </span></span>
+<span><span class="va">plate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_luminex_data.html">read_luminex_data</a></span><span class="op">(</span><span class="va">dataset_filepath</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Reading Luminex data from: /home/runner/work/_temp/Library/PvSTATEM/extdata/CovidOISExPONTENT.csv</span></span>
+<span><span class="co">#&gt; using format xPONENT</span></span>
 <span><span class="co">#&gt; (<span style="color: #BB0000;">WARNING</span>)</span></span>
-<span><span class="co">#&gt; The datatype Units contains NA values</span></span>
+<span><span class="co">#&gt; Layout file not provided. Setting `use_layout_sample_names`,</span></span>
+<span><span class="co">#&gt;       `use_layout_types` and `use_layout_dilutions` to FALSE.</span></span>
 <span><span class="co">#&gt; (<span style="color: #BB0000;">WARNING</span>)</span></span>
-<span><span class="co">#&gt; The datatype Analysis Types contains NA values</span></span>
-<span><span class="co">#&gt; (<span style="color: #BBBB00;">NOTE</span>)</span></span>
-<span><span class="co">#&gt; CRC block found, omiting it for now</span></span>
-<span><span class="co">#&gt; New plate object has been created with name:CovidOISExPONTENT !</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Running consistency checks...</span></span>
-<span><span class="co">#&gt; (WARNING)</span></span>
-<span><span class="co">#&gt; Plate contains at least one region that did not reach the specified bead count - 50</span></span></code></pre>
+<span><span class="co">#&gt; All dilutions in the plate are set to NA. Please check the dilutions in the layout file or sample names.</span></span>
+<span><span class="co"><span style="color: #00BB00;">#&gt; New plate object has been created with name: CovidOISExPONTENT!</span></span></span>
+<span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">summary</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; Summary of the plate generated on 05/11/2022 4:45 PM</span></span>
-<span><span class="co">#&gt; with name 'CovidOISExPONTENT':</span></span>
-<span><span class="co">#&gt; Total number of samples: 96</span></span>
-<span><span class="co">#&gt; Number of blank samples: 1</span></span>
-<span><span class="co">#&gt; Number of standard curve samples: 11</span></span>
-<span><span class="co">#&gt; Number of positive control samples: 0</span></span>
-<span><span class="co">#&gt; Number of negative control samples: 0</span></span></code></pre>
+<code class="sourceCode R"><span><span class="va">plate</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Plate with 96 samples and 30 analytes</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="description-of-the-datasets">Description of the datasets<a class="anchor" aria-label="anchor" href="#description-of-the-datasets"></a>
@@ -151,11 +152,11 @@ read the data. The function has the following syntax:</p>
 of testing the package functionalities</li>
 <li>
 <strong>public</strong> - the publicly available datasets, produced
-in scope of PvSTATEM project or by the laboratories participating in the
-project.</li>
+in the scope of PvSTATEM project or by the laboratories participating in
+the project.</li>
 <li>
-<strong>external</strong> - the ones gathered from public domain,
-external sources, independent from PvSTATEM project</li>
+<strong>external</strong> - the ones gathered from the public
+domain, external sources, independent from PvSTATEM project</li>
 </ul>
 <div class="section level4">
 <h4 id="artificial-datasets">Artificial datasets<a class="anchor" aria-label="anchor" href="#artificial-datasets"></a>
@@ -166,13 +167,12 @@ datasets. The datasets are stored in the <code>extdata</code> folder of
 the package. The datasets are:</p>
 <ul>
 <li>
-<code>random.csv</code> - a simple dataset with random values, used
+<code>random.csv</code> - a simple dataset with random values used
 to test the basic functionalities of the package</li>
 <li>
-<code>random2.csv</code> - another simple dataset with random
-values, used to test the basic functionalities of the package. This file
-has a corresponding, artificial layout -
-<code>random_layout.csv</code>
+<code>random2.csv</code> - another simple dataset with random values
+used to test the basic functionalities of the package. This file has a
+corresponding, artificial layout - <code>random_layout.csv</code>
 </li>
 <li>
 <code>random_broken_colB.csv</code> - this dataset has a broken
@@ -183,18 +183,19 @@ warning</li>
 <div class="section level4">
 <h4 id="public-datasets">Public datasets<a class="anchor" aria-label="anchor" href="#public-datasets"></a>
 </h4>
-<p>The datasets from this category are the most important for the
-package development, since the main purpose of the package is to make
-the preprocessing of the data easier in scope of the PvSTATEM
+<p>The datasets from this category are the most important for package
+development since the main purpose of the package is to make the
+preprocessing of the data easier in the scope of the PvSTATEM
 project.</p>
-<p>The majority of them are stored in the <code>OneDrive</code> folder
-of the package. The datasets available in the <code>extdata</code>
-folder are two files coming from Covid oise examination:</p>
+<p>The majority of them are stored in the package’s
+<code>OneDrive</code> folder. The datasets available in the
+<code>extdata</code> folder are two files coming from Covid oise
+examination:</p>
 <ul>
 <li>
 <code>CovidOISExPONTENT.csv</code>, which is a
 <code>IG4DC2~1.csv</code> plate from examination
-<code>IgG_CovidOise4_30plex</code>. It contains corresponding layout
+<code>IgG_CovidOise4_30plex</code>. It contains the corresponding layout
 file <code>CovidOISExPONTENT_layout.xlsx</code>
 </li>
 <li>
@@ -202,7 +203,7 @@ file <code>CovidOISExPONTENT_layout.xlsx</code>
 <code>IGG_CO~1.csv</code> plate from examination
 <code>IgG_CovidOise2_30plex</code> and corresponding layout file</li>
 </ul>
-<p>Most of examples and vignettes in the package are based on these
+<p>Most of the examples and vignettes in the package are based on these
 datasets.</p>
 </div>
 <div class="section level4">
@@ -239,7 +240,7 @@ ReaserchGate <a href="https://www.researchgate.net/publication/309411021_The_sec
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Tymoteusz Kwiecinski.</p>
+<p>Developed by Tymoteusz Kwiecinski, Jakub Grzywaczewski, Mateusz Nizwantowski.</p>
 </div>
 
 <div class="pkgdown">
