@@ -18,10 +18,4 @@ A vector with values at the given locations
 Function selects the values from the vector at the given locations
 and creates a vector "without holes". Works only for 96-plate.
 }
-\examples{
-vector <- c(1, 2, 3, 4, 5)
-locations <- c("A1", "B2", "C3", "D4", "E5")
-create_vector_without_holes(vector, locations)
-
-}
 \keyword{internal}
