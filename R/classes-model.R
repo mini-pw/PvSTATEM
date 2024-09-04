@@ -1,4 +1,4 @@
-#' @title Logisic regresion model for the standard curve
+#' @title Logistic regression model for the standard curve
 #'
 #' @description
 #' This model uses the `nplr` package to fit the model. The model is fitted using the formula:
@@ -273,17 +273,17 @@ predict.Model <- function(object, mfi) {
   object$predict(mfi)
 }
 
-#' Create standard curve model for a certain analyte
+#' Create a standard curve model for a certain analyte
 #'
 #' @param plate (`Plate()`)
 #'   Object of the Plate class
 #' @param analyte_name (`character(1)`)
 #'   Name of the analyte for which we want to create the model
 #' @param data_type (`character(1)`)
-#'   Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default equals to `Median`
+#'   Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default, it equals to `Median`
 #'
 #' @param source_mfi_range_from_all_analytes (`logical(1)`)
-#'   If `TRUE` the MFI range is calculated from all analytes, if `FALSE` the MFI range is calculated only for the current analyte
+#'   If `TRUE`, the MFI range is calculated from all analytes; if `FALSE`, the MFI range is calculated only for the current analyte
 #'   Defaults to `FALSE`
 #' @param ... Additional arguments passed to the model
 #'
