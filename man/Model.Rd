@@ -2,7 +2,7 @@
 % Please edit documentation in R/classes-model.R
 \name{Model}
 \alias{Model}
-\title{Logisic regresion model for the standard curve}
+\title{Logistic regression model for the standard curve}
 \description{
 This model uses the \code{nplr} package to fit the model. The model is fitted using the formula:
 
@@ -19,7 +19,7 @@ where:
 \item \eqn{s} is the asymmetric coefficient.
 }
 
-This equation is refereed as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
+This equation is referred to as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
 }
 \examples{
 plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
@@ -131,11 +131,11 @@ If \code{TRUE} the MFI values are scaled to the range [0, 1], \code{TRUE} by def
 
 \item{\code{mfi_min}}{(\code{numeric(1)})\cr
 Enables to set the minimum MFI value used for scaling MFI values to the range [0, 1].
-Use a values before any transformations (e.g. before the \code{log10} transformation)}
+Use values before any transformations (e.g., before the \code{log10} transformation)}
 
 \item{\code{mfi_max}}{(\code{numeric(1)})\cr
 Enables to set the maximum MFI value used for scaling MFI values to the range [0, 1].
-Use a values before any transformations (e.g. before the \code{log10} transformation)}
+Use values before any transformations (e.g., before the \code{log10} transformation)}
 }
 \if{html}{\out{</div>}}
 }
@@ -159,7 +159,7 @@ MFI values for which we want to predict the dilutions.}
 }
 \subsection{Returns}{
 (\code{data.frame()})\cr
-Dataframe with the predicted dilutions, MFI values and the 97.5\% confidence intervals
+Dataframe with the predicted dilutions, MFI values, and the 97.5\% confidence intervals
 The columns are named as follows:
 \itemize{
 \item \code{dilution} - the dilution value
