@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Introduction
+## Reading the plate object
 
 The basic functionality of the `PvSTATEM` package is reading raw MBA data. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. You might want to replace these variables with paths to your files on your local disk. Firstly, let us load the dataset as the `plate` object.
 
@@ -37,6 +37,19 @@ plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
 plate
 ```
 
+
+## Processing the whole plate
+Once we have loaded the plate object we may process it using the function `process_plate`. This function fits a model to each analyte using the standard curve samples and computes the dilutions for each analyte using the corresponding model. The computed dilutions are then saved to a CSV file.
+
+
+```{r}
+process_plate(plate)
+```
+
+## Quality control and normalization details
+Apart from the `process_plate` function, the package provides a set of functions that allow for more detailed and advanced quality control and normalization of the data.
+
+### Plate summary and details
 After the plate is successfully loaded, we can look at some basic information about it.
 
 ```{r}
@@ -54,7 +67,7 @@ The summary can also be accessed using the built-in generic method `summary`.
 summary(plate)
 ```
 
-## Quality control
+### Quality control
 
 The package can plot the dilutions along the MFI values, allowing manual inspection of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
 
@@ -78,7 +91,7 @@ plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan", data_type = "Avg 
 ```
 
 This plot may be used to assess the quality of the standard curve and anticipate some of the potential issues with the data.
-For instance, if we plotted the standard curve for the analyte `ME` we could notice that the `Median` value of sample with dilution of `1/25600` is abnormally large, which may indicate a problem with the data.
+For instance, if we plotted the standard curve for the analyte, `ME` we could notice that the `Median` value of the sample with a dilution of `1/25600` is abnormally large, which may indicate a problem with the data.
 
 
 ```{r}
@@ -101,7 +114,7 @@ plot_mfi_for_analyte(plate, analyte_name = "Spike_6P")
 
 It can be seen that for the `Spike_6P` analyte, the MFI values don't fall within the range of the standard curve samples, which could be problematic for the model. The values of test dilutions will be extrapolated from the standard curve, which may lead to incorrect results.
 
-## Normalization
+### Normalization
 
 
 After inspection, we may create the model for the standard curve of a certain antibody. 

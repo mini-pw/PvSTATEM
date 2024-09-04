@@ -15,3 +15,4 @@ is.str.number(x)
 \description{
 Check if a string is a number
 }
+\keyword{internal}

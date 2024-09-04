@@ -1,4 +1,4 @@
-#' @title Logisic regresion model for the standard curve
+#' @title Logistic regression model for the standard curve
 #'
 #' @description
 #' This model uses the `nplr` package to fit the model. The model is fitted using the formula:
@@ -14,7 +14,7 @@
 #' - \eqn{x_{mid}}{x_mid} is the x-coordinate at the inflection point,
 #' - \eqn{s} is the asymmetric coefficient.
 #'
-#' This equation is refereed as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
+#' This equation is referred to as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
 #'
 #' @examples
 #' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
@@ -86,10 +86,10 @@ Model <- R6::R6Class(
     #'   If `TRUE` the MFI values are scaled to the range \[0, 1\], `TRUE` by default
     #' @param mfi_min (`numeric(1)`)\cr
     #'   Enables to set the minimum MFI value used for scaling MFI values to the range \[0, 1\].
-    #'   Use a values before any transformations (e.g. before the `log10` transformation)
+    #'   Use values before any transformations (e.g., before the `log10` transformation)
     #' @param mfi_max (`numeric(1)`)\cr
     #'   Enables to set the maximum MFI value used for scaling MFI values to the range \[0, 1\].
-    #'   Use a values before any transformations (e.g. before the `log10` transformation)
+    #'   Use values before any transformations (e.g., before the `log10` transformation)
     #'
     initialize = function(analyte, dilutions, mfi, npars = 5, verbose = TRUE, log_dilution = TRUE, log_mfi = TRUE, scale_mfi = TRUE, mfi_min = NULL, mfi_max = NULL) {
       stopifnot(is.character(analyte) && !is.null(analyte) && nchar(analyte) > 0)
@@ -115,7 +115,7 @@ Model <- R6::R6Class(
       if (number_of_samples < 5) {
         verbose_cat(
           "(", color_codes$red_start, "WARNING", color_codes$red_end, ")\n",
-          "Using less than 5 samples to fit logistic model. For now using the basic nplr method to fit the logistic model - should be modified in the future",
+          "Using less than five samples to fit the logistic model. For now, using the basic nplr method to fit the logistic model - should be modified in the future",
           verbose = verbose
         )
         npars <- min(npars, number_of_samples)
@@ -138,7 +138,7 @@ Model <- R6::R6Class(
     #' MFI values for which we want to predict the dilutions.
     #'
     #' @return (`data.frame()`)\cr
-    #' Dataframe with the predicted dilutions, MFI values and the 97.5% confidence intervals
+    #' Dataframe with the predicted dilutions, MFI values, and the 97.5% confidence intervals
     #' The columns are named as follows:
     #' - `dilution` - the dilution value
     #' - `dilution.025` - the lower bound of the confidence interval
@@ -172,7 +172,7 @@ Model <- R6::R6Class(
       lower_bound <- nplr::getPar(self$model)$params$bottom
       bound_width <- upper_bound - lower_bound
       upper_bound <- upper_bound - 0.05 * bound_width
-      lower_bound <- private$mfi_transform(1) # Sclaed MFI for MFI = 1
+      lower_bound <- private$mfi_transform(1) # Scaled MFI for MFI = 1
 
       uniform_targets <- seq(lower_bound, upper_bound, length.out = 100)
       df <- nplr::getEstimates(self$model, targets = uniform_targets)
@@ -261,6 +261,8 @@ Model <- R6::R6Class(
 )
 
 #' Predict the dilutions from the MFI values
+#' @description
+#' More details can be found here: \link[pkg]{Model}
 #'
 #' @param object (`Model()`)
 #'   Object of the Model class
@@ -273,17 +275,17 @@ predict.Model <- function(object, mfi) {
   object$predict(mfi)
 }
 
-#' Create standard curve model for a certain analyte
+#' Create a standard curve model for a certain analyte
 #'
 #' @param plate (`Plate()`)
 #'   Object of the Plate class
 #' @param analyte_name (`character(1)`)
 #'   Name of the analyte for which we want to create the model
 #' @param data_type (`character(1)`)
-#'   Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default equals to `Median`
+#'   Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default, it equals to `Median`
 #'
 #' @param source_mfi_range_from_all_analytes (`logical(1)`)
-#'   If `TRUE` the MFI range is calculated from all analytes, if `FALSE` the MFI range is calculated only for the current analyte
+#'   If `TRUE`, the MFI range is calculated from all analytes; if `FALSE`, the MFI range is calculated only for the current analyte
 #'   Defaults to `FALSE`
 #' @param ... Additional arguments passed to the model
 #'

@@ -15,5 +15,5 @@ MFI values for which we want to predict the dilutions.
 Should be in the same scale as the MFI values used to fit the model}
 }
 \description{
-Predict the dilutions from the MFI values
+More details can be found here: \link[pkg]{Model}
 }

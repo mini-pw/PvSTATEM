@@ -71,6 +71,7 @@ remove_empty_lists <- function(lst) {
 #'
 #' @param x A string to be checked.
 #' @return `TRUE` if the string is a number, `FALSE` otherwise.
+#' @keywords internal
 is.str.number <- function(x) {
   stopifnot(is.character(x))
   all(sapply(x, function(x) grepl("^[0-9]+$", x)))
@@ -83,6 +84,7 @@ is.str.number <- function(x) {
 #'
 #' @param x Object to be checked.
 #' @return `TRUE` if the object is a scalar, `FALSE` otherwise.
+#' @keywords internal
 is.scalar <- function(x) {
   is.atomic(x) && length(x) == 1L
 }
@@ -120,6 +122,7 @@ color_codes <- list(
 #' @return A logical vector indicating whether each value is an outlier.
 #'
 #' @importFrom stats IQR quantile
+#' @keywords internal
 is_outlier <- function(x) {
   return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5 * IQR(x))
 }
@@ -133,6 +136,7 @@ is_outlier <- function(x) {
 #'
 #' @return A numeric value clamped to the range \[`lower`, `upper`\].
 #'
+#' @keywords internal
 clamp <- function(x, lower = -Inf, upper = Inf) {
   stopifnot(is.numeric(x), is.numeric(lower), is.numeric(upper))
   x[x < lower] <- lower
