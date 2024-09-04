@@ -19,3 +19,4 @@ A numeric value clamped to the range [\code{lower}, \code{upper}].
 \description{
 Clamp a value to a range
 }
+\keyword{internal}

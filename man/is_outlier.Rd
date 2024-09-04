@@ -15,3 +15,4 @@ A logical vector indicating whether each value is an outlier.
 \description{
 Check if a value is an outlier
 }
+\keyword{internal}

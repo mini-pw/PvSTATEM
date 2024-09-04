@@ -263,6 +263,15 @@ plot_layout <- function(plate, plot_legend = TRUE) {
 #' and creates a vector "without holes". Works only for 96-plate.
 #' @param vector A vector with values
 #' @param locations A vector with locations where the values should be placed
+#'
+#' @return A vector with values at the given locations
+#'
+#' @examples
+#' vector <- c(1, 2, 3, 4, 5)
+#' locations <- c("A1", "B2", "C3", "D4", "E5")
+#' create_vector_without_holes(vector, locations)
+#'
+#' @keywords internal
 create_vector_without_holes <- function(vector, locations) {
   # Create a vector with all the locations
   rows <- rep(LETTERS[1:8], each = 12)
