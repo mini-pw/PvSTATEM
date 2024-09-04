@@ -30,8 +30,20 @@ The simples way of accessing the files is to simply download them from our GitHu
 
 Another way, is to source the files using the `system.file` function. The function returns the path to the file, which can be used to read the data. The function has the following syntax:
 
-TODO
+```{r}
+dataset_name <- "CovidOISExPONTENT.csv"
 
+dataset_filepath <- system.file("extdata", dataset_name, package = "PvSTATEM", mustWork = TRUE)
+```
+The variable `dataset_filepath` contains now the path to the specified dataset on you computer. Since we know the filepath to the desired dataset, we can execute the `read_data` function to read the data. The function has the following syntax:
+
+```{r}
+library(PvSTATEM)
+
+plate <- read_luminex_data(dataset_filepath)
+
+plate
+```
 
 ## Description of the datasets
 
