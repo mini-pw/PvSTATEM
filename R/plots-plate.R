@@ -119,6 +119,8 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' @param analyte_name The name of the analyte
 #' @param plot_counts Logical indicating if the counts should be plotted
 #' @param plot_legend Logical indicating if the legend should be plotted
+#' @param lower_threshold The lower threshold for the counts, it separates green and yellow colors
+#' @param higher_threshold The higher threshold for the counts, it separates yellow and red colors
 #'
 #' @return A ggplot object
 #'
