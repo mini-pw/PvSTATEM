@@ -136,7 +136,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' )
 #'
 #' @export
-plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = FALSE) {
+plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = FALSE, lower_threshold = 50, higher_threshold = 70) {
   if (is.null(plate)) {
     stop("The plate object must be provided")
   }
@@ -147,6 +147,10 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 
   if (is.null(analyte_name)) {
     stop("The analyte_name must be provided")
+  }
+
+  if (lower_threshold > higher_threshold) {
+    stop("lower threshold cannot be higher than higher threshold")
   }
 
   counts <- plate$get_data(analyte_name, data_type = "Count")
@@ -167,14 +171,16 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
   )
 
   # mapping function from counts to colors
-  map_to_color <- function(count) {
+  map_to_color <- function(count, lower_threshold, higher_threshold) {
+
+    count <- as.integer(count)
     if (count < 0) {
       return(color_map[" "])
     }
 
-    if (count < 50) {
+    if (count < lower_threshold) {
       return(color_map["TO LITTLE"])
-    } else if (count >= 50 && count <= 70) {
+    } else if (count >= lower_threshold && count <= higher_threshold) {
       return(color_map["WARNING"])
     } else {
       return(color_map["CORRECT"])
@@ -183,7 +189,7 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 
 
   # Apply the mapping function to the counts vector
-  colors <- sapply(counts, map_to_color)
+  colors <- sapply(counts, map_to_color, lower_threshold = lower_threshold, higher_threshold = higher_threshold)
   title <- paste("Counts for", analyte_name)
 
   plot_plate(colors, plot_title = title, plot_numbers = plot_counts, numbers = counts, plot_legend = plot_legend, legend_mapping = color_map)
