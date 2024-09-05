@@ -11,7 +11,11 @@ create_vector_without_holes(vector, locations)
 
 \item{locations}{A vector with locations where the values should be placed}
 }
+\value{
+A vector with values at the given locations
+}
 \description{
 Function selects the values from the vector at the given locations
 and creates a vector "without holes". Works only for 96-plate.
 }
+\keyword{internal}

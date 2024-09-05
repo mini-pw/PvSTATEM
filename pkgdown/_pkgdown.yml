@@ -1,0 +1,35 @@
+template:
+  light-switch: true
+
+
+reference:
+  - title: Core functions
+    desc: Reading and processing the data
+    contents:
+    - read_luminex_data
+    - process_plate
+  - title: Plate and Model classes
+    desc: Instances of the Plate and Model classes, which are used to store the data and the model and faciliate the analysis
+    contents:
+    - Model
+    - Plate
+    - PlateBuilder
+    - create_standard_curve_model_analyte
+    - predict.Model
+  - title: Plots
+    desc: Functions for plotting the data, quality control and the results of the analysis
+    contents:
+    - plot_counts
+    - plot_layout
+    - plot_mfi_for_analyte
+    - plot_standard_curve_analyte
+    - plot_standard_curve_analyte_with_model
+  - title: Helper functions
+    desc: Additional, lower level functions that are used in the analysis
+    contents:
+    - read_xponent_format
+    - read_intelliflex_format
+    - read_layout_data
+    - is_valid_data_type
+    - is_valid_sample_type
+    - translate_sample_names_to_sample_types

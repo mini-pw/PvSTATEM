@@ -113,7 +113,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' This is a function used to plot counts in a 96-well plate using a color to represent the count ranges.
 #' There is possibility to plot exact counts in each well. \cr \cr
 #' If plot window is resized, it's best to re-run the function to adjust the scaling.
-#' Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted atutomatically.
+#' Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted automatically.
 #'
 #' @param plate The plate object with the counts data
 #' @param analyte_name The name of the analyte
@@ -196,7 +196,7 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 #' @description
 #' This is a function used to plot the layout of a 96-well plate using a color to represent the sample types. \cr \cr
 #' If plot window is resized, it's best to re-run the function to adjust the scaling.
-#' Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted atutomatically.
+#' Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted automatically.
 #'
 #'
 #' @param plate The plate object with the layout information
@@ -263,6 +263,10 @@ plot_layout <- function(plate, plot_legend = TRUE) {
 #' and creates a vector "without holes". Works only for 96-plate.
 #' @param vector A vector with values
 #' @param locations A vector with locations where the values should be placed
+#'
+#' @return A vector with values at the given locations
+#'
+#' @keywords internal
 create_vector_without_holes <- function(vector, locations) {
   # Create a vector with all the locations
   rows <- rep(LETTERS[1:8], each = 12)

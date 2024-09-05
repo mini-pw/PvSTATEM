@@ -1,6 +1,3 @@
-#'
-#'
-
 VALID_SAMPLE_TYPES <- c(
   "ALL",
   "BLANK",

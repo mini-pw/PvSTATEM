@@ -15,3 +15,4 @@ is.scalar(x)
 \description{
 This will return FALSE for NULL and vectors of length bigger than 2.
 }
+\keyword{internal}

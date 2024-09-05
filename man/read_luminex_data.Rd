@@ -61,3 +61,13 @@ The function is capable of reading data in two different formats:
 which are produced by two different Luminex machines.
 }
 }
+\examples{
+plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
+layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
+plate <- read_luminex_data(plate_file, layout_file)
+
+plate_file <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM")
+layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM")
+plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE) # suppress warnings and additional information
+
+}
