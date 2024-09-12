@@ -174,7 +174,6 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 
   # mapping function from counts to colors
   map_to_color <- function(count, lower_threshold, higher_threshold) {
-
     count <- as.integer(ifelse(count == " ", -1, count))
     if (count < 0) {
       return(color_map[" "])

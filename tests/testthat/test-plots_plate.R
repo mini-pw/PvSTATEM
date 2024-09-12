@@ -24,12 +24,12 @@ get_test_plate <- function() {
   )
 }
 
-get_real_plate <- function(){
+get_real_plate <- function() {
   plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
-                                package = "PvSTATEM"
+    package = "PvSTATEM"
   )
   layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-                                 package = "PvSTATEM"
+    package = "PvSTATEM"
   )
 
   read_luminex_data(plate_filepath, layout_filepath)
