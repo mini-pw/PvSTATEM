@@ -4,7 +4,14 @@
 \alias{plot_counts}
 \title{Plot counts in a 96-well plate}
 \usage{
-plot_counts(plate, analyte_name, plot_counts = TRUE, plot_legend = FALSE)
+plot_counts(
+  plate,
+  analyte_name,
+  plot_counts = TRUE,
+  plot_legend = FALSE,
+  lower_threshold = 50,
+  higher_threshold = 70
+)
 }
 \arguments{
 \item{plate}{The plate object with the counts data}
@@ -14,6 +21,10 @@ plot_counts(plate, analyte_name, plot_counts = TRUE, plot_legend = FALSE)
 \item{plot_counts}{Logical indicating if the counts should be plotted}
 
 \item{plot_legend}{Logical indicating if the legend should be plotted}
+
+\item{lower_threshold}{The lower threshold for the counts, it separates green and yellow colors}
+
+\item{higher_threshold}{The higher threshold for the counts, it separates yellow and red colors}
 }
 \value{
 A ggplot object

@@ -24,15 +24,19 @@ get_test_plate <- function() {
   )
 }
 
-test_that("Test plotting the mfi plot ", {
+get_real_plate <- function(){
   plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
-    package = "PvSTATEM"
+                                package = "PvSTATEM"
   )
   layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-    package = "PvSTATEM"
+                                 package = "PvSTATEM"
   )
 
-  plate <- read_luminex_data(plate_filepath, layout_filepath)
+  read_luminex_data(plate_filepath, layout_filepath)
+}
+
+test_that("Test plotting the mfi plot ", {
+  plate <- get_real_plate()
   expect_no_error(plot_layout(plate))
   expect_no_error(p <- plot_counts(plate, "OC43_NP_NA", plot_counts = TRUE, plot_legend = TRUE))
   print(p)
@@ -41,6 +45,16 @@ test_that("Test plotting the mfi plot ", {
 
 test_that("Misc errors of plate plots", {
   plate <- get_test_plate()
-
   expect_error(plot_counts(plate, "Spike_6P_IPP"))
+})
+
+test_that("higher threshold lower than lower", {
+  plate <- get_real_plate()
+  expect_error(p <- plot_counts(plate, "OC43_NP_NA", plot_counts = FALSE, plot_legend = FALSE, lower_threshold = 100, higher_threshold = 50))
+})
+
+
+test_that("properly specified thresholds for counts", {
+  plate <- get_real_plate()
+  expect_no_error(p <- plot_counts(plate, "OC43_NP_NA", plot_counts = FALSE, plot_legend = TRUE, lower_threshold = 50, higher_threshold = 150))
 })
