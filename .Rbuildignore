@@ -5,3 +5,4 @@
 ^\.git$
 ^NEWS.md
 .pre-commit-config.yaml
+^pkgdown$
