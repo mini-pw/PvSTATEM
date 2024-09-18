@@ -44,7 +44,7 @@ process_plate <- function(plate, output_path = NULL, data_type = "Median", adjus
   output_list <- list(
     "SampleName" = test_sample_names
   )
-  PvSTATEM:::verbose_cat("Fitting the models and computing the dilutions for each analyte\n", verbose = verbose)
+  verbose_cat("Fitting the models and computing the dilutions for each analyte\n", verbose = verbose)
 
   for (analyte in plate$analyte_names) {
     model <- create_standard_curve_model_analyte(plate, analyte, data_type = data_type, ...)
@@ -55,6 +55,6 @@ process_plate <- function(plate, output_path = NULL, data_type = "Median", adjus
 
   output_df <- data.frame(output_list)
 
-  PvSTATEM:::verbose_cat("Saving the computed dilutions to a CSV file located in: '", output_path, "'\n", verbose = verbose)
+  verbose_cat("Saving the computed dilutions to a CSV file located in: '", output_path, "'\n", verbose = verbose)
   write.csv(output_df, output_path, row.names = FALSE)
 }
