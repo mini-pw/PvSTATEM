@@ -2,7 +2,6 @@
 title: "Basic PvSTATEM functionalities"
 author: "Tymoteusz Kwieciński"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{Simple example of basic PvSTATEM package pre-release version functionalities}
   %\VignetteEngine{knitr::rmarkdown}
@@ -16,7 +15,9 @@ knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
   warning = FALSE,
-  message = FALSE
+  message = FALSE,
+  dpi = 50,
+  out.width = "70%"
 )
 ```
 
