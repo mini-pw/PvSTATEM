@@ -269,9 +269,14 @@ Model <- R6::R6Class(
 #' @param mfi (`numeric()`)
 #'   MFI values for which we want to predict the dilutions.
 #'   Should be in the same scale as the MFI values used to fit the model
+#' @param ... Additional arguments passed to the method
+#'
+#' @importFrom stats predict
+#'
+#' @return (`data.frame()`)
 #'
 #' @export
-predict.Model <- function(object, mfi) {
+predict.Model <- function(object, mfi, ...) {
   object$predict(mfi)
 }
 

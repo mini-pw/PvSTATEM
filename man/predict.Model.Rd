@@ -4,7 +4,7 @@
 \alias{predict.Model}
 \title{Predict the dilutions from the MFI values}
 \usage{
-\method{predict}{Model}(object, mfi)
+\method{predict}{Model}(object, mfi, ...)
 }
 \arguments{
 \item{object}{(\code{Model()})
@@ -13,6 +13,11 @@ Object of the Model class}
 \item{mfi}{(\code{numeric()})
 MFI values for which we want to predict the dilutions.
 Should be in the same scale as the MFI values used to fit the model}
+
+\item{...}{Additional arguments passed to the method}
+}
+\value{
+(\code{data.frame()})
 }
 \description{
 More details can be found here: \link[PvSTATEM]{Model}
