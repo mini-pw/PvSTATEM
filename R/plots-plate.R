@@ -19,6 +19,7 @@
 #' @import ggplot2
 #' @import grid
 #' @import png
+#' @importFrom grDevices dev.size
 #'
 #' @keywords internal
 plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate",
