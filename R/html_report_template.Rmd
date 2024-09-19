@@ -1,0 +1,71 @@
+---
+title: "Raport for plate: `r paste0('*', params$plate$plate_name, '*')`"
+output: html_document
+params:
+  plate: !r NULL
+  use_model: TRUE
+---
+
+```{r, echo=FALSE}
+if (is.null(params$plate)) {
+  stop("The `plate` must be provided when rendering the document.")
+}
+
+# add check if plate is a instance of plate 
+```
+
+Report generated on  `r Sys.time()`.  
+Plate batch name: `r params$plate$batch_name`.  
+This is plate with `r paste0(length(params$plate$sample_names), " samples and ", length(params$plate$analyte_names), " analytes")`.
+
+-------------------
+
+
+### Plate layout
+
+```{r, fig.width=7, fig.height=4, echo=FALSE}
+plot_layout(params$plate)
+```
+
+------------------
+ 
+### Details for given analayte {.tabset}
+
+```{r, results='asis', echo=FALSE}
+# code used to create dynamic tabs based on the number of analytes
+for (i in 1:length(params$plate$analyte_names)) {
+  cat(paste0("#### ", params$plate$analyte_names[i], "\n"))
+  
+  # Plot counts
+  cat("##### Counts \n")
+  print(plot_counts(params$plate, params$plate$analyte_names[i]))
+  cat("\n\n")
+  
+  # Plot Standard Curve
+  if(params$use_model){
+    cat("##### Standard curve with model \n")
+    model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
+    print(plot_standard_curve_analyte_with_model(params$plate, model))
+  }
+  else{
+    cat("##### Standard curve \n")
+    print(plot_standard_curve_analyte(params$plate, params$plate$analyte_names[i]))
+  }
+  cat("\n\n")
+  
+  # Plot MFI
+  cat("##### MFI plot \n")
+  print(plot_mfi_for_analyte(params$plate, params$plate$analyte_names[i]))
+  cat("\n\n")
+  
+}
+```
+
+
+
+
+
+
+
+
+
