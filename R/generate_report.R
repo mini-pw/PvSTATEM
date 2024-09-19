@@ -7,7 +7,7 @@
 #' @param use_model A logical value indicating whether the model should be used in the report.
 #' @return A report.
 #' @export
-generate_report <- function(plate, use_model=TRUE) {
+generate_report <- function(plate, use_model = TRUE) {
   message("Generating report... This will take approximately 30 seconds.")
   rmarkdown::render("R/html_report_template.Rmd", params = list(plate = plate, use_model = use_model))
 }
