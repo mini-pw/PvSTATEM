@@ -440,3 +440,8 @@ Plate <- R6::R6Class(
 summary.Plate <- function(object, ...) {
   object$summary(...)
 }
+
+#' @export
+as.data.frame.Plate <- function(x, row.names, optional, ...) {
+  x$get_data("ALL", "ALL")
+}
