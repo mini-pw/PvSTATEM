@@ -8,7 +8,7 @@ Description: Speeds up the process of loading raw data from MBA
     necessarily have experience with R language. The package is developed 
     within the project of the same name - `PvSTATEM` - an international 
     project aiming for malaria elimination.
-BugReports: https://github.com/mini-pw/PvSTATEM/issues
+BugReports: <https://github.com/mini-pw/PvSTATEM/issues>
 Version: 0.0.3
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
@@ -40,4 +40,4 @@ Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 VignetteBuilder: knitr
 biocViews: DataImport, QualityControl, Preprocessing
-URL: https://github.com/mini-pw/PvSTATEM
+URL: <https://github.com/mini-pw/PvSTATEM>
