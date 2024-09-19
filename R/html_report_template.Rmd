@@ -6,12 +6,13 @@ params:
   use_model: TRUE
 ---
 
-```{r, echo=FALSE}
+```{r param-check, echo=FALSE}
 if (is.null(params$plate)) {
   stop("The `plate` must be provided when rendering the document.")
 }
-
-# add check if plate is a instance of plate 
+if (!is(params$plate, "Plate")) {
+  stop("The `plate` must be an instance of `Plate` class.")
+}
 ```
 
 Report generated on  `r Sys.time()`.  
@@ -23,45 +24,46 @@ This is plate with `r paste0(length(params$plate$sample_names), " samples and ",
 
 ### Plate layout
 
-```{r, fig.width=7, fig.height=4, echo=FALSE}
+<details open>
+  <summary>Click to show/hide layout</summary>
+      ```{r plate-layout, fig.width=7, fig.height=4, fig.align='center', echo=FALSE}
 plot_layout(params$plate)
-```
+      ```
+</details>
+
 
 ------------------
  
 ### Details for given analayte {.tabset}
 
-```{r, results='asis', echo=FALSE}
-# code used to create dynamic tabs based on the number of analytes
+```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%"}
+# Code used to create dynamic tabs based on the number of analytes
 for (i in 1:length(params$plate$analyte_names)) {
   cat(paste0("#### ", params$plate$analyte_names[i], "\n"))
-  
+
   # Plot counts
-  cat("##### Counts \n")
   print(plot_counts(params$plate, params$plate$analyte_names[i]))
-  cat("\n\n")
-  
+
+  # Plot MFI
+  print(plot_mfi_for_analyte(params$plate, params$plate$analyte_names[i]))
+
   # Plot Standard Curve
-  if(params$use_model){
-    cat("##### Standard curve with model \n")
+  print(plot_standard_curve_analyte(params$plate, params$plate$analyte_names[i]))
+  if (params$use_model) {
     model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
     print(plot_standard_curve_analyte_with_model(params$plate, model))
   }
-  else{
-    cat("##### Standard curve \n")
-    print(plot_standard_curve_analyte(params$plate, params$plate$analyte_names[i]))
-  }
+
   cat("\n\n")
-  
-  # Plot MFI
-  cat("##### MFI plot \n")
-  print(plot_mfi_for_analyte(params$plate, params$plate$analyte_names[i]))
-  cat("\n\n")
-  
 }
 ```
 
+------------------
 
+### &nbsp;
+
+<hr />
+<p style="text-align: center;">Generated using the <a href="https://github.com/mini-pw/PvSTATEM">PvSTATEM </a> package </p>
 
 
 
