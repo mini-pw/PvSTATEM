@@ -1,7 +1,7 @@
 Package: PvSTATEM
 Type: Package
-Title: Reading, quality control and preprocessing of MBA assay data
-Description: The package speeds up the process of loading raw data from MBA 
+Title: Reading, Quality Control and Preprocessing of MBA Assay Data
+Description: Speeds up the process of loading raw data from MBA 
     assays, performs quality control checks, and automatically normalizes the data, 
     preparing it for more advanced downstream tasks. The main objective of the 
     package is to create a simple environment for a user, who does not 
