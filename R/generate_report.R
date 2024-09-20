@@ -4,10 +4,26 @@
 #' the `html_report_template.Rmd` template.
 #'
 #' @param plate A plate object.
-#' @param use_model A logical value indicating whether the model should be used in the report.
+#' @param use_model (`logical(1)`) A logical value indicating whether the model should be used in the report.
+#' @param filename (`character(1)`) The name of the output file. If not provided, the filename will be created
+#' based on the plate name with the suffix '_report.html'.
+#' @param output_dir (`character(1)`) The directory where the report should be saved. Default is 'reports'.
+#'
+#'
 #' @return A report.
 #' @export
-generate_report <- function(plate, use_model = TRUE) {
+generate_report <- function(plate, use_model = TRUE, filename = NULL, output_dir = "reports") {
   message("Generating report... This will take approximately 30 seconds.")
-  rmarkdown::render("R/html_report_template.Rmd", params = list(plate = plate, use_model = use_model))
+  output_file <- if (is.null(filename)) {
+    paste0(plate$plate_name, "_report.html")
+  } else {
+    filename
+  }
+  rmarkdown::render(
+    "R/html_report_template.Rmd",
+    params = list(plate = plate, use_model = use_model),
+    output_file = output_file,
+    output_dir = output_dir
+  )
 }
+

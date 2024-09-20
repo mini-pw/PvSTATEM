@@ -96,7 +96,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   if (plot_numbers) {
     p <- p + geom_text(
       aes(label = numbers),
-      size = 15 * runit, color = "black", vjust = 0.5, hjust = 0.5, fontface = "bold"
+      size = 30 * runit, color = "black", vjust = 0.5, hjust = 0.5, fontface = "bold"
     )
   }
 
