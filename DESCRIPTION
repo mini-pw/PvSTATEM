@@ -21,14 +21,10 @@ RoxygenNote: 7.3.2
 Imports:
     dplyr,
     ggplot2,
-    knitr,
     nplr,
-    qpdf,
     R6,
-    RColorBrewer,
     readr,
     readxl,
-    rmarkdown,
     stringi,
     stringr,
     grid,
@@ -36,6 +32,9 @@ Imports:
     tools,
     ggrepel,
 Suggests:
+    knitr,
+    qpdf,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)

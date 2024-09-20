@@ -2,5 +2,8 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^\.github$
+^\.git$
 ^NEWS.md
 .pre-commit-config.yaml
+^pkgdown$
+^docs$

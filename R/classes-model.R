@@ -262,16 +262,21 @@ Model <- R6::R6Class(
 
 #' Predict the dilutions from the MFI values
 #' @description
-#' More details can be found here: \link[pkg]{Model}
+#' More details can be found here: \link[PvSTATEM]{Model}
 #'
 #' @param object (`Model()`)
 #'   Object of the Model class
 #' @param mfi (`numeric()`)
 #'   MFI values for which we want to predict the dilutions.
 #'   Should be in the same scale as the MFI values used to fit the model
+#' @param ... Additional arguments passed to the method
+#'
+#' @importFrom stats predict
+#'
+#' @return (`data.frame()`)
 #'
 #' @export
-predict.Model <- function(object, mfi) {
+predict.Model <- function(object, mfi, ...) {
   object$predict(mfi)
 }
 
