@@ -34,10 +34,10 @@ plot_mfi_for_analyte <- function(plate, analyte_name,
     dplyr::select(analyte_name) %>%
     dplyr::rename("MFI" = analyte_name)
 
-  df <-  dplyr::mutate(df,
-      SampleId = paste0("SampleId: ", seq_len(nrow(df))),
-      SampleType = plate$sample_types,
-    )
+  df <- dplyr::mutate(df,
+    SampleId = paste0("SampleId: ", seq_len(nrow(df))),
+    SampleType = plate$sample_types,
+  )
 
   blanks_df <- df %>% dplyr::filter(.data$SampleType == "BLANK")
   blank_mean <- mean(blanks_df$MFI)
