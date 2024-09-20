@@ -32,23 +32,24 @@ plot_mfi_for_analyte <- function(plate, analyte_name,
 
   df <- plate$data[["Median"]] %>%
     dplyr::select(analyte_name) %>%
-    dplyr::rename("MFI" = analyte_name) %>%
-    dplyr::mutate(
-      SampleId = paste0("SampleId: ", seq_len(nrow(.))),
+    dplyr::rename("MFI" = analyte_name)
+
+  df <-  dplyr::mutate(df,
+      SampleId = paste0("SampleId: ", seq_len(nrow(df))),
       SampleType = plate$sample_types,
     )
 
-  blanks_df <- df %>% dplyr::filter(SampleType == "BLANK")
+  blanks_df <- df %>% dplyr::filter(.data$SampleType == "BLANK")
   blank_mean <- mean(blanks_df$MFI)
-  sc_df <- df %>% dplyr::filter(SampleType == "STANDARD CURVE")
+  sc_df <- df %>% dplyr::filter(.data$SampleType == "STANDARD CURVE")
   test_df <- df %>%
-    dplyr::filter(SampleType == "TEST") %>%
+    dplyr::filter(.data$SampleType == "TEST") %>%
     dplyr::mutate(
-      outlier = ifelse(is_outlier(MFI), SampleId, as.character(NA))
+      outlier = ifelse(is_outlier(.data$MFI), .data$SampleId, as.character(NA))
     )
 
   p <- test_df %>%
-    ggplot2::ggplot(aes(x = SampleType, y = MFI)) +
+    ggplot2::ggplot(aes(x = .data$SampleType, y = .data$MFI)) +
     main_geom(color = "blue") +
     ggplot2::geom_hline(
       aes(yintercept = blank_mean, linetype = "BLANK MEAN"),
@@ -74,7 +75,7 @@ plot_mfi_for_analyte <- function(plate, analyte_name,
     is_out <- !is.na(test_df$outlier)
     hjust[is_out] <- ifelse(seq_len(sum(is_out)) %% 2 == 0, -0.18, 1.18)
 
-    p <- p + ggrepel::geom_text_repel(aes(label = outlier), na.rm = TRUE, hjust = hjust, color = "grey", min.segment.length = 0.3)
+    p <- p + ggrepel::geom_text_repel(aes(label = .data$outlier), na.rm = TRUE, hjust = hjust, color = "grey", min.segment.length = 0.3)
   }
 
   p
