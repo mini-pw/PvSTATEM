@@ -4,12 +4,22 @@
 \alias{generate_report}
 \title{Generate a report for a plate.}
 \usage{
-generate_report(plate, use_model = TRUE)
+generate_report(
+  plate,
+  use_model = TRUE,
+  filename = NULL,
+  output_dir = "reports"
+)
 }
 \arguments{
 \item{plate}{A plate object.}
 
-\item{use_model}{A logical value indicating whether the model should be used in the report.}
+\item{use_model}{(\code{logical(1)}) A logical value indicating whether the model should be used in the report.}
+
+\item{filename}{(\code{character(1)}) The name of the output file. If not provided, the filename will be created
+based on the plate name with the suffix '_report.html'.}
+
+\item{output_dir}{(\code{character(1)}) The directory where the report should be saved. Default is 'reports'.}
 }
 \value{
 A report.
