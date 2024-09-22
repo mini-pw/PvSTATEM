@@ -23,9 +23,11 @@
 #' layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
 #'
 #' plate <- read_luminex_data(plate_file, layout_file)
-#' \dontrun{
-#' process_plate(plate) # create and save dataframe with computed dilutions
-#' }
+#' 
+#' tmp_dir <- tempdir(check = TRUE)
+#' test_output_path <- file.path(tmp_dir, "output.csv")
+#' process_plate(plate, output_path = temporary_filepath) # create and save dataframe with computed dilutions
+#' 
 #'
 #' @export
 process_plate <- function(plate, output_path = NULL, data_type = "Median", adjust_blanks = FALSE, verbose = TRUE, ...) {
