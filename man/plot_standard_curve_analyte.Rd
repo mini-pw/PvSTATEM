@@ -9,7 +9,7 @@ plot_standard_curve_analyte(
   analyte_name,
   data_type = "Median",
   decreasing_dilution_order = TRUE,
-  log_scale = c("dilutions"),
+  log_scale = c("all"),
   plot_line = TRUE,
   plot_blank_mean = TRUE,
   plot_dilution_bounds = TRUE,
