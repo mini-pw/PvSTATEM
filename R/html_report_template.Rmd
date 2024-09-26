@@ -16,7 +16,8 @@ if (!is(params$plate, "Plate")) {
 ```
 
 Report generated on  `r Sys.time()`.  
-Plate batch name: `r params$plate$batch_name`.  
+Plate was run on: `r if(!is.null(params$plate$experiment_time)) params$plate$experiment_time else "TODO - Date of running plate was not found in Luminex file"`.  
+Plate batch name: `r if(!is.null(params$plate$batch_name)) params$plate$batch_name else "Batch name was not found in Luminex file"`.  
 This is plate with `r paste0(length(params$plate$sample_names), " samples and ", length(params$plate$analyte_names), " analytes")`.
 
 -------------------
