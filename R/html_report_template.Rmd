@@ -28,7 +28,7 @@ This is plate with `r paste0(length(params$plate$sample_names), " samples and ",
 
 <details open>
   <summary>Click to show/hide layout</summary>
-```{r plate-layout, fig.width=7, fig.height=4, fig.align='center', echo=FALSE}
+```{r plate-layout, fig.width=7, fig.height=4, fig.align='center', dev='jpeg', echo=FALSE, dpi=72}
 plot_layout(params$plate)
 ```
 </details>
@@ -38,7 +38,7 @@ plot_layout(params$plate)
  
 ### Details for given analayte {.tabset}
 
-```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%"}
+```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%", dev='jpeg', dpi=72}
 # Code used to create dynamic tabs based on the number of analytes
 for (i in 1:length(params$plate$analyte_names)) {
   cat(paste0("#### ", params$plate$analyte_names[i], "\n"))
