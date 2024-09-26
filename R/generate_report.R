@@ -23,7 +23,9 @@ generate_report <- function(plate, use_model = TRUE, filename = NULL, output_dir
     "R/html_report_template.Rmd",
     params = list(plate = plate, use_model = use_model),
     output_file = output_file,
-    output_dir = output_dir
+    output_dir = output_dir,
+    quiet=TRUE
   )
+  message(paste0("Report successfully generated, saving to: ", output_dir, "/", output_file))
 }
 
