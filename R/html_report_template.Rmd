@@ -35,6 +35,21 @@ plot_layout(params$plate)
 
 
 ------------------
+
+### Quick overview of standard curves
+
+<details open>
+  <summary>Click to show/hide overview</summary>
+```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="20%", dev='jpeg', dpi=72}
+# Code used to create dynamic tabs based on the number of analytes
+for (i in 1:length(params$plate$analyte_names)) {
+  model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
+  print(plot_standard_curve_analyte_with_model(params$plate, model))
+}
+```
+</details>
+
+------------------
  
 ### Details for given analayte {.tabset}
 
