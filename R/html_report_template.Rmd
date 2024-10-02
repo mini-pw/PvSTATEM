@@ -44,7 +44,7 @@ plot_layout(params$plate)
 # Code used to create dynamic tabs based on the number of analytes
 for (i in 1:length(params$plate$analyte_names)) {
   model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
-  print(plot_standard_curve_analyte_with_model(params$plate, model))
+  print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE))
 }
 ```
 </details>

@@ -155,6 +155,7 @@ plot_standard_curve_analyte_with_model <- function(plate,
                                                    plot_test_predictions = TRUE,
                                                    plot_blank_mean = TRUE,
                                                    plot_dilution_bounds = TRUE,
+                                                   plot_legend = TRUE,
                                                    verbose = TRUE) {
   analyte_name <- model$analyte
   if (!inherits(model, "Model")) {
@@ -182,7 +183,9 @@ plot_standard_curve_analyte_with_model <- function(plate,
     p <- p + ggplot2::geom_point(
       ggplot2::aes(x = dilution, y = MFI, color = "Test sample predictions"),
       data = test_sample_estimates, shape = 4,
-      size = 3
+      size = 2.5,
+      stroke = 1.5,
+      alpha = 0.9
     )
   }
 
@@ -201,11 +204,14 @@ plot_standard_curve_analyte_with_model <- function(plate,
         linetype = "dashed"
       )
   }
-  p <- p + ggplot2::scale_color_manual(
-    values = c(
-      "Standard curve samples" = "blue", "Blank mean" = "red", "Min-max dilution bounds" = "gray",
-      "Fitted model" = "green", "Asymptotes" = "gray", "Test sample predictions" = "dark green"
+
+  if (plot_legend){
+    p <- p + ggplot2::scale_color_manual(
+      values = c(
+        "Standard curve samples" = "blue", "Blank mean" = "red", "Min-max dilution bounds" = "gray",
+        "Fitted model" = "green", "Asymptotes" = "gray", "Test sample predictions" = "dark green"
+      )
     )
-  )
+  }
   return(p)
 }
