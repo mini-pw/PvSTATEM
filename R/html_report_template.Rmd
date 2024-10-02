@@ -62,7 +62,7 @@ for (i in 1:length(params$plate$analyte_names)) {
   print(plot_counts(params$plate, params$plate$analyte_names[i]))
 
   # Plot MFI
-  print(plot_mfi_for_analyte(params$plate, params$plate$analyte_names[i]))
+  print(plot_mfi_for_analyte(params$plate, params$plate$analyte_names[i], plot_type = "violin"))
 
   # Plot Standard Curve
   print(plot_standard_curve_analyte(params$plate, params$plate$analyte_names[i]))

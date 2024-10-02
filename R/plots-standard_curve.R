@@ -178,10 +178,6 @@ plot_standard_curve_analyte_with_model <- function(plate,
   test_samples_mfi <- plate$get_data(analyte_name, "TEST", data_type = data_type)
   test_sample_estimates <- predict(model, test_samples_mfi)
 
-  p <- p + ggplot2::geom_line(
-    ggplot2::aes(x = dilution, y = MFI, color = "Fitted model predictions"),
-    data = model$get_plot_data(), linewidth = 1
-  )
   if (plot_test_predictions) {
     p <- p + ggplot2::geom_point(
       ggplot2::aes(x = dilution, y = MFI, color = "Test sample predictions"),
@@ -189,6 +185,11 @@ plot_standard_curve_analyte_with_model <- function(plate,
       size = 3
     )
   }
+
+  p <- p + ggplot2::geom_line(
+    ggplot2::aes(x = dilution, y = MFI, color = "Fitted model predictions"),
+    data = model$get_plot_data(), linewidth = 1
+  )
 
   if (plot_asymptote) {
     p <- p + ggplot2::geom_hline(
