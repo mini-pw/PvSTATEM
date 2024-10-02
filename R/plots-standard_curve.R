@@ -117,10 +117,11 @@ plot_standard_curve_analyte <- function(plate,
     ) +
     ggplot2::scale_color_manual(
       values = c("Standard curve samples" = "blue", "Blank mean" = "red", "Min-max dilution bounds" = "gray")
-    )
+    ) +
+    ggplot2::guides(color = guide_legend(title = "Plot object"))
 
-  if(plot_legend){
-    p <- p + ggplot2::guides(color = guide_legend(title = "Plot object"))
+  if(!plot_legend){
+    p <- p + ggplot2::theme(legend.position = "none")
   }
 
   p
