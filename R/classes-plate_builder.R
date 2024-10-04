@@ -11,16 +11,16 @@ PlateBuilder <- R6::R6Class(
   "PlateBuilder",
   public = list(
     plate_name = NULL,
-    batch_name = NULL,
-    analyte_names = NULL,
     sample_names = NULL,
-    sample_locations = NULL,
+    analyte_names = NULL,
+    batch_name = NULL,
     plate_datetime = NULL,
+    sample_locations = NULL,
+    sample_types = NULL,
     dilutions = NULL,
     dilution_values = NULL,
-    sample_types = NULL,
-    data = NULL,
     default_data_type = "Median",
+    data = NULL,
     batch_info = NULL,
     layout = NULL,
 
@@ -30,11 +30,14 @@ PlateBuilder <- R6::R6Class(
     #'
     #' @param sample_names - vector of sample names measured during
     #' an examination in the same order as in the data
+    #'
     #' @param analyte_names - vector of analytes names measured during
     #' an examination in the same order as in the data
+    #'
     #' @param batch_name - name of the batch during which the plate was examined
     #' obtained from the plate info. An optional parameter, by default set to
     #' `""` - an empty string.
+    #'
     #' @param verbose - logical value indicating whether to print additional
     #' information. This parameter is stored as a private attribute of the object
     #' and reused in other methods
@@ -281,16 +284,16 @@ PlateBuilder <- R6::R6Class(
 
       plate <- Plate$new(
         plate_name = self$plate_name,
-        batch_name = self$batch_name,
-        analyte_names = self$analyte_names,
         sample_names = self$sample_names,
-        sample_locations = self$sample_locations,
+        analyte_names = self$analyte_names,
+        batch_name = self$batch_name,
         plate_datetime = self$plate_datetime,
+        sample_locations = self$sample_locations,
+        sample_types = self$sample_types,
         dilutions = self$dilutions,
         dilution_values = self$dilution_values,
-        sample_types = self$sample_types,
-        data = self$data,
         default_data_type = self$default_data_type,
+        data = self$data,
         batch_info = self$batch_info,
         layout = self$layout
       )

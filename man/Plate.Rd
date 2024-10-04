@@ -23,6 +23,9 @@ Names of the samples that were examined on the plate.}
 \item{\code{batch_name}}{(\code{character(1)})\cr
 Name of the batch to which the plate belongs.}
 
+\item{\code{plate_datetime}}{(\code{POSIXct()})\cr
+A date and time when the plate was created by the machine}
+
 \item{\code{sample_locations}}{(\code{character()})\cr
 Locations of the samples on the plate.}
 
@@ -34,11 +37,12 @@ The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD
 A list containing names of the samples as keys and string representing dilutions as values.
 The dilutions are represented as strings.}
 
-\item{\code{plate_datetime}}{(\code{POSIXct()})\cr
-A date and time when the plate was created by the machine}
-
 \item{\code{dilution_values}}{(\code{numeric()})\cr
 A list containing names of the samples as keys and numeric values representing dilutions as values.}
+
+\item{\code{default_data_type}}{(\code{character(1)})\cr
+The default data type that will be returned by the \code{get_data} method.
+By default is set to \code{Median}.}
 
 \item{\code{data}}{(\code{list()})\cr
 A list containing dataframes with the data for each sample and analyte.
@@ -46,10 +50,6 @@ The possible data types - the keys of the list are:
 \cr \code{c(Median, Net MFI, Count, Avg Net MFI, Mean, Peak)}.
 
 In each dataframe, the rows represent samples and the columns represent analytes.}
-
-\item{\code{default_data_type}}{(\code{character(1)})\cr
-The default data type that will be returned by the \code{get_data} method.
-By default is set to \code{Median}.}
 
 \item{\code{batch_info}}{(\code{list()})\cr
 A list containing additional, technical information about the batch.}
@@ -90,12 +90,12 @@ Method to initialize the Plate object
   analyte_names,
   batch_name = "",
   plate_datetime = NULL,
+  sample_locations = NULL,
+  sample_types = NULL,
   dilutions = NULL,
   dilution_values = NULL,
-  sample_types = NULL,
-  data = NULL,
-  sample_locations = NULL,
   default_data_type = NULL,
+  data = NULL,
   batch_info = NULL,
   layout = NULL
 )}\if{html}{\out{</div>}}
@@ -121,6 +121,16 @@ Name of the batch to which the plate belongs.
 By default is set to an empty string, during the reading process it is set to
 the \code{batch} field of the plate}
 
+\item{\code{plate_datetime}}{(\code{POSIXct()})\cr
+Datetime object representing the date and time when the plate was created by the machine.}
+
+\item{\code{sample_locations}}{(\code{character()})\cr
+Locations of the samples on the plate.}
+
+\item{\code{sample_types}}{(\code{character()})\cr
+Types of the samples that were examined on the plate.
+The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.}
+
 \item{\code{dilutions}}{(\code{character()})\cr
 A list containing names of the samples as keys and string representing dilutions as values.
 The dilutions are represented as strings.}
@@ -128,21 +138,14 @@ The dilutions are represented as strings.}
 \item{\code{dilution_values}}{(\code{numeric()})\cr
 A list containing names of the samples as keys and numeric values representing dilutions as values.}
 
-\item{\code{sample_types}}{(\code{character()})\cr
-Types of the samples that were examined on the plate.
-The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.}
+\item{\code{default_data_type}}{(\code{character(1)})\cr
+The default data type that will be returned by the \code{get_data} method.
+By default is set to \code{Median}.}
 
 \item{\code{data}}{(\code{list()})\cr
 A list containing dataframes with the data for each sample and analyte.
 The possible data types - the keys of the list are \cr \code{c(Median, Net MFI, Count, Avg Net MFI, Mean, Peak)}.
 In each dataframe, the rows represent samples and the columns represent analytes.}
-
-\item{\code{sample_locations}}{(\code{character()})\cr
-Locations of the samples on the plate.}
-
-\item{\code{default_data_type}}{(\code{character(1)})\cr
-The default data type that will be returned by the \code{get_data} method.
-By default is set to \code{Median}.}
 
 \item{\code{batch_info}}{(\code{list()})\cr
 A list containing additional, technical information about the batch.}
