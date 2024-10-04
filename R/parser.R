@@ -44,11 +44,56 @@ parse_xponent_locations <- function(xponent_locations) {
   locations
 }
 
+#' Handle differences in datetimes
+#'
+#' @description
+#' Handle differences in the datetime format between xPONENT and INTELLIFLEX
+#' and output POSIXct datetime object containing the correct datetime with the default timezone.
+#'
+#' @import lubridate
+#'
+#' @param datetime_str The datetime string to parse
+#' @param file_format The format of the file. Select from: xPONENT, INTELLIFLEX
+#'
+#' @return POSIXct datetime object
+#'
+handle_datetime <- function(datetime_str, file_format = "xPONENT") {
+  if (file_format == "xPONENT") {
+    possible_orders <- c(
+      "mdy HM p", "mdy HMS p", "ymd HM p", "ymd HMS p", "dmy HM p", "dmy HMS p"
+    )
+  } else if (file_format == "INTELLIFLEX") {
+    possible_orders <- c(
+      "ymd HMS p", "ymd HM p", "mdy HMS p", "mdy HM p", "dmy HMS p", "dmy HM p"
+    )
+  } else {
+    stop("Invalid file format: ", file_format)
+  }
+
+  first_atempt <- lubridate::parse_date_time(datetime_str, orders = possible_orders[1], tz = "")
+  if (!is.na(first_atempt)) {
+    return(first_atempt)
+  } else {
+    warning("Could not parse datetime string using default datetime format. Trying other possibilies.")
+    for (order in possible_orders[-1]) {
+      datetime <- lubridate::parse_date_time(datetime_str, orders = order, tz = "")
+      if (!is.na(datetime)) {
+        warning("Successfully parsed datetime string using order: ", order)
+        return(datetime)
+      }
+    }
+    stop("Could not parse datetime string: ", datetime_str)
+  }
+}
+
 postprocess_intelliflex <- function(intelliflex_output, verbose = TRUE) {
   data <- intelliflex_output$Results
   names(data) <- intelliflex_to_xponent_mapping[names(data)]
   data <- filter_list(data, VALID_DATA_TYPES)
   check_data(data)
+
+  datetime_str <- intelliflex_output$SystemMetadata[["PLATE.START"]]
+  plate_datetime <- handle_datetime(datetime_str, "INTELLIFLEX")
 
   analyte_names <- find_analyte_names(data$Median)
   data <- remove_non_analyte_columns(data)
@@ -57,6 +102,7 @@ postprocess_intelliflex <- function(intelliflex_output, verbose = TRUE) {
     batch_name = intelliflex_output$SystemMetadata[["PLATE.NAME"]],
     sample_locations = intelliflex_output$SampleMetadata[["WELL.LOCATION"]],
     sample_names = intelliflex_output$SampleMetadata[["SAMPLE.ID"]],
+    plate_datetime = plate_datetime,
     analyte_names = analyte_names,
     data = data,
     batch_info = intelliflex_output$SampleMetadata
@@ -74,8 +120,15 @@ postprocess_xponent <- function(xponent_output, verbose = TRUE) {
   analyte_names <- find_analyte_names(data$Median)
   data <- remove_non_analyte_columns(data)
 
+  datetime_str <- paste(
+    xponent_output$ProgramMetadata[["Date"]],
+    xponent_output$ProgramMetadata[["Time"]]
+  )
+  plate_datetime <- handle_datetime(datetime_str, "xPONENT")
+
   list(
     batch_name = xponent_output$ProgramMetadata[["Batch"]],
+    plate_datetime = plate_datetime,
     sample_locations = sample_locations,
     sample_names = sample_names,
     analyte_names = analyte_names,
@@ -165,6 +218,7 @@ read_luminex_data <- function(plate_filepath,
   )
 
   plate_builder$set_plate_name(plate_filepath) # set a new plate name based on the file name
+  plate_builder$set_plate_datetime(parser_output$plate_datetime)
 
   plate_builder$set_sample_locations(parser_output$sample_locations)
   layout_matrix <- NULL

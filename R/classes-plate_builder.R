@@ -15,6 +15,7 @@ PlateBuilder <- R6::R6Class(
     analyte_names = NULL,
     sample_names = NULL,
     sample_locations = NULL,
+    plate_datetime = NULL,
     dilutions = NULL,
     dilution_values = NULL,
     sample_types = NULL,
@@ -178,6 +179,21 @@ PlateBuilder <- R6::R6Class(
     },
 
     #' @description
+    #' Set the plate datetime for the plate
+    #'
+    #' @param plate_datetime a POSIXct datetime object
+    #' representing the date and time of the examination
+    set_plate_datetime = function(plate_datetime) {
+      if (is.null(plate_datetime)) {
+        stop("Plate datetime is not provided")
+      }
+      if (!lubridate::is.POSIXct(plate_datetime)) {
+        stop("Plate datetime is not a valid datetime")
+      }
+      self$plate_datetime <- plate_datetime
+    },
+
+    #' @description
     #' Set the data used during the examination
     #' @param data a named list of data frames containing information about
     #' the samples and analytes. The list is named by the type of the data
@@ -269,6 +285,7 @@ PlateBuilder <- R6::R6Class(
         analyte_names = self$analyte_names,
         sample_names = self$sample_names,
         sample_locations = self$sample_locations,
+        plate_datetime = self$plate_datetime,
         dilutions = self$dilutions,
         dilution_values = self$dilution_values,
         sample_types = self$sample_types,

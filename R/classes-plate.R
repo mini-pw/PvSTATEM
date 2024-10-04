@@ -88,6 +88,9 @@ Plate <- R6::R6Class(
     #' A list containing names of the samples as keys and string representing dilutions as values.
     #' The dilutions are represented as strings.
     dilutions = NULL,
+    #' @field plate_datetime (`POSIXct()`)\cr
+    #' A date and time when the plate was created by the machine
+    plate_datetime = NULL,
     #' @field dilution_values (`numeric()`)\cr
     #' A list containing names of the samples as keys and numeric values representing dilutions as values.
     dilution_values = NULL,
@@ -159,7 +162,7 @@ Plate <- R6::R6Class(
     #'  information about the dilutions, sample names, and the sample layout
     #'  on the actual plate.
     initialize = function(plate_name, sample_names, analyte_names, batch_name = "",
-                          dilutions = NULL, dilution_values = NULL,
+                          plate_datetime = NULL, dilutions = NULL, dilution_values = NULL,
                           sample_types = NULL, data = NULL,
                           sample_locations = NULL, default_data_type = NULL,
                           batch_info = NULL, layout = NULL) {
@@ -168,6 +171,7 @@ Plate <- R6::R6Class(
       self$sample_names <- sample_names
       if (!is.null(batch_name) && length(batch_name) != 0) self$batch_name <- batch_name
       if (!is.null(sample_locations)) self$sample_locations <- sample_locations
+      if (!is.null(plate_datetime)) self$plate_datetime <- plate_datetime
       if (!is.null(dilutions)) self$dilutions <- dilutions
       if (!is.null(dilution_values)) self$dilution_values <- dilution_values
       if (!is.null(sample_types)) self$sample_types <- sample_types
@@ -233,12 +237,12 @@ Plate <- R6::R6Class(
 
       cat(
         "Summary of the plate with name '", self$plate_name, "':\n",
+        "Plate examination date: ",
+        as.character(self$plate_datetime), "\n",
         "Total number of samples: ",
-        length(self$sample_names),
-        "\n",
+        length(self$sample_names), "\n",
         "Number of blank samples: ",
-        blank_samples_num,
-        "\n",
+        blank_samples_num, "\n",
         "Number of standard curve samples: ",
         standard_curve_num,
         standard_curve_names, "\n",
