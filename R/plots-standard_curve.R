@@ -78,7 +78,9 @@ plot_standard_curve_analyte <- function(plate,
     }
   }
 
-  options(scipen = 30)
+  old_options <- options(scipen = 30)
+
+  on.exit(options(old_options))
   p <- ggplot2::ggplot(plot_data, aes(x = .data$dilution_values, y = .data$MFI)) +
     ggplot2::geom_point(aes(color = "Standard curve samples"), size = 3)
   if (plot_line) {

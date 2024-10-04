@@ -15,8 +15,4 @@ the numeric vales are created from those strings}
 Extract dilution factor represented as string from vector of characters.
 The matches has to be exact and the dilution factor has to be in the form of \verb{1/\\d+}
 }
-\examples{
-raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
-PvSTATEM:::extract_dilutions_from_layout(raw_dilutions) # execute an internal function
-}
 \keyword{internal}
