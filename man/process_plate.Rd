@@ -47,8 +47,7 @@ plate <- read_luminex_data(plate_file, layout_file)
 
 tmp_dir <- tempdir(check = TRUE)
 temporary_filepath <- file.path(tmp_dir, "output.csv")
-process_plate(plate, output_path = temporary_filepath) 
+process_plate(plate, output_path = temporary_filepath)
 # create and save dataframe with computed dilutions
-
 
 }
