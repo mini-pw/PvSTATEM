@@ -37,6 +37,9 @@ The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD
 A list containing names of the samples as keys and string representing dilutions as values.
 The dilutions are represented as strings.}
 
+\item{\code{plate_datetime}}{(\code{POSIXct()})\cr
+A date and time when the plate was created by the machine}
+
 \item{\code{dilution_values}}{(\code{numeric()})\cr
 A list containing names of the samples as keys and numeric values representing dilutions as values.}
 
