@@ -43,8 +43,14 @@ plot_layout(params$plate)
 ```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="20%", dev='jpeg', dpi=72}
 # Code used to create dynamic tabs based on the number of analytes
 for (i in 1:length(params$plate$analyte_names)) {
+  
+  # this part is hack
+  cat(paste0('<a href="#', tolower(params$plate$analyte_names[i]), '" role="tab" data-toggle="tab" aria-controls="', tolower(params$plate$analyte_names[i]), '" aria-expanded="false">'))
+  
+  # generating of plot
   model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
   print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE))
+  cat(paste0('</a>'))
 }
 ```
 </details>
@@ -81,10 +87,5 @@ for (i in 1:length(params$plate$analyte_names)) {
 
 <hr />
 <p style="text-align: center;">Generated using the <a href="https://github.com/mini-pw/PvSTATEM">PvSTATEM </a> package </p>
-
-
-
-
-
 
 
