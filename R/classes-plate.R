@@ -99,9 +99,7 @@ Plate <- R6::R6Class(
     #' A list containing names of the samples as keys and string representing dilutions as values.
     #' The dilutions are represented as strings.
     dilutions = NULL,
-    #' @field plate_datetime (`POSIXct()`)\cr
-    #' A date and time when the plate was created by the machine
-    plate_datetime = NULL,
+    #'
     #' @field dilution_values (`numeric()`)\cr
     #' A list containing names of the samples as keys and numeric values representing dilutions as values.
     dilution_values = NULL,
@@ -191,10 +189,12 @@ Plate <- R6::R6Class(
     #'  The layout is read from the separate file and usually provides additional
     #'  information about the dilutions, sample names, and the sample layout
     #'  on the actual plate.
-    initialize = function(plate_name, sample_names, analyte_names, batch_name = "",
-                          plate_datetime = NULL, dilutions = NULL, dilution_values = NULL,
-                          sample_types = NULL, data = NULL,
-                          sample_locations = NULL, default_data_type = NULL,
+    #'
+    initialize = function(plate_name, sample_names, analyte_names,
+                          batch_name = "", plate_datetime = NULL,
+                          sample_locations = NULL, sample_types = NULL,
+                          dilutions = NULL, dilution_values = NULL,
+                          default_data_type = NULL, data = NULL,
                           batch_info = NULL, layout = NULL) {
       self$plate_name <- plate_name
       self$analyte_names <- analyte_names
