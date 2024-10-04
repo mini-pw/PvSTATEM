@@ -23,13 +23,25 @@ The package includes three main steps for preprocessing the data:
 
 ## Installation
 
-For now, the only way to install the (unreleased) package is to build it by hand. The easiest way to do that is using a simple command `install_github` available in `devtools` library:
+The easiest way to install the package is using the CRAN repository:
+``` r
+install.packages("PvSTATEM")
+require(PvSTATEM) # load the installed package
+```
+
+Now, you are ready to use the package to read your files! 
+
+Optionally, it is possible to build and install the package by hand. It can be done using a simple command `install_github` available in `devtools` library:
 
 ``` r
 require(devtools)
 install_github("mini-pw/PvSTATEM")
+require(PvSTATEM) # load the installed package
 ```
 
-The first command loads the `devtools` library (you might need to install it first - using command `install_packages("devtools")`), and the second one sources the git repository with the code of our package and automatically installs it. Now, you are ready to use the package to read your files! 
+The first command loads the `devtools` library (you might need to install it first - using command `install_packages("devtools")`), and the second one sources the git repository with the code of our package and automatically installs it. 
 
-The example use of the package and its functionalities can be found in the [vignettes](https://mini-pw.github.io/PvSTATEM/articles/example_script.html).
+## Examples and instructions
+
+The example use of the package and its functionalities can be found in [the vignettes](https://mini-pw.github.io/PvSTATEM/articles/example_script.html).
+For more detailed documentation of the package, check [the package website](https://mini-pw.github.io/PvSTATEM).
