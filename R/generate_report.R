@@ -1,7 +1,7 @@
 #' Generate a report for a plate.
 #'
 #' This function generates a report for a plate. The report is generated using
-#' the `html_report_template.Rmd` template.
+#' the `plate_report_template.Rmd` template.
 #'
 #' @param plate A plate object.
 #' @param use_model (`logical(1)`) A logical value indicating whether the model should be used in the report.
@@ -12,7 +12,7 @@
 #'
 #' @return A report.
 #' @export
-generate_report <- function(plate, use_model = TRUE, filename = NULL, output_dir = "reports") {
+generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, output_dir = "reports") {
   message("Generating report... This will take approximately 30 seconds.")
   output_file <- if (is.null(filename)) {
     paste0(plate$plate_name, "_report.html")
@@ -20,7 +20,7 @@ generate_report <- function(plate, use_model = TRUE, filename = NULL, output_dir
     filename
   }
   rmarkdown::render(
-    "R/html_report_template.Rmd",
+    "R/plate_report_template.Rmd",
     params = list(plate = plate, use_model = use_model),
     output_file = output_file,
     output_dir = output_dir,
