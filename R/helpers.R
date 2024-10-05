@@ -143,3 +143,52 @@ clamp <- function(x, lower = -Inf, upper = Inf) {
   x[x > upper] <- upper
   x
 }
+
+
+
+#' Format dilutions
+#' 
+#' The function counts the number of times each dilution factor appears and sorts them in descending order based on the corresponding dilution values. 
+#' The output is a string that lists the dilution factors and their counts in the format `countxdilution_factor`.
+#' 1/50, 1/100, 1/250, 8x1/400, 1/1000, 1/3000
+#' 
+#' @param dilutions A vector of dilution factors.
+#' @param dilution_values A vector of dilution values corresponding to the dilution factors. Used only for sorting purposes.
+#' 
+#' @return A formatted string that lists the dilution factors and their counts. Returns `NULL` if `dilutions` is `NULL`. 
+#' 
+#' @keywords internal
+format_dilutions <- function(dilutions, dilution_values) {
+  if (is.null(dilutions)) {
+    return(NULL)
+  }
+  # Filter out NA values from both vectors
+  non_na_indices <- !is.na(dilutions) & !is.na(dilution_values)
+  filtered_dilutions <- dilutions[non_na_indices]
+  filtered_dilution_values <- dilution_values[non_na_indices]
+
+  # Count duplicates and store in a named list
+  dilution_counts <- table(filtered_dilutions)
+  unique_dilutions <- names(dilution_counts)
+
+  # Create a named vector for sorting purposes
+  dilution_value_map <- sapply(unique_dilutions, function(dil) {
+    min(filtered_dilution_values[filtered_dilutions == dil])
+  })
+
+  # Create formatted strings for counts
+  formatted_dilutions <- sapply(unique_dilutions, function(dil) {
+    count <- dilution_counts[dil]
+    if (count > 1) {
+      paste0(count, "x", dil)
+    } else {
+      dil
+    }
+  })
+
+  # Sort the formatted dilutions
+  sorted_indices <- order(dilution_value_map, decreasing = TRUE)
+  sorted_formatted_dilutions <- formatted_dilutions[sorted_indices]
+
+  paste(sorted_formatted_dilutions, collapse = ", ")
+}
