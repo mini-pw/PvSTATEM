@@ -14,6 +14,7 @@ plot_standard_curve_analyte_with_model(
   plot_test_predictions = TRUE,
   plot_blank_mean = TRUE,
   plot_dilution_bounds = TRUE,
+  plot_legend = TRUE,
   verbose = TRUE
 )
 }
