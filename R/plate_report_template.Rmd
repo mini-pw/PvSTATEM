@@ -19,7 +19,7 @@ Report generated on:  `r format(Sys.time(), "%d-%m-%Y %H:%M:%S")`.
 Plate was run on: `r if(!is.null(params$plate$experiment_time)) params$plate$experiment_time else "Date of running plate was not found in Luminex file"`.  
 Plate batch name: `r if(!is.null(params$plate$batch_name)) params$plate$batch_name else "Batch name was not found in Luminex file"`.  
 This is plate with `r paste0(length(params$plate$sample_names), " samples and ", length(params$plate$analyte_names), " analytes")`.  
-Standard curve sample dilutions: `r format_dilutions(params$plate$dilutions, params$plate$dilution_values)`.
+Standard curve sample dilutions: `r format_dilutions(params$plate$dilutions, params$plate$dilution_values, params$plate$sample_types)`.
 
 
 -------------------

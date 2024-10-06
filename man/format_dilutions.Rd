@@ -4,19 +4,21 @@
 \alias{format_dilutions}
 \title{Format dilutions}
 \usage{
-format_dilutions(dilutions, dilution_values)
+format_dilutions(dilutions, dilution_values, sample_types)
 }
 \arguments{
-\item{dilutions}{A vector of dilution factors.}
+\item{dilutions}{A vector of dilution factors, taken from plate object.}
 
-\item{dilution_values}{A vector of dilution values corresponding to the dilution factors. Used only for sorting purposes.}
+\item{dilution_values}{A vector of dilution values corresponding to the dilution factors, taken from plate object. Used only for sorting purposes.}
+
+\item{sample_types}{A vector of sample types taken from plate object.}
 }
 \value{
 A formatted string that lists the dilution factors and their counts. Returns \code{NULL} if \code{dilutions} is \code{NULL}.
 }
 \description{
 The function counts the number of times each dilution factor appears and sorts them in descending order based on the corresponding dilution values.
-The output is a string that lists the dilution factors and their counts in the format \code{countxdilution_factor}.
+The output is a string that lists the dilution factors and their counts in the format \verb{count x dilution_factor}.
 1/50, 1/100, 1/250, 8x1/400, 1/1000, 1/3000
 }
 \keyword{internal}
