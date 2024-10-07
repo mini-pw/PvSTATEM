@@ -60,11 +60,11 @@ parse_xponent_locations <- function(xponent_locations) {
 handle_datetime <- function(datetime_str, file_format = "xPONENT") {
   if (file_format == "xPONENT") {
     possible_orders <- c(
-      "mdy HM p", "mdy HMS p", "ymd HM p", "ymd HMS p", "dmy HM p", "dmy HMS p"
+      "mdY HM p", "mdY HMS p", "Ymd HM p", "Ymd HMS p", "dmY HM p", "dmY HMS p"
     )
   } else if (file_format == "INTELLIFLEX") {
     possible_orders <- c(
-      "ymd HMS p", "ymd HM p", "mdy HMS p", "mdy HM p", "dmy HMS p", "dmy HM p"
+      "Ymd HMS p", "Ymd HM p", "mdY HMS p", "mdY HM p", "dmY HMS p", "dmY HM p"
     )
   } else {
     stop("Invalid file format: ", file_format)
