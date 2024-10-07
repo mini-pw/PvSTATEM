@@ -47,3 +47,9 @@ test_that("Fully Parse CovidOISExPONTENT_CO.csv plate data with layout", {
   expect_no_error(dilutions <- read.csv(test_output_path))
   file.remove(test_output_path)
 })
+
+test_that("Read a INTELLIFLEX mock file", {
+  path <- system.file("extdata", "random_intelliflex.csv", package = "PvSTATEM", mustWork = TRUE)
+  expect_no_error(output <- read_intelliflex_format(path, verbose = verbose))
+  expect_no_error(postprocess_intelliflex(output, verbose = verbose))
+})
