@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml)
+![Downloads](https://cranlogs.r-pkg.org/badges/PvSTATEM)
 <!-- badges: end -->
 
 ### 🟡 *Semi-release* version
