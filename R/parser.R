@@ -60,23 +60,27 @@ parse_xponent_locations <- function(xponent_locations) {
 handle_datetime <- function(datetime_str, file_format = "xPONENT") {
   if (file_format == "xPONENT") {
     possible_orders <- c(
-      "mdY HM p", "mdY HMS p", "Ymd HM p", "Ymd HMS p", "dmY HM p", "dmY HMS p"
+      "mdY IM p", "mdY HM", "mdY IMS p", "mdY HMS",
+      "Ymd IM p", "Ymd HM", "Ymd IMS p", "Ymd HMS",
+      "dmY IM p", "dmY HM", "dmY IMS p", "dmY HMS"
     )
   } else if (file_format == "INTELLIFLEX") {
     possible_orders <- c(
-      "Ymd HMS p", "Ymd HM p", "mdY HMS p", "mdY HM p", "dmY HMS p", "dmY HM p"
+      "Ymd IMS p", "Ymd HMS", "Ymd IM p", "Ymd HM",
+      "mdY IMS p", "mdY HMS", "mdY IM p", "mdY HM",
+      "dmY IMS p", "dmY HMS", "dmY HM p", "dmY HM"
     )
   } else {
     stop("Invalid file format: ", file_format)
   }
 
-  first_atempt <- lubridate::parse_date_time(datetime_str, orders = possible_orders[1], tz = "", quiet = TRUE)
+  first_atempt <- lubridate::parse_date_time2(datetime_str, orders = possible_orders[1], tz = "")
   if (!is.na(first_atempt)) {
     return(first_atempt)
   } else {
     warning("Could not parse datetime string using default datetime format. Trying other possibilies.")
     for (order in possible_orders[-1]) {
-      datetime <- lubridate::parse_date_time(datetime_str, orders = order, tz = "", quiet = TRUE)
+      datetime <- lubridate::parse_date_time2(datetime_str, orders = order, tz = "")
       if (!is.na(datetime)) {
         warning("Successfully parsed datetime string using order: ", order)
         return(datetime)
