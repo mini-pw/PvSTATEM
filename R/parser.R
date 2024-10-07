@@ -80,7 +80,6 @@ handle_datetime <- function(datetime_str, file_format = "xPONENT") {
   } else {
     warning("Could not parse datetime string using default datetime format. Trying other possibilies.")
     for (order in possible_orders[-1]) {
-      datetime <- lubridate::parse_date_time2(datetime_str, orders = order, tz = "")
       if (!is.na(datetime)) {
         warning("Successfully parsed datetime string using order: ", order)
         return(datetime)
