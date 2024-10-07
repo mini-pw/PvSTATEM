@@ -68,7 +68,7 @@ handle_datetime <- function(datetime_str, file_format = "xPONENT") {
     possible_orders <- c(
       "Ymd IMS p", "Ymd HMS", "Ymd IM p", "Ymd HM",
       "mdY IMS p", "mdY HMS", "mdY IM p", "mdY HM",
-      "dmY IMS p", "dmY HMS", "dmY HM p", "dmY HM"
+      "dmY IMS p", "dmY HMS", "dmY IM p", "dmY HM"
     )
   } else {
     stop("Invalid file format: ", file_format)
