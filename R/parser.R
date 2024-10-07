@@ -70,13 +70,13 @@ handle_datetime <- function(datetime_str, file_format = "xPONENT") {
     stop("Invalid file format: ", file_format)
   }
 
-  first_atempt <- lubridate::parse_date_time(datetime_str, orders = possible_orders[1], tz = "")
+  first_atempt <- lubridate::parse_date_time(datetime_str, orders = possible_orders[1], tz = "", quiet = TRUE)
   if (!is.na(first_atempt)) {
     return(first_atempt)
   } else {
     warning("Could not parse datetime string using default datetime format. Trying other possibilies.")
     for (order in possible_orders[-1]) {
-      datetime <- lubridate::parse_date_time(datetime_str, orders = order, tz = "")
+      datetime <- lubridate::parse_date_time(datetime_str, orders = order, tz = "", quiet = TRUE)
       if (!is.na(datetime)) {
         warning("Successfully parsed datetime string using order: ", order)
         return(datetime)
