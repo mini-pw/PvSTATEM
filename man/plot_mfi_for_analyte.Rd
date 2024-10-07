@@ -8,7 +8,9 @@ plot_mfi_for_analyte(
   plate,
   analyte_name,
   data_type = "Median",
-  plot_type = "boxplot"
+  plot_type = "violin",
+  scale_y = "log10",
+  plot_outliers = FALSE
 )
 }
 \arguments{
