@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PvSTATEM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
       </span>
     </div>
 
@@ -119,7 +119,7 @@ package. You might want to replace these variables with paths to your
 files on your local disk. Firstly, let us load the dataset as the
 <code>plate</code> object.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mini-pw/PvSTATEM" class="external-link">PvSTATEM</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">PvSTATEM</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">plate_filepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CovidOISExPONTENT.csv"</span>, package <span class="op">=</span> <span class="st">"PvSTATEM"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># get the filepath of the csv dataset</span></span>
 <span></span>
@@ -145,9 +145,11 @@ analyte using the standard curve samples and computes the dilutions for
 each analyte using the corresponding model. The computed dilutions are
 then saved to a CSV file.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/process_plate.html">process_plate</a></span><span class="op">(</span><span class="va">plate</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tmp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span>check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">test_output_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp_dir</span>, <span class="st">"output.csv"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/process_plate.html">process_plate</a></span><span class="op">(</span><span class="va">plate</span>, output_path <span class="op">=</span> <span class="va">test_output_path</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Fitting the models and computing the dilutions for each analyte</span></span></code></pre>
-<pre><code><span><span class="co">#&gt; Saving the computed dilutions to a CSV file located in: 'dilutions_CovidOISExPONTENT.csv'</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Saving the computed dilutions to a CSV file located in: '/tmp/RtmpAthoAh/output.csv'</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="quality-control-and-normalization-details">Quality control and normalization details<a class="anchor" aria-label="anchor" href="#quality-control-and-normalization-details"></a>
@@ -238,7 +240,7 @@ manual inspection of the standard curve. This method raises a warning in
 case the MFI values were not adjusted using the blank samples.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"OC43_S"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example_script_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p><img src="example_script_files/figure-html/unnamed-chunk-5-1.png" width="70%"></p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">blank_adjustment</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Plate with 96 samples and 30 analytes</span></span></code></pre>
@@ -247,7 +249,7 @@ case the MFI values were not adjusted using the blank samples.</p>
 <pre><code><span><span class="co">#&gt; [1] TRUE</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"OC43_S"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example_script_files/figure-html/unnamed-chunk-5-2.png" width="700"></p>
+<p><img src="example_script_files/figure-html/unnamed-chunk-5-2.png" width="70%"></p>
 <p>We can also plot the standard curve for different analytes and data
 types. A list of all available analytes on the plate can be accessed
 using the command <code>plate$analyte_names</code>.</p>
@@ -256,10 +258,10 @@ using the command <code>plate$analyte_names</code>.</p>
 from the <code>data_type</code> parameter of the function.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"RBD_wuhan"</span>, data_type <span class="op">=</span> <span class="st">"Mean"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example_script_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p><img src="example_script_files/figure-html/unnamed-chunk-6-1.png" width="70%"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"RBD_wuhan"</span>, data_type <span class="op">=</span> <span class="st">"Avg Net MFI"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example_script_files/figure-html/unnamed-chunk-6-2.png" width="700"></p>
+<p><img src="example_script_files/figure-html/unnamed-chunk-6-2.png" width="70%"></p>
 <p>This plot may be used to assess the quality of the standard curve and
 anticipate some of the potential issues with the data. For instance, if
 we plotted the standard curve for the analyte, <code>ME</code> we could
@@ -268,10 +270,10 @@ of <code>1/25600</code> is abnormally large, which may indicate a
 problem with the data.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"ME"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example_script_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<p><img src="example_script_files/figure-html/unnamed-chunk-7-1.png" width="70%"></p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"ME"</span>, log_scale <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example_script_files/figure-html/unnamed-chunk-7-2.png" width="700"></p>
+<p><img src="example_script_files/figure-html/unnamed-chunk-7-2.png" width="70%"></p>
 <p>The plotting function has more options, such as selecting which axis
 the log scale should be applied or reversing the curve. More detailed
 information can be found in the function documentation, accessed by
@@ -284,10 +286,10 @@ MFI values of the test samples.</p>
 are within the range of the standard curve samples.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_mfi_for_analyte.html">plot_mfi_for_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"OC43_S"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example_script_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p><img src="example_script_files/figure-html/unnamed-chunk-8-1.png" width="70%"></p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_mfi_for_analyte.html">plot_mfi_for_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"Spike_6P"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example_script_files/figure-html/unnamed-chunk-8-2.png" width="700"></p>
+<p><img src="example_script_files/figure-html/unnamed-chunk-8-2.png" width="70%"></p>
 <p>It can be seen that for the <code>Spike_6P</code> analyte, the MFI
 values don’t fall within the range of the standard curve samples, which
 could be problematic for the model. The values of test dilutions will be
@@ -352,10 +354,10 @@ above shows the most important parameters of the fitted model.</p>
 can be compared to the sample values.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte_with_model.html">plot_standard_curve_analyte_with_model</a></span><span class="op">(</span><span class="va">plate</span>, <span class="va">model</span>, log_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example_script_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<p><img src="example_script_files/figure-html/unnamed-chunk-10-1.png" width="70%"></p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte_with_model.html">plot_standard_curve_analyte_with_model</a></span><span class="op">(</span><span class="va">plate</span>, <span class="va">model</span>, log_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span><span class="op">)</span>, plot_asymptote <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example_script_files/figure-html/unnamed-chunk-10-2.png" width="700"></p>
+<p><img src="example_script_files/figure-html/unnamed-chunk-10-2.png" width="70%"></p>
 <p>Apart from the plotting, the package can predict the values of all
 the samples on the plate.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
@@ -366,13 +368,13 @@ the samples on the plate.</p>
 <code class="sourceCode R"><span><span class="va">predicted_dilutions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">mfi_values</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">predicted_dilutions</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;      MFI     dilution.025       dilution  dilution.975</span></span>
-<span><span class="co">#&gt; 1   43.0 0.00000005460123 0.000002375258 0.00001157991</span></span>
-<span><span class="co">#&gt; 2 4193.0 0.01710090552793 0.020682014649 0.02505082110</span></span>
-<span><span class="co">#&gt; 3 1982.0 0.00706827797913 0.008326658518 0.00983520788</span></span>
-<span><span class="co">#&gt; 4 1308.0 0.00445231769247 0.005240371360 0.00618882849</span></span>
-<span><span class="co">#&gt; 5  681.0 0.00218097859239 0.002556577252 0.00299185529</span></span>
-<span><span class="co">#&gt; 6  365.5 0.00103641248486 0.001242668884 0.00147437457</span></span></code></pre>
+<pre><code><span><span class="co">#&gt;      MFI dilution.025     dilution dilution.975</span></span>
+<span><span class="co">#&gt; 1   43.0 5.460123e-08 2.375258e-06 1.157991e-05</span></span>
+<span><span class="co">#&gt; 2 4193.0 1.710091e-02 2.068201e-02 2.505082e-02</span></span>
+<span><span class="co">#&gt; 3 1982.0 7.068278e-03 8.326659e-03 9.835208e-03</span></span>
+<span><span class="co">#&gt; 4 1308.0 4.452318e-03 5.240371e-03 6.188828e-03</span></span>
+<span><span class="co">#&gt; 5  681.0 2.180979e-03 2.556577e-03 2.991855e-03</span></span>
+<span><span class="co">#&gt; 6  365.5 1.036412e-03 1.242669e-03 1.474375e-03</span></span></code></pre>
 <p>The dataframe contains original MFI values and the predicted
 dilutions based on the model. Since the dilution values are obtained by
 reversing the logistic model formula, the predictions also include the
