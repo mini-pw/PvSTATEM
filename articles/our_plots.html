@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PvSTATEM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -103,7 +103,7 @@ Nizwantowski</h4>
             
             <h4 data-toc-skip class="date">2024-10-09</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/v0.0.4/vignettes/our_plots.Rmd" class="external-link"><code>vignettes/our_plots.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/v0.0.3/vignettes/our_plots.Rmd" class="external-link"><code>vignettes/our_plots.Rmd</code></a></small>
       <div class="hidden name"><code>our_plots.Rmd</code></div>
 
     </div>
@@ -120,7 +120,7 @@ sample dataset from the Covid OISE study, which is pre-loaded into the
 package. Firstly, let us load the dataset as the <code>plate</code>
 object.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">PvSTATEM</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mini-pw/PvSTATEM" class="external-link">PvSTATEM</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">plate_filepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CovidOISExPONTENT.csv"</span>, package <span class="op">=</span> <span class="st">"PvSTATEM"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># get the filepath of the csv dataset</span></span>
 <span></span>
@@ -150,7 +150,7 @@ Luminex or the layout file. The function takes the <code>plate</code>
 object as the argument.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_layout.html">plot_layout</a></span><span class="op">(</span><span class="va">plate</span><span class="op">)</span></span></code></pre></div>
-<p><img src="our_plots_files/figure-html/unnamed-chunk-2-1.png" width="70%"></p>
+<p><img src="our_plots_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>The plot above shows the layout of the plate. The wells are colored
 according to the type of the sample. If the user is familiar with the
 color scheme of this package, there is an option to turn off the legend.
@@ -173,7 +173,7 @@ function will return an error message if there is a typo in the analyte
 name.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_counts.html">plot_counts</a></span><span class="op">(</span><span class="va">plate</span>, <span class="st">"Spike_B16172"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="our_plots_files/figure-html/unnamed-chunk-3-1.png" width="70%"></p>
+<p><img src="our_plots_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>The plot above shows the counts of the analyte “OC43_NP_NA” in the
 plate. The wells are colored according to the count of the analyte.
 Too-low values are marked with red, values on the edge of the threshold
@@ -184,7 +184,7 @@ without the counts by setting <code>show_counts</code> parameter to
 <code>FALSE</code>. This provides a cleaner plot without the counts.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_counts.html">plot_counts</a></span><span class="op">(</span><span class="va">plate</span>, <span class="st">"FluA"</span>, plot_counts <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="our_plots_files/figure-html/unnamed-chunk-4-1.png" width="70%"></p>
+<p><img src="our_plots_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="distribution-of-mfi-values">Distribution of MFI values<a class="anchor" aria-label="anchor" href="#distribution-of-mfi-values"></a>
@@ -199,7 +199,7 @@ function will return an error message if there is a typo in the analyte
 name.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_mfi_for_analyte.html">plot_mfi_for_analyte</a></span><span class="op">(</span><span class="va">plate</span>, <span class="st">"Spike_B16172"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="our_plots_files/figure-html/unnamed-chunk-5-1.png" width="70%"></p>
+<p><img src="our_plots_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>This plot shows the distribution of the MFI values for test samples
 for the analyte “OC43_NP_NA”. The test samples are colored in blue, and
 the standard curve samples are colored in red. The default plot type is
@@ -207,7 +207,7 @@ boxplot, but there is an option to change it to violin plot by setting
 the <code>plot_type</code> parameter to <code>violin</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_mfi_for_analyte.html">plot_mfi_for_analyte</a></span><span class="op">(</span><span class="va">plate</span>, <span class="st">"FluA"</span>, plot_type <span class="op">=</span> <span class="st">"violin"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="our_plots_files/figure-html/unnamed-chunk-6-1.png" width="70%"></p>
+<p><img src="our_plots_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="standard-curve-plots">Standard curve plots<a class="anchor" aria-label="anchor" href="#standard-curve-plots"></a>
@@ -227,7 +227,7 @@ anything goes wrong during the plate preparation, it should be visible
 easily in this plot.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, <span class="st">"Spike_B16172"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="our_plots_files/figure-html/unnamed-chunk-7-1.png" width="70%"></p>
+<p><img src="our_plots_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>Above, we see the default plot for the analyte “Spike_B16172”. We can
 modify this plot by setting the parameters of the function. For example,
 we can change the direction of the x-axis by setting
@@ -253,7 +253,7 @@ being more complex and crowded.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_standard_curve_model_analyte.html">create_standard_curve_model_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"Spike_B16172"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_standard_curve_analyte_with_model.html">plot_standard_curve_analyte_with_model</a></span><span class="op">(</span><span class="va">plate</span>, <span class="va">model</span><span class="op">)</span></span></code></pre></div>
-<p><img src="our_plots_files/figure-html/unnamed-chunk-8-1.png" width="70%"></p>
+<p><img src="our_plots_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <p>Here, we do not have to specify the analyte name, as the model
 already carries this information. The model is created by the
 <code>create_standard_curve_model_analyte</code> function, which takes

@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PvSTATEM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@ Kwieciński</h4>
             
             <h4 data-toc-skip class="date">2024-10-09</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/v0.0.4/vignettes/our_datasets.Rmd" class="external-link"><code>vignettes/our_datasets.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/v0.0.3/vignettes/our_datasets.Rmd" class="external-link"><code>vignettes/our_datasets.Rmd</code></a></small>
       <div class="hidden name"><code>our_datasets.Rmd</code></div>
 
     </div>
@@ -139,7 +139,7 @@ the specified dataset on your computer. Since we know the filepath to
 the desired dataset, we can execute the <code>read_data</code> function
 to read the data. The function has the following syntax:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">PvSTATEM</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mini-pw/PvSTATEM" class="external-link">PvSTATEM</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">plate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_luminex_data.html">read_luminex_data</a></span><span class="op">(</span><span class="va">dataset_filepath</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Reading Luminex data from: /home/runner/work/_temp/Library/PvSTATEM/extdata/CovidOISExPONTENT.csv</span></span>
@@ -232,17 +232,11 @@ directory. The datasets are:</p>
 <li><p><code>Chul_TotalIgG_2.csv</code> - GitHub repo
 RTSS_Kisumu_Schisto <a href="https://github.com/IDEELResearch/RTSS_Kisumu_Schisto/tree/main/data/raw/luminex" class="external-link">source</a></p></li>
 <li><p><code>pone.0187901.s001.csv</code> - data shipped with drLumi
-package <a href="https://doi.org/10.1371/journal.pone.0187901" class="external-link">source</a></p></li>
-<li><p><code>New_Batch_6_20160309_174224.csv</code> - dataset included
-in the paper <em>A single-nucleotide-polymorphism-based genotyping assay
-for simultaneous detection of different carbendazim-resistant genotypes
-in the Fusarium graminearum species complex</em>, H. Zhang et.
-al. </p></li>
-<li><p><code>New_Batch_14_20140513_082522.csv</code> - dataset included
-in the paper <em>A single-nucleotide-polymorphism-based genotyping assay
-for simultaneous detection of different carbendazim-resistant genotypes
-in the Fusarium graminearum species complex</em>, H. Zhang et.
-al. </p></li>
+package <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5685631/" class="external-link">source</a></p></li>
+<li><p><code>New_Batch_6_20160309_174224.csv</code> - dataset posted on
+ReaserchGate <a href="https://www.researchgate.net/publication/309410897_Raw_data_generated_by_Luminex" class="external-link">source</a></p></li>
+<li><p><code>New_Batch_14_20140513_082522.csv</code> - dataset posted on
+ReaserchGate <a href="https://www.researchgate.net/publication/309411021_The_second_run_of_raw_data_exported_from_Luminex_200_applied_forcarbendazim_resistance_species_and_chemotype_detection_of_156_Fusarium_isolates" class="external-link">source</a></p></li>
 </ul>
 </div>
 </div>

@@ -19,7 +19,7 @@ the sample names according to the provided location strings."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PvSTATEM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -73,7 +73,7 @@ the sample names according to the provided location strings."><!-- mathjax --><s
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Extract sample names from layout</h1>
-    <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/v0.0.4/R/classes-plate_builder.R" class="external-link"><code>R/classes-plate_builder.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/v0.0.3/R/classes-plate_builder.R" class="external-link"><code>R/classes-plate_builder.R</code></a></small>
     <div class="hidden name"><code>extract_sample_names_from_layout.Rd</code></div>
     </div>
 
@@ -100,6 +100,14 @@ the sample names according to the provided location strings.</p>
 
 </dl></div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">layout_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SAMPLE"</span><span class="op">)</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">96</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A1"</span>, <span class="st">"A2"</span>, <span class="st">"A3"</span>, <span class="st">"B4"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">PvSTATEM</span><span class="fu">:::</span><span class="fu">extract_sample_names_from_layout</span><span class="op">(</span><span class="va">layout_names</span>, <span class="va">locations</span><span class="op">)</span> <span class="co"># execute an internal function</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "SAMPLE1"  "SAMPLE2"  "SAMPLE3"  "SAMPLE16"</span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
