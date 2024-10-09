@@ -74,9 +74,9 @@ handle_datetime <- function(datetime_str, file_format = "xPONENT") {
     stop("Invalid file format: ", file_format)
   }
 
-  first_atempt <- lubridate::parse_date_time2(datetime_str, orders = possible_orders[1], tz = "")
-  if (!is.na(first_atempt)) {
-    return(first_atempt)
+  first_attempt <- lubridate::parse_date_time2(datetime_str, orders = possible_orders[1], tz = "")
+  if (!is.na(first_attempt)) {
+    return(first_attempt)
   } else {
     warning("Could not parse datetime string using default datetime format. Trying other possibilies.")
     for (order in possible_orders[-1]) {
