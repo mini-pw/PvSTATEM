@@ -64,33 +64,51 @@ Plate <- R6::R6Class(
     ## Fields ----------------------------------------------------------------
     ## Must be set ---
 
+    #'
     #' @field plate_name  (`character(1)`)\cr
     #'  Name of the plate.
     plate_name = "",
+    #'
     #' @field analyte_names (`character()`)\cr
     #' Names of the analytes that were examined on the plate.
     analyte_names = character(),
+    #'
     #' @field sample_names (`character()`)\cr
     #' Names of the samples that were examined on the plate.
     sample_names = character(),
     ## Must be set if validated ---
+    #'
     #' @field batch_name (`character(1)`)\cr
     #' Name of the batch to which the plate belongs.
     batch_name = "",
+    #'
+    #' @field plate_datetime (`POSIXct()`)\cr
+    #' A date and time when the plate was created by the machine
+    plate_datetime = NULL,
+    #'
     #' @field sample_locations (`character()`)\cr
     #' Locations of the samples on the plate.
     sample_locations = NULL,
+    #'
     #' @field sample_types (`character()`)\cr
     #' Types of the samples that were examined on the plate.
     #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
     sample_types = NULL,
+    #'
     #' @field dilutions (`character()`)\cr
     #' A list containing names of the samples as keys and string representing dilutions as values.
     #' The dilutions are represented as strings.
     dilutions = NULL,
+    #'
     #' @field dilution_values (`numeric()`)\cr
     #' A list containing names of the samples as keys and numeric values representing dilutions as values.
     dilution_values = NULL,
+    #'
+    #' @field default_data_type (`character(1)`)\cr
+    #' The default data type that will be returned by the `get_data` method.
+    #' By default is set to `Median`.
+    default_data_type = NULL,
+    #'
     #' @field data (`list()`)\cr
     #' A list containing dataframes with the data for each sample and analyte.
     #' The possible data types - the keys of the list are:
@@ -98,21 +116,20 @@ Plate <- R6::R6Class(
     #'
     #' In each dataframe, the rows represent samples and the columns represent analytes.
     data = NULL,
-    #' @field default_data_type (`character(1)`)\cr
-    #' The default data type that will be returned by the `get_data` method.
-    #' By default is set to `Median`.
-    default_data_type = NULL,
+    #'
     #' @field batch_info (`list()`)\cr
     #' A list containing additional, technical information about the batch.
     batch_info = NULL,
+    #'
     #' @field layout (`character()`)\cr
     #' A list containing information about the layout of the plate.
     #' The layout is read from the separate file and usually provides additional
     #' information about the dilutions, sample names, and the sample layout
     #' on the actual plate.
     layout = NULL,
-
+    #'
     ## Fields that will be set by the methods ---
+    #'
     #' @field blank_adjusted (`logical`)\cr
     #' A flag indicating whether the blank values have been adjusted.
     blank_adjusted = FALSE,
@@ -126,53 +143,70 @@ Plate <- R6::R6Class(
     #'  By default is set to an empty string,
     #'  during the reading process it is set to the name
     #'  of the file from which the plate was read.
+    #'
     #' @param sample_names (`character()`)\cr
     #'  Names of the samples that were examined on the plate.
+    #'
     #' @param analyte_names (`character()`)\cr
     #'  Names of the analytes that were examined on the plate.
+    #'
     #' @param batch_name (`character(1)`)\cr
     #'  Name of the batch to which the plate belongs.
     #'  By default is set to an empty string, during the reading process it is set to
     #'  the `batch` field of the plate
-    #' @param dilutions (`character()`)\cr
-    #'  A list containing names of the samples as keys and string representing dilutions as values.
-    #'  The dilutions are represented as strings.
-    #' @param dilution_values (`numeric()`)\cr
-    #'  A list containing names of the samples as keys and numeric values representing dilutions as values.
+    #'
+    #' @param plate_datetime (`POSIXct()`)\cr
+    #' Datetime object representing the date and time when the plate was created by the machine.
+    #'
+    #' @param sample_locations (`character()`)\cr
+    #'  Locations of the samples on the plate.
+    #'
     #' @param sample_types (`character()`)\cr
     #'  Types of the samples that were examined on the plate.
     #'  The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
+    #'
+    #' @param dilutions (`character()`)\cr
+    #'  A list containing names of the samples as keys and string representing dilutions as values.
+    #'  The dilutions are represented as strings.
+    #'
+    #' @param dilution_values (`numeric()`)\cr
+    #'  A list containing names of the samples as keys and numeric values representing dilutions as values.
+    #'
+    #' @param default_data_type (`character(1)`)\cr
+    #'  The default data type that will be returned by the `get_data` method.
+    #'  By default is set to `Median`.
+    #'
     #' @param data (`list()`)\cr
     #'  A list containing dataframes with the data for each sample and analyte.
     #'  The possible data types - the keys of the list are \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
     #'  In each dataframe, the rows represent samples and the columns represent analytes.
-    #' @param sample_locations (`character()`)\cr
-    #'  Locations of the samples on the plate.
-    #' @param default_data_type (`character(1)`)\cr
-    #'  The default data type that will be returned by the `get_data` method.
-    #'  By default is set to `Median`.
+    #'
     #' @param batch_info (`list()`)\cr
     #'  A list containing additional, technical information about the batch.
+    #'
     #' @param layout (`character()`)\cr
     #'  A list containing information about the layout of the plate.
     #'  The layout is read from the separate file and usually provides additional
     #'  information about the dilutions, sample names, and the sample layout
     #'  on the actual plate.
-    initialize = function(plate_name, sample_names, analyte_names, batch_name = "",
+    #'
+    initialize = function(plate_name, sample_names, analyte_names,
+                          batch_name = "", plate_datetime = NULL,
+                          sample_locations = NULL, sample_types = NULL,
                           dilutions = NULL, dilution_values = NULL,
-                          sample_types = NULL, data = NULL,
-                          sample_locations = NULL, default_data_type = NULL,
+                          default_data_type = NULL, data = NULL,
                           batch_info = NULL, layout = NULL) {
       self$plate_name <- plate_name
       self$analyte_names <- analyte_names
       self$sample_names <- sample_names
       if (!is.null(batch_name) && length(batch_name) != 0) self$batch_name <- batch_name
       if (!is.null(sample_locations)) self$sample_locations <- sample_locations
+      if (!is.null(sample_types)) self$sample_types <- sample_types
+      if (!is.null(plate_datetime)) self$plate_datetime <- plate_datetime
       if (!is.null(dilutions)) self$dilutions <- dilutions
       if (!is.null(dilution_values)) self$dilution_values <- dilution_values
-      if (!is.null(sample_types)) self$sample_types <- sample_types
-      if (!is.null(data)) self$data <- data
       if (!is.null(default_data_type)) self$default_data_type <- default_data_type
+      if (!is.null(data)) self$data <- data
       if (!is.null(batch_info)) self$batch_info <- batch_info
       if (!is.null(layout)) self$layout <- layout
     },
@@ -233,12 +267,12 @@ Plate <- R6::R6Class(
 
       cat(
         "Summary of the plate with name '", self$plate_name, "':\n",
+        "Plate examination date: ",
+        as.character(self$plate_datetime), "\n",
         "Total number of samples: ",
-        length(self$sample_names),
-        "\n",
+        length(self$sample_names), "\n",
         "Number of blank samples: ",
-        blank_samples_num,
-        "\n",
+        blank_samples_num, "\n",
         "Number of standard curve samples: ",
         standard_curve_num,
         standard_curve_names, "\n",

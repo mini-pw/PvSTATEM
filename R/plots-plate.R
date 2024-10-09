@@ -68,7 +68,7 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
   well_positions$category <- factor(well_positions$color, levels = legend_mapping, labels = categories)
 
   # Plot the plate with colored wells
-  p <- ggplot(well_positions, aes(x = x, y = y, fill = category)) +
+  p <- ggplot(well_positions, aes(x = .data$x, y = .data$y, fill = .data$category)) +
     geom_tile(key_glyph = "point") +
     annotation_custom(
       rasterGrob(plate_img, width = unit(1, "npc"), height = unit(1, "npc")),

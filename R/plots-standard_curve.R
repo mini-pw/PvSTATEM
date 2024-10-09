@@ -23,7 +23,7 @@ plot_standard_curve_analyte <- function(plate,
                                         analyte_name,
                                         data_type = "Median",
                                         decreasing_dilution_order = TRUE,
-                                        log_scale = c("dilutions"),
+                                        log_scale = c("all"),
                                         plot_line = TRUE,
                                         plot_blank_mean = TRUE,
                                         plot_dilution_bounds = TRUE,
@@ -79,8 +79,10 @@ plot_standard_curve_analyte <- function(plate,
     }
   }
 
-  options(scipen = 30)
-  p <- ggplot2::ggplot(plot_data, aes(x = dilution_values, y = MFI)) +
+  old_options <- options(scipen = 30)
+
+  on.exit(options(old_options))
+  p <- ggplot2::ggplot(plot_data, aes(x = .data$dilution_values, y = .data$MFI)) +
     ggplot2::geom_point(aes(color = "Standard curve samples"), size = 3)
   if (plot_line) {
     p <- p + ggplot2::geom_line(aes(color = "Standard curve samples"), linewidth = 1.2)
@@ -93,10 +95,10 @@ plot_standard_curve_analyte <- function(plate,
   }
   if (plot_dilution_bounds) {
     p <- p + ggplot2::geom_vline(
-      ggplot2::aes(color = "Min-max dilution bounds", xintercept = min(dilution_values)),
+      ggplot2::aes(color = "Min-max dilution bounds", xintercept = min(.data$dilution_values)),
       linetype = "dashed"
     ) + ggplot2::geom_vline(
-      ggplot2::aes(color = "Min-max dilution bounds", xintercept = max(dilution_values)),
+      ggplot2::aes(color = "Min-max dilution bounds", xintercept = max(.data$dilution_values)),
       linetype = "dashed"
     )
   }
@@ -187,7 +189,7 @@ plot_standard_curve_analyte_with_model <- function(plate,
 
   if (plot_test_predictions) {
     p <- p + ggplot2::geom_point(
-      ggplot2::aes(x = dilution, y = MFI, color = "Test sample predictions"),
+      ggplot2::aes(x = .data$dilution, y = .data$MFI, color = "Test sample predictions"),
       data = test_sample_estimates, shape = 4,
       size = 2.2,
       stroke = 1.3,

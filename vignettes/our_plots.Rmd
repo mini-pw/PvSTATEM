@@ -92,12 +92,17 @@ plot_mfi_for_analyte(plate, "Spike_B16172")
 ```
 
 This plot shows the distribution of the MFI values for test samples for the analyte "OC43_NP_NA". The test samples are colored in blue, and the standard curve samples are colored in red.
-The default plot type is boxplot, but there is an option to change it to violin plot by setting the `plot_type` parameter to `violin`.
+The default plot type is violin, but there is an option to change it to violin plot by setting the `plot_type` parameter to `boxplot`.
 
 ```{r}
-plot_mfi_for_analyte(plate, "FluA", plot_type = "violin")
+plot_mfi_for_analyte(plate, "FluA", plot_type = "boxplot")
 ```
 
+Additionally, we can modify the scale of y-axis by setting the `scale_y` to the desired transformation from ggplot2 package. In case of `boxplot` type of plot, we may include the outliers by the `plot_outliers` parameter.
+
+```{r}
+plot_mfi_for_analyte(plate, "FluA", plot_type = "boxplot", scale_y = "identity", plot_outliers = TRUE)
+```
 
 # Standard curve plots
 

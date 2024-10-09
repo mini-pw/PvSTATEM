@@ -1,3 +1,10 @@
+PvSTATEM 0.0.4
+---------------------------------------------------------------
+* met the CRAN policy
+* issue templates
+* the plate object view options
+
+
 PvSTATEM 0.0.3
 ---------------------------------------------------------------
 * refactored the whole package structure to simplify the usage

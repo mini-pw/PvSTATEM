@@ -80,8 +80,8 @@ To check the package functionalities on the data from different sources, we gath
 
 -   `Chul_TotalIgG_2.csv` - GitHub repo RTSS_Kisumu_Schisto [source](https://github.com/IDEELResearch/RTSS_Kisumu_Schisto/tree/main/data/raw/luminex)
 
--   `pone.0187901.s001.csv` - data shipped with drLumi package [source](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5685631/)
+-   `pone.0187901.s001.csv` - data shipped with drLumi package [source](https://doi.org/10.1371/journal.pone.0187901)
 
--   `New_Batch_6_20160309_174224.csv` - dataset posted on ReaserchGate [source](https://www.researchgate.net/publication/309410897_Raw_data_generated_by_Luminex)
+-   `New_Batch_6_20160309_174224.csv` - dataset included in the paper *A single-nucleotide-polymorphism-based genotyping assay for simultaneous detection of different carbendazim-resistant genotypes in the Fusarium graminearum species complex*, H. Zhang et. al. 
 
--   `New_Batch_14_20140513_082522.csv` - dataset posted on ReaserchGate [source](https://www.researchgate.net/publication/309411021_The_second_run_of_raw_data_exported_from_Luminex_200_applied_forcarbendazim_resistance_species_and_chemotype_detection_of_156_Fusarium_isolates)
+-   `New_Batch_14_20140513_082522.csv` - dataset included in the paper *A single-nucleotide-polymorphism-based genotyping assay for simultaneous detection of different carbendazim-resistant genotypes in the Fusarium graminearum species complex*, H. Zhang et. al. 

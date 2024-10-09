@@ -11,15 +11,16 @@ PlateBuilder <- R6::R6Class(
   "PlateBuilder",
   public = list(
     plate_name = NULL,
-    batch_name = NULL,
-    analyte_names = NULL,
     sample_names = NULL,
+    analyte_names = NULL,
+    batch_name = NULL,
+    plate_datetime = NULL,
     sample_locations = NULL,
+    sample_types = NULL,
     dilutions = NULL,
     dilution_values = NULL,
-    sample_types = NULL,
-    data = NULL,
     default_data_type = "Median",
+    data = NULL,
     batch_info = NULL,
     layout = NULL,
 
@@ -29,11 +30,14 @@ PlateBuilder <- R6::R6Class(
     #'
     #' @param sample_names - vector of sample names measured during
     #' an examination in the same order as in the data
+    #'
     #' @param analyte_names - vector of analytes names measured during
     #' an examination in the same order as in the data
+    #'
     #' @param batch_name - name of the batch during which the plate was examined
     #' obtained from the plate info. An optional parameter, by default set to
     #' `""` - an empty string.
+    #'
     #' @param verbose - logical value indicating whether to print additional
     #' information. This parameter is stored as a private attribute of the object
     #' and reused in other methods
@@ -178,6 +182,21 @@ PlateBuilder <- R6::R6Class(
     },
 
     #' @description
+    #' Set the plate datetime for the plate
+    #'
+    #' @param plate_datetime a POSIXct datetime object
+    #' representing the date and time of the examination
+    set_plate_datetime = function(plate_datetime) {
+      if (is.null(plate_datetime)) {
+        stop("Plate datetime is not provided")
+      }
+      if (!lubridate::is.POSIXct(plate_datetime)) {
+        stop("Plate datetime is not a valid datetime")
+      }
+      self$plate_datetime <- plate_datetime
+    },
+
+    #' @description
     #' Set the data used during the examination
     #' @param data a named list of data frames containing information about
     #' the samples and analytes. The list is named by the type of the data
@@ -265,15 +284,16 @@ PlateBuilder <- R6::R6Class(
 
       plate <- Plate$new(
         plate_name = self$plate_name,
-        batch_name = self$batch_name,
-        analyte_names = self$analyte_names,
         sample_names = self$sample_names,
+        analyte_names = self$analyte_names,
+        batch_name = self$batch_name,
+        plate_datetime = self$plate_datetime,
         sample_locations = self$sample_locations,
+        sample_types = self$sample_types,
         dilutions = self$dilutions,
         dilution_values = self$dilution_values,
-        sample_types = self$sample_types,
-        data = self$data,
         default_data_type = self$default_data_type,
+        data = self$data,
         batch_info = self$batch_info,
         layout = self$layout
       )
@@ -316,6 +336,7 @@ PlateBuilder <- R6::R6Class(
       if (length(self$analyte_names) == 0) {
         append(errors, "Analyte names are empty")
       }
+      # BUG:: Issue #164 - Unhandled errors
     }
   )
 )
@@ -327,10 +348,6 @@ PlateBuilder <- R6::R6Class(
 #' the sample names according to the provided location strings.
 #' @param layout_names a vector of sample names from the layout file
 #' @param locations a vector of locations in the form of A1, B2, etc.
-#' @examples
-#' layout_names <- paste0(c("SAMPLE"), 1:96)
-#' locations <- c("A1", "A2", "A3", "B4")
-#' PvSTATEM:::extract_sample_names_from_layout(layout_names, locations) # execute an internal function
 #' @keywords internal
 extract_sample_names_from_layout <- function(layout_names, locations) {
   stopifnot(is.character(layout_names) && length(layout_names) > 0)
@@ -351,10 +368,6 @@ extract_sample_names_from_layout <- function(layout_names, locations) {
 #' function extracts dilution factor from the sample name - useful for detecting
 #' dilution from sample names
 #' @param sample_name a vector of sample names from which we want to extract the dilutions
-#' @examples
-#' raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
-#' PvSTATEM:::extract_dilution_from_names(raw_dilutions) # execute an internal function
-#'
 #' @return a vector of dilutions represented as strings extracted from the sample names
 #' @keywords internal
 extract_dilution_from_names <- function(sample_name) {
@@ -372,10 +385,6 @@ extract_dilution_from_names <- function(sample_name) {
 #' @param dilutions vector of dilutions used during the examination
 #' due to the nature of data it's a vector of strings,
 #' the numeric vales are created from those strings
-#'
-#' @examples
-#' raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
-#' PvSTATEM:::extract_dilutions_from_layout(raw_dilutions) # execute an internal function
 #' @keywords internal
 extract_dilutions_from_layout <- function(dilutions) {
   stopifnot(is.character(dilutions) && length(dilutions) > 0)

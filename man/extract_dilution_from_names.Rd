@@ -16,9 +16,4 @@ a vector of dilutions represented as strings extracted from the sample names
 function extracts dilution factor from the sample name - useful for detecting
 dilution from sample names
 }
-\examples{
-raw_dilutions <- c("1/40", "1/50", "IG 1/200", "BLANK", "Unknown", "CP3 1/5")
-PvSTATEM:::extract_dilution_from_names(raw_dilutions) # execute an internal function
-
-}
 \keyword{internal}

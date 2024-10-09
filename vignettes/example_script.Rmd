@@ -44,7 +44,9 @@ Once we have loaded the plate object we may process it using the function `proce
 
 
 ```{r}
-process_plate(plate)
+tmp_dir <- tempdir(check = TRUE)
+test_output_path <- file.path(tmp_dir, "output.csv")
+process_plate(plate, output_path = test_output_path)
 ```
 
 ## Quality control and normalization details
