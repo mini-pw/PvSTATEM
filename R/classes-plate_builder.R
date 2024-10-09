@@ -336,7 +336,7 @@ PlateBuilder <- R6::R6Class(
       if (length(self$analyte_names) == 0) {
         append(errors, "Analyte names are empty")
       }
-      # TODO: Handle those errors
+      # BUG:: Issue #164 - Unhandled errors
     }
   )
 )
