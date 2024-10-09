@@ -6,7 +6,7 @@
 
 
     <div class="container template-reference-index">
-      <header><div class="navbar navbar- navbar-fixed-top" role="navigation">
+      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
@@ -50,17 +50,6 @@
 
   </a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <span class="fa fa-sun"></span>
-
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li class="dropdown-header">Light</li>
-    <li class="dropdown-header">Dark</li>
-    <li class="dropdown-header">Auto</li>
-  </ul></li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -74,25 +63,13 @@
     </div>
 
     <table class="ref-index"><colgroup><col class="alias"><col class="title"></colgroup><tbody><tr><th colspan="2">
-          <h2 id="core-functions">Core functions <a href="#core-functions" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Reading and processing the data</p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="read_luminex_data.html">read_luminex_data()</a></code> </p>
-        </td>
-        <td><p>Read Luminex Data</p></td>
-      </tr><tr><td>
-          <p><code><a href="process_plate.html">process_plate()</a></code> </p>
-        </td>
-        <td><p>Process a plate and save computed dilutions to a CSV</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="plate-and-model-classes">Plate and Model classes <a href="#plate-and-model-classes" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Instances of the Plate and Model classes, which are used to store the data and the model and faciliate the analysis</p>
+          <h2 id="all-functions">All functions <a href="#all-functions" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="Model.html">Model</a></code> </p>
         </td>
-        <td><p>Logistic regression model for the standard curve</p></td>
+        <td><p>Logisic regresion model for the standard curve</p></td>
       </tr><tr><td>
           <p><code><a href="Plate.html">Plate</a></code> </p>
         </td>
@@ -102,18 +79,38 @@
         </td>
         <td><p>PlateBuilder</p></td>
       </tr><tr><td>
+          <p><code><a href="clamp.html">clamp()</a></code> </p>
+        </td>
+        <td><p>Clamp a value to a range</p></td>
+      </tr><tr><td>
           <p><code><a href="create_standard_curve_model_analyte.html">create_standard_curve_model_analyte()</a></code> </p>
         </td>
-        <td><p>Create a standard curve model for a certain analyte</p></td>
+        <td><p>Create standard curve model for a certain analyte</p></td>
       </tr><tr><td>
-          <p><code><a href="predict.Model.html">predict(<i>&lt;Model&gt;</i>)</a></code> </p>
+          <p><code><a href="create_vector_without_holes.html">create_vector_without_holes()</a></code> </p>
         </td>
-        <td><p>Predict the dilutions from the MFI values</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="plots">Plots <a href="#plots" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Functions for plotting the data, quality control and the results of the analysis</p>
-        </th>
-      </tr></tbody><tbody><tr><td>
+        <td><p>Remove holes from a vector</p></td>
+      </tr><tr><td>
+          <p><code><a href="is.scalar.html">is.scalar()</a></code> </p>
+        </td>
+        <td><p>Check if a value is a scalar</p></td>
+      </tr><tr><td>
+          <p><code><a href="is.str.number.html">is.str.number()</a></code> </p>
+        </td>
+        <td><p>Check if a string is a number</p></td>
+      </tr><tr><td>
+          <p><code><a href="is_outlier.html">is_outlier()</a></code> </p>
+        </td>
+        <td><p>Check if a value is an outlier</p></td>
+      </tr><tr><td>
+          <p><code><a href="is_valid_data_type.html">is_valid_data_type()</a></code> </p>
+        </td>
+        <td><p>Check validity of given data type</p></td>
+      </tr><tr><td>
+          <p><code><a href="is_valid_sample_type.html">is_valid_sample_type()</a></code> </p>
+        </td>
+        <td><p>Check validity of given sample type</p></td>
+      </tr><tr><td>
           <p><code><a href="plot_counts.html">plot_counts()</a></code> </p>
         </td>
         <td><p>Plot counts in a 96-well plate</p></td>
@@ -133,14 +130,14 @@
           <p><code><a href="plot_standard_curve_analyte_with_model.html">plot_standard_curve_analyte_with_model()</a></code> </p>
         </td>
         <td><p>Plot standard curve of a certain analyte with fitted model</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="helper-functions">Helper functions <a href="#helper-functions" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Additional, lower level functions that are used in the analysis</p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="read_xponent_format.html">read_xponent_format()</a></code> </p>
+      </tr><tr><td>
+          <p><code><a href="predict.Model.html">predict(<i>&lt;Model&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Read the xPONENT format data</p></td>
+        <td><p>Predict the dilutions from the MFI values</p></td>
+      </tr><tr><td>
+          <p><code><a href="process_plate.html">process_plate()</a></code> </p>
+        </td>
+        <td><p>Process a plate and save computed dilutions to a CSV</p></td>
       </tr><tr><td>
           <p><code><a href="read_intelliflex_format.html">read_intelliflex_format()</a></code> </p>
         </td>
@@ -150,13 +147,13 @@
         </td>
         <td><p>Read layout data from a file</p></td>
       </tr><tr><td>
-          <p><code><a href="is_valid_data_type.html">is_valid_data_type()</a></code> </p>
+          <p><code><a href="read_luminex_data.html">read_luminex_data()</a></code> </p>
         </td>
-        <td><p>Check validity of given data type</p></td>
+        <td><p>Read Luminex Data</p></td>
       </tr><tr><td>
-          <p><code><a href="is_valid_sample_type.html">is_valid_sample_type()</a></code> </p>
+          <p><code><a href="read_xponent_format.html">read_xponent_format()</a></code> </p>
         </td>
-        <td><p>Check validity of given sample type</p></td>
+        <td><p>Read the xPONENT format data</p></td>
       </tr><tr><td>
           <p><code><a href="translate_sample_names_to_sample_types.html">translate_sample_names_to_sample_types()</a></code> </p>
         </td>
