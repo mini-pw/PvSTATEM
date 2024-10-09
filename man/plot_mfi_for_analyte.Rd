@@ -24,7 +24,9 @@ plot_mfi_for_analyte(
 Available options are "boxplot" and "violin".}
 
 \item{scale_y}{What kind of transformation of the scale to apply.
-By default MFI is presented in a log10 scale}
+By default MFI is presented in a "log10" scale. Available options are
+described in the documentation of \link[ggplot2]{scale_y_continuous}
+under\code{transform} parameter.}
 
 \item{plot_outliers}{When using "boxplot" type of a plot
 one can set this parameter to TRUE and display the names of samples for

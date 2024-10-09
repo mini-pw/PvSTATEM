@@ -6,7 +6,9 @@
 #' @param plot_type The type of plot to generate. Default is "violin".
 #' Available options are "boxplot" and "violin".
 #' @param scale_y What kind of transformation of the scale to apply.
-#' By default MFI is presented in a log10 scale
+#' By default MFI is presented in a "log10" scale. Available options are
+#' described in the documentation of \link[ggplot2]{scale_y_continuous}
+#' under`transform` parameter.
 #' @param plot_outliers When using "boxplot" type of a plot
 #' one can set this parameter to TRUE and display the names of samples for
 #' which MFI falls outside the 1.5 IQR interval
