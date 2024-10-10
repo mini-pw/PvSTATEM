@@ -1,0 +1,110 @@
+---
+title: "Raport for plate: `r paste0('*', params$plate$plate_name, '*')`"
+output: html_document
+params:
+  plate: !r NULL
+  use_model: !r NULL
+  counts_lower_threshold: !r NULL
+  counts_higher_threshold: !r NULL
+---
+
+```{r param-check, echo=FALSE}
+if (is.null(params$plate)) {
+  stop("The `plate` must be provided when rendering the document.")
+}
+if (is.null(params$use_model)) {
+  stop("The `use_model` must be provided when rendering the document.")
+}
+if (is.null(params$counts_lower_threshold)) {
+  stop("The `counts_lower_threshold` must be provided when rendering the document.")
+}
+if (is.null(params$counts_higher_threshold)) {
+  stop("The `counts_higher_threshold` must be provided when rendering the document.")
+}
+if (!is(params$plate, "Plate")) {
+  stop("The `plate` must be an instance of `Plate` class.")
+}
+if (!is(params$use_model, "logical")) {
+  stop("The `use_model` must be a logical value.")
+}
+if (!is(params$counts_lower_threshold, "numeric")) {
+  stop("The `counts_lower_threshold` must be a numeric value.")
+}
+if (!is(params$counts_higher_threshold, "numeric")) {
+  stop("The `counts_higher_threshold` must be a numeric value.")
+}
+```
+
+Report generated on:  `r format(Sys.time(), "%d-%m-%Y %H:%M:%S")`.  
+Plate was run on: `r if(!is.null(params$plate$plate_datetime)) format(params$plate$plate_datetime, "%d-%m-%Y %H:%M:%S") else "Date of running plate was not found in Luminex file"`.  
+Plate batch name: `r if(!is.null(params$plate$batch_name)) params$plate$batch_name else "Batch name was not found in Luminex file"`.  
+This is plate with `r paste0(length(params$plate$sample_names), " samples and ", length(params$plate$analyte_names), " analytes")`.  
+Standard curve sample dilutions: `r format_dilutions(params$plate$dilutions, params$plate$dilution_values, params$plate$sample_types)`.
+
+
+-------------------
+
+
+### Plate layout
+
+<details open>
+  <summary>Click to show/hide layout</summary>
+```{r plate-layout, fig.width=7, fig.height=4, fig.align='center', dev='jpeg', echo=FALSE, dpi=72}
+plot_layout(params$plate)
+```
+</details>
+
+
+------------------
+
+### Quick overview of standard curves
+
+<details open>
+  <summary>Click to show/hide overview</summary>
+```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="20%", dev='jpeg', dpi=72}
+# Code used to create dynamic tabs based on the number of analytes
+for (i in seq_along(params$plate$analyte_names)) {
+  # this line is hack
+  cat(paste0('<a href="#', tolower(params$plate$analyte_names[i]), '" role="tab" data-toggle="tab" aria-controls="', tolower(params$plate$analyte_names[i]), '" aria-expanded="false">'))
+  # Generate the plot
+  model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
+  print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE, plot_asymptote = FALSE, plot_dilution_bounds = FALSE))
+  cat(paste0('</a>'))
+}
+```
+</details>
+
+------------------
+ 
+### Details for given analayte {.tabset}
+
+```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%", dev='jpeg', dpi=72}
+# Code used to create dynamic tabs based on the number of analytes
+for (i in seq_along(params$plate$analyte_names)) {
+  cat(paste0("#### ", params$plate$analyte_names[i], "\n"))
+
+  # Plot counts
+  print(plot_counts(params$plate, params$plate$analyte_names[i], lower_threshold = params$counts_lower_threshold, higher_threshold = params$counts_higher_threshold))
+
+  # Plot MFI
+  print(plot_mfi_for_analyte(params$plate, params$plate$analyte_names[i], plot_type = "violin"))
+
+  # Plot Standard Curve
+  print(plot_standard_curve_analyte(params$plate, params$plate$analyte_names[i]))
+  if (params$use_model) {
+    model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
+    print(plot_standard_curve_analyte_with_model(params$plate, model))
+  }
+
+  cat("\n\n")
+}
+```
+
+------------------
+
+### &nbsp;
+
+<hr />
+<p style="text-align: center;">Generated using the <a href="https://github.com/mini-pw/PvSTATEM">PvSTATEM </a> package </p>
+
+

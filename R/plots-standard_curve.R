@@ -12,6 +12,7 @@
 #' @param plot_line If `TRUE` a line is plotted, `TRUE` by default
 #' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
 #' @param plot_dilution_bounds If `TRUE` the dilution bounds are plotted, `TRUE` by default
+#' @param plot_legend If `TRUE` the legend is plotted, `TRUE` by default
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #'
 #' @return ggplot object with the plot
@@ -27,6 +28,7 @@ plot_standard_curve_analyte <- function(plate,
                                         plot_line = TRUE,
                                         plot_blank_mean = TRUE,
                                         plot_dilution_bounds = TRUE,
+                                        plot_legend = TRUE,
                                         verbose = TRUE) {
   AVAILABLE_LOG_SCALE_VALUES <- c("all", "dilutions", "MFI")
 
@@ -121,6 +123,10 @@ plot_standard_curve_analyte <- function(plate,
     ) +
     ggplot2::guides(color = guide_legend(title = "Plot object"))
 
+  if(!plot_legend){
+    p <- p + ggplot2::theme(legend.position = "none")
+  }
+
   p
 }
 
@@ -137,6 +143,7 @@ plot_standard_curve_analyte <- function(plate,
 #' The predictions are obtained through extrapolation of the model
 #' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
 #' @param plot_dilution_bounds If `TRUE` the dilution bounds are plotted, `TRUE` by default
+#' @param plot_legend If `TRUE` the legend is plotted, `TRUE` by default
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #'
 #' @return a ggplot object with the plot
@@ -157,6 +164,7 @@ plot_standard_curve_analyte_with_model <- function(plate,
                                                    plot_test_predictions = TRUE,
                                                    plot_blank_mean = TRUE,
                                                    plot_dilution_bounds = TRUE,
+                                                   plot_legend = TRUE,
                                                    verbose = TRUE) {
   analyte_name <- model$analyte
   if (!inherits(model, "Model")) {
@@ -171,7 +179,8 @@ plot_standard_curve_analyte_with_model <- function(plate,
     analyte_name = analyte_name, data_type = data_type,
     decreasing_dilution_order = decreasing_dilution_order,
     log_scale = log_scale, verbose = verbose, plot_line = FALSE,
-    plot_blank_mean = plot_blank_mean, plot_dilution_bounds = plot_dilution_bounds
+    plot_blank_mean = plot_blank_mean, plot_dilution_bounds = plot_dilution_bounds,
+    plot_legend = plot_legend
   )
 
   plot_name <- paste0("Fitted standard curve for analyte: ", analyte_name)
@@ -180,17 +189,20 @@ plot_standard_curve_analyte_with_model <- function(plate,
   test_samples_mfi <- plate$get_data(analyte_name, "TEST", data_type = data_type)
   test_sample_estimates <- predict(model, test_samples_mfi)
 
-  p <- p + ggplot2::geom_line(
-    ggplot2::aes(x = .data$dilution, y = .data$MFI, color = "Fitted model predictions"),
-    data = model$get_plot_data(), linewidth = 1
-  )
   if (plot_test_predictions) {
     p <- p + ggplot2::geom_point(
       ggplot2::aes(x = .data$dilution, y = .data$MFI, color = "Test sample predictions"),
       data = test_sample_estimates, shape = 4,
-      size = 3
+      size = 2.2,
+      stroke = 1.3,
+      alpha = 0.8
     )
   }
+
+  p <- p + ggplot2::geom_line(
+    ggplot2::aes(x = .data$dilution, y = .data$MFI, color = "Fitted model predictions"),
+    data = model$get_plot_data(), linewidth = 1
+  )
 
   if (plot_asymptote) {
     p <- p + ggplot2::geom_hline(

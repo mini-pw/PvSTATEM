@@ -5,4 +5,5 @@
 inst/doc
 PvSTATEM.Rproj
 *.DS_Store
+reports
 docs
