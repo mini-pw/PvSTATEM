@@ -57,6 +57,8 @@ parse_xponent_locations <- function(xponent_locations) {
 #'
 #' @return POSIXct datetime object
 #'
+#' @keywords internal
+#'
 handle_datetime <- function(datetime_str, file_format = "xPONENT") {
   if (file_format == "xPONENT") {
     possible_orders <- c(

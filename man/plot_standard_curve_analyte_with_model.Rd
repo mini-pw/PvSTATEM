@@ -8,12 +8,12 @@ plot_standard_curve_analyte_with_model(
   plate,
   model,
   data_type = "Median",
-  decreasing_dilution_order = TRUE,
+  decreasing_rau_order = TRUE,
   log_scale = c("all"),
   plot_asymptote = TRUE,
   plot_test_predictions = TRUE,
   plot_blank_mean = TRUE,
-  plot_dilution_bounds = TRUE,
+  plot_rau_bounds = TRUE,
   verbose = TRUE
 )
 }
@@ -24,7 +24,7 @@ plot_standard_curve_analyte_with_model(
 
 \item{data_type}{Data type of the value we want to plot - the same datatype as in the plate file. By default equals to \code{Median}}
 
-\item{decreasing_dilution_order}{If \code{TRUE} the dilutions are plotted in decreasing order, \code{TRUE} by default.}
+\item{decreasing_rau_order}{If \code{TRUE} the RAU values are plotted in decreasing order, \code{TRUE} by default.}
 
 \item{log_scale}{Which elements on the plot should be displayed in log scale. By default \code{"all"}. If \code{NULL} or \code{c()} no log scale is used, if \code{"all"} or \code{c("dilutions", "MFI")} all elements are displayed in log scale.}
 
@@ -35,7 +35,7 @@ The predictions are obtained through extrapolation of the model}
 
 \item{plot_blank_mean}{If \code{TRUE} the mean of the blank samples is plotted, \code{TRUE} by default}
 
-\item{plot_dilution_bounds}{If \code{TRUE} the dilution bounds are plotted, \code{TRUE} by default}
+\item{plot_rau_bounds}{If \code{TRUE} the RAU bounds are plotted, \code{TRUE} by default}
 
 \item{verbose}{If \code{TRUE} prints messages, \code{TRUE} by default}
 }
