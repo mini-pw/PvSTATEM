@@ -13,8 +13,7 @@ generate_levy_jennings_report(
 \arguments{
 \item{list_of_plates}{A list of plate objects.}
 
-\item{filename}{(\code{character(1)}) The name of the output file. If not provided, the filename will be created
-based on the plate name with the suffix '_report.html'.}
+\item{filename}{(\code{character(1)}) The name of the output file. If not provided, the filename will be created based on the plate name with the suffix '_report.html'.}
 
 \item{output_dir}{(\code{character(1)}) The directory where the report should be saved. Default is 'reports'.}
 }
@@ -22,6 +21,6 @@ based on the plate name with the suffix '_report.html'.}
 A report.
 }
 \description{
-This function generates a report with Levy-Jennings plots. The report is generated using
-the \code{levy_jennings_report_template.Rmd} template.
+This function generates a report
+with Levy-Jennings plots. The report is generated using the \code{levy_jennings_report_template.Rmd} template.
 }

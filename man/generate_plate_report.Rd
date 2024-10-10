@@ -8,7 +8,9 @@ generate_plate_report(
   plate,
   use_model = TRUE,
   filename = NULL,
-  output_dir = "reports"
+  output_dir = "reports",
+  counts_lower_threshold = 50,
+  counts_higher_threshold = 70
 )
 }
 \arguments{
@@ -16,10 +18,13 @@ generate_plate_report(
 
 \item{use_model}{(\code{logical(1)}) A logical value indicating whether the model should be used in the report.}
 
-\item{filename}{(\code{character(1)}) The name of the output file. If not provided, the filename will be created
-based on the plate name with the suffix '_report.html'.}
+\item{filename}{(\code{character(1)}) The name of the output file. If not provided,the filename will be created based on the plate name with the suffix '_report.html'.}
 
 \item{output_dir}{(\code{character(1)}) The directory where the report should be saved. Default is 'reports'.}
+
+\item{counts_lower_threshold}{(\code{numeric(1)}) The lower threshold for the counts plots (works for each analyte). Default is 50.}
+
+\item{counts_higher_threshold}{(\code{numeric(1)}) The higher threshold for the counts plots (works for each analyte). Default is 70.}
 }
 \value{
 A report.

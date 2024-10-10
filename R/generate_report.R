@@ -33,13 +33,15 @@ generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, outp
 
 #' Generate a report with Levy-Jennings plots.
 #'
-#' This function generates a report with Levy-Jennings plots. The report
-#' is generated using the `levy_jennings_report_template.Rmd` template.
+#' This function generates a report with Levy-Jennings plots.
+#' The report is generated using the `levy_jennings_report_template.Rmd` template.
 #'
 #' @param list_of_plates A list of plate objects.
-#' @param filename (`character(1)`) The name of the output file. If not provided, the filename will be created
-#' based on the plate name with the suffix '_report.html'.
-#' @param output_dir (`character(1)`) The directory where the report should be saved. Default is 'reports'.
+#' @param filename (`character(1)`) The name of the output file. If not
+#' provided, the filename will be created based on the plate name
+#' with the suffix '_report.html'.
+#' @param output_dir (`character(1)`) The directory where the report
+#' should be saved. Default is 'reports'.
 #'
 #'
 #' @return A report.
