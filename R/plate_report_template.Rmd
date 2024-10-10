@@ -3,15 +3,35 @@ title: "Raport for plate: `r paste0('*', params$plate$plate_name, '*')`"
 output: html_document
 params:
   plate: !r NULL
-  use_model: TRUE
+  use_model: !r NULL
+  counts_lower_threshold: !r NULL
+  counts_higher_threshold: !r NULL
 ---
 
 ```{r param-check, echo=FALSE}
 if (is.null(params$plate)) {
   stop("The `plate` must be provided when rendering the document.")
 }
+if (is.null(params$use_model)) {
+  stop("The `use_model` must be provided when rendering the document.")
+}
+if (is.null(params$counts_lower_threshold)) {
+  stop("The `counts_lower_threshold` must be provided when rendering the document.")
+}
+if (is.null(params$counts_higher_threshold)) {
+  stop("The `counts_higher_threshold` must be provided when rendering the document.")
+}
 if (!is(params$plate, "Plate")) {
   stop("The `plate` must be an instance of `Plate` class.")
+}
+if (!is(params$use_model, "logical")) {
+  stop("The `use_model` must be a logical value.")
+}
+if (!is(params$counts_lower_threshold, "numeric")) {
+  stop("The `counts_lower_threshold` must be a numeric value.")
+}
+if (!is(params$counts_higher_threshold, "numeric")) {
+  stop("The `counts_higher_threshold` must be a numeric value.")
 }
 ```
 
@@ -44,9 +64,9 @@ plot_layout(params$plate)
 ```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="20%", dev='jpeg', dpi=72}
 # Code used to create dynamic tabs based on the number of analytes
 for (i in seq_along(params$plate$analyte_names)) {
-  # this part is hack
+  # this line is hack
   cat(paste0('<a href="#', tolower(params$plate$analyte_names[i]), '" role="tab" data-toggle="tab" aria-controls="', tolower(params$plate$analyte_names[i]), '" aria-expanded="false">'))
-  # generating the plots
+  # Generate the plot
   model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
   print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE, plot_asymptote = FALSE, plot_dilution_bounds = FALSE))
   cat(paste0('</a>'))
@@ -64,7 +84,7 @@ for (i in seq_along(params$plate$analyte_names)) {
   cat(paste0("#### ", params$plate$analyte_names[i], "\n"))
 
   # Plot counts
-  print(plot_counts(params$plate, params$plate$analyte_names[i]))
+  print(plot_counts(params$plate, params$plate$analyte_names[i], lower_threshold = params$counts_lower_threshold, higher_threshold = params$counts_higher_threshold))
 
   # Plot MFI
   print(plot_mfi_for_analyte(params$plate, params$plate$analyte_names[i], plot_type = "violin"))
