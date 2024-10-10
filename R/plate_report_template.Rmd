@@ -43,12 +43,10 @@ plot_layout(params$plate)
   <summary>Click to show/hide overview</summary>
 ```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="20%", dev='jpeg', dpi=72}
 # Code used to create dynamic tabs based on the number of analytes
-for (i in 1:length(params$plate$analyte_names)) {
-  
+for (i in seq_along(params$plate$analyte_names)) {
   # this part is hack
   cat(paste0('<a href="#', tolower(params$plate$analyte_names[i]), '" role="tab" data-toggle="tab" aria-controls="', tolower(params$plate$analyte_names[i]), '" aria-expanded="false">'))
-  
-  # generating of plot
+  # generating the plots
   model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
   print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE, plot_asymptote = FALSE, plot_dilution_bounds = FALSE))
   cat(paste0('</a>'))
@@ -62,7 +60,7 @@ for (i in 1:length(params$plate$analyte_names)) {
 
 ```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%", dev='jpeg', dpi=72}
 # Code used to create dynamic tabs based on the number of analytes
-for (i in 1:length(params$plate$analyte_names)) {
+for (i in seq_along(params$plate$analyte_names)) {
   cat(paste0("#### ", params$plate$analyte_names[i], "\n"))
 
   # Plot counts
