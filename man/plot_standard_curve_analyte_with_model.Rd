@@ -38,6 +38,8 @@ The predictions are obtained through extrapolation of the model}
 
 \item{plot_dilution_bounds}{If \code{TRUE} the dilution bounds are plotted, \code{TRUE} by default}
 
+\item{plot_legend}{If \code{TRUE} the legend is plotted, \code{TRUE} by default}
+
 \item{verbose}{If \code{TRUE} prints messages, \code{TRUE} by default}
 }
 \value{
