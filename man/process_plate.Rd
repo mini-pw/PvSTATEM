@@ -2,7 +2,7 @@
 % Please edit documentation in R/process-plate.R
 \name{process_plate}
 \alias{process_plate}
-\title{Process a plate and save computed dilutions to a CSV}
+\title{Process a plate and save computed RAU values to a CSV}
 \usage{
 process_plate(
   plate,

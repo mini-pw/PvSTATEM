@@ -98,7 +98,7 @@ Model <- R6::R6Class(
       stopifnot(all(mfi > 0) & mfi_min >= 0)
 
       self$analyte <- analyte
-
+      self$dilutions <- dilutions
       self$log_mfi <- log_mfi
       self$scale_mfi <- scale_mfi
       self$log_dilution <- log_dilution
@@ -132,31 +132,43 @@ Model <- R6::R6Class(
     },
 
     #' @description
-    #' Predict the dilutions from the MFI values
+    #' Predict RAU values from the MFI values
     #'
     #' @param mfi (`numeric()`)\cr
-    #' MFI values for which we want to predict the dilutions.
+    #' MFI values for which we want to predict the RAU values
+    #'
+    #' @param over_max_extrapolation (`numeric(1)`)\cr
+    #' How much we can extrapolate the values above the maximum RAU value
+    #' seen in standard curve samples \eqn{RAU_{max}}. Defaults to 0.
+    #' If the value of the predicted RAU is above \eqn{RAU_{max} + \text{over_max_extrapolation}},
+    #' the value is censored to the value of that sum.
     #'
     #' @return (`data.frame()`)\cr
-    #' Dataframe with the predicted dilutions, MFI values, and the 97.5% confidence intervals
+    #' Dataframe with the predicted RAU values for given MFI values
     #' The columns are named as follows:
-    #' - `dilution` - the dilution value
-    #' - `dilution.025` - the lower bound of the confidence interval
-    #' - `dilution.975` - the upper bound of the confidence interval
+    #' - `RAU` - the Relative Antibody Units (RAU) value
     #' - `MFI` - the predicted MFI value
     #'
-    predict = function(mfi) {
+    predict = function(mfi, over_max_extrapolation = 0) {
       private$assert_model_fitted()
       original_mfi <- mfi
       mfi <- private$mfi_transform(mfi)
-
-      # Example columns: y, x.025, x, x.975
+      # Example columns: y, x,
       df <- nplr::getEstimates(self$model, mfi)
+      df <- df[, c("x", "y")]
       # nprl automatically scales the x to non log scale
       df[, "y"] <- original_mfi
-
-      colnames(df) <- sub("^x", "dilution", colnames(df))
-      colnames(df) <- sub("^y", "MFI", colnames(df))
+      # Convert to RAU
+      df[, "x"] <- df[, "x"] * 1e6 # Multiply by 1_000_000
+      # Censor values or extrapolate
+      max_sc_rau <- max(self$dilutions * 1e6, na.rm = TRUE)
+      max_allowed_value <- max_sc_rau + over_max_extrapolation
+      df[, "x"] <- ifelse(
+        df[, "x"] > max_allowed_value, max_allowed_value, df[, "x"]
+      )
+      # Rename columns before returning
+      colnames(df) <- sub("x", "RAU", colnames(df))
+      colnames(df) <- sub("y", "MFI", colnames(df))
       df
     },
 
@@ -169,15 +181,16 @@ Model <- R6::R6Class(
     get_plot_data = function() {
       private$assert_model_fitted()
       upper_bound <- nplr::getPar(self$model)$params$top
-      lower_bound <- nplr::getPar(self$model)$params$bottom
-      bound_width <- upper_bound - lower_bound
-      upper_bound <- upper_bound - 0.05 * bound_width
-      lower_bound <- private$mfi_transform(1) # Scaled MFI for MFI = 1
+      upper_bound <- (upper_bound + 1) / 2
+      lower_bound <- private$mfi_transform(5) # Scaled MFI for MFI = 5
 
       uniform_targets <- seq(lower_bound, upper_bound, length.out = 100)
       df <- nplr::getEstimates(self$model, targets = uniform_targets)
       df[, "y"] <- private$mfi_reverse_transform(df[, "y"])
-      colnames(df) <- sub("^x", "dilution", colnames(df))
+      cols <- grepl("^x", colnames(df))
+      df[, cols] <- df[, cols] * 1e6 # Multiply by 1_000_000
+
+      colnames(df) <- sub("^x", "RAU", colnames(df))
       colnames(df) <- sub("^y", "MFI", colnames(df))
       df
     },
@@ -277,7 +290,7 @@ Model <- R6::R6Class(
 #'
 #' @export
 predict.Model <- function(object, mfi, ...) {
-  object$predict(mfi)
+  object$predict(mfi, ...)
 }
 
 #' Create a standard curve model for a certain analyte
@@ -302,7 +315,6 @@ create_standard_curve_model_analyte <- function(plate, analyte_name, data_type =
   dilutions_numeric <- plate$get_dilution_values("STANDARD CURVE")
 
   mfi_source <- ifelse(source_mfi_range_from_all_analytes, "ALL", analyte_name)
-
 
   mfi_min <- min(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
   mfi_max <- max(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type), na.rm = TRUE)

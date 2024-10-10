@@ -1,4 +1,4 @@
-#' Process a plate and save computed dilutions to a CSV
+#' Process a plate and save computed RAU values to a CSV
 #'
 #' @description
 #' The behavior can be summarized as follows:
@@ -33,7 +33,7 @@
 process_plate <- function(plate, output_path = NULL, data_type = "Median", adjust_blanks = FALSE, verbose = TRUE, ...) {
   stopifnot(inherits(plate, "Plate"))
   if (is.null(output_path)) {
-    output_path <- paste0("dilutions_", plate$plate_name, ".csv")
+    output_path <- paste0("RAU_", plate$plate_name, ".csv")
   }
   stopifnot(is.character(output_path))
   stopifnot(is.character(data_type))
@@ -46,17 +46,17 @@ process_plate <- function(plate, output_path = NULL, data_type = "Median", adjus
   output_list <- list(
     "SampleName" = test_sample_names
   )
-  verbose_cat("Fitting the models and computing the dilutions for each analyte\n", verbose = verbose)
+  verbose_cat("Fitting the models and predicting RAU for each analyte\n", verbose = verbose)
 
   for (analyte in plate$analyte_names) {
     model <- create_standard_curve_model_analyte(plate, analyte, data_type = data_type, ...)
     test_samples_mfi <- plate$get_data(analyte, "TEST", data_type = data_type)
     test_sample_estimates <- predict(model, test_samples_mfi)
-    output_list[[analyte]] <- test_sample_estimates[, "dilution"]
+    output_list[[analyte]] <- test_sample_estimates[, "RAU"]
   }
 
   output_df <- data.frame(output_list)
 
-  verbose_cat("Saving the computed dilutions to a CSV file located in: '", output_path, "'\n", verbose = verbose)
+  verbose_cat("Saving the computed RAU values to a CSV file located in: '", output_path, "'\n", verbose = verbose)
   write.csv(output_df, output_path, row.names = FALSE)
 }
