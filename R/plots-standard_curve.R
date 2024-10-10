@@ -12,6 +12,7 @@
 #' @param plot_line If `TRUE` a line is plotted, `TRUE` by default
 #' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
 #' @param plot_dilution_bounds If `TRUE` the dilution bounds are plotted, `TRUE` by default
+#' @param plot_legend If `TRUE` the legend is plotted, `TRUE` by default
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #'
 #' @return ggplot object with the plot
