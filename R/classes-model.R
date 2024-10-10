@@ -159,9 +159,9 @@ Model <- R6::R6Class(
       # nprl automatically scales the x to non log scale
       df[, "y"] <- original_mfi
       # Convert to RAU
-      df[, "x"] <- df[, "x"] * 1e6 # Multiply by 1_000_000
+      df[, "x"] <- dilution_to_rau(df[, "x"])
       # Censor values or extrapolate
-      max_sc_rau <- max(self$dilutions * 1e6, na.rm = TRUE)
+      max_sc_rau <- max(dilution_to_rau(self$dilutions), na.rm = TRUE)
       max_allowed_value <- max_sc_rau + over_max_extrapolation
       df[, "x"] <- ifelse(
         df[, "x"] > max_allowed_value, max_allowed_value, df[, "x"]
@@ -188,7 +188,7 @@ Model <- R6::R6Class(
       df <- nplr::getEstimates(self$model, targets = uniform_targets)
       df[, "y"] <- private$mfi_reverse_transform(df[, "y"])
       cols <- grepl("^x", colnames(df))
-      df[, cols] <- df[, cols] * 1e6 # Multiply by 1_000_000
+      df[, cols] <- dilution_to_rau(df[, cols])
 
       colnames(df) <- sub("^x", "RAU", colnames(df))
       colnames(df) <- sub("^y", "MFI", colnames(df))

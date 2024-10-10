@@ -44,7 +44,7 @@ plot_standard_curve_analyte <- function(plate,
   plot_data <- data.frame(
     MFI = plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type),
     plate = plate$plate_name,
-    RAU = plate$get_dilution_values("STANDARD CURVE") * 1e6
+    RAU = dilution_to_rau(plate$get_dilution_values("STANDARD CURVE"))
   )
   blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
 
