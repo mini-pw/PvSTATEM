@@ -50,7 +50,7 @@ for (i in 1:length(params$plate$analyte_names)) {
   
   # generating of plot
   model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
-  print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE))
+  print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE, plot_asymptote = FALSE, plot_dilution_bounds = FALSE))
   cat(paste0('</a>'))
 }
 ```
