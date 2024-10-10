@@ -198,7 +198,7 @@ plot_standard_curve_analyte_with_model <- function(plate,
   }
 
   p <- p + ggplot2::geom_line(
-    ggplot2::aes(x = dilution, y = MFI, color = "Fitted model predictions"),
+    ggplot2::aes(x = .data$dilution, y = .data$MFI, color = "Fitted model predictions"),
     data = model$get_plot_data(), linewidth = 1
   )
 
