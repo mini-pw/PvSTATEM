@@ -18,3 +18,4 @@ POSIXct datetime object
 Handle differences in the datetime format between xPONENT and INTELLIFLEX
 and output POSIXct datetime object containing the correct datetime with the default timezone.
 }
+\keyword{internal}
