@@ -14,7 +14,8 @@ plot_standard_curve_analyte_with_model(
   plot_test_predictions = TRUE,
   plot_blank_mean = TRUE,
   plot_rau_bounds = TRUE,
-  verbose = TRUE
+  verbose = TRUE,
+  ...
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ The predictions are obtained through extrapolation of the model}
 \item{plot_rau_bounds}{If \code{TRUE} the RAU bounds are plotted, \code{TRUE} by default}
 
 \item{verbose}{If \code{TRUE} prints messages, \code{TRUE} by default}
+
+\item{...}{Additional arguments passed to the \code{predict} function}
 }
 \value{
 a ggplot object with the plot

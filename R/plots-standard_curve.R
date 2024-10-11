@@ -135,6 +135,7 @@ plot_standard_curve_analyte <- function(plate,
 #' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
 #' @param plot_rau_bounds If `TRUE` the RAU bounds are plotted, `TRUE` by default
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
+#' @param ... Additional arguments passed to the `predict` function
 #'
 #' @return a ggplot object with the plot
 #'
@@ -154,7 +155,8 @@ plot_standard_curve_analyte_with_model <- function(plate,
                                                    plot_test_predictions = TRUE,
                                                    plot_blank_mean = TRUE,
                                                    plot_rau_bounds = TRUE,
-                                                   verbose = TRUE) {
+                                                   verbose = TRUE,
+                                                   ...) {
   analyte_name <- model$analyte
   if (!inherits(model, "Model")) {
     stop("model object should be a Model")
@@ -175,7 +177,7 @@ plot_standard_curve_analyte_with_model <- function(plate,
   p$labels$title <- plot_name
 
   test_samples_mfi <- plate$get_data(analyte_name, "TEST", data_type = data_type)
-  test_sample_estimates <- predict(model, test_samples_mfi)
+  test_sample_estimates <- predict(model, test_samples_mfi, ...)
 
   p <- p + ggplot2::geom_line(
     ggplot2::aes(x = .data$RAU, y = .data$MFI, color = "Fitted model predictions"),

@@ -1,8 +1,10 @@
 #' @title Logistic regression model for the standard curve
 #'
 #' @description
-#' This model uses the `nplr` package to fit the model. The model is fitted using the formula:
+#' The Model class is a wrapper around the `nplr` model. It allows to predict the RAU (Relative Antibody Unit) values
+#' directly from the MFI values of a given sample.
 #'
+#' The `nplr` model is fitted using the formula:
 #' \deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s},}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s,}
 #'
 #' where:
@@ -15,6 +17,13 @@
 #' - \eqn{s} is the asymmetric coefficient.
 #'
 #' This equation is referred to as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
+#'
+#' After the model is fitted to the data, the RAU values can be predicted using the `predict` method.
+#' The RAU value is simply a predicted dilution value (using the standard curve) for a given MFI
+#' multiplied by 1 000 000 in order to have a more readable value.
+#' For more information about the differences between dilution, RAU and MFI values, please see the
+#' "Normalization" section in the "Basic PvSTATEM functionalities" vignette.
+#'
 #'
 #' @examples
 #' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
