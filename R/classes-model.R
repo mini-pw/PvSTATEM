@@ -273,14 +273,14 @@ Model <- R6::R6Class(
   )
 )
 
-#' Predict the dilutions from the MFI values
+#' Predict the RAU values from the MFI values
 #' @description
 #' More details can be found here: \link[PvSTATEM]{Model}
 #'
 #' @param object (`Model()`)
 #'   Object of the Model class
 #' @param mfi (`numeric()`)
-#'   MFI values for which we want to predict the dilutions.
+#'   MFI values for which we want to predict the RAU values
 #'   Should be in the same scale as the MFI values used to fit the model
 #' @param ... Additional arguments passed to the method
 #'
