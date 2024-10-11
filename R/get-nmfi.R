@@ -35,7 +35,8 @@
 #' plate <- read_luminex_data(plate_file, layout_file)
 #'
 #' # artificially bump up the MFI values of the test samples (the Median data type is default one)
-#' plate$data[["Median"]][plate$sample_types == "TEST", ] <- plate$data[["Median"]][plate$sample_types == "TEST", ] * 10
+#' plate$data[["Median"]][plate$sample_types == "TEST", ] <-
+#'       plate$data[["Median"]][plate$sample_types == "TEST", ] * 10
 #'
 #' # calculate the nMFI values
 #' nmfi <- get_nmfi(plate, reference_dilution = 1/400)

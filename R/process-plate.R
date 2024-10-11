@@ -1,7 +1,7 @@
 VALID_NORMALISATION_TYPES <- c("RAU", "nMFI")
 
 is_valid_normalisation_type <- function(normalisation_type) {
-  normalisation_type %in% AVAILABLE_NORMALISATION_TYPES
+  normalisation_type %in% VALID_NORMALISATION_TYPES
 }
 
 #' @title
@@ -63,7 +63,8 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' # create and save dataframe with computed dilutions
 #'
 #' # nMFI normalisation
-#' process_plate(plate, output_path = temporary_filepath, normalisation_type = "nMFI", reference_dilution = 1/400)
+#' process_plate(plate, output_path = temporary_filepath,
+#'       normalisation_type = "nMFI", reference_dilution = 1/400)
 #'
 #' @return a data frame with normalised values
 #' @export
