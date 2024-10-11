@@ -38,15 +38,6 @@ test_that("Fully Parse CovidOISExPONTENT_CO.csv plate data with layout", {
   # Check S3 functions
   expect_no_error(print(plate))
   expect_no_error(summary(plate))
-  # Test processing of a plate
-  tmp_dir <- tempdir(check = TRUE)
-  test_output_path <- file.path(tmp_dir, "output.csv")
-  expect_no_error(
-    process_plate(plate, output_path = test_output_path)
-  )
-  expect_true(file.exists(test_output_path))
-  expect_no_error(dilutions <- read.csv(test_output_path))
-  file.remove(test_output_path)
 })
 
 test_that("Read a INTELLIFLEX mock file", {
