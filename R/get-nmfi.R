@@ -16,7 +16,7 @@
 #' In such cases, the nMFI values could be used as a proxy for RAU values, if we want, for instance, to account for plate-to-plate variation.
 #'
 #' @param plate (`Plate()`) a plate object for which to calculate the nMFI values
-#' @param target_dilution (`numeric(1) or character(1)`) the dilution value of the standard curve sample
+#' @param reference_dilution (`numeric(1) or character(1)`) the dilution value of the standard curve sample
 #' to use as a reference for normalisation. Default is `1/400`.
 #' It should refer to a dilution of a standard curve sample in the given plate object.
 #' This parameter could be either a numeric value or a string.
@@ -38,50 +38,59 @@
 #' plate$data[["Median"]][plate$sample_types == "TEST", ] <- plate$data[["Median"]][plate$sample_types == "TEST", ] * 10
 #'
 #' # calculate the nMFI values
-#' nmfi <- get_nmfi(plate, target_dilution = 1/400)
+#' nmfi <- get_nmfi(plate, reference_dilution = 1/400)
 #'
 #' # we don't do any extrapolation and the values should be comparable accross plates
 #' head(nmfi)
 #' # different params
-#' nmfi <- get_nmfi(plate, target_dilution = "1/50")
+#' nmfi <- get_nmfi(plate, reference_dilution = "1/50")
 #'
 #'
 #'
 #'
 #' @export
-get_nmfi <- function(plate, target_dilution = 1/400, data_type = "Median", verbose = TRUE) {
-  stopifnot(inherits(plate, "Plate"))
+get_nmfi <-
+  function(plate,
+           reference_dilution = 1 / 400,
+           data_type = "Median",
+           verbose = TRUE) {
+    stopifnot(inherits(plate, "Plate"))
 
-  stopifnot(length(target_dilution) == 1)
+    stopifnot(length(reference_dilution) == 1)
 
-  # check if data_type is valid
-  stopifnot(is_valid_data_type(data_type))
+    # check if data_type is valid
+    stopifnot(is_valid_data_type(data_type))
 
-  # check if target_dilution is numeric or string
-  if (is.character(target_dilution)) {
-    target_dilution <- convert_dilutions_to_numeric(target_dilution)
+    # check if reference_dilution is numeric or string
+    if (is.character(reference_dilution)) {
+      reference_dilution <- convert_dilutions_to_numeric(reference_dilution)
+    }
+
+    stopifnot(is.numeric(reference_dilution))
+    stopifnot(reference_dilution > 0)
+
+    if (!reference_dilution %in% plate$get_dilution_values("STANDARD CURVE")) {
+      stop("The target ",
+           reference_dilution,
+           " dilution is not present in the plate.")
+    }
+
+
+    # get index of standard curve sample with the target dilution
+    reference_standard_curve_name <-
+      subset(plate$sample_names,
+             plate$dilution_values == reference_dilution)
+    reference_standard_curve_id <-
+      which(plate$sample_names == reference_standard_curve_name)
+
+    plate_data <- plate$data[[data_type]]
+
+    reference_mfi <- plate_data[reference_standard_curve_id, ]
+
+    test_mfi <- plate_data[plate$sample_types == "TEST", ]
+    reference_mfi <- reference_mfi[rep(1, nrow(test_mfi)), ]
+
+    nmfi <- test_mfi / reference_mfi
+
+    return(nmfi)
   }
-
-  stopifnot(is.numeric(target_dilution))
-  stopifnot(target_dilution > 0)
-
-  if (!target_dilution %in% plate$get_dilution_values("STANDARD CURVE")) {
-    stop("The target ", target_dilution, " dilution is not present in the plate.")
-  }
-
-
-  # get index of standard curve sample with the target dilution
-  reference_standard_curve_name <- subset(plate$sample_names, plate$dilution_values == target_dilution)
-  reference_standard_curve_id <- which(plate$sample_names == reference_standard_curve_name)
-
-  plate_data <- plate$data[[data_type]]
-
-  reference_mfi <- plate_data[reference_standard_curve_id, ]
-
-  test_mfi <- plate_data[plate$sample_types == "TEST", ]
-  reference_mfi <- reference_mfi[rep(1, nrow(test_mfi)), ]
-
-  nmfi <- test_mfi / reference_mfi
-
-  return(nmfi)
-}

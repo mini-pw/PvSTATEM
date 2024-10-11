@@ -7,10 +7,10 @@ test_that("get_nmfi works on our data with multiple parameters", {
 
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
 
-  get_nmfi(plate, target_dilution = 1/400)
-  get_nmfi(plate, target_dilution = "1/50")
+  get_nmfi(plate, reference_dilution = 1/400)
+  get_nmfi(plate, reference_dilution = "1/50")
 
-  get_nmfi(plate, target_dilution = 1/400, data_type = "Mean")
+  get_nmfi(plate, reference_dilution = 1/400, data_type = "Mean")
 })
 
 test_that("get_nmfi with incorrect params", {
@@ -19,11 +19,11 @@ test_that("get_nmfi with incorrect params", {
 
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
 
-  expect_error(get_nmfi(plate, target_dilution = 1/401))
+  expect_error(get_nmfi(plate, reference_dilution = 1/401))
 
-  expect_error(get_nmfi(plate, target_dilution = "1/401"))
+  expect_error(get_nmfi(plate, reference_dilution = "1/401"))
 
-  expect_error(get_nmfi(plate, target_dilution = 1/400, data_type = "incorrect"))
+  expect_error(get_nmfi(plate, reference_dilution = 1/400, data_type = "incorrect"))
 })
 
 
@@ -34,16 +34,16 @@ test_that("get_nmfi on artificial plate", {
 
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", verbose = FALSE))
 
-  nmfi <- get_nmfi(plate, target_dilution = 1/50)
+  nmfi <- get_nmfi(plate, reference_dilution = 1/50)
 
-  target_dilution_index <- which(plate$dilution_values == 1/50)
+  reference_dilution_index <- which(plate$dilution_values == 1/50)
 
-  target_dilution_values <- plate$data[["Median"]][target_dilution_index, ]
+  reference_dilution_values <- plate$data[["Median"]][reference_dilution_index, ]
 
   mfi_values <- plate$data[["Median"]][plate$sample_types == "TEST", ]
 
   for (i in 1:ncol(mfi_values)) {
-    expect_equal(nmfi[, i], mfi_values[, i] / target_dilution_values[[i]])
+    expect_equal(nmfi[, i], mfi_values[, i] / reference_dilution_values[[i]])
   }
 
 })

@@ -43,7 +43,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
 #' @param adjust_blanks (`logical(1)`) adjust blanks before computing dilutions. Default is `FALSE`
 #' @param verbose (`logical(1)`) print additional information. Default is `TRUE`
-#' @param target_dilution (`numeric(1)`) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
+#' @param reference_dilution (`numeric(1)`) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
 #' Default is `1/400`.
 #' It should refer to a dilution of a standard curve sample in the given plate object.
 #' This parameter could be either a numeric value or a string.
@@ -63,7 +63,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' # create and save dataframe with computed dilutions
 #'
 #' # nMFI normalisation
-#' process_plate(plate, output_path = temporary_filepath, normalisation_type = "nMFI", target_dilution = 1/400)
+#' process_plate(plate, output_path = temporary_filepath, normalisation_type = "nMFI", reference_dilution = 1/400)
 #'
 #' @return a data frame with normalised values
 #' @export
@@ -74,7 +74,7 @@ process_plate <-
            data_type = "Median",
            adjust_blanks = FALSE,
            verbose = TRUE,
-           target_dilution = 1 / 400,
+           reference_dilution = 1 / 400,
            ...) {
     stopifnot(inherits(plate, "Plate"))
 
@@ -94,7 +94,7 @@ process_plate <-
     if (normalisation_type == "nMFI") {
       verbose_cat("Computing nMFI values for each analyte\n", verbose = verbose)
       nmfi <-
-        get_nmfi(plate, target_dilution = target_dilution, data_type = data_type)
+        get_nmfi(plate, reference_dilution = reference_dilution, data_type = data_type)
       verbose_cat(
         "Saving the computed nMFI values to a CSV file located in: '",
         output_path,
