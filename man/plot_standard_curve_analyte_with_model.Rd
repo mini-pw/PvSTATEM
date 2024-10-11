@@ -26,7 +26,7 @@ plot_standard_curve_analyte_with_model(
 
 \item{decreasing_rau_order}{If \code{TRUE} the RAU values are plotted in decreasing order, \code{TRUE} by default.}
 
-\item{log_scale}{Which elements on the plot should be displayed in log scale. By default \code{"all"}. If \code{NULL} or \code{c()} no log scale is used, if \code{"all"} or \code{c("dilutions", "MFI")} all elements are displayed in log scale.}
+\item{log_scale}{Which elements on the plot should be displayed in log scale. By default \code{"all"}. If \code{NULL} or \code{c()} no log scale is used, if \code{"all"} or \code{c("RAU", "MFI")} all elements are displayed in log scale.}
 
 \item{plot_asymptote}{If \code{TRUE} the asymptotes are plotted, \code{TRUE} by default}
 
