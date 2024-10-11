@@ -1,20 +1,53 @@
-#' Process a plate and save computed RAU values to a CSV
+VALID_NORMALISATION_TYPES <- c("RAU", "nMFI")
+
+is_valid_normalisation_type <- function(normalisation_type) {
+  normalisation_type %in% AVAILABLE_NORMALISATION_TYPES
+}
+
+#' @title
+#' Process a plate and save output values to a CSV
 #'
 #' @description
-#' The behavior can be summarized as follows:
+#' Depending on the `normalisation_type` argument, the function will compute the RAU or nMFI values for each analyte in the plate.
+#' **RAU** is the default normalisation type.
+#'
+#'
+#' The behavior of the function, in case of RAU normalisation type, can be summarized as follows:
 #' 1. Adjust blanks if not already done.
 #' 2. Fit a model to each analyte using standard curve samples.
-#' 3. Compute dilutions for each analyte using the corresponding model.
-#' 4. Aggregate computed dilutions into a single data frame.
-#' 5. Save the computed dilutions to a CSV file.
+#' 3. Compute RAU values for each analyte using the corresponding model.
+#' 4. Aggregate computed RAU values into a single data frame.
+#' 5. Save the computed RAU values to a CSV file.
+#'
+#' More info about the RAU normalisation can be found in
+#' `create_standard_curve_model_analyte` function documentation \link[PvSTATEM]{create_standard_curve_model_analyte} or in the Model reference \link[PvSTATEM]{Model}.
+#'
+#'
+#'
+#'
+#' In case the normalisation type is **nMFI**, the function will:
+#' 1. Adjust blanks if not already done.
+#' 2. Compute nMFI values for each analyte using the target dilution.
+#' 3. Aggregate computed nMFI values into a single data frame.
+#' 4. Save the computed nMFI values to a CSV file.
+#'
+#' More info about the nMFI normalisation can be found in `get_nmfi` function documentation \link[PvSTATEM]{get_nmfi}.
 #'
 #' @param plate (`Plate()`) a plate object
 #' @param output_path (`character(1)`) path to save the computed dilutions.
-#' If not provided the file will be saved in the working directory with the name `dilutions_{plate_name}.csv`.
+#' If not provided the file will be saved in the working directory with the name `{normalisation_type}_{plate_name}.csv`.
 #' Where the `{plate_name}` is the name of the plate.
+#' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
+#' \cr \code{c(`r toString(VALID_NORMALISATION_TYPES)`)}.
+#' In case
 #' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
 #' @param adjust_blanks (`logical(1)`) adjust blanks before computing dilutions. Default is `FALSE`
 #' @param verbose (`logical(1)`) print additional information. Default is `TRUE`
+#' @param target_dilution (`numeric(1)`) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
+#' Default is `1/400`.
+#' It should refer to a dilution of a standard curve sample in the given plate object.
+#' This parameter could be either a numeric value or a string.
+#' In case it is a character string, it should have format `1/d+`, where `d+` is any positive integer.
 #' @param ... Additional arguments to be passed to the fit model function (`create_standard_curve_model_analyte`)
 #'
 #' @examples
@@ -29,34 +62,73 @@
 #' process_plate(plate, output_path = temporary_filepath)
 #' # create and save dataframe with computed dilutions
 #'
+#' # nMFI normalisation
+#' process_plate(plate, output_path = temporary_filepath, normalisation_type = "nMFI", target_dilution = 1/400)
+#'
+#' @return a data frame with normalised values
 #' @export
-process_plate <- function(plate, output_path = NULL, data_type = "Median", adjust_blanks = FALSE, verbose = TRUE, ...) {
-  stopifnot(inherits(plate, "Plate"))
-  if (is.null(output_path)) {
-    output_path <- paste0("RAU_", plate$plate_name, ".csv")
+process_plate <-
+  function(plate,
+           output_path = NULL,
+           normalisation_type = "RAU",
+           data_type = "Median",
+           adjust_blanks = FALSE,
+           verbose = TRUE,
+           target_dilution = 1 / 400,
+           ...) {
+    stopifnot(inherits(plate, "Plate"))
+
+    stopifnot(is_valid_normalisation_type(normalisation_type))
+
+
+    if (is.null(output_path)) {
+      output_path <-
+        paste0(normalisation_type, "_", plate$plate_name, ".csv")
+    }
+    stopifnot(is.character(output_path))
+    stopifnot(is.character(data_type))
+
+    if (!plate$blank_adjusted && adjust_blanks) {
+      plate <- plate$blank_adjustment(in_place = FALSE)
+    }
+    if (normalisation_type == "nMFI") {
+      verbose_cat("Computing nMFI values for each analyte\n", verbose = verbose)
+      nmfi <-
+        get_nmfi(plate, target_dilution = target_dilution, data_type = data_type)
+      verbose_cat(
+        "Saving the computed nMFI values to a CSV file located in: '",
+        output_path,
+        "'\n",
+        verbose = verbose
+      )
+      write.csv(nmfi, output_path, row.names = FALSE)
+      return(nmfi)
+    }
+
+
+    # RAU normalisation
+
+    test_sample_names <-
+      plate$sample_names[plate$sample_types == "TEST"]
+    output_list <- list("SampleName" = test_sample_names)
+    verbose_cat("Fitting the models and predicting RAU for each analyte\n",
+                verbose = verbose)
+
+    for (analyte in plate$analyte_names) {
+      model <-
+        create_standard_curve_model_analyte(plate, analyte, data_type = data_type, ...)
+      test_samples_mfi <-
+        plate$get_data(analyte, "TEST", data_type = data_type)
+      test_sample_estimates <- predict(model, test_samples_mfi)
+      output_list[[analyte]] <- test_sample_estimates[, "RAU"]
+    }
+
+    output_df <- data.frame(output_list)
+
+    verbose_cat("Saving the computed RAU values to a CSV file located in: '",
+                output_path,
+                "'\n",
+                verbose = verbose)
+    write.csv(output_df, output_path, row.names = FALSE)
+    return(output_df)
   }
-  stopifnot(is.character(output_path))
-  stopifnot(is.character(data_type))
-
-  if (!plate$blank_adjusted && adjust_blanks) {
-    plate <- plate$blank_adjustment(in_place = FALSE)
-  }
-
-  test_sample_names <- plate$sample_names[plate$sample_types == "TEST"]
-  output_list <- list(
-    "SampleName" = test_sample_names
-  )
-  verbose_cat("Fitting the models and predicting RAU for each analyte\n", verbose = verbose)
-
-  for (analyte in plate$analyte_names) {
-    model <- create_standard_curve_model_analyte(plate, analyte, data_type = data_type, ...)
-    test_samples_mfi <- plate$get_data(analyte, "TEST", data_type = data_type)
-    test_sample_estimates <- predict(model, test_samples_mfi)
-    output_list[[analyte]] <- test_sample_estimates[, "RAU"]
-  }
-
-  output_df <- data.frame(output_list)
-
-  verbose_cat("Saving the computed RAU values to a CSV file located in: '", output_path, "'\n", verbose = verbose)
-  write.csv(output_df, output_path, row.names = FALSE)
-}
