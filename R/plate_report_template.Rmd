@@ -76,7 +76,7 @@ for (i in seq_along(params$plate$analyte_names)) {
 
 ------------------
  
-### Details for given analayte {.tabset}
+### Details for given analayte {.tabset .tabset-fade}
 
 ```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%", dev='jpeg', dpi=72}
 # Code used to create dynamic tabs based on the number of analytes
