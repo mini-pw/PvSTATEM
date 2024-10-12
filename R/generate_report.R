@@ -20,8 +20,16 @@ generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, outp
   } else {
     filename
   }
+
+
+  template_path <- here::here("R", "plate_report_template.Rmd")
+  # Check if the file exists before attempting to render
+  if (!file.exists(template_path)) {
+    stop(paste("The template file does not exist at:", template_path))
+  }
+
   rmarkdown::render(
-    "R/plate_report_template.Rmd",
+    template_path,
     params = list(plate = plate, use_model = use_model, counts_lower_threshold = counts_lower_threshold, counts_higher_threshold = counts_higher_threshold),
     output_file = output_file,
     output_dir = output_dir,
@@ -53,8 +61,16 @@ generate_levy_jennings_report <- function(list_of_plates, filename = NULL, outpu
   } else {
     filename
   }
+
+
+  template_path <- here::here("R", "levy_jennings_report_template.Rmd")
+  # Check if the file exists before attempting to render
+  if (!file.exists(template_path)) {
+    stop(paste("The template file does not exist at:", template_path))
+  }
+
   rmarkdown::render(
-    "R/levy_jennings_report_template.Rmd",
+    template_path,
     params = list(list_of_plates = list_of_plates),
     output_file = output_file,
     output_dir = output_dir,
