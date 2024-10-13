@@ -84,3 +84,12 @@ test_that("Test format dilution function with shuffled dilutions", {
 
   expect_equal(format_dilutions(dilutions, dilution_values, sample_types), "1/2, 1/3, 1/4")
 })
+
+test_that("Test format dilution function with dilutions equal null", {
+
+  dilutions <- NULL
+  dilution_values <- c(0.25, 0.5, 0.33)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "SAMPLE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), NULL)
+})
