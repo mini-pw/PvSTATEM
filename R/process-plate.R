@@ -41,6 +41,9 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' \cr \code{c(`r toString(VALID_NORMALISATION_TYPES)`)}.
 #' In case
 #' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
+#' @param include_raw_mfi (`logical(1)`) include raw MFI values in the output. Default is `TRUE`.
+#' In case this option is `TRUE`, the output dataframe contains two columns for each analyte: one for the normalised values and one for the raw MFI values.
+#' The normalised columns are named as `AnalyteName` and `AnalyteName_raw`, respectively.
 #' @param adjust_blanks (`logical(1)`) adjust blanks before computing RAU values. Default is `FALSE`
 #' @param verbose (`logical(1)`) print additional information. Default is `TRUE`
 #' @param reference_dilution (`numeric(1)`) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
@@ -73,6 +76,7 @@ process_plate <-
            output_path = NULL,
            normalisation_type = "RAU",
            data_type = "Median",
+           include_raw_mfi = TRUE,
            adjust_blanks = FALSE,
            verbose = TRUE,
            reference_dilution = 1 / 400,
@@ -94,7 +98,7 @@ process_plate <-
     }
     if (normalisation_type == "nMFI") {
       verbose_cat("Computing nMFI values for each analyte\n", verbose = verbose)
-      nmfi <-
+      output_df <-
         get_nmfi(plate, reference_dilution = reference_dilution, data_type = data_type)
       verbose_cat(
         "Saving the computed nMFI values to a CSV file located in: '",
@@ -102,9 +106,8 @@ process_plate <-
         "'\n",
         verbose = verbose
       )
-      write.csv(nmfi, output_path, row.names = FALSE)
-      return(nmfi)
-    }
+
+    } else {
 
 
     # RAU normalisation
@@ -130,6 +133,15 @@ process_plate <-
                 output_path,
                 "'\n",
                 verbose = verbose)
+    }
+    if (include_raw_mfi) {
+      verbose_cat("Adding the raw MFI values to the output dataframe\n")
+      raw_mfi <- plate$data[[data_type]][plate$sample_types == "TEST", ]
+      colnames(raw_mfi) <- paste0(colnames(raw_mfi), "_raw")
+
+      output_df <- cbind(output_df, raw_mfi)
+    }
+
     write.csv(output_df, output_path, row.names = FALSE)
     return(output_df)
   }
