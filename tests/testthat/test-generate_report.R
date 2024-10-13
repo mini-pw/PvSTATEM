@@ -28,6 +28,7 @@ test_that("Test generate_plate_report function", {
   plate <- get_test_plate()
   expect_error(generate_plate_report())
   expect_no_error(generate_plate_report(plate))
+  expect_no_error(generate_plate_report(plate, filename = "test_report.html"))
   expect_no_error(generate_plate_report(plate, counts_lower_threshold = 40, counts_higher_threshold = 80))
 })
 
