@@ -22,7 +22,7 @@ generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, outp
   }
 
 
-  template_path <- system.file("R", "plate_report_template.Rmd", package = "PvSTATEM")
+  template_path <- system.file("templates", "plate_report_template.Rmd", package = "PvSTATEM", mustWork = TRUE)
   # Check if the file exists before attempting to render
   if (!file.exists(template_path)) {
     stop(paste("The template file does not exist at:", template_path))
@@ -62,7 +62,7 @@ generate_levy_jennings_report <- function(list_of_plates, filename = NULL, outpu
     filename
   }
 
-  template_path <- system.file("R", "levy_jennings_report_template.Rmd", package = "PvSTATEM")
+  template_path <- system.file("templates", "levy_jennings_report_template.Rmd", package = "PvSTATEM", mustWork = TRUE)
   # Check if the file exists before attempting to render
   if (!file.exists(template_path)) {
     stop(paste("The template file does not exist at:", template_path))
