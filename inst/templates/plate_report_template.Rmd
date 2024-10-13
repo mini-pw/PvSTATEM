@@ -80,8 +80,8 @@ plot_layout(params$plate)
   /* Active (clicked) plot border */
   .plot-container.active {
     border-color: rgba(0, 0, 0, 0.65);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4), /* Initial shadow */
-            0 0 30px rgba(0, 0, 0, 0.2); /* Larger and softer*/
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), /* Initial shadow */
+            0 0 20px rgba(0, 0, 0, 0.2); /* Larger and softer*/
   }
 
   .plot-container img {
