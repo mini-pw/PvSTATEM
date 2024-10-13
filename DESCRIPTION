@@ -30,8 +30,7 @@ Imports:
     png,
     tools,
     ggrepel,
-    lubridate,
-    here
+    lubridate
 Suggests:
     knitr,
     qpdf,
