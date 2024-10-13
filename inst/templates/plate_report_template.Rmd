@@ -61,16 +61,55 @@ plot_layout(params$plate)
 
 <details open>
   <summary>Click to show/hide overview</summary>
-```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="20%", dev='jpeg', dpi=72}
+<style>
+  /* Set up a grid layout with 5 items per row */
+  .plot-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px; /* Space between the plots */
+  }
+  
+  .highlighted {
+    border: 3px solid red;
+  }
+</style>
+
+<script>
+// JavaScript to add/remove border on click
+document.addEventListener("DOMContentLoaded", function() {
+  var plots = document.querySelectorAll('.plot-container a');
+  
+  plots.forEach(function(plot) {
+    plot.addEventListener('click', function() {
+      // Remove highlight from any previously clicked plot
+      plots.forEach(function(p) {
+        p.classList.remove('highlighted');
+      });
+      
+      // Add highlight to the clicked plot
+      plot.classList.add('highlighted');
+    });
+  });
+});
+</script>
+
+
+```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="100%", dev='jpeg', dpi=72}
 # Code used to create dynamic tabs based on the number of analytes
+# Start a grid for the plots
+cat('<div class="plot-grid">')
+# Generate the clickable plots within the grid
 for (i in seq_along(params$plate$analyte_names)) {
-  # this line is hack
-  cat(paste0('<a href="#', tolower(params$plate$analyte_names[i]), '" role="tab" data-toggle="tab" aria-controls="', tolower(params$plate$analyte_names[i]), '" aria-expanded="false">'))
+  # HTML structure for each plot with a clickable link
+  cat(paste0('<div class="plot-container">',
+             '<a href="#', tolower(params$plate$analyte_names[i]), '" role="tab" data-toggle="tab" aria-controls="', tolower(params$plate$analyte_names[i]), '" aria-expanded="false">'))
   # Generate the plot
   model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
   print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE, plot_asymptote = FALSE, plot_rau_bounds = FALSE))
-  cat(paste0('</a>'))
+  cat('</a></div>')
 }
+# Close the grid
+cat('</div>')
 ```
 </details>
 
