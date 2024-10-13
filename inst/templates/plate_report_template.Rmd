@@ -71,7 +71,7 @@ plot_layout(params$plate)
   }
   /* Initial transparent border */
   .plot-container {
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     transition: border-color 0.3s ease;
     transition: box-shadow 0.3s ease;
     border-radius: 5px;
@@ -91,20 +91,42 @@ plot_layout(params$plate)
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    var plots = document.querySelectorAll('.plot-container');
+    var plotLinks = document.querySelectorAll('.plot-container a');
 
-    plots.forEach(function (plot) {
-      plot.addEventListener('click', function () {
+    // Handle clicks on the plot links
+    plotLinks.forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent default anchor link behavior
+        
+        // Get the clicked plot container
+        var plotContainer = this.closest('.plot-container');
+        
         // Remove 'active' class from all plots
+        var plots = document.querySelectorAll('.plot-container');
         plots.forEach(function (p) {
           p.classList.remove('active');
         });
+
         // Add 'active' class to the clicked plot
-        plot.classList.add('active');
+        plotContainer.classList.add('active');
+
+        // Get the target section from the href attribute
+        var targetId = this.getAttribute('href').substring(1);
+        var targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+          setTimeout(function() {
+            targetElement.scrollIntoView({
+              behavior: 'smooth',  
+              block: 'start'        
+            });
+          }, 151);
+        }
       });
     });
   });
 </script>
+
 
 
 ```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="100%", dev='jpeg', dpi=72}
