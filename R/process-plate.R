@@ -34,14 +34,14 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' More info about the nMFI normalisation can be found in `get_nmfi` function documentation \link[PvSTATEM]{get_nmfi}.
 #'
 #' @param plate (`Plate()`) a plate object
-#' @param output_path (`character(1)`) path to save the computed dilutions.
+#' @param output_path (`character(1)`) path to save the computed RAU values.
 #' If not provided the file will be saved in the working directory with the name `{normalisation_type}_{plate_name}.csv`.
 #' Where the `{plate_name}` is the name of the plate.
 #' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
 #' \cr \code{c(`r toString(VALID_NORMALISATION_TYPES)`)}.
 #' In case
 #' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
-#' @param adjust_blanks (`logical(1)`) adjust blanks before computing dilutions. Default is `FALSE`
+#' @param adjust_blanks (`logical(1)`) adjust blanks before computing RAU values. Default is `FALSE`
 #' @param verbose (`logical(1)`) print additional information. Default is `TRUE`
 #' @param reference_dilution (`numeric(1)`) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
 #' Default is `1/400`.

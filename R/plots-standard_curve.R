@@ -8,7 +8,7 @@
 #' @param analyte_name Name of the analyte of which standard curve we want to plot.
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Net MFI`
 #' @param decreasing_rau_order If `TRUE` the RAU values are plotted in decreasing order, `TRUE` by default
-#' @param log_scale Which elements on the plot should be displayed in log scale. By default `"dilutions"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
+#' @param log_scale Which elements on the plot should be displayed in log scale. By default `"RAU"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("RAU", "MFI")` all elements are displayed in log scale.
 #' @param plot_line If `TRUE` a line is plotted, `TRUE` by default
 #' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
 #' @param plot_rau_bounds If `TRUE` the RAU values bounds are plotted, `TRUE` by default
@@ -128,13 +128,14 @@ plot_standard_curve_analyte <- function(plate,
 #' @param model fitted `Model` object, which predictions we want to plot
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Median`
 #' @param decreasing_rau_order If `TRUE` the RAU values are plotted in decreasing order, `TRUE` by default.
-#' @param log_scale Which elements on the plot should be displayed in log scale. By default `"all"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
+#' @param log_scale Which elements on the plot should be displayed in log scale. By default `"all"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("RAU", "MFI")` all elements are displayed in log scale.
 #' @param plot_asymptote If `TRUE` the asymptotes are plotted, `TRUE` by default
 #' @param plot_test_predictions If `TRUE` the predictions for the test samples are plotted, `TRUE` by default
 #' The predictions are obtained through extrapolation of the model
 #' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
 #' @param plot_rau_bounds If `TRUE` the RAU bounds are plotted, `TRUE` by default
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
+#' @param ... Additional arguments passed to the `predict` function
 #'
 #' @return a ggplot object with the plot
 #'
@@ -154,7 +155,8 @@ plot_standard_curve_analyte_with_model <- function(plate,
                                                    plot_test_predictions = TRUE,
                                                    plot_blank_mean = TRUE,
                                                    plot_rau_bounds = TRUE,
-                                                   verbose = TRUE) {
+                                                   verbose = TRUE,
+                                                   ...) {
   analyte_name <- model$analyte
   if (!inherits(model, "Model")) {
     stop("model object should be a Model")
@@ -175,7 +177,7 @@ plot_standard_curve_analyte_with_model <- function(plate,
   p$labels$title <- plot_name
 
   test_samples_mfi <- plate$get_data(analyte_name, "TEST", data_type = data_type)
-  test_sample_estimates <- predict(model, test_samples_mfi)
+  test_sample_estimates <- predict(model, test_samples_mfi, ...)
 
   p <- p + ggplot2::geom_line(
     ggplot2::aes(x = .data$RAU, y = .data$MFI, color = "Fitted model predictions"),

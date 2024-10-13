@@ -119,7 +119,6 @@ It can be seen that for the `Spike_6P` analyte, the MFI values don't fall within
 
 ### Normalization
 
-
 After inspection, we may create the model for the standard curve of a certain antibody. 
 The model is fitted using the `nplr` package, which provides a simple interface 
 for fitting n-parameter logistic regression models, 
@@ -129,11 +128,16 @@ The detailed documentation of the `Model` class can be found by executing the co
 
 The model is then used to predict RAU values of the samples based on the MFI values.
 
+#### RAU vs dilution 
+
+In order to distinguish between real dilution values (the ones known for the standard curve samples) from the dilution predictions (obtained using the fitted standard curve) we introduced into our package a unit called RAU (Relative Antibody Unit) which is equal to the dilution **prediction** multiplied by a $1,000,000$ in order to provide a more readable value. 
+
+#### Inner nplr model
+
 `nplr` package fits the model using the formula:
 
-$$ y = B + \frac{T - B}{[1 + 10^{b \cdot (x_{mid} - x)}]^s} $$
-
-Where:
+$$ y = B + \frac{T - B}{[1 + 10^{b \cdot (x_{mid} - x)}]^s},$$
+where:
 
 -   $y$ is the predicted value, MFI in our case,
 
@@ -151,8 +155,15 @@ Where:
 
 This equation is referred to as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
 
-By reversing that logistic function we can predict the dilution of the samples based on the MFI values
-The RAU (Relative Antibody Unit) value is the predicted dilution of the sample multiplied by $1000000$.
+
+#### Predicting RAU
+
+By reversing that logistic function we can predict the dilution of the samples based on the MFI values.
+The RAU value is then the predicted dilution of the sample multiplied by $1,000,000$. 
+
+In order to limit the extrapolation error from above (values above maximum RAU value $RAU_{max}$ for the standard curve samples) we clip all predictions above $M = RAU_{max} + \text{over_max_extrapolation}$ to $M$ where `over_max_extrapolation` is user controlled parameter to the `predict` function. By default `over_max_extrapolation` is set to $0$.
+
+#### Usage
 
 By default, the `nplr` model transforms the x values using the log10 function.
 
@@ -184,3 +195,17 @@ predicted_rau <- predict(model, mfi_values)
 head(predicted_rau)
 ```
 The dataframe contains original MFI values and the predicted RAU values based on the model.
+
+In order to allow extrapolation from above (up to a certain value) we can set `over_max_extrapolation` to a positive value. To illustrate that we can look at prediction plots. The `plot_standard_curve_analyte_with_model` takes any additional parameters and passes them to a `predict` method so we can visually see the effect of the `over_max_extrapolation` parameter.
+
+```{r}
+model <- create_standard_curve_model_analyte(plate, analyte_name = "Spike_6P")
+plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"))
+```
+
+```{r}
+plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), over_max_extrapolation = 100000)
+```
+
+
+

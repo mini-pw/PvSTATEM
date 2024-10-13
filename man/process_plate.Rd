@@ -18,7 +18,7 @@ process_plate(
 \arguments{
 \item{plate}{(\code{Plate()}) a plate object}
 
-\item{output_path}{(\code{character(1)}) path to save the computed dilutions.
+\item{output_path}{(\code{character(1)}) path to save the computed RAU values.
 If not provided the file will be saved in the working directory with the name \verb{\{normalisation_type\}_\{plate_name\}.csv}.
 Where the \code{{plate_name}} is the name of the plate.}
 
@@ -28,7 +28,7 @@ In case}
 
 \item{data_type}{(\code{character(1)}) type of data to use for the computation. Median is the default}
 
-\item{adjust_blanks}{(\code{logical(1)}) adjust blanks before computing dilutions. Default is \code{FALSE}}
+\item{adjust_blanks}{(\code{logical(1)}) adjust blanks before computing RAU values. Default is \code{FALSE}}
 
 \item{verbose}{(\code{logical(1)}) print additional information. Default is \code{TRUE}}
 
