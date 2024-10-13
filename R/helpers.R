@@ -143,3 +143,15 @@ clamp <- function(x, lower = -Inf, upper = Inf) {
   x[x > upper] <- upper
   x
 }
+
+
+#' Convert dilution to RAU
+#'
+#' @param predicted_dilution (`numeric()`) A numeric value representing the predicted dilution.
+#'
+#' @return The RAU value corresponding to the predicted dilution .
+#'
+#' @keywords internal
+dilution_to_rau <- function(predicted_dilution) {
+  return(predicted_dilution * 1e6)
+}

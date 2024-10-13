@@ -1,5 +1,6 @@
 template:
   light-switch: true
+  bootstrap: 5
 
 
 reference:

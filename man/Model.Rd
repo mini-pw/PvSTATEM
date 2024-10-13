@@ -4,8 +4,10 @@
 \alias{Model}
 \title{Logistic regression model for the standard curve}
 \description{
-This model uses the \code{nplr} package to fit the model. The model is fitted using the formula:
+The Model class is a wrapper around the \code{nplr} model. It allows to predict the RAU (Relative Antibody Unit) values
+directly from the MFI values of a given sample.
 
+The \code{nplr} model is fitted using the formula:
 \deqn{y = B + \frac{T - B}{(1 + 10^{b \cdot (x_{mid} - x)})^s},}{y = B + (T - B) / (1 + 10^(b * (x_mid - x)))^s,}
 
 where:
@@ -20,6 +22,12 @@ where:
 }
 
 This equation is referred to as the Richards' equation. More information about the model can be found in the \code{nplr} package documentation.
+
+After the model is fitted to the data, the RAU values can be predicted using the \code{predict} method.
+The RAU value is simply a predicted dilution value (using the standard curve) for a given MFI
+multiplied by 1 000 000 in order to have a more readable value.
+For more information about the differences between dilution, RAU and MFI values, please see the
+"Normalization" section in the "Basic PvSTATEM functionalities" vignette.
 }
 \examples{
 plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
@@ -144,27 +152,31 @@ Use values before any transformations (e.g., before the \code{log10} transformat
 \if{html}{\out{<a id="method-Model-predict"></a>}}
 \if{latex}{\out{\hypertarget{method-Model-predict}{}}}
 \subsection{Method \code{predict()}}{
-Predict the dilutions from the MFI values
+Predict RAU values from the MFI values
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Model$predict(mfi)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Model$predict(mfi, over_max_extrapolation = 0)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{mfi}}{(\code{numeric()})\cr
-MFI values for which we want to predict the dilutions.}
+MFI values for which we want to predict the RAU values}
+
+\item{\code{over_max_extrapolation}}{(\code{numeric(1)})\cr
+How much we can extrapolate the values above the maximum RAU value
+seen in standard curve samples \eqn{RAU_{max}}. Defaults to 0.
+If the value of the predicted RAU is above \eqn{RAU_{max} + \text{over_max_extrapolation}},
+the value is censored to the value of that sum.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
 (\code{data.frame()})\cr
-Dataframe with the predicted dilutions, MFI values, and the 97.5\% confidence intervals
+Dataframe with the predicted RAU values for given MFI values
 The columns are named as follows:
 \itemize{
-\item \code{dilution} - the dilution value
-\item \code{dilution.025} - the lower bound of the confidence interval
-\item \code{dilution.975} - the upper bound of the confidence interval
+\item \code{RAU} - the Relative Antibody Units (RAU) value
 \item \code{MFI} - the predicted MFI value
 }
 }
