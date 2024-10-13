@@ -35,10 +35,10 @@ generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, outp
 }
 
 
-#' Generate a report with Levy-Jennings plots.
+#' Generate a report with Levey-Jennings plots.
 #'
-#' This function generates a report with Levy-Jennings plots.
-#' The report is generated using the `levy_jennings_report_template.Rmd` template.
+#' This function generates a report with Levey-Jennings plots.
+#' The report is generated using the `levey_jennings_report_template.Rmd` template.
 #'
 #' @param list_of_plates A list of plate objects.
 #' @param filename (`character(1)`) The name of the output file. If not
@@ -50,15 +50,15 @@ generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, outp
 #'
 #' @return A report.
 #' @export
-generate_levy_jennings_report <- function(list_of_plates, filename = NULL, output_dir = "reports") {
+generate_levey_jennings_report <- function(list_of_plates, filename = NULL, output_dir = "reports") {
   message("Generating report... This will take approximately 30 seconds.")
   output_file <- if (is.null(filename)) {
-    paste0("levy_jennings_report.html") #### change this part
+    paste0("levey_jennings_report_template.html") #### change this part
   } else {
     filename
   }
 
-  template_path <- system.file("templates", "levy_jennings_report_template.Rmd", package = "PvSTATEM", mustWork = TRUE)
+  template_path <- system.file("templates", "levey_jennings_report_template.Rmd", package = "PvSTATEM", mustWork = TRUE)
 
   rmarkdown::render(
     template_path,

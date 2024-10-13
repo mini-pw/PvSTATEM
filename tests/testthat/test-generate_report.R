@@ -32,7 +32,9 @@ test_that("Test generate_plate_report function", {
   expect_no_error(generate_plate_report(plate, counts_lower_threshold = 40, counts_higher_threshold = 80))
 })
 
-test_that("Test generate_levy_jennings_report function", {
+test_that("Test generate_levey_jennings_report function", {
   plate <- get_test_plate()
-  expect_error(generate_levy_jennings_report())
+  expect_error(generate_levey_jennings_report())
+  expect_no_error(generate_levey_jennings_report(list(plate)))
+  expect_no_error(generate_levey_jennings_report(list(plate), filename = "test_report.html"))
 })
