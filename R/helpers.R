@@ -145,7 +145,6 @@ clamp <- function(x, lower = -Inf, upper = Inf) {
 }
 
 
-
 #' Format dilutions
 #'
 #' The function counts the number of times each dilution factor appears and sorts them in descending order based on the corresponding dilution values.
@@ -192,4 +191,16 @@ format_dilutions <- function(dilutions, dilution_values, sample_types) {
   sorted_formatted_dilutions <- formatted_dilutions[sorted_indices]
 
   paste(sorted_formatted_dilutions, collapse = ", ")
+}
+
+             
+#' Convert dilution to RAU
+#'
+#' @param predicted_dilution (`numeric()`) A numeric value representing the predicted dilution.
+#'
+#' @return The RAU value corresponding to the predicted dilution .
+#'
+#' @keywords internal
+dilution_to_rau <- function(predicted_dilution) {
+  return(predicted_dilution * 1e6)
 }
