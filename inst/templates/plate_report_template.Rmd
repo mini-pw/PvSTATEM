@@ -61,36 +61,49 @@ plot_layout(params$plate)
 
 <details open>
   <summary>Click to show/hide overview</summary>
+
 <style>
   /* Set up a grid layout with 5 items per row */
   .plot-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px; /* Space between the plots */
+    gap: 5px; /* Space between the plots */
   }
-  
-  .highlighted {
-    border: 3px solid red;
+  /* Initial transparent border */
+  .plot-container {
+    border: 3px solid transparent;
+    transition: border-color 0.3s ease;
+    transition: box-shadow 0.3s ease;
+    border-radius: 5px;
+  }
+
+  /* Active (clicked) plot border */
+  .plot-container.active {
+    border-color: rgba(0, 0, 0, 0.65);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4), /* Initial shadow */
+            0 0 30px rgba(0, 0, 0, 0.2); /* Larger and softer*/
+  }
+
+  .plot-container img {
+    border-radius: 5px;
   }
 </style>
 
 <script>
-// JavaScript to add/remove border on click
-document.addEventListener("DOMContentLoaded", function() {
-  var plots = document.querySelectorAll('.plot-container a');
-  
-  plots.forEach(function(plot) {
-    plot.addEventListener('click', function() {
-      // Remove highlight from any previously clicked plot
-      plots.forEach(function(p) {
-        p.classList.remove('highlighted');
+  document.addEventListener('DOMContentLoaded', function () {
+    var plots = document.querySelectorAll('.plot-container');
+
+    plots.forEach(function (plot) {
+      plot.addEventListener('click', function () {
+        // Remove 'active' class from all plots
+        plots.forEach(function (p) {
+          p.classList.remove('active');
+        });
+        // Add 'active' class to the clicked plot
+        plot.classList.add('active');
       });
-      
-      // Add highlight to the clicked plot
-      plot.classList.add('highlighted');
     });
   });
-});
 </script>
 
 
