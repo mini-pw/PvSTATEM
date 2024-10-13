@@ -69,7 +69,7 @@ plot_layout(params$plate)
     grid-template-columns: repeat(5, 1fr);
     gap: 5px; /* Space between the plots */
   }
-  /* Initial transparent border */
+
   .plot-container {
     border: 2px solid transparent;
     transition: border-color 0.3s ease;
@@ -77,11 +77,9 @@ plot_layout(params$plate)
     border-radius: 5px;
   }
 
-  /* Active (clicked) plot border */
   .plot-container.active {
     border-color: rgba(0, 0, 0, 0.65);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), /* Initial shadow */
-            0 0 20px rgba(0, 0, 0, 0.2); /* Larger and softer*/
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); 
   }
 
   .plot-container img {
