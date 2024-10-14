@@ -107,10 +107,17 @@ plot_layout(params$plate)
         });
         plotContainer.classList.add('active');
 
-        // Scroll to the target section after a delay
+        // Find and add 'active' class to the corresponding tab item
         var targetId = this.getAttribute('href').substring(1);
-        var targetElement = document.getElementById(targetId);
+        generated_tablist.forEach(function (tabItem) {
+          var tabLink = tabItem.querySelector('a');
+          if (tabLink && tabLink.getAttribute('href').substring(1) === targetId) {
+            tabItem.classList.add('active');
+          }
+        });
 
+        // Scroll to the analyte details section after a delay
+        var targetElement = document.getElementById(targetId);
         if (targetElement) {
           setTimeout(function () {
             targetElement.scrollIntoView({
