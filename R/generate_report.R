@@ -49,7 +49,7 @@ generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, outp
 #'
 #'
 #' @return A report.
-#' @export
+#' @keywords internal
 generate_levey_jennings_report <- function(list_of_plates, filename = NULL, output_dir = "reports") {
   message("Generating report... This will take approximately 30 seconds.")
   output_file <- if (is.null(filename)) {

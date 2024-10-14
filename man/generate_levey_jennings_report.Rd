@@ -27,3 +27,4 @@ A report.
 This function generates a report with Levey-Jennings plots.
 The report is generated using the \code{levey_jennings_report_template.Rmd} template.
 }
+\keyword{internal}
