@@ -97,6 +97,8 @@ plot_layout(params$plate)
         var plotContainer = this.closest('.plot-container');
         var plots = document.querySelectorAll('.plot-container');
         var generated_tablist = document.querySelectorAll('.nav.nav-tabs li');
+        var targetId = this.getAttribute('href').substring(1);
+        var targetElement = document.getElementById(targetId);
 
         // Remove 'active' class from all plots and add to the clicked one
         plots.forEach(function (p) {
@@ -108,7 +110,6 @@ plot_layout(params$plate)
         plotContainer.classList.add('active');
 
         // Find and add 'active' class to the corresponding tab item
-        var targetId = this.getAttribute('href').substring(1);
         generated_tablist.forEach(function (tabItem) {
           var tabLink = tabItem.querySelector('a');
           if (tabLink && tabLink.getAttribute('href').substring(1) === targetId) {
@@ -117,7 +118,6 @@ plot_layout(params$plate)
         });
 
         // Scroll to the analyte details section after a delay
-        var targetElement = document.getElementById(targetId);
         if (targetElement) {
           setTimeout(function () {
             targetElement.scrollIntoView({
