@@ -33,3 +33,11 @@ A report.
 This function generates a report for a plate. The report is generated using
 the \code{plate_report_template.Rmd} template.
 }
+\examples{
+
+plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
+layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
+
+plate <- read_luminex_data(plate_file, layout_file)
+generate_plate_report(plate, counts_lower_threshold = 40, counts_higher_threshold = 50)
+}

@@ -19,6 +19,6 @@ A formatted string that lists the dilution factors and their counts. Returns \co
 \description{
 The function counts the number of times each dilution factor appears and sorts them in descending order based on the corresponding dilution values.
 The output is a string that lists the dilution factors and their counts in the format \verb{count x dilution_factor}.
-1/50, 1/100, 1/250, 8x1/400, 1/1000, 1/3000
+If the dilutions vector looks like \code{c("1/2", "1/2", "1/2", "1/3", "1/3", "1/4")}, the output will be \code{"3x1/2, 2x1/3, 1x1/4"}.
 }
 \keyword{internal}
