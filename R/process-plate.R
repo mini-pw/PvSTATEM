@@ -94,7 +94,7 @@ process_plate <-
     }
     if (normalisation_type == "nMFI") {
       verbose_cat("Computing nMFI values for each analyte\n", verbose = verbose)
-      nmfi <-
+      output_df <-
         get_nmfi(plate, reference_dilution = reference_dilution, data_type = data_type)
       verbose_cat(
         "Saving the computed nMFI values to a CSV file located in: '",
@@ -102,34 +102,36 @@ process_plate <-
         "'\n",
         verbose = verbose
       )
-      write.csv(nmfi, output_path, row.names = FALSE)
-      return(nmfi)
     }
+    else if (normalisation_type == "RAU") {
 
+      # RAU normalisation
 
-    # RAU normalisation
+      test_sample_names <-
+        plate$sample_names[plate$sample_types == "TEST"]
+      output_list <- list("SampleName" = test_sample_names)
+      verbose_cat("Fitting the models and predicting RAU for each analyte\n",
+                  verbose = verbose)
 
-    test_sample_names <-
-      plate$sample_names[plate$sample_types == "TEST"]
-    output_list <- list("SampleName" = test_sample_names)
-    verbose_cat("Fitting the models and predicting RAU for each analyte\n",
-                verbose = verbose)
+      for (analyte in plate$analyte_names) {
+        model <-
+          create_standard_curve_model_analyte(plate, analyte, data_type = data_type, ...)
+        test_samples_mfi <-
+          plate$get_data(analyte, "TEST", data_type = data_type)
+        test_sample_estimates <- predict(model, test_samples_mfi)
+        output_list[[analyte]] <- test_sample_estimates[, "RAU"]
+      }
 
-    for (analyte in plate$analyte_names) {
-      model <-
-        create_standard_curve_model_analyte(plate, analyte, data_type = data_type, ...)
-      test_samples_mfi <-
-        plate$get_data(analyte, "TEST", data_type = data_type)
-      test_sample_estimates <- predict(model, test_samples_mfi)
-      output_list[[analyte]] <- test_sample_estimates[, "RAU"]
+      output_df <- data.frame(output_list)
+
+      verbose_cat("Saving the computed RAU values to a CSV file located in: '",
+                  output_path,
+                  "'\n",
+                  verbose = verbose)
     }
-
-    output_df <- data.frame(output_list)
-
-    verbose_cat("Saving the computed RAU values to a CSV file located in: '",
-                output_path,
-                "'\n",
-                verbose = verbose)
     write.csv(output_df, output_path, row.names = FALSE)
+
     return(output_df)
+
+
   }
