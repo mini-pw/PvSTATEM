@@ -92,5 +92,8 @@ get_nmfi <-
 
     nmfi <- test_mfi / reference_mfi
 
+    nmfi <- cbind(plate$sample_names[plate$sample_types == "TEST"], data.frame(nmfi))
+    colnames(nmfi)[1] <- "SampleName"
+
     return(nmfi)
   }
