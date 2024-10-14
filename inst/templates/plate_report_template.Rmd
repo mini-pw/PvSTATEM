@@ -96,9 +96,13 @@ plot_layout(params$plate)
         
         var plotContainer = this.closest('.plot-container');
         var plots = document.querySelectorAll('.plot-container');
+        var generated_tablist = document.querySelectorAll('.nav.nav-tabs li');
 
         // Remove 'active' class from all plots and add to the clicked one
         plots.forEach(function (p) {
+          p.classList.remove('active');
+        });
+        generated_tablist.forEach(function (p) {
           p.classList.remove('active');
         });
         plotContainer.classList.add('active');
@@ -108,7 +112,7 @@ plot_layout(params$plate)
         var targetElement = document.getElementById(targetId);
 
         if (targetElement) {
-          setTimeout(function() {
+          setTimeout(function () {
             targetElement.scrollIntoView({
               behavior: 'smooth',
               block: 'start'
