@@ -47,8 +47,6 @@
 #' nmfi <- get_nmfi(plate, reference_dilution = "1/50")
 #'
 #'
-#'
-#'
 #' @export
 get_nmfi <-
   function(plate,
@@ -64,7 +62,8 @@ get_nmfi <-
 
     # check if reference_dilution is numeric or string
     if (is.character(reference_dilution)) {
-      reference_dilution <- convert_dilutions_to_numeric(reference_dilution)
+      reference_dilution <-
+        convert_dilutions_to_numeric(reference_dilution)
     }
 
     stopifnot(is.numeric(reference_dilution))
@@ -86,10 +85,10 @@ get_nmfi <-
 
     plate_data <- plate$data[[data_type]]
 
-    reference_mfi <- plate_data[reference_standard_curve_id, ]
+    reference_mfi <- plate_data[reference_standard_curve_id,]
 
-    test_mfi <- plate_data[plate$sample_types == "TEST", ]
-    reference_mfi <- reference_mfi[rep(1, nrow(test_mfi)), ]
+    test_mfi <- plate_data[plate$sample_types == "TEST",]
+    reference_mfi <- reference_mfi[rep(1, nrow(test_mfi)),]
 
     nmfi <- test_mfi / reference_mfi
 
