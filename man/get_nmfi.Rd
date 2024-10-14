@@ -61,6 +61,4 @@ head(nmfi)
 nmfi <- get_nmfi(plate, reference_dilution = "1/50")
 
 
-
-
 }
