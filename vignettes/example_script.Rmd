@@ -56,9 +56,9 @@ test_output_path <- file.path(tmp_dir, "output.csv")
 process_plate(plate, output_path = test_output_path)
 ```
 
-## Quality control and normalization details
+## Quality control and normalisation details
 
-Apart from the `process_plate` function, the package provides a set of functions that allow for more detailed and advanced quality control and normalization of the data.
+Apart from the `process_plate` function, the package provides a set of functions that allow for more detailed and advanced quality control and normalisation of the data.
 
 ### Plate summary and details
 
@@ -220,9 +220,9 @@ plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), over_
 ```
 
 ### nMFI
-In some cases, the RAU values cannot be reliably calculated. It may happen, for instance when the MFI values of tests samples are way higher than the standard curve samples. In that case, to avoid extrapolation, but to be still able to compare the samples across the plates, we introduced a new unit called nMFI (Normalized MFI). The nMFI is calculated as the MFI value of the test sample divided by the MFI value of the standard curve sample with selected dilution value.
+In some cases, the RAU values cannot be reliably calculated. This may happen when the MFI values of test samples are way higher than those of the standard curve samples. In that case, to avoid extrapolation but to be still able to compare the samples across the plates, we introduced a new unit called nMFI (Normalized MFI). The nMFI is calculated as the MFI value of the test sample divided by the MFI value of the standard curve sample with the selected dilution value.
 
-nMFI values of the samples can be calculated in two ways - using the `get_nmfi` function or with `process_plate` function that also saves the output into the csv file by setting the `normalisation_type` parameter to `nMFI` in the `process_plate` function.
+nMFI values of the samples can be calculated in two ways - using the `get_nmfi` function or with the `process_plate` function that also saves the output into the csv file by setting the `normalisation_type` parameter to `nMFI` in the `process_plate` function.
 
 ```{r}
 nmfi_values <- get_nmfi(plate)
