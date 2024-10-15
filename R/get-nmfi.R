@@ -36,16 +36,15 @@
 #'
 #' # artificially bump up the MFI values of the test samples (the Median data type is default one)
 #' plate$data[["Median"]][plate$sample_types == "TEST", ] <-
-#'       plate$data[["Median"]][plate$sample_types == "TEST", ] * 10
+#'   plate$data[["Median"]][plate$sample_types == "TEST", ] * 10
 #'
 #' # calculate the nMFI values
-#' nmfi <- get_nmfi(plate, reference_dilution = 1/400)
+#' nmfi <- get_nmfi(plate, reference_dilution = 1 / 400)
 #'
 #' # we don't do any extrapolation and the values should be comparable accross plates
 #' head(nmfi)
 #' # different params
 #' nmfi <- get_nmfi(plate, reference_dilution = "1/50")
-#'
 #'
 #' @export
 get_nmfi <-
@@ -70,9 +69,11 @@ get_nmfi <-
     stopifnot(reference_dilution > 0)
 
     if (!reference_dilution %in% plate$get_dilution_values("STANDARD CURVE")) {
-      stop("The target ",
-           reference_dilution,
-           " dilution is not present in the plate.")
+      stop(
+        "The target ",
+        reference_dilution,
+        " dilution is not present in the plate."
+      )
     }
 
 
@@ -85,16 +86,20 @@ get_nmfi <-
     stopifnot(length(reference_standard_curve_id) == 1)
 
     plate_data <-
-      plate$get_data(analyte = "ALL",
-                     sample_type = "ALL",
-                     data_type = data_type)
+      plate$get_data(
+        analyte = "ALL",
+        sample_type = "ALL",
+        data_type = data_type
+      )
 
     reference_mfi <- plate_data[reference_standard_curve_id, ]
 
     test_mfi <-
-      plate$get_data(analyte = "ALL",
-                     sample_type = "TEST",
-                     data_type = data_type)
+      plate$get_data(
+        analyte = "ALL",
+        sample_type = "TEST",
+        data_type = data_type
+      )
     reference_mfi <- reference_mfi[rep(1, nrow(test_mfi)), ]
 
     nmfi <- test_mfi / reference_mfi
