@@ -77,22 +77,30 @@ get_nmfi <-
 
 
     # get index of standard curve sample with the target dilution
-    reference_standard_curve_name <-
-      subset(plate$sample_names,
-             plate$dilution_values == reference_dilution)
     reference_standard_curve_id <-
-      which(plate$sample_names == reference_standard_curve_name)
+      which(
+        plate$dilution_values == reference_dilution &
+          plate$sample_types == "STANDARD CURVE"
+      )
+    stopifnot(length(reference_standard_curve_id) == 1)
 
-    plate_data <- plate$data[[data_type]]
+    plate_data <-
+      plate$get_data(analyte = "ALL",
+                     sample_type = "ALL",
+                     data_type = data_type)
 
-    reference_mfi <- plate_data[reference_standard_curve_id,]
+    reference_mfi <- plate_data[reference_standard_curve_id, ]
 
-    test_mfi <- plate_data[plate$sample_types == "TEST",]
-    reference_mfi <- reference_mfi[rep(1, nrow(test_mfi)),]
+    test_mfi <-
+      plate$get_data(analyte = "ALL",
+                     sample_type = "TEST",
+                     data_type = data_type)
+    reference_mfi <- reference_mfi[rep(1, nrow(test_mfi)), ]
 
     nmfi <- test_mfi / reference_mfi
 
-    rownames(nmfi) <- plate$sample_names[plate$sample_types == "TEST"]
+    rownames(nmfi) <-
+      plate$sample_names[plate$sample_types == "TEST"]
 
 
     return(nmfi)
