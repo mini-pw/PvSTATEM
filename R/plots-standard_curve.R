@@ -221,3 +221,65 @@ plot_standard_curve_analyte_with_model <- function(plate,
   )
   return(p)
 }
+
+
+#' @title Standard curve thumbnail for report
+#'
+#' @description
+#' Function generates a thumbnail of the standard curve for a given analyte.
+#' The thumbnail is used in the plate report. It doesn't have any additional
+#' parameters, because it is used only internally.
+#'
+#' @param plate Plate object
+#' @param analyte_name Name of the analyte of which standard curve we want to plot.
+#' @param data_type Data type of the value we want to plot - the same types as in the plate file. By default equals to `median`
+#'
+#' @return ggplot object with the plot
+#'
+#' @keywords internal
+plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Median") {
+  if (!inherits(plate, "Plate")) {
+    stop("plate object should be a Plate")
+  }
+  if (!(analyte_name %in% plate$analyte_names)) {
+    stop(analyte_name, " not found in the plate object")
+  }
+  plot_data <- data.frame(
+    MFI = plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type),
+    plate = plate$plate_name,
+    RAU = dilution_to_rau(plate$get_dilution_values("STANDARD CURVE"))
+  )
+  blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
+  x_ticks <- c(plot_data$RAU, max(plot_data$RAU) + 1)
+  x_labels <- c(sprintf("%0.2f", plot_data$RAU), "")
+
+
+
+  p <- ggplot2::ggplot(plot_data, aes(x = .data$RAU, y = .data$MFI)) +
+    ggplot2::geom_point(aes(color = "Standard curve samples"), size = 3) +
+    ggplot2::geom_line(aes(color = "Standard curve samples"), linewidth = 1.2) +
+    ggplot2::geom_hline(
+      aes(yintercept = blank_mean, color = "Blank mean"),
+      linetype = "solid"
+    ) +
+    ggplot2::labs(title = analyte_name, x = "", y = "") +
+    ggplot2::scale_x_continuous(
+      breaks = x_ticks, labels = x_labels,
+      trans = "log10"
+    )
+    # ggplot2::scale_y_continuous(trans = y_trans) +
+    # ggplot2::coord_trans(x = x_cords_trans) +
+    # ggplot2::theme_minimal() +
+    # ggplot2::theme(
+    #   axis.line = element_line(colour = "black"),
+    #   axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
+    #   axis.text.y = element_text(size = 9),
+    #   legend.position.inside = legend_position,
+    #   legend.background = element_rect(fill = "white", color = "black")
+    # ) +
+    # ggplot2::scale_color_manual(
+    #   values = c("Standard curve samples" = "blue", "Blank mean" = "red", "Min-max RAU bounds" = "gray")
+    # ) +
+    # ggplot2::guides(color = guide_legend(title = "Plot object"))
+    p
+}
