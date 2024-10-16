@@ -4,7 +4,6 @@
 #' Plot standard curve samples of a plate of a given analyte.
 #'
 #' @param plate A plate object
-#'
 #' @param analyte_name Name of the analyte of which standard curve we want to plot.
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Net MFI`
 #' @param decreasing_rau_order If `TRUE` the RAU values are plotted in decreasing order, `TRUE` by default
@@ -130,6 +129,9 @@ plot_standard_curve_analyte <- function(plate,
 
 #' Plot standard curve of a certain analyte with fitted model
 #'
+#' @description
+#' Function plots the values of standard curve samples and the fitted model.
+#'
 #' @param plate Plate object
 #' @param model fitted `Model` object, which predictions we want to plot
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Median`
@@ -145,10 +147,7 @@ plot_standard_curve_analyte <- function(plate,
 #' @param ... Additional arguments passed to the `predict` function
 #'
 #' @return a ggplot object with the plot
-#'
-#' @description
-#' Function plots the values of standard curve samples and the fitted model.
-#'
+#
 #'
 #' @import ggplot2
 #'
