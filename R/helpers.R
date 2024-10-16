@@ -193,7 +193,7 @@ format_dilutions <- function(dilutions, dilution_values, sample_types) {
   paste(sorted_formatted_dilutions, collapse = ", ")
 }
 
-             
+
 #' Convert dilution to RAU
 #'
 #' @param predicted_dilution (`numeric()`) A numeric value representing the predicted dilution.

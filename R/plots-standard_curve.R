@@ -120,7 +120,7 @@ plot_standard_curve_analyte <- function(plate,
     ) +
     ggplot2::guides(color = guide_legend(title = "Plot object"))
 
-  if(!plot_legend){
+  if (!plot_legend) {
     p <- p + ggplot2::theme(legend.position = "none")
   }
 
@@ -188,7 +188,7 @@ plot_standard_curve_analyte_with_model <- function(plate,
   test_samples_mfi <- plate$get_data(analyte_name, "TEST", data_type = data_type)
   test_sample_estimates <- predict(model, test_samples_mfi, ...)
 
-  
+
   if (plot_test_predictions) {
     p <- p + ggplot2::geom_point(
       ggplot2::aes(x = .data$RAU, y = .data$MFI, color = "Test sample predictions"),

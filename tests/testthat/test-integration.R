@@ -43,8 +43,9 @@ test_that("Fully Parse CovidOISExPONTENT_CO.csv plate data with layout", {
   test_output_path <- file.path(tmp_dir, "output.csv")
   expect_no_error(
     capture.output(
-                   process_plate(plate, output_path = test_output_path),
-                   file = NULL)
+      process_plate(plate, output_path = test_output_path),
+      file = NULL
+    )
   )
   expect_true(file.exists(test_output_path))
   expect_no_error(dilutions <- read.csv(test_output_path))

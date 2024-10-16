@@ -50,7 +50,6 @@ test_that("Test clamp function", {
 })
 
 test_that("Test format dilution function standard case", {
-
   dilutions <- c("1/2", "1/3", "1/4")
   dilution_values <- c(0.5, 0.33, 0.25)
   sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE")
@@ -59,7 +58,6 @@ test_that("Test format dilution function standard case", {
 })
 
 test_that("Test format dilution function with sample types", {
-
   dilutions <- c("1/2", "1/3", "1/4")
   dilution_values <- c(0.5, 0.33, 0.25)
   sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "SAMPLE")
@@ -68,7 +66,6 @@ test_that("Test format dilution function with sample types", {
 })
 
 test_that("Test format dilution function with multiple duplicates", {
-
   dilutions <- c("1/2", "1/3", "1/4", "1/4")
   dilution_values <- c(0.5, 0.33, 0.25, 0.25)
   sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE")
@@ -77,7 +74,6 @@ test_that("Test format dilution function with multiple duplicates", {
 })
 
 test_that("Test format dilution function with shuffled dilutions", {
-
   dilutions <- c("1/4", "1/2", "1/3")
   dilution_values <- c(0.25, 0.5, 0.33)
   sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE")
@@ -86,7 +82,6 @@ test_that("Test format dilution function with shuffled dilutions", {
 })
 
 test_that("Test format dilution function with dilutions equal null", {
-
   dilutions <- NULL
   dilution_values <- c(0.25, 0.5, 0.33)
   sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "SAMPLE")
