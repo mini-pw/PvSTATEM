@@ -405,6 +405,15 @@ is_dilution <- function(character_vector) {
   is_valid_dilution
 }
 
+
+
+#' Convert dilutions to numeric values
+#' @description
+#' Convert dilutions saved as strings in format `1/\d+` into numeric values
+#' @param dilutions vector of dilutions used during the examination saved
+#' as strings in format `1/\d+`
+#' @return a vector of numeric values representing the dilutions
+#' @keywords internal
 convert_dilutions_to_numeric <- function(dilutions) {
   stopifnot(is.character(dilutions))
 

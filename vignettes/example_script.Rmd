@@ -4,10 +4,13 @@ author: "Tymoteusz Kwieciński"
 date: "`r Sys.Date()`"
 vignette: >
   %\VignetteIndexEntry{Simple example of basic PvSTATEM package pre-release version functionalities}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{ggplot2}
   %\VignetteDepends{nplr}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r setup, include=FALSE}
@@ -23,7 +26,10 @@ knitr::opts_chunk$set(
 
 ## Reading the plate object
 
-The basic functionality of the `PvSTATEM` package is reading raw MBA data. To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. You might want to replace these variables with paths to your files on your local disk. Firstly, let us load the dataset as the `plate` object.
+The basic functionality of the `PvSTATEM` package is reading raw MBA data.
+To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package.
+You might want to replace these variables with paths to your files on your local disk.
+Firstly, let us load the dataset as the `plate` object.
 
 ```{r}
 library(PvSTATEM)
@@ -38,10 +44,11 @@ plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
 plate
 ```
 
-
 ## Processing the whole plate
-Once we have loaded the plate object we may process it using the function `process_plate`. This function fits a model to each analyte using the standard curve samples and computes RAU values for each analyte using the corresponding model. The computed RAU values are then saved to a CSV file.
 
+Once we have loaded the plate object we may process it using the function `process_plate`.
+This function fits a model to each analyte using the standard curve samples and computes RAU values for each analyte using the corresponding model.
+The computed RAU values are then saved to a CSV file.
 
 ```{r}
 tmp_dir <- tempdir(check = TRUE)
@@ -49,10 +56,12 @@ test_output_path <- file.path(tmp_dir, "output.csv")
 process_plate(plate, output_path = test_output_path)
 ```
 
-## Quality control and normalization details
-Apart from the `process_plate` function, the package provides a set of functions that allow for more detailed and advanced quality control and normalization of the data.
+## Quality control and normalisation details
+
+Apart from the `process_plate` function, the package provides a set of functions that allow for more detailed and advanced quality control and normalisation of the data.
 
 ### Plate summary and details
+
 After the plate is successfully loaded, we can look at some basic information about it.
 
 ```{r}
@@ -72,7 +81,8 @@ summary(plate)
 
 ### Quality control
 
-The package can plot the RAU along the MFI values, allowing manual inspection of the standard curve. This method raises a warning in case the MFI values were not adjusted using the blank samples.
+The package can plot the RAU along the MFI values, allowing manual inspection of the standard curve.
+This method raises a warning in case the MFI values were not adjusted using the blank samples.
 
 ```{r}
 plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
@@ -84,7 +94,8 @@ print(plate$blank_adjusted)
 plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
 ```
 
-We can also plot the standard curve for different analytes and data types. A list of all available analytes on the plate can be accessed using the command `plate$analyte_names`.
+We can also plot the standard curve for different analytes and data types.
+A list of all available analytes on the plate can be accessed using the command `plate$analyte_names`.
 
 By default, all the operations are performed on the `Median` value of the samples; this option can be selected from the `data_type` parameter of the function.
 
@@ -96,18 +107,18 @@ plot_standard_curve_analyte(plate, analyte_name = "RBD_wuhan", data_type = "Avg 
 This plot may be used to assess the quality of the standard curve and anticipate some of the potential issues with the data.
 For instance, if we plotted the standard curve for the analyte, `ME` we could notice that the `Median` value of the sample with RAU of `39.06` is abnormally large, which may indicate a problem with the data.
 
-
 ```{r}
 plot_standard_curve_analyte(plate, analyte_name = "ME")
 plot_standard_curve_analyte(plate, analyte_name = "ME", log_scale = "all")
 ```
 
-The plotting function has more options, such as selecting which axis the log scale should be applied or reversing the curve. More detailed information can be found in the function documentation, accessed by executing the command `?plot_standard_curve_analyte`.
+The plotting function has more options, such as selecting which axis the log scale should be applied or reversing the curve.
+More detailed information can be found in the function documentation, accessed by executing the command `?plot_standard_curve_analyte`.
 
-Another useful method of inspecting the potential errors of the data is `plot_mfi_for_analyte`. 
+Another useful method of inspecting the potential errors of the data is `plot_mfi_for_analyte`.
 This method plots the MFI values of standard curve samples for a given analyte along the boxplot of the MFI values of the test samples.
 
-It helps identify the outlier samples and check if the test samples are within the range of the standard curve samples. 
+It helps identify the outlier samples and check if the test samples are within the range of the standard curve samples.
 
 ```{r}
 plot_mfi_for_analyte(plate, analyte_name = "OC43_S")
@@ -115,29 +126,26 @@ plot_mfi_for_analyte(plate, analyte_name = "OC43_S")
 plot_mfi_for_analyte(plate, analyte_name = "Spike_6P")
 ```
 
-It can be seen that for the `Spike_6P` analyte, the MFI values don't fall within the range of the standard curve samples, which could be problematic for the model. The values of test RAU values will be extrapolated (up to a point) from the standard curve, which may lead to incorrect results.
+It can be seen that for the `Spike_6P` analyte, the MFI values don't fall within the range of the standard curve samples, which could be problematic for the model.
+The values of test RAU values will be extrapolated (up to a point) from the standard curve, which may lead to incorrect results.
 
 ### Normalization
 
-After inspection, we may create the model for the standard curve of a certain antibody. 
-The model is fitted using the `nplr` package, which provides a simple interface 
-for fitting n-parameter logistic regression models, 
-but to create a clearer interface for the user, 
-we encapsulated this model into our own class called `Model` for simplicity. 
+After inspection, we may create the model for the standard curve of a certain antibody.
+The model is fitted using the `nplr` package, which provides a simple interface for fitting n-parameter logistic regression models, but to create a clearer interface for the user, we encapsulated this model into our own class called `Model` for simplicity.
 The detailed documentation of the `Model` class can be found by executing the command `?Model`.
 
 The model is then used to predict RAU values of the samples based on the MFI values.
 
-#### RAU vs dilution 
+#### RAU vs dilution
 
-In order to distinguish between real dilution values (the ones known for the standard curve samples) from the dilution predictions (obtained using the fitted standard curve) we introduced into our package a unit called RAU (Relative Antibody Unit) which is equal to the dilution **prediction** multiplied by a $1,000,000$ in order to provide a more readable value. 
+In order to distinguish between real dilution values (the ones known for the standard curve samples) from the dilution predictions (obtained using the fitted standard curve) we introduced into our package a unit called RAU (Relative Antibody Unit) which is equal to the dilution **prediction** multiplied by a $1,000,000$ in order to provide a more readable value.
 
 #### Inner nplr model
 
 `nplr` package fits the model using the formula:
 
-$$ y = B + \frac{T - B}{[1 + 10^{b \cdot (x_{mid} - x)}]^s},$$
-where:
+$$ y = B + \frac{T - B}{[1 + 10^{b \cdot (x_{mid} - x)}]^s},$$ where:
 
 -   $y$ is the predicted value, MFI in our case,
 
@@ -153,15 +161,16 @@ where:
 
 -   $s$ is the asymmetric coefficient.
 
-This equation is referred to as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
-
+This equation is referred to as the Richards' equation.
+More information about the model can be found in the `nplr` package documentation.
 
 #### Predicting RAU
 
 By reversing that logistic function we can predict the dilution of the samples based on the MFI values.
-The RAU value is then the predicted dilution of the sample multiplied by $1,000,000$. 
+The RAU value is then the predicted dilution of the sample multiplied by $1,000,000$.
 
-In order to limit the extrapolation error from above (values above maximum RAU value $RAU_{max}$ for the standard curve samples) we clip all predictions above $M = RAU_{max} + \text{over_max_extrapolation}$ to $M$ where `over_max_extrapolation` is user controlled parameter to the `predict` function. By default `over_max_extrapolation` is set to $0$.
+In order to limit the extrapolation error from above (values above maximum RAU value $RAU_{max}$ for the standard curve samples) we clip all predictions above $M = RAU_{max} + \text{over_max_extrapolation}$ to $M$ where `over_max_extrapolation` is user controlled parameter to the `predict` function.
+By default `over_max_extrapolation` is set to $0$.
 
 #### Usage
 
@@ -173,8 +182,8 @@ model <- create_standard_curve_model_analyte(plate, analyte_name = "OC43_S")
 model
 ```
 
-Since our `model` object contains all the characteristics and parameters of the fitted regression model. 
-The model can be used to predict the RAU values of the samples based on the MFI values. 
+Since our `model` object contains all the characteristics and parameters of the fitted regression model.
+The model can be used to predict the RAU values of the samples based on the MFI values.
 The output above shows the most important parameters of the fitted model.
 
 The predicted values may be used to plot the standard curve, which can be compared to the sample values.
@@ -194,9 +203,12 @@ predicted_rau <- predict(model, mfi_values)
 
 head(predicted_rau)
 ```
+
 The dataframe contains original MFI values and the predicted RAU values based on the model.
 
-In order to allow extrapolation from above (up to a certain value) we can set `over_max_extrapolation` to a positive value. To illustrate that we can look at prediction plots. The `plot_standard_curve_analyte_with_model` takes any additional parameters and passes them to a `predict` method so we can visually see the effect of the `over_max_extrapolation` parameter.
+In order to allow extrapolation from above (up to a certain value) we can set `over_max_extrapolation` to a positive value.
+To illustrate that we can look at prediction plots.
+The `plot_standard_curve_analyte_with_model` takes any additional parameters and passes them to a `predict` method so we can visually see the effect of the `over_max_extrapolation` parameter.
 
 ```{r}
 model <- create_standard_curve_model_analyte(plate, analyte_name = "Spike_6P")
@@ -207,5 +219,18 @@ plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"))
 plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), over_max_extrapolation = 100000)
 ```
 
+### nMFI
+In some cases, the RAU values cannot be reliably calculated. This may happen when the MFI values of test samples are way higher than those of the standard curve samples. In that case, to avoid extrapolation but to be still able to compare the samples across the plates, we introduced a new unit called nMFI (Normalized MFI). The nMFI is calculated as the MFI value of the test sample divided by the MFI value of the standard curve sample with the selected dilution value.
 
+nMFI values of the samples can be calculated in two ways - using the `get_nmfi` function or with the `process_plate` function that also saves the output into the csv file by setting the `normalisation_type` parameter to `nMFI` in the `process_plate` function.
+
+```{r}
+nmfi_values <- get_nmfi(plate)
+
+# process plate with nMFI normalisation
+
+nmfi_output_path <- file.path(tmp_dir, "nmfi_output.csv")
+process_plate(plate, output_path = nmfi_output_path, normalisation_type = "nMFI")
+
+```
 
