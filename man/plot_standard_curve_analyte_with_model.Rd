@@ -14,6 +14,7 @@ plot_standard_curve_analyte_with_model(
   plot_test_predictions = TRUE,
   plot_blank_mean = TRUE,
   plot_rau_bounds = TRUE,
+  plot_legend = TRUE,
   verbose = TRUE,
   ...
 )
@@ -37,6 +38,8 @@ The predictions are obtained through extrapolation of the model}
 \item{plot_blank_mean}{If \code{TRUE} the mean of the blank samples is plotted, \code{TRUE} by default}
 
 \item{plot_rau_bounds}{If \code{TRUE} the RAU bounds are plotted, \code{TRUE} by default}
+
+\item{plot_legend}{If \code{TRUE} the legend is plotted, \code{TRUE} by default}
 
 \item{verbose}{If \code{TRUE} prints messages, \code{TRUE} by default}
 

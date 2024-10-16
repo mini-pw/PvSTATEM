@@ -12,6 +12,7 @@
 #' @param plot_line If `TRUE` a line is plotted, `TRUE` by default
 #' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
 #' @param plot_rau_bounds If `TRUE` the RAU values bounds are plotted, `TRUE` by default
+#' @param plot_legend If `TRUE` the legend is plotted, `TRUE` by default
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #'
 #' @return ggplot object with the plot
@@ -27,6 +28,7 @@ plot_standard_curve_analyte <- function(plate,
                                         plot_line = TRUE,
                                         plot_blank_mean = TRUE,
                                         plot_rau_bounds = TRUE,
+                                        plot_legend = TRUE,
                                         verbose = TRUE) {
   AVAILABLE_LOG_SCALE_VALUES <- c("all", "RAU", "MFI")
 
@@ -118,6 +120,10 @@ plot_standard_curve_analyte <- function(plate,
     ) +
     ggplot2::guides(color = guide_legend(title = "Plot object"))
 
+  if (!plot_legend) {
+    p <- p + ggplot2::theme(legend.position = "none")
+  }
+
   p
 }
 
@@ -134,6 +140,7 @@ plot_standard_curve_analyte <- function(plate,
 #' The predictions are obtained through extrapolation of the model
 #' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
 #' @param plot_rau_bounds If `TRUE` the RAU bounds are plotted, `TRUE` by default
+#' @param plot_legend If `TRUE` the legend is plotted, `TRUE` by default
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #' @param ... Additional arguments passed to the `predict` function
 #'
@@ -155,6 +162,7 @@ plot_standard_curve_analyte_with_model <- function(plate,
                                                    plot_test_predictions = TRUE,
                                                    plot_blank_mean = TRUE,
                                                    plot_rau_bounds = TRUE,
+                                                   plot_legend = TRUE,
                                                    verbose = TRUE,
                                                    ...) {
   analyte_name <- model$analyte
@@ -170,7 +178,8 @@ plot_standard_curve_analyte_with_model <- function(plate,
     analyte_name = analyte_name, data_type = data_type,
     decreasing_rau_order = decreasing_rau_order,
     log_scale = log_scale, verbose = verbose, plot_line = FALSE,
-    plot_blank_mean = plot_blank_mean, plot_rau_bounds = plot_rau_bounds
+    plot_blank_mean = plot_blank_mean, plot_rau_bounds = plot_rau_bounds,
+    plot_legend = plot_legend
   )
 
   plot_name <- paste0("Fitted standard curve for analyte: ", analyte_name)
@@ -179,17 +188,21 @@ plot_standard_curve_analyte_with_model <- function(plate,
   test_samples_mfi <- plate$get_data(analyte_name, "TEST", data_type = data_type)
   test_sample_estimates <- predict(model, test_samples_mfi, ...)
 
-  p <- p + ggplot2::geom_line(
-    ggplot2::aes(x = .data$RAU, y = .data$MFI, color = "Fitted model predictions"),
-    data = model$get_plot_data(), linewidth = 1
-  )
+
   if (plot_test_predictions) {
     p <- p + ggplot2::geom_point(
       ggplot2::aes(x = .data$RAU, y = .data$MFI, color = "Test sample predictions"),
       data = test_sample_estimates, shape = 4,
-      size = 3
+      size = 2.2,
+      stroke = 1.3,
+      alpha = 0.8
     )
   }
+
+  p <- p + ggplot2::geom_line(
+    ggplot2::aes(x = .data$RAU, y = .data$MFI, color = "Fitted model predictions"),
+    data = model$get_plot_data(), linewidth = 1
+  )
 
   if (plot_asymptote) {
     p <- p + ggplot2::geom_hline(
