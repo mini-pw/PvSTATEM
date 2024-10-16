@@ -13,6 +13,7 @@ plot_standard_curve_analyte(
   plot_line = TRUE,
   plot_blank_mean = TRUE,
   plot_rau_bounds = TRUE,
+  plot_legend = TRUE,
   verbose = TRUE
 )
 }
@@ -32,6 +33,8 @@ plot_standard_curve_analyte(
 \item{plot_blank_mean}{If \code{TRUE} the mean of the blank samples is plotted, \code{TRUE} by default}
 
 \item{plot_rau_bounds}{If \code{TRUE} the RAU values bounds are plotted, \code{TRUE} by default}
+
+\item{plot_legend}{If \code{TRUE} the legend is plotted, \code{TRUE} by default}
 
 \item{verbose}{If \code{TRUE} prints messages, \code{TRUE} by default}
 }

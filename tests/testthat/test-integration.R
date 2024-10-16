@@ -36,13 +36,15 @@ test_that("Fully Parse CovidOISExPONTENT_CO.csv plate data with layout", {
   expect_equal(plate$plate_name, "CovidOISExPONTENT")
   expect_equal(plate$dilutions[1:4], c(NA, "1/50", "1/100", "1/200"))
   # Check S3 functions
-  expect_no_error(print(plate))
-  expect_no_error(summary(plate))
+  expect_output(print(plate))
+  expect_output(summary(plate))
   # Test processing of a plate
   tmp_dir <- tempdir(check = TRUE)
   test_output_path <- file.path(tmp_dir, "output.csv")
   expect_no_error(
-    process_plate(plate, output_path = test_output_path)
+    capture.output(
+                   process_plate(plate, output_path = test_output_path),
+                   file = NULL)
   )
   expect_true(file.exists(test_output_path))
   expect_no_error(dilutions <- read.csv(test_output_path))

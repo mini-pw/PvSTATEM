@@ -1,0 +1,188 @@
+---
+title: "Raport for plate: `r paste0('*', params$plate$plate_name, '*')`"
+output: html_document
+params:
+  plate: !r NULL
+  use_model: !r NULL
+  counts_lower_threshold: !r NULL
+  counts_higher_threshold: !r NULL
+---
+
+```{r param-check, echo=FALSE}
+if (is.null(params$plate)) {
+  stop("The `plate` must be provided when rendering the document.")
+}
+if (is.null(params$use_model)) {
+  stop("The `use_model` must be provided when rendering the document.")
+}
+if (is.null(params$counts_lower_threshold)) {
+  stop("The `counts_lower_threshold` must be provided when rendering the document.")
+}
+if (is.null(params$counts_higher_threshold)) {
+  stop("The `counts_higher_threshold` must be provided when rendering the document.")
+}
+if (!is(params$plate, "Plate")) {
+  stop("The `plate` must be an instance of `Plate` class.")
+}
+if (!is(params$use_model, "logical")) {
+  stop("The `use_model` must be a logical value.")
+}
+if (!is(params$counts_lower_threshold, "numeric")) {
+  stop("The `counts_lower_threshold` must be a numeric value.")
+}
+if (!is(params$counts_higher_threshold, "numeric")) {
+  stop("The `counts_higher_threshold` must be a numeric value.")
+}
+```
+
+Report generated on:  `r format(Sys.time(), "%d-%m-%Y %H:%M:%S")`.  
+Plate was run on: `r if(!is.null(params$plate$plate_datetime)) format(params$plate$plate_datetime, "%d-%m-%Y %H:%M:%S") else "Date of running plate was not found in Luminex file"`.  
+Plate batch name: `r if(!is.null(params$plate$batch_name)) params$plate$batch_name else "Batch name was not found in Luminex file"`.  
+This is plate with `r paste0(length(params$plate$sample_names), " samples and ", length(params$plate$analyte_names), " analytes")`.  
+Standard curve sample dilutions: `r format_dilutions(params$plate$dilutions, params$plate$dilution_values, params$plate$sample_types)`.
+
+
+-------------------
+
+
+### Plate layout
+
+<details open>
+  <summary>Click to show/hide layout</summary>
+```{r plate-layout, fig.width=7, fig.height=4, fig.align='center', dev='jpeg', echo=FALSE, dpi=72}
+plot_layout(params$plate)
+```
+</details>
+
+
+------------------
+
+### Quick overview of standard curves
+
+<details open>
+  <summary>Click to show/hide overview</summary>
+
+<style>
+  /* Set up a grid layout with 5 items per row */
+  .plot-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px; /* Space between the plots */
+  }
+
+  .plot-container {
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease;
+    transition: box-shadow 0.3s ease;
+    border-radius: 5px;
+  }
+
+  .plot-container.active {
+    border-color: rgba(0, 0, 0, 0.65);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); 
+  }
+
+  .plot-container img {
+    border-radius: 5px;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var plotLinks = document.querySelectorAll('.plot-container a');
+
+    plotLinks.forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        
+        var plotContainer = this.closest('.plot-container');
+        var plots = document.querySelectorAll('.plot-container');
+        var generated_tablist = document.querySelectorAll('.nav.nav-tabs li');
+        var targetId = this.getAttribute('href').substring(1);
+        var targetElement = document.getElementById(targetId);
+
+        // Remove 'active' class from all plots and add to the clicked one
+        plots.forEach(function (p) {
+          p.classList.remove('active');
+        });
+        generated_tablist.forEach(function (p) {
+          p.classList.remove('active');
+        });
+        plotContainer.classList.add('active');
+
+        // Find and add 'active' class to the corresponding tab item
+        generated_tablist.forEach(function (tabItem) {
+          var tabLink = tabItem.querySelector('a');
+          if (tabLink && tabLink.getAttribute('href').substring(1) === targetId) {
+            tabItem.classList.add('active');
+          }
+        });
+
+        // Scroll to the analyte details section after a delay
+        if (targetElement) {
+          setTimeout(function () {
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }, 160);
+        }
+      });
+    });
+  });
+</script>
+
+
+
+```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="100%", dev='jpeg', dpi=72}
+# Code used to create dynamic tabs based on the number of analytes
+# Start a grid for the plots
+cat('<div class="plot-grid">')
+# Generate the clickable plots within the grid
+for (i in seq_along(params$plate$analyte_names)) {
+  # HTML structure for each plot with a clickable link
+  cat(paste0('<div class="plot-container">',
+             '<a href="#', tolower(params$plate$analyte_names[i]), '" role="tab" data-toggle="tab" aria-controls="', tolower(params$plate$analyte_names[i]), '" aria-expanded="false">'))
+  # Generate the plot
+  model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
+  print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE, plot_asymptote = FALSE, plot_rau_bounds = FALSE))
+  cat('</a></div>')
+}
+# Close the grid
+cat('</div>')
+```
+</details>
+
+------------------
+ 
+### Details for given analayte {.tabset .tabset-fade}
+
+```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%", dev='jpeg', dpi=72}
+# Code used to create dynamic tabs based on the number of analytes
+for (i in seq_along(params$plate$analyte_names)) {
+  cat(paste0("#### ", params$plate$analyte_names[i], "\n"))
+
+  # Plot counts
+  print(plot_counts(params$plate, params$plate$analyte_names[i], lower_threshold = params$counts_lower_threshold, higher_threshold = params$counts_higher_threshold))
+
+  # Plot MFI
+  print(plot_mfi_for_analyte(params$plate, params$plate$analyte_names[i], plot_type = "violin"))
+
+  # Plot Standard Curve
+  print(plot_standard_curve_analyte(params$plate, params$plate$analyte_names[i]))
+  if (params$use_model) {
+    model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
+    print(plot_standard_curve_analyte_with_model(params$plate, model))
+  }
+
+  cat("\n\n")
+}
+```
+
+------------------
+
+### &nbsp;
+
+<hr />
+<p style="text-align: center;">Generated using the <a href="https://github.com/mini-pw/PvSTATEM">PvSTATEM </a> package </p>
+
+

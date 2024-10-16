@@ -48,3 +48,48 @@ test_that("Test clamp function", {
   expect_equal(clamp(c(1, 2.2, 3), upper = 2), c(1, 2, 2))
   expect_equal(clamp(c(2, 10, NA), upper = 2), c(2, 2, NA))
 })
+
+test_that("Test format dilution function standard case", {
+
+  dilutions <- c("1/2", "1/3", "1/4")
+  dilution_values <- c(0.5, 0.33, 0.25)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), "1/2, 1/3, 1/4")
+})
+
+test_that("Test format dilution function with sample types", {
+
+  dilutions <- c("1/2", "1/3", "1/4")
+  dilution_values <- c(0.5, 0.33, 0.25)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "SAMPLE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), "1/2, 1/3")
+})
+
+test_that("Test format dilution function with multiple duplicates", {
+
+  dilutions <- c("1/2", "1/3", "1/4", "1/4")
+  dilution_values <- c(0.5, 0.33, 0.25, 0.25)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), "1/2, 1/3, 2x1/4")
+})
+
+test_that("Test format dilution function with shuffled dilutions", {
+
+  dilutions <- c("1/4", "1/2", "1/3")
+  dilution_values <- c(0.25, 0.5, 0.33)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), "1/2, 1/3, 1/4")
+})
+
+test_that("Test format dilution function with dilutions equal null", {
+
+  dilutions <- NULL
+  dilution_values <- c(0.25, 0.5, 0.33)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "SAMPLE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), NULL)
+})
