@@ -256,30 +256,29 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
 
 
   p <- ggplot2::ggplot(plot_data, aes(x = .data$RAU, y = .data$MFI)) +
-    ggplot2::geom_point(aes(color = "Standard curve samples"), size = 3) +
+    ggplot2::geom_point(aes(color = "Standard curve samples"), size = 9) +
     ggplot2::geom_line(aes(color = "Standard curve samples"), linewidth = 1.2) +
     ggplot2::geom_hline(
       aes(yintercept = blank_mean, color = "Blank mean"),
-      linetype = "solid"
+      linetype = "solid", linewidth = 2
     ) +
     ggplot2::labs(title = analyte_name, x = "", y = "") +
     ggplot2::scale_x_continuous(
       breaks = x_ticks, labels = x_labels,
       trans = "log10"
+    ) +
+    #ggplot2::scale_y_continuous(trans = "log10") +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.line = element_line(colour = "black"),
+      axis.text.x = element_text(size = 0),
+      axis.text.y = element_text(size = 0),
+      legend.position = "none",
+      plot.title = element_text(hjust=0.5, size=50)
+    ) +
+    ggplot2::coord_trans(x = "reverse") +
+     ggplot2::scale_color_manual(
+       values = c("Standard curve samples" = "blue", "Blank mean" = "red", "Min-max RAU bounds" = "gray")
     )
-    # ggplot2::scale_y_continuous(trans = y_trans) +
-    # ggplot2::coord_trans(x = x_cords_trans) +
-    # ggplot2::theme_minimal() +
-    # ggplot2::theme(
-    #   axis.line = element_line(colour = "black"),
-    #   axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
-    #   axis.text.y = element_text(size = 9),
-    #   legend.position.inside = legend_position,
-    #   legend.background = element_rect(fill = "white", color = "black")
-    # ) +
-    # ggplot2::scale_color_manual(
-    #   values = c("Standard curve samples" = "blue", "Blank mean" = "red", "Min-max RAU bounds" = "gray")
-    # ) +
-    # ggplot2::guides(color = guide_legend(title = "Plot object"))
     p
 }

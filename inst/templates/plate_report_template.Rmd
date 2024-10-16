@@ -144,7 +144,8 @@ for (i in seq_along(params$plate$analyte_names)) {
              '<a href="#', tolower(params$plate$analyte_names[i]), '" role="tab" data-toggle="tab" aria-controls="', tolower(params$plate$analyte_names[i]), '" aria-expanded="false">'))
   # Generate the plot
   model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
-  print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE, plot_asymptote = FALSE, plot_rau_bounds = FALSE))
+  print(plot_standard_curve_thumbnail(params$plate, params$plate$analyte_names[i])) 
+#  print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE, #plot_asymptote = FALSE, plot_rau_bounds = FALSE))
   cat('</a></div>')
 }
 # Close the grid
