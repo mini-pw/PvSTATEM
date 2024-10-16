@@ -40,5 +40,8 @@ layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = 
 
 plate <- read_luminex_data(plate_file, layout_file)
 tmp_dir <- tempdir(check = TRUE)
-generate_plate_report(plate, output_dir = tmp_dir, counts_lower_threshold = 40, counts_higher_threshold = 50)
+generate_plate_report(
+  plate,
+  output_dir = tmp_dir, counts_lower_threshold = 40, counts_higher_threshold = 50
+)
 }
