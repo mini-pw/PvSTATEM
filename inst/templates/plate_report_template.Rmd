@@ -68,6 +68,7 @@ plot_layout(params$plate)
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 5px; /* Space between the plots */
+    margin-top: 20px;
   }
 
   .plot-container {
