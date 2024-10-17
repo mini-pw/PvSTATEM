@@ -9,7 +9,8 @@
 #'
 #' @param colours A vector with 96 colours will be used to colour the wells; the order is from left to right and top to bottom
 #' @param plot_numbers Logical value indicating if the well numbers should be plotted, default is `FALSE`
-#' @param numbers An optional vector with 96 numbers plotted on the wells. Order is from left to right and top to bottom and must have the same length as colours. It could be used, for instance, to plot the bead count of each well. Must be provided in case the `plot_numbers` parameters are set to `TRUE`
+#' @param numbers An optional vector with 96 numbers plotted on the wells. Order is from left to right and top to bottom and must have the same length as colours. 
+#' It could be used, for instance, to plot the bead count of each well. Must be provided in case the `plot_numbers` parameter is set to `TRUE`
 #' @param plot_title The title of the plot (default is "Plate")
 #' @param plot_legend Logical value indicating if the legend should be plotted, default is `FALSE`
 #' @param legend_mapping A named vector with the colour mapping used to create the legend

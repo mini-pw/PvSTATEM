@@ -63,7 +63,7 @@ To solve this issue, one has to stretch the window toward the layout shift, and 
 
 # Counts for a given analyte
 The `plot_counts` function allows us to visualize the counts of the analyte in the plate. 
-This plot is proper for quickly spotting wells with a count that needs to be higher.
+This plot is useful for quickly spotting wells with a count that is too low to interpret results with high confidence.
 The function takes the `plate` object and the analyte name as the arguments.
 The function will return an error message if there is a typo in the analyte name.
 
@@ -92,7 +92,7 @@ plot_mfi_for_analyte(plate, "Spike_B16172")
 ```
 
 This plot shows the distribution of the MFI values for test samples for the analyte "OC43_NP_NA". The test samples are coloured in blue, and the standard curve samples are coloured in red.
-The default plot type is violin, but the option is to change it to violin plot by setting the `plot_type` parameter to `boxplot`.
+The default plot type is violin, but there is an option to change it to the boxplot by setting the `plot_type` parameter to `boxplot`.
 
 ```{r}
 plot_mfi_for_analyte(plate, "FluA", plot_type = "boxplot")

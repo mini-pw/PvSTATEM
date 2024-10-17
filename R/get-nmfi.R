@@ -3,7 +3,7 @@
 #' @description
 #' The function calculates the normalised MFI (nMFI) values for each of the analytes in the plate.
 #'
-#' The nMFI values are calculated as the ratio of the MFI values of test samples' MFI values to the standard curve samples with the target dilution.
+#' The nMFI values are calculated as the ratio of the test samples' MFI values to the standard curve samples with the target dilution.
 #'
 #'
 #'

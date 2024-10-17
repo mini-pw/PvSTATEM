@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Our package mainly aims to read, perform quality control, and normalise raw MBA data. Unfortunately, different devices and labs have different data formats. We gathered a few datasets on which our package could be tested. This document describes the datasets and their sources.
+Our package's main purpose is to read, perform quality control, and normalise raw MBA data. Unfortunately, different devices and labs have different data formats. We gathered a few datasets on which our package could be tested. This document describes the datasets and their sources.
 
 The majority of our datasets, available for the public, are stored in the `extdata` folder of the package. The remaining private and the more significant number of publicly available datasets are stored in the `OneDrive` folder, which is accessible to the package developers.
 
