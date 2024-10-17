@@ -30,7 +30,9 @@ Defaults to \code{FALSE}}
 \item{detect_high_dose_hook}{(\code{logical(1)}) If \code{TRUE}, the high dose hook effect is detected and handled.
 For more information, please see the \link[PvSTATEM]{handle_high_dose_hook} function documentation.}
 
-\item{...}{Additional arguments passed to the model}
+\item{...}{Additional arguments passed to the model
+
+Standard curve samples should not contain \code{na} values in mfi values nor in dilutions.}
 }
 \value{
 (\code{Model()}) Standard Curve model
