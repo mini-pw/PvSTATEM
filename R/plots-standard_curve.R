@@ -266,7 +266,7 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
       breaks = x_ticks, labels = x_labels,
       trans = "log10"
     ) +
-    #ggplot2::scale_y_continuous(trans = "log10") +
+    # ggplot2::scale_y_continuous(trans = "log10") +
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.line = element_line(colour = "black", size = 2),
