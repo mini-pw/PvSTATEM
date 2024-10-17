@@ -151,6 +151,8 @@ Model <- R6::R6Class(
     #' seen in standard curve samples \eqn{RAU_{max}}. Defaults to 0.
     #' If the value of the predicted RAU is above \eqn{RAU_{max} + \text{over_max_extrapolation}},
     #' the value is censored to the value of that sum.
+    #' @param eps (`numeric(1)`)\cr
+    #' A small value used to avoid numerical issues close to the asymptotes
     #'
     #' @return (`data.frame()`)\cr
     #' Dataframe with the predicted RAU values for given MFI values
@@ -158,9 +160,28 @@ Model <- R6::R6Class(
     #' - `RAU` - the Relative Antibody Units (RAU) value
     #' - `MFI` - the predicted MFI value
     #'
-    predict = function(mfi, over_max_extrapolation = 0) {
+    predict = function(mfi, over_max_extrapolation = 0, eps = 1e-6) {
       private$assert_model_fitted()
       original_mfi <- mfi
+      # Extrapolation maximum
+      max_sc_rau <- max(dilution_to_rau(self$dilutions), na.rm = TRUE)
+      rau_threshold <- max_sc_rau + over_max_extrapolation
+      top_asymptote_transformed <- private$mfi_transform(self$top_asymptote - eps)
+      rau_at_top_asymptote <- nplr::getEstimates(self$model,
+        targets = top_asymptote_transformed
+      )[1, "x"]
+      if (rau_threshold >= rau_at_top_asymptote) {
+        warning(
+          "Extrapolation above the top asymptote is not allowed.
+          Samples with MFI values above the top asymptote will be censored to the top asymptote.
+          Consider using a smaller value for `over_max_extrapolation`."
+        )
+      }
+      # Handle mfi outside asymptotes
+      mfi <- clamp(mfi,
+        lower = self$bottom_asymptote + eps,
+        upper = self$top_asymptote - eps
+      )
       mfi <- private$mfi_transform(mfi)
       # Example columns: y, x,
       df <- nplr::getEstimates(self$model, mfi)
@@ -170,11 +191,7 @@ Model <- R6::R6Class(
       # Convert to RAU
       df[, "x"] <- dilution_to_rau(df[, "x"])
       # Censor values or extrapolate
-      max_sc_rau <- max(dilution_to_rau(self$dilutions), na.rm = TRUE)
-      max_allowed_value <- max_sc_rau + over_max_extrapolation
-      df[, "x"] <- ifelse(
-        df[, "x"] > max_allowed_value, max_allowed_value, df[, "x"]
-      )
+      df[, "x"] <- ifelse(df[, "x"] > rau_threshold, rau_threshold, df[, "x"])
       # Rename columns before returning
       colnames(df) <- sub("x", "RAU", colnames(df))
       colnames(df) <- sub("y", "MFI", colnames(df))
