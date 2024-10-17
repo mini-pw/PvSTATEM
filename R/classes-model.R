@@ -191,7 +191,7 @@ Model <- R6::R6Class(
       private$assert_model_fitted()
       upper_bound <- nplr::getPar(self$model)$params$top
       upper_bound <- (upper_bound + 1) / 2
-      lower_bound <- private$mfi_transform(5) # Scaled MFI for MFI = 5
+      lower_bound <- private$mfi_transform(10) # Scaled MFI for MFI = 10
 
       uniform_targets <- seq(lower_bound, upper_bound, length.out = 100)
       df <- nplr::getEstimates(self$model, targets = uniform_targets)
