@@ -26,9 +26,9 @@ Where the \code{{plate_name}} is the name of the plate.}
 \item{normalisation_type}{(\code{character(1)}) type of normalisation to use. Available options are:
 \cr \code{c(RAU, nMFI)}.}
 
-\item{data_type}{(\code{character(1)}) type of data for the computation. Median is the default}
+\item{data_type}{(\code{character(1)}) type of data to use for the computation. Median is the default}
 
-\item{include_raw_mfi}{(\code{logical(1)}) include raw MFI values in the output. Default is \code{TRUE}.
+\item{include_raw_mfi}{(\code{logical(1)}) include raw MFI values in the output. The default is \code{TRUE}.
 In case this option is \code{TRUE}, the output dataframe contains two columns for each analyte: one for the normalised values and one for the raw MFI values.
 The normalised columns are named as \code{AnalyteName} and \code{AnalyteName_raw}, respectively.}
 
@@ -36,7 +36,7 @@ The normalised columns are named as \code{AnalyteName} and \code{AnalyteName_raw
 
 \item{verbose}{(\code{logical(1)}) print additional information. The default is \code{TRUE}}
 
-\item{reference_dilution}{(\code{numeric(1)}) target dilution for reference for the nMFI normalisation. Ignored in case of RAU normalisation.
+\item{reference_dilution}{(\code{numeric(1)}) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
 Default is \code{1/400}.
 It should refer to a dilution of a standard curve sample in the given plate object.
 This parameter could be either a numeric value or a string.
