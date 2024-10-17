@@ -7,7 +7,7 @@
 
 
 ## Overview
-This package is a simple tool that handles various formats of raw data produced in Multiplex Bead Assay (MBA). In short, it reads the unstructured, raw data from, e.g., the Luminex device and outputs normalised and well-structured data, which can be used later in more advanced downstream analysis.
+This package is a simple tool that handles various raw data formats produced in Multiplex Bead Assay (MBA). In short, it reads the unstructured, raw data from, e.g., the Luminex device and outputs normalised and well-structured data, which can be used later in more advanced downstream analysis.
 
 The package includes three main steps for preprocessing the data:
 
@@ -20,8 +20,7 @@ The package includes three main steps for preprocessing the data:
 
 ### 🟡 *Semi-release* version
 
-The package is still in a *semi-release* version and new functionalities are being added. We plan to finish this stage of development by the end of 2024, by adding summary reports, quality control tools comparing multiple plates, and different normalisation methods.
-
+The package is still in a *semi-release* version, and new functionalities are being added. We plan to finish this stage of development by the end of 2024 by adding summary reports, quality control tools comparing multiple plates, and different normalisation methods.
 
 ## Installation
 
@@ -42,17 +41,17 @@ install_github("mini-pw/PvSTATEM")
 require(PvSTATEM) # load the installed package
 ```
 
-The first command loads the `devtools` library (you might need to install it first - using command `install_packages("devtools")`), and the second one sources the git repository with the code of our package and automatically installs it. 
+The first command loads the `devtools` library (you might need to install it first - using the command `install_packages("devtools")`), and the second one sources the git repository with the code of our package and automatically installs it. 
 
 ## Examples and instructions
 
 The example use of the package and its functionalities can be found in [the vignettes](https://mini-pw.github.io/PvSTATEM/articles/example_script.html).
-For more detailed documentation of the package, check [the package website](https://mini-pw.github.io/PvSTATEM).
+For more detailed documentation, check [the package website](https://mini-pw.github.io/PvSTATEM).
 
 
 ## Contributing and issues
 
-As a project in the development phase, we are open to any suggestions, bug reports, and contributions. If you have any ideas or issues, please report them in the [Issues](https://github.com/mini-pw/PvSTATEM/issues) section. Our team of developers will try to address them as soon as possible.
+As a project in the development phase, we are open to any suggestions, bug reports, and contributions. If you have any ideas or issues, please report them in the [Issues](https://github.com/mini-pw/PvSTATEM/issues) section. Our team of developers will address them as soon as possible.
 
 
 

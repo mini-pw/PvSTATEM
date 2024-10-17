@@ -1,18 +1,18 @@
-#' Plot a 96-well plate with colored wells
+#' Plot a 96-well plate with coloured wells
 #'
-#' It is a generic function to plot a 96-well plate with colored wells
+#' It is a generic function to plot a 96-well plate with coloured wells
 #' used by other functions in this package, mainly to plot layout and counts.
 #' The function uses a background image of a 96-well plate and
-#' plots the colors in the wells using ggplot2.
-#' This function is not intended to be used directly by the user.
-#' Rather, it is used by other functions, specified in this file.
+#' plots the colours in the wells using ggplot2.
+#' This function is not intended for the user to use directly.
+#' Rather, it is used by other functions specified in this file.
 #'
-#' @param colors A vector with 96 colors that will be used to color the wells, order is from left to right and top to bottom
+#' @param colours A vector with 96 colours will be used to colour the wells; the order is from left to right and top to bottom
 #' @param plot_numbers Logical value indicating if the well numbers should be plotted, default is `FALSE`
-#' @param numbers An optional vector with 96 numbers, plotted on the wells. Order is from left to right and top to bottom, must have the same length as colors. It could be used, for instance, to plot the bead count of each well. Must be provided in case the `plot_numbers` parameters is set to `TRUE`
+#' @param numbers An optional vector with 96 numbers plotted on the wells. Order is from left to right and top to bottom and must have the same length as colours. It could be used, for instance, to plot the bead count of each well. Must be provided in case the `plot_numbers` parameters are set to `TRUE`
 #' @param plot_title The title of the plot (default is "Plate")
 #' @param plot_legend Logical value indicating if the legend should be plotted, default is `FALSE`
-#' @param legend_mapping A named vector with the colors mapping used to create the legend
+#' @param legend_mapping A named vector with the colour mapping used to create the legend
 #'
 #' @return A ggplot object
 #'
@@ -111,10 +111,10 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 
 #' Plot counts in a 96-well plate
 #'
-#' This is a function used to plot counts in a 96-well plate using a color to represent the count ranges.
-#' There is possibility to plot exact counts in each well. \cr \cr
-#' If plot window is resized, it's best to re-run the function to adjust the scaling.
-#' Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted automatically.
+#' This function plots counts in a 96-well plate using a colour to represent the count ranges.
+#' There is a possibility of plotting exact counts in each well. \cr \cr
+#' If the plot window is resized, it's best to re-run the function to adjust the scaling.
+#' Sometimes, when a legend is plotted, the whole layout may be shifted. It's best to stretch the window, and everything will be adjusted automatically.
 #'
 #' @param plate The plate object with the counts data
 #' @param analyte_name The name of the analyte
@@ -202,9 +202,9 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 #' Plot layout of a 96-well plate
 #'
 #' @description
-#' This is a function used to plot the layout of a 96-well plate using a color to represent the sample types. \cr \cr
-#' If plot window is resized, it's best to re-run the function to adjust the scaling.
-#' Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted automatically.
+#' This function plots the layout of a 96-well plate using a colour to represent the sample types. \cr \cr
+#' If the plot window is resized, it's best to re-run the function to adjust the scaling.
+#' Sometimes, the whole layout may be shifted when a legend is plotted. It's best to stretch the window, and everything will be adjusted automatically.
 #'
 #'
 #' @param plate The plate object with the layout information

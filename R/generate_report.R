@@ -1,7 +1,8 @@
 #' Generate a report for a plate.
 #'
-#' This function generates a report for a plate. The report is generated using
-#' the `plate_report_template.Rmd` template.
+#' @description
+#' This function generates a report for a plate. The report contains all the necessary information about the plate, from the general plate parameters, such as examination date, to the breakdown of the analytes' plots.
+#' The report is generated using the `plate_report_template.Rmd` template.
 #'
 #' @param plate A plate object.
 #' @param use_model (`logical(1)`) A logical value indicating whether the model should be used in the report.

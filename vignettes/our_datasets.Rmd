@@ -19,9 +19,9 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Our package's main purpose is to read, perform quality control, and normalise raw MBA data. Unfortunately, different devices and labs have different data formats. We gathered a few datasets on which our package could be tested. This document describes the datasets and their sources.
+Our package mainly aims to read, perform quality control, and normalise raw MBA data. Unfortunately, different devices and labs have different data formats. We gathered a few datasets on which our package could be tested. This document describes the datasets and their sources.
 
-The majority of our datasets, available for the public are stored in the `extdata` folder of the package. The remaining ones - both private and the larger number of publicly available datasets are stored in the `OneDrive` folder, which is accessible to the package developers.
+The majority of our datasets, available for the public, are stored in the `extdata` folder of the package. The remaining private and the more significant number of publicly available datasets are stored in the `OneDrive` folder, which is accessible to the package developers.
 
 ## How to access the files
 
@@ -48,14 +48,14 @@ plate
 
 Our datasets are divided into three main categories: 
 
-- **artificial** - the ones created by us for the purpose of testing the package functionalities 
-- **public** - the publicly available datasets, produced in the scope of PvSTATEM project or by the laboratories participating in the project. 
-- **external** - the ones gathered from the public domain, external sources, independent from PvSTATEM project
+- **artificial** - the ones created by us to test the package functionalities 
+- **public** - the publicly available datasets produced in the scope of the PvSTATEM project or by the laboratories participating in the project. 
+- **external** - the ones gathered from the public domain, external sources, independent from the PvSTATEM project
 
 
 ### Artificial datasets
 
-In order to perform simple unit tests and validate the most basic reading functionalities of the package, we created a few artificial datasets. The datasets are stored in the `extdata` folder of the package. The datasets are:
+To perform simple unit tests and validate the most basic reading functionalities of the package, we created a few artificial datasets. The datasets are stored in the package's  `extdata` folder. The datasets are:
 
 -  `random.csv` - a simple dataset with random values used to test the basic functionalities of the package
 -  `random2.csv` - another simple dataset with random values used to test the basic functionalities of the package. This file has a corresponding, artificial layout - `random_layout.csv`
@@ -63,9 +63,9 @@ In order to perform simple unit tests and validate the most basic reading functi
 
 ### Public datasets
 
-The datasets from this category are the most important for package development since the main purpose of the package is to make the preprocessing of the data easier in the scope of the PvSTATEM project.
+The datasets from this category are the most important for package development since the package's primary purpose is to simplify the preprocessing of the data in the scope of the PvSTATEM project.
 
-The majority of them are stored in the package's `OneDrive` folder. The datasets available in the `extdata` folder are two files coming from Covid oise examination: 
+Most of them are stored in the package's `OneDrive` folder. The datasets available in the `extdata` folder are two files coming from the Covid oise examination: 
 
 - `CovidOISExPONTENT.csv`, which is a `IG4DC2~1.csv` plate from examination `IgG_CovidOise4_30plex`. It contains the corresponding layout file `CovidOISExPONTENT_layout.xlsx`
 - `CovidOISExPONTENT_CO.csv`, which is a `IGG_CO~1.csv` plate from examination `IgG_CovidOise2_30plex` and corresponding layout file 
@@ -74,7 +74,7 @@ Most of the examples and vignettes in the package are based on these datasets.
 
 ### External datasets
 
-To check the package functionalities on the data from different sources, we gathered a few datasets from the public domain. The datasets are also stored in the `OneDrive` folder of the package and in the subfolder `external` of the `extdata` directory. The datasets are:
+We gathered a few datasets from the public domain to check the package functionalities of the data from different sources. The datasets are also stored in the package `OneDrive` folder and in the subfolder `external` of the `extdata` directory. The datasets are:
 
 -   `Chul_IgG3_1.csv` - GitHub repo RTSS_Kisumu_Schisto [source](https://github.com/IDEELResearch/RTSS_Kisumu_Schisto/tree/main/data/raw/luminex)
 
