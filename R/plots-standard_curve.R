@@ -257,10 +257,9 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
 
   p <- ggplot2::ggplot(plot_data, aes(x = .data$RAU, y = .data$MFI)) +
     ggplot2::geom_point(aes(color = "Standard curve samples"), size = 9) +
-    ggplot2::geom_line(aes(color = "Standard curve samples"), linewidth = 1.2) +
     ggplot2::geom_hline(
       aes(yintercept = blank_mean, color = "Blank mean"),
-      linetype = "solid", linewidth = 2
+      linetype = "solid", linewidth = 1.8
     ) +
     ggplot2::labs(title = analyte_name, x = "", y = "") +
     ggplot2::scale_x_continuous(
@@ -270,11 +269,12 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
     #ggplot2::scale_y_continuous(trans = "log10") +
     ggplot2::theme_minimal() +
     ggplot2::theme(
-      axis.line = element_line(colour = "black"),
+      axis.line = element_line(colour = "black", size = 2),
       axis.text.x = element_text(size = 0),
       axis.text.y = element_text(size = 0),
       legend.position = "none",
-      plot.title = element_text(hjust = 0.5, size = 50)
+      plot.title = element_text(hjust = 0.5, size = 50),
+      panel.grid.minor = element_blank(),
     ) +
     ggplot2::coord_trans(x = "reverse") +
     ggplot2::scale_color_manual(
