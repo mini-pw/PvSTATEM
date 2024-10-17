@@ -80,7 +80,9 @@ plot_mfi_for_analyte <- function(plate, analyte_name,
     ggplot2::ylab(paste0("MFI (", data_type, ") ", scale_y, " scale")) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
-      plot.title = element_text(hjust = 0.5) # Center title
+      plot.title = element_text(hjust = 0.5), # Center title
+      legend.background = element_rect(fill = "white", color = "black"),
+      legend.title=element_blank()
     ) +
     ggplot2::scale_y_continuous(transform = scale_y)
 

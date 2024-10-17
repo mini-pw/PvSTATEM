@@ -112,12 +112,12 @@ plot_standard_curve_analyte <- function(plate,
       axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
       axis.text.y = element_text(size = 9),
       legend.position.inside = legend_position,
-      legend.background = element_rect(fill = "white", color = "black")
+      legend.background = element_rect(fill = "white", color = "black"),
+      legend.title = element_blank()
     ) +
     ggplot2::scale_color_manual(
       values = c("Standard curve samples" = "blue", "Blank mean" = "red", "Min-max RAU bounds" = "gray")
-    ) +
-    ggplot2::guides(color = guide_legend(title = "Plot object"))
+    )
 
   if (!plot_legend) {
     p <- p + ggplot2::theme(legend.position = "none")
@@ -266,7 +266,7 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
       breaks = x_ticks, labels = x_labels,
       trans = "log10"
     ) +
-    # ggplot2::scale_y_continuous(trans = "log10") +
+    #ggplot2::scale_y_continuous(trans = "log10") +
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.line = element_line(colour = "black", size = 2),
