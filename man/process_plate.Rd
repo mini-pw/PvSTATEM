@@ -9,6 +9,7 @@ process_plate(
   output_path = NULL,
   normalisation_type = "RAU",
   data_type = "Median",
+  include_raw_mfi = TRUE,
   adjust_blanks = FALSE,
   verbose = TRUE,
   reference_dilution = 1/400,
@@ -23,10 +24,13 @@ If not provided, the file will be saved in the working directory with the name \
 Where the \code{{plate_name}} is the name of the plate.}
 
 \item{normalisation_type}{(\code{character(1)}) type of normalisation to use. Available options are:
-\cr \code{c(RAU, nMFI)}.
-In case}
+\cr \code{c(RAU, nMFI)}.}
 
 \item{data_type}{(\code{character(1)}) type of data for the computation. Median is the default}
+
+\item{include_raw_mfi}{(\code{logical(1)}) include raw MFI values in the output. Default is \code{TRUE}.
+In case this option is \code{TRUE}, the output dataframe contains two columns for each analyte: one for the normalised values and one for the raw MFI values.
+The normalised columns are named as \code{AnalyteName} and \code{AnalyteName_raw}, respectively.}
 
 \item{adjust_blanks}{(\code{logical(1)}) adjust blanks before computing RAU values. The default is \code{FALSE}}
 
@@ -82,7 +86,9 @@ process_plate(plate, output_path = temporary_filepath)
 # create and save dataframe with computed dilutions
 
 # nMFI normalisation
-process_plate(plate, output_path = temporary_filepath,
-      normalisation_type = "nMFI", reference_dilution = 1/400)
+process_plate(plate,
+  output_path = temporary_filepath,
+  normalisation_type = "nMFI", reference_dilution = 1 / 400
+)
 
 }

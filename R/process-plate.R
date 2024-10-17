@@ -39,11 +39,13 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' Where the `{plate_name}` is the name of the plate.
 #' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
 #' \cr \code{c(`r toString(VALID_NORMALISATION_TYPES)`)}.
-#' In case
-#' @param data_type (`character(1)`) type of data for the computation. Median is the default
+#' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
+#' @param include_raw_mfi (`logical(1)`) include raw MFI values in the output. The default is `TRUE`.
+#' In case this option is `TRUE`, the output dataframe contains two columns for each analyte: one for the normalised values and one for the raw MFI values.
+#' The normalised columns are named as `AnalyteName` and `AnalyteName_raw`, respectively.
 #' @param adjust_blanks (`logical(1)`) adjust blanks before computing RAU values. The default is `FALSE`
 #' @param verbose (`logical(1)`) print additional information. The default is `TRUE`
-#' @param reference_dilution (`numeric(1)`) target dilution for reference for the nMFI normalisation. Ignored in case of RAU normalisation.
+#' @param reference_dilution (`numeric(1)`) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
 #' Default is `1/400`.
 #' It should refer to a dilution of a standard curve sample in the given plate object.
 #' This parameter could be either a numeric value or a string.
@@ -63,8 +65,10 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' # create and save dataframe with computed dilutions
 #'
 #' # nMFI normalisation
-#' process_plate(plate, output_path = temporary_filepath,
-#'       normalisation_type = "nMFI", reference_dilution = 1/400)
+#' process_plate(plate,
+#'   output_path = temporary_filepath,
+#'   normalisation_type = "nMFI", reference_dilution = 1 / 400
+#' )
 #'
 #' @return a data frame with normalised values
 #' @export
@@ -73,6 +77,7 @@ process_plate <-
            output_path = NULL,
            normalisation_type = "RAU",
            data_type = "Median",
+           include_raw_mfi = TRUE,
            adjust_blanks = FALSE,
            verbose = TRUE,
            reference_dilution = 1 / 400,
@@ -102,16 +107,15 @@ process_plate <-
         "'\n",
         verbose = verbose
       )
-    }
-    else if (normalisation_type == "RAU") {
-
+    } else if (normalisation_type == "RAU") {
       # RAU normalisation
 
       test_sample_names <-
         plate$sample_names[plate$sample_types == "TEST"]
-      output_list <- list()
+      output_list <- list("SampleName" = test_sample_names)
       verbose_cat("Fitting the models and predicting RAU for each analyte\n",
-                  verbose = verbose)
+        verbose = verbose
+      )
 
       for (analyte in plate$analyte_names) {
         model <-
@@ -124,16 +128,24 @@ process_plate <-
 
       output_df <- data.frame(output_list)
 
-      verbose_cat("Saving the computed RAU values to a CSV file located in: '",
-                  output_path,
-                  "'\n",
-                  verbose = verbose)
-
       rownames(output_df) <- test_sample_names
     }
+
+    if (include_raw_mfi) {
+      verbose_cat("Adding the raw MFI values to the output dataframe\n")
+      raw_mfi <- plate$data[[data_type]][plate$sample_types == "TEST", ]
+      colnames(raw_mfi) <- paste0(colnames(raw_mfi), "_raw")
+
+      output_df <- cbind(output_df, raw_mfi)
+    }
+
+    verbose_cat("Saving the computed", normalisation_type, "values to a CSV file located in: '",
+      output_path,
+      "'\n",
+      verbose = verbose
+    )
+
     write.csv(output_df, output_path)
 
     return(output_df)
-
-
   }

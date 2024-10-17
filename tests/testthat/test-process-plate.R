@@ -60,3 +60,25 @@ test_that("Processing plate with nMFI", {
     process_plate(plate, output_path = test_output_path, reference_dilution = "1/401", normalisation_type = "nMFI")
   )
 })
+
+
+test_that("raw MFI in dataframe", {
+  # Read plate
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+  expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
+
+  # Test processing of a plate, without raw MFI
+  tmp_dir <- tempdir(check = TRUE)
+  test_output_path <- file.path(tmp_dir, "output.csv")
+  expect_no_error(
+    output_df <- process_plate(plate, output_path = test_output_path, normalisation_type = "nMFI", include_raw_mfi = FALSE)
+  )
+  stopifnot(all(colnames(output_df) == plate$analyte_names))
+
+  # Test processing of a plate, with raw MFI
+  expect_no_error(
+    output_df <- process_plate(plate, output_path = test_output_path, normalisation_type = "nMFI", include_raw_mfi = TRUE)
+  )
+  stopifnot(all(colnames(output_df) == c(plate$analyte_names, paste0(plate$analyte_names, "_raw"))))
+})

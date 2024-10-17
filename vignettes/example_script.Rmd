@@ -231,6 +231,5 @@ nmfi_values <- get_nmfi(plate)
 
 nmfi_output_path <- file.path(tmp_dir, "nmfi_output.csv")
 process_plate(plate, output_path = nmfi_output_path, normalisation_type = "nMFI")
-
 ```
 
