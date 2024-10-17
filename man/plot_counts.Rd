@@ -30,10 +30,10 @@ plot_counts(
 A ggplot object
 }
 \description{
-This is a function used to plot counts in a 96-well plate using a color to represent the count ranges.
-There is possibility to plot exact counts in each well. \cr \cr
-If plot window is resized, it's best to re-run the function to adjust the scaling.
-Sometimes when legend is plotted, whole layout may be shifted, then it's best to stretch the window, and everything will be adjusted automatically.
+This function plots counts in a 96-well plate using a colour to represent the count ranges.
+There is a possibility of plotting exact counts in each well. \cr \cr
+If the plot window is resized, it's best to re-run the function to adjust the scaling.
+Sometimes, when a legend is plotted, the whole layout may be shifted. It's best to stretch the window, and everything will be adjusted automatically.
 }
 \examples{
 plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
