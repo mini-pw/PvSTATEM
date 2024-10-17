@@ -39,7 +39,7 @@ test_that("Test is.scalar", {
 
 test_that("Test verbose cat", {
   expect_output(verbose_cat("a", "b"), "ab")
-  expect_null(verbose_cat("a", "b", verbose = F))
+  expect_null(verbose_cat("a", "b", verbose = FALSE))
 })
 
 test_that("Test clamp function", {
@@ -47,4 +47,56 @@ test_that("Test clamp function", {
   expect_equal(clamp(c(1, -1, NA), lower = 0), c(1, 0, NA))
   expect_equal(clamp(c(1, 2.2, 3), upper = 2), c(1, 2, 2))
   expect_equal(clamp(c(2, 10, NA), upper = 2), c(2, 2, NA))
+})
+
+test_that("Test format dilution function standard case", {
+  dilutions <- c("1/2", "1/3", "1/4")
+  dilution_values <- c(0.5, 0.33, 0.25)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), "1/2, 1/3, 1/4")
+})
+
+test_that("Test format dilution function with sample types", {
+  dilutions <- c("1/2", "1/3", "1/4")
+  dilution_values <- c(0.5, 0.33, 0.25)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "SAMPLE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), "1/2, 1/3")
+})
+
+test_that("Test format dilution function with multiple duplicates", {
+  dilutions <- c("1/2", "1/3", "1/4", "1/4")
+  dilution_values <- c(0.5, 0.33, 0.25, 0.25)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), "1/2, 1/3, 2x1/4")
+})
+
+test_that("Test format dilution function with shuffled dilutions", {
+  dilutions <- c("1/4", "1/2", "1/3")
+  dilution_values <- c(0.25, 0.5, 0.33)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), "1/2, 1/3, 1/4")
+})
+
+test_that("Test format dilution function with dilutions equal null", {
+  dilutions <- NULL
+  dilution_values <- c(0.25, 0.5, 0.33)
+  sample_types <- c("STANDARD CURVE", "STANDARD CURVE", "SAMPLE")
+
+  expect_equal(format_dilutions(dilutions, dilution_values, sample_types), NULL)
+})
+
+
+test_that("Test is.decreasing function", {
+  expect_true(is.decreasing(NULL))
+  expect_true(is.decreasing(c()))
+  expect_true(is.decreasing(c(2)))
+  expect_true(is.decreasing(c(3, 2, 1)))
+  expect_false(is.decreasing(c(1, 2, 3)))
+  expect_false(is.decreasing(c(1, 2, 2)))
+  expect_error(is.decreasing(c(1, 2, NA)))
+  expect_error(is.decreasing("wrong"))
 })

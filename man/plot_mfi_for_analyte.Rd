@@ -8,7 +8,9 @@ plot_mfi_for_analyte(
   plate,
   analyte_name,
   data_type = "Median",
-  plot_type = "boxplot"
+  plot_type = "violin",
+  scale_y = "log10",
+  plot_outliers = FALSE
 )
 }
 \arguments{
@@ -18,8 +20,17 @@ plot_mfi_for_analyte(
 
 \item{data_type}{The type of data to plot. Default is "Median"}
 
-\item{plot_type}{The type of plot to generate. Default is "boxplot".
+\item{plot_type}{The type of plot to generate. Default is "violin".
 Available options are "boxplot" and "violin".}
+
+\item{scale_y}{What kind of transformation of the scale to apply.
+By default MFI is presented in a "log10" scale. Available options are
+described in the documentation of \link[ggplot2]{scale_y_continuous}
+under\code{transform} parameter.}
+
+\item{plot_outliers}{When using "boxplot" type of a plot
+one can set this parameter to TRUE and display the names of samples for
+which MFI falls outside the 1.5 IQR interval}
 }
 \value{
 A ggplot object

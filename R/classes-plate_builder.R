@@ -11,15 +11,16 @@ PlateBuilder <- R6::R6Class(
   "PlateBuilder",
   public = list(
     plate_name = NULL,
-    batch_name = NULL,
-    analyte_names = NULL,
     sample_names = NULL,
+    analyte_names = NULL,
+    batch_name = NULL,
+    plate_datetime = NULL,
     sample_locations = NULL,
+    sample_types = NULL,
     dilutions = NULL,
     dilution_values = NULL,
-    sample_types = NULL,
-    data = NULL,
     default_data_type = "Median",
+    data = NULL,
     batch_info = NULL,
     layout = NULL,
 
@@ -29,11 +30,14 @@ PlateBuilder <- R6::R6Class(
     #'
     #' @param sample_names - vector of sample names measured during
     #' an examination in the same order as in the data
+    #'
     #' @param analyte_names - vector of analytes names measured during
     #' an examination in the same order as in the data
+    #'
     #' @param batch_name - name of the batch during which the plate was examined
     #' obtained from the plate info. An optional parameter, by default set to
     #' `""` - an empty string.
+    #'
     #' @param verbose - logical value indicating whether to print additional
     #' information. This parameter is stored as a private attribute of the object
     #' and reused in other methods
@@ -178,6 +182,21 @@ PlateBuilder <- R6::R6Class(
     },
 
     #' @description
+    #' Set the plate datetime for the plate
+    #'
+    #' @param plate_datetime a POSIXct datetime object
+    #' representing the date and time of the examination
+    set_plate_datetime = function(plate_datetime) {
+      if (is.null(plate_datetime)) {
+        stop("Plate datetime is not provided")
+      }
+      if (!lubridate::is.POSIXct(plate_datetime)) {
+        stop("Plate datetime is not a valid datetime")
+      }
+      self$plate_datetime <- plate_datetime
+    },
+
+    #' @description
     #' Set the data used during the examination
     #' @param data a named list of data frames containing information about
     #' the samples and analytes. The list is named by the type of the data
@@ -265,15 +284,16 @@ PlateBuilder <- R6::R6Class(
 
       plate <- Plate$new(
         plate_name = self$plate_name,
-        batch_name = self$batch_name,
-        analyte_names = self$analyte_names,
         sample_names = self$sample_names,
+        analyte_names = self$analyte_names,
+        batch_name = self$batch_name,
+        plate_datetime = self$plate_datetime,
         sample_locations = self$sample_locations,
+        sample_types = self$sample_types,
         dilutions = self$dilutions,
         dilution_values = self$dilution_values,
-        sample_types = self$sample_types,
-        data = self$data,
         default_data_type = self$default_data_type,
+        data = self$data,
         batch_info = self$batch_info,
         layout = self$layout
       )
@@ -316,6 +336,7 @@ PlateBuilder <- R6::R6Class(
       if (length(self$analyte_names) == 0) {
         append(errors, "Analyte names are empty")
       }
+      # BUG:: Issue #164 - Unhandled errors
     }
   )
 )
@@ -384,6 +405,15 @@ is_dilution <- function(character_vector) {
   is_valid_dilution
 }
 
+
+
+#' Convert dilutions to numeric values
+#' @description
+#' Convert dilutions saved as strings in format `1/\d+` into numeric values
+#' @param dilutions vector of dilutions used during the examination saved
+#' as strings in format `1/\d+`
+#' @return a vector of numeric values representing the dilutions
+#' @keywords internal
 convert_dilutions_to_numeric <- function(dilutions) {
   stopifnot(is.character(dilutions))
 

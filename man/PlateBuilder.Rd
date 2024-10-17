@@ -22,6 +22,7 @@ It is used to store the data and validate the final fields.
 \item \href{#method-PlateBuilder-set_dilutions}{\code{PlateBuilder$set_dilutions()}}
 \item \href{#method-PlateBuilder-set_sample_types}{\code{PlateBuilder$set_sample_types()}}
 \item \href{#method-PlateBuilder-set_sample_names}{\code{PlateBuilder$set_sample_names()}}
+\item \href{#method-PlateBuilder-set_plate_datetime}{\code{PlateBuilder$set_plate_datetime()}}
 \item \href{#method-PlateBuilder-set_data}{\code{PlateBuilder$set_data()}}
 \item \href{#method-PlateBuilder-set_default_data_type}{\code{PlateBuilder$set_default_data_type()}}
 \item \href{#method-PlateBuilder-set_batch_info}{\code{PlateBuilder$set_batch_info()}}
@@ -145,6 +146,24 @@ extract the sample names from the layout file. Otherwise, uses the original samp
 \describe{
 \item{\code{use_layout_sample_names}}{logical value indicating whether
 to use names extracted from layout files. If set to false, this function only checks if the sample names are provided in the plate}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PlateBuilder-set_plate_datetime"></a>}}
+\if{latex}{\out{\hypertarget{method-PlateBuilder-set_plate_datetime}{}}}
+\subsection{Method \code{set_plate_datetime()}}{
+Set the plate datetime for the plate
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$set_plate_datetime(plate_datetime)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{plate_datetime}}{a POSIXct datetime object
+representing the date and time of the examination}
 }
 \if{html}{\out{</div>}}
 }

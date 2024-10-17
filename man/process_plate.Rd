@@ -2,41 +2,76 @@
 % Please edit documentation in R/process-plate.R
 \name{process_plate}
 \alias{process_plate}
-\title{Process a plate and save computed dilutions to a CSV}
+\title{Process a plate and save output values to a CSV}
 \usage{
 process_plate(
   plate,
   output_path = NULL,
+  normalisation_type = "RAU",
   data_type = "Median",
+  include_raw_mfi = TRUE,
   adjust_blanks = FALSE,
   verbose = TRUE,
+  reference_dilution = 1/400,
   ...
 )
 }
 \arguments{
 \item{plate}{(\code{Plate()}) a plate object}
 
-\item{output_path}{(\code{character(1)}) path to save the computed dilutions.
-If not provided the file will be saved in the working directory with the name \verb{dilutions_\{plate_name\}.csv}.
+\item{output_path}{(\code{character(1)}) path to save the computed RAU values.
+If not provided, the file will be saved in the working directory with the name \verb{\{normalisation_type\}_\{plate_name\}.csv}.
 Where the \code{{plate_name}} is the name of the plate.}
+
+\item{normalisation_type}{(\code{character(1)}) type of normalisation to use. Available options are:
+\cr \code{c(RAU, nMFI)}.}
 
 \item{data_type}{(\code{character(1)}) type of data to use for the computation. Median is the default}
 
-\item{adjust_blanks}{(\code{logical(1)}) adjust blanks before computing dilutions. Default is \code{FALSE}}
+\item{include_raw_mfi}{(\code{logical(1)}) include raw MFI values in the output. The default is \code{TRUE}.
+In case this option is \code{TRUE}, the output dataframe contains two columns for each analyte: one for the normalised values and one for the raw MFI values.
+The normalised columns are named as \code{AnalyteName} and \code{AnalyteName_raw}, respectively.}
 
-\item{verbose}{(\code{logical(1)}) print additional information. Default is \code{TRUE}}
+\item{adjust_blanks}{(\code{logical(1)}) adjust blanks before computing RAU values. The default is \code{FALSE}}
+
+\item{verbose}{(\code{logical(1)}) print additional information. The default is \code{TRUE}}
+
+\item{reference_dilution}{(\code{numeric(1)}) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
+Default is \code{1/400}.
+It should refer to a dilution of a standard curve sample in the given plate object.
+This parameter could be either a numeric value or a string.
+In case it is a character string, it should have the format \verb{1/d+}, where \verb{d+} is any positive integer.}
 
 \item{...}{Additional arguments to be passed to the fit model function (\code{create_standard_curve_model_analyte})}
 }
+\value{
+a data frame with normalised values
+}
 \description{
-The behavior can be summarized as follows:
+Depending on the \code{normalisation_type} argument, the function will compute the RAU or nMFI values for each analyte in the plate.
+\strong{RAU} is the default normalisation type.
+
+The behaviour of the function, in the case of RAU normalisation type, can be summarised as follows:
 \enumerate{
 \item Adjust blanks if not already done.
 \item Fit a model to each analyte using standard curve samples.
-\item Compute dilutions for each analyte using the corresponding model.
-\item Aggregate computed dilutions into a single data frame.
-\item Save the computed dilutions to a CSV file.
+\item Compute RAU values for each analyte using the corresponding model.
+\item Aggregate computed RAU values into a single data frame.
+\item Save the computed RAU values to a CSV file.
 }
+
+More info about the RAU normalisation can be found in
+\code{create_standard_curve_model_analyte} function documentation \link[PvSTATEM]{create_standard_curve_model_analyte} or in the Model reference \link[PvSTATEM]{Model}.
+
+In case the normalisation type is \strong{nMFI}, the function will:
+\enumerate{
+\item Adjust blanks if not already done.
+\item Compute nMFI values for each analyte using the target dilution.
+\item Aggregate computed nMFI values into a single data frame.
+\item Save the computed nMFI values to a CSV file.
+}
+
+More info about the nMFI normalisation can be found in \code{get_nmfi} function documentation \link[PvSTATEM]{get_nmfi}.
 }
 \examples{
 
@@ -49,5 +84,11 @@ tmp_dir <- tempdir(check = TRUE)
 temporary_filepath <- file.path(tmp_dir, "output.csv")
 process_plate(plate, output_path = temporary_filepath)
 # create and save dataframe with computed dilutions
+
+# nMFI normalisation
+process_plate(plate,
+  output_path = temporary_filepath,
+  normalisation_type = "nMFI", reference_dilution = 1 / 400
+)
 
 }

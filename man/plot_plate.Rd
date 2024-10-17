@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots-plate.R
 \name{plot_plate}
 \alias{plot_plate}
-\title{Plot a 96-well plate with colored wells}
+\title{Plot a 96-well plate with coloured wells}
 \usage{
 plot_plate(
   colors,
@@ -14,27 +14,28 @@ plot_plate(
 )
 }
 \arguments{
-\item{colors}{A vector with 96 colors that will be used to color the wells, order is from left to right and top to bottom}
-
 \item{plot_numbers}{Logical value indicating if the well numbers should be plotted, default is \code{FALSE}}
 
-\item{numbers}{An optional vector with 96 numbers, plotted on the wells. Order is from left to right and top to bottom, must have the same length as colors. It could be used, for instance, to plot the bead count of each well. Must be provided in case the \code{plot_numbers} parameters is set to \code{TRUE}}
+\item{numbers}{An optional vector with 96 numbers plotted on the wells. Order is from left to right and top to bottom and must have the same length as colours.
+It could be used, for instance, to plot the bead count of each well. Must be provided in case the \code{plot_numbers} parameter is set to \code{TRUE}}
 
 \item{plot_title}{The title of the plot (default is "Plate")}
 
 \item{plot_legend}{Logical value indicating if the legend should be plotted, default is \code{FALSE}}
 
-\item{legend_mapping}{A named vector with the colors mapping used to create the legend}
+\item{legend_mapping}{A named vector with the colour mapping used to create the legend}
+
+\item{colours}{A vector with 96 colours will be used to colour the wells; the order is from left to right and top to bottom}
 }
 \value{
 A ggplot object
 }
 \description{
-It is a generic function to plot a 96-well plate with colored wells
+It is a generic function to plot a 96-well plate with coloured wells
 used by other functions in this package, mainly to plot layout and counts.
 The function uses a background image of a 96-well plate and
-plots the colors in the wells using ggplot2.
-This function is not intended to be used directly by the user.
-Rather, it is used by other functions, specified in this file.
+plots the colours in the wells using ggplot2.
+This function is not intended for the user to use directly.
+Rather, it is used by other functions specified in this file.
 }
 \keyword{internal}

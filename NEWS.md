@@ -1,3 +1,12 @@
+PvSTATEM 0.0.5
+---------------------------------------------------------------
+* added function `generate_plate_report` generating the html report
+* added nMFI normalisation type
+* added an option to include raw MFI in the output of `process_plate` function
+* renamed output of the model to RAU (Relative Antibody Unit), which should be more interpretable for human
+* simple censoring of the extrapolation
+
+
 PvSTATEM 0.0.4
 ---------------------------------------------------------------
 * met the CRAN policy

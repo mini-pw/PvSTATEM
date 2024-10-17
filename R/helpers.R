@@ -143,3 +143,85 @@ clamp <- function(x, lower = -Inf, upper = Inf) {
   x[x > upper] <- upper
   x
 }
+
+
+#' Format dilutions
+#'
+#' The function counts the number of times each dilution factor appears and sorts them in descending order based on the corresponding dilution values.
+#' The output is a string that lists the dilution factors and their counts in the format `count x dilution_factor`.
+#' If the dilutions vector looks like `c("1/2", "1/2", "1/2", "1/3", "1/3", "1/4")`, the output will be `"3x1/2, 2x1/3, 1x1/4"`.
+#'
+#' @param dilutions A vector of dilution factors, taken from plate object.
+#' @param dilution_values A vector of dilution values corresponding to the dilution factors, taken from plate object. Used only for sorting purposes.
+#' @param sample_types A vector of sample types taken from plate object.
+#'
+#' @return A formatted string that lists the dilution factors and their counts. Returns `NULL` if `dilutions` is `NULL`.
+#'
+#' @keywords internal
+format_dilutions <- function(dilutions, dilution_values, sample_types) {
+  if (is.null(dilutions)) {
+    return(NULL)
+  }
+  # Filter out NA values from both vectors
+  non_na_indices <- !is.na(dilutions) & !is.na(dilution_values) & sample_types == "STANDARD CURVE"
+  filtered_dilutions <- dilutions[non_na_indices]
+  filtered_dilution_values <- dilution_values[non_na_indices]
+
+  # Count duplicates and store in a named list
+  dilution_counts <- table(filtered_dilutions)
+  unique_dilutions <- names(dilution_counts)
+
+  # Create a named vector for sorting purposes
+  dilution_value_map <- sapply(unique_dilutions, function(dil) {
+    min(filtered_dilution_values[filtered_dilutions == dil])
+  })
+
+  # Create formatted strings for counts
+  formatted_dilutions <- sapply(unique_dilutions, function(dil) {
+    count <- dilution_counts[dil]
+    if (count > 1) {
+      paste0(count, "x", dil)
+    } else {
+      dil
+    }
+  })
+
+  # Sort the formatted dilutions
+  sorted_indices <- order(dilution_value_map, decreasing = TRUE)
+  sorted_formatted_dilutions <- formatted_dilutions[sorted_indices]
+
+  paste(sorted_formatted_dilutions, collapse = ", ")
+}
+
+
+#' Convert dilution to RAU
+#'
+#' @param predicted_dilution (`numeric()`) A numeric value representing the predicted dilution.
+#'
+#' @return The RAU value corresponding to the predicted dilution .
+#'
+#' @keywords internal
+dilution_to_rau <- function(predicted_dilution) {
+  return(predicted_dilution * 1e6)
+}
+
+#' @title Check if the vector is monotically decreasing
+#'
+#' @param x (`numeric()`) Vector of numeric values
+#'
+#' @return (`logical(1)`) `TRUE` if the vector is monotonically decreasing, `FALSE` otherwise
+#'
+#' @keywords internal
+#'
+is.decreasing <- function(x) {
+  stopifnot(is.numeric(x) || is.null(x))
+  if (any(is.na(x))) {
+    stop(
+      "NA values detected in the input vector for `is.decreasing` function."
+    )
+  }
+  if (is.null(x) || (length(x) < 2)) {
+    return(TRUE)
+  }
+  all(diff(x) < 0)
+}
