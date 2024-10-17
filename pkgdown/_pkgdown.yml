@@ -36,3 +36,4 @@ reference:
     - is_valid_data_type
     - is_valid_sample_type
     - translate_sample_names_to_sample_types
+    - handle_high_dose_hook
