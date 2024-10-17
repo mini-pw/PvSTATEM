@@ -92,24 +92,26 @@ plot_layout(params$plate)
   document.addEventListener('DOMContentLoaded', function () {
 
     // Add event listeners to the standard curve thumbnails
-    var plotLinks = document.querySelectorAll('.plot-container a');
-    plotLinks.forEach(function (link) {
+    var thumbnailsLinks = document.querySelectorAll('.plot-container a');
+    thumbnailsLinks[0].closest('.plot-container').classList.add('active');
+
+    thumbnailsLinks.forEach(function (link) {
       link.addEventListener('click', function (event) {
         
-        var plotContainer = this.closest('.plot-container');
-        var plots = document.querySelectorAll('.plot-container');
+        var selectedThumbnail = this.closest('.plot-container');
+        var thumbnails = document.querySelectorAll('.plot-container');
         var generated_tablist = document.querySelectorAll('.nav.nav-tabs li');
         var targetId = this.getAttribute('href').substring(1);
         var targetElement = document.getElementById(targetId);
 
-        // Remove 'active' class from all plots and add to the clicked one
-        plots.forEach(function (p) {
+        // Remove 'active' class from all thumbnails and add to the clicked one
+        thumbnails.forEach(function (p) {
           p.classList.remove('active');
         });
         generated_tablist.forEach(function (p) {
           p.classList.remove('active');
         });
-        plotContainer.classList.add('active');
+        selectedThumbnail.classList.add('active');
 
         // Find and add 'active' class to the corresponding tab item
         generated_tablist.forEach(function (tabItem) {
@@ -138,7 +140,15 @@ plot_layout(params$plate)
     tabs.forEach(function (tab) {
       tab.addEventListener('click', function (event) {
         var targetId = this.querySelector('a').getAttribute('href').substring(1);
-        console.log(targetId);
+        var thumbnails = document.querySelectorAll('.plot-container');
+
+        thumbnails.forEach(function (thumb) {
+          if (thumb.querySelector('a').getAttribute('href').substring(1) === targetId) {
+            thumb.classList.add('active');
+          } else {
+            thumb.classList.remove('active');
+          }
+        });
       });
     });
   }, 600);
