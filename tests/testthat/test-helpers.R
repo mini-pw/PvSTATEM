@@ -39,7 +39,7 @@ test_that("Test is.scalar", {
 
 test_that("Test verbose cat", {
   expect_output(verbose_cat("a", "b"), "ab")
-  expect_null(verbose_cat("a", "b", verbose = F))
+  expect_null(verbose_cat("a", "b", verbose = FALSE))
 })
 
 test_that("Test clamp function", {

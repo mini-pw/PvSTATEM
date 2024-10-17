@@ -274,11 +274,11 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
       axis.text.x = element_text(size = 0),
       axis.text.y = element_text(size = 0),
       legend.position = "none",
-      plot.title = element_text(hjust=0.5, size=50)
+      plot.title = element_text(hjust = 0.5, size = 50)
     ) +
     ggplot2::coord_trans(x = "reverse") +
-     ggplot2::scale_color_manual(
-       values = c("Standard curve samples" = "blue", "Blank mean" = "red", "Min-max RAU bounds" = "gray")
+    ggplot2::scale_color_manual(
+      values = c("Standard curve samples" = "blue", "Blank mean" = "red", "Min-max RAU bounds" = "gray")
     )
-    p
+  p
 }
