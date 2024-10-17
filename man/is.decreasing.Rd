@@ -15,3 +15,4 @@ is.decreasing(x)
 \description{
 Check if the vector is monotically decreasing
 }
+\keyword{internal}

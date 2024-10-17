@@ -211,6 +211,8 @@ dilution_to_rau <- function(predicted_dilution) {
 #'
 #' @return (`logical(1)`) `TRUE` if the vector is monotonically decreasing, `FALSE` otherwise
 #'
+#' @keywords internal
+#'
 is.decreasing <- function(x) {
   stopifnot(is.numeric(x) || is.null(x))
   if (any(is.na(x))) {
