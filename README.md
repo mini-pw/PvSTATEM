@@ -30,12 +30,11 @@ The easiest way to install the package is using the CRAN repository:
 install.packages("PvSTATEM")
 require(PvSTATEM) # load the installed package
 ```
-
 Now, you are ready to use the package to read your files! 
 
+Please note that since uploading the package to the CRAN repository requires the volunteers' time to manually run checks on the packages, the **package version currently released on CRAN might not be the latest**. 
 
-
-Optionally, it is possible to build and install the package by hand. It can be done using a simple command `install_github` available in `devtools` library:
+The package is under heavy development, with new features being released weekly. Therefore, if you'd like to test the latest package functionalities, we recommend installing it in the development version. It can be done using a simple command `install_github` available in the `devtools` library:
 
 ``` r
 require(devtools)
