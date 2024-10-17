@@ -90,8 +90,9 @@ plot_layout(params$plate)
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    var plotLinks = document.querySelectorAll('.plot-container a');
 
+    // Add event listeners to the standard curve thumbnails
+    var plotLinks = document.querySelectorAll('.plot-container a');
     plotLinks.forEach(function (link) {
       link.addEventListener('click', function (event) {
         
@@ -130,6 +131,17 @@ plot_layout(params$plate)
       });
     });
   });
+
+  // Add event listeners to the tabs in order to synchronize analyte selectors
+  setTimeout(function () {
+    var tabs = document.querySelectorAll('.nav.nav-tabs li');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function (event) {
+        var targetId = this.querySelector('a').getAttribute('href').substring(1);
+        console.log(targetId);
+      });
+    });
+  }, 600);
 </script>
 
 
