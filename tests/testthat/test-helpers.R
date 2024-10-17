@@ -88,3 +88,15 @@ test_that("Test format dilution function with dilutions equal null", {
 
   expect_equal(format_dilutions(dilutions, dilution_values, sample_types), NULL)
 })
+
+
+test_that("Test is.decreasing function", {
+  expect_true(is.decreasing(NULL))
+  expect_true(is.decreasing(c()))
+  expect_true(is.decreasing(c(2)))
+  expect_true(is.decreasing(c(3, 2, 1)))
+  expect_false(is.decreasing(c(1, 2, 3)))
+  expect_false(is.decreasing(c(1, 2, 2)))
+  expect_error(is.decreasing(c(1, 2, NA)))
+  expect_error(is.decreasing("wrong"))
+})
