@@ -20,7 +20,8 @@
 #'
 #' plate <- read_luminex_data(plate_file, layout_file)
 #' tmp_dir <- tempdir(check = TRUE)
-#' generate_plate_report(plate, output_dir = tmp_dir, counts_lower_threshold = 40, counts_higher_threshold = 50)
+#' generate_plate_report(plate, output_dir = tmp_dir,
+#'   counts_lower_threshold = 40, counts_higher_threshold = 50)
 #' @export
 generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, output_dir = "reports", counts_lower_threshold = 50, counts_higher_threshold = 70) {
   message("Generating report... This will take approximately 30 seconds.")
