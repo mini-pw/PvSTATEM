@@ -66,8 +66,10 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' # create and save dataframe with computed dilutions
 #'
 #' # nMFI normalisation
-#' process_plate(plate, output_path = temporary_filepath,
-#'       normalisation_type = "nMFI", reference_dilution = 1/400)
+#' process_plate(plate,
+#'   output_path = temporary_filepath,
+#'   normalisation_type = "nMFI", reference_dilution = 1 / 400
+#' )
 #'
 #' @return a data frame with normalised values
 #' @export
@@ -106,17 +108,15 @@ process_plate <-
         "'\n",
         verbose = verbose
       )
-
     } else if (normalisation_type == "RAU") {
+      # RAU normalisation
 
-
-    # RAU normalisation
-
-    test_sample_names <-
-      plate$sample_names[plate$sample_types == "TEST"]
-    output_list <- list("SampleName" = test_sample_names)
-    verbose_cat("Fitting the models and predicting RAU for each analyte\n",
-                verbose = verbose)
+      test_sample_names <-
+        plate$sample_names[plate$sample_types == "TEST"]
+      output_list <- list("SampleName" = test_sample_names)
+      verbose_cat("Fitting the models and predicting RAU for each analyte\n",
+        verbose = verbose
+      )
 
       for (analyte in plate$analyte_names) {
         model <-
@@ -141,13 +141,12 @@ process_plate <-
     }
 
     verbose_cat("Saving the computed", normalisation_type, "values to a CSV file located in: '",
-                  output_path,
-                  "'\n",
-                  verbose = verbose)
-                  
+      output_path,
+      "'\n",
+      verbose = verbose
+    )
+
     write.csv(output_df, output_path)
 
     return(output_df)
-
-
   }
