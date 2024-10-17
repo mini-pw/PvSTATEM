@@ -108,16 +108,15 @@ plot_layout(params$plate)
         thumbnails.forEach(function (p) {
           p.classList.remove('active');
         });
-        generated_tablist.forEach(function (p) {
-          p.classList.remove('active');
-        });
         selectedThumbnail.classList.add('active');
 
-        // Find and add 'active' class to the corresponding tab item
+        // Find and add 'active' class to the corresponding tab item and remove from others
         generated_tablist.forEach(function (tabItem) {
           var tabLink = tabItem.querySelector('a');
           if (tabLink && tabLink.getAttribute('href').substring(1) === targetId) {
             tabItem.classList.add('active');
+          } else {
+            tabItem.classList.remove('active');
           }
         });
 
