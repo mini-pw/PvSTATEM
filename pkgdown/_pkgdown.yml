@@ -5,20 +5,22 @@ template:
 
 reference:
   - title: Core functions
-    desc: Reading and processing the data
+    desc: Reading, processing and summarising the data. These functions allow for end-to-end analysis without going into more complex details.
     contents:
     - read_luminex_data
     - process_plate
+    - generate_plate_report
   - title: Plate and Model classes
-    desc: Instances of the Plate and Model classes, which are used to store the data and the model and faciliate the analysis
+    desc: Instances of the Plate and Model classes and additional functions for predictions and normalisation. These methods are used to store the data and the model and faciliate the analysis.
     contents:
     - Model
     - Plate
     - PlateBuilder
     - create_standard_curve_model_analyte
     - predict.Model
+    - get_nmfi
   - title: Plots
-    desc: Functions for plotting the data, quality control and the results of the analysis
+    desc: Functions for plotting the data, quality control and the results of the analysis.
     contents:
     - plot_counts
     - plot_layout
