@@ -317,6 +317,8 @@ predict.Model <- function(object, mfi, ...) {
 #' For more information, please see the \link[PvSTATEM]{handle_high_dose_hook} function documentation.
 #' @param ... Additional arguments passed to the model
 #'
+#' Standard curve samples should not contain `na` values in mfi values nor in dilutions.
+#'
 #' @return (`Model()`) Standard Curve model
 #'
 #' @export
@@ -366,7 +368,9 @@ create_standard_curve_model_analyte <- function(plate, analyte_name,
 #' @return sample selector (`logical()`)
 handle_high_dose_hook <- function(mfi, dilutions, high_dose_threshold = 1 / 200) {
   total_samples <- length(mfi)
-  high_dose_hook_samples <- dilutions >= high_dose_threshold
+  correct_order <- order(dilutions, decreasing = TRUE)
+  high_dose_hook_samples <- dilutions[correct_order] >= high_dose_threshold
+  mfi <- mfi[correct_order]
   if (!is.decreasing(mfi[high_dose_hook_samples])) {
     # High dose hook detected
     if ((total_samples - length(mfi[high_dose_hook_samples])) < 4) {
@@ -381,7 +385,7 @@ handle_high_dose_hook <- function(mfi, dilutions, high_dose_threshold = 1 / 200)
         "High dose hook detected.
         Removing samples with dilutions above the high dose threshold."
       )
-      return(!high_dose_hook_samples)
+      return((!high_dose_hook_samples)[order(correct_order)]) # Return the initial order
     }
   } else {
     return(rep(TRUE, total_samples))
