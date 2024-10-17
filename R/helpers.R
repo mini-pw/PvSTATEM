@@ -204,3 +204,22 @@ format_dilutions <- function(dilutions, dilution_values, sample_types) {
 dilution_to_rau <- function(predicted_dilution) {
   return(predicted_dilution * 1e6)
 }
+
+#' @title Check if the vector is monotically decreasing
+#'
+#' @param x (`numeric()`) Vector of numeric values
+#'
+#' @return (`logical(1)`) `TRUE` if the vector is monotonically decreasing, `FALSE` otherwise
+#'
+is.decreasing <- function(x) {
+  stopifnot(is.numeric(x) || is.null(x))
+  if (any(is.na(x))) {
+    stop(
+      "NA values detected in the input vector for `is.decreasing` function."
+    )
+  }
+  if (is.null(x) || (length(x) < 2)) {
+    return(TRUE)
+  }
+  all(diff(x) < 0)
+}

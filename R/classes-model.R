@@ -310,23 +310,84 @@ predict.Model <- function(object, mfi, ...) {
 #'   Name of the analyte for which we want to create the model
 #' @param data_type (`character(1)`)
 #'   Data type of the value we want to use to fit the model - the same datatype as in the plate file. By default, it equals to `Median`
-#'
 #' @param source_mfi_range_from_all_analytes (`logical(1)`)
 #'   If `TRUE`, the MFI range is calculated from all analytes; if `FALSE`, the MFI range is calculated only for the current analyte
 #'   Defaults to `FALSE`
+#' @param detect_high_dose_hook (`logical(1)`) If `TRUE`, the high dose hook effect is detected and handled.
+#' For more information, please see the \link[PvSTATEM]{handle_high_dose_hook} function documentation.
 #' @param ... Additional arguments passed to the model
+#'
+#' Standard curve samples should not contain `na` values in mfi values nor in dilutions.
 #'
 #' @return (`Model()`) Standard Curve model
 #'
 #' @export
-create_standard_curve_model_analyte <- function(plate, analyte_name, data_type = "Median", source_mfi_range_from_all_analytes = FALSE, ...) {
+create_standard_curve_model_analyte <- function(plate, analyte_name,
+                                                data_type = "Median",
+                                                source_mfi_range_from_all_analytes = FALSE,
+                                                detect_high_dose_hook = TRUE,
+                                                ...) {
   mfi <- plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type)
   dilutions_numeric <- plate$get_dilution_values("STANDARD CURVE")
 
-  mfi_source <- ifelse(source_mfi_range_from_all_analytes, "ALL", analyte_name)
+  if (detect_high_dose_hook) {
+    sample_selector <- handle_high_dose_hook(mfi, dilutions_numeric)
+    mfi <- mfi[sample_selector]
+    dilutions_numeric <- dilutions_numeric[sample_selector]
+  }
 
+  mfi_source <- ifelse(source_mfi_range_from_all_analytes, "ALL", analyte_name)
   mfi_min <- min(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
   mfi_max <- max(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
 
   Model$new(analyte_name, dilutions_numeric, mfi, mfi_min = mfi_min, mfi_max = mfi_max, ...)
+}
+
+
+#' @title Detect and handle the high dose hook effect
+#'
+#' @description
+#' Typically, the MFI values associated with standard curve
+#' samples should decrease as we dilute the samples. However,
+#' sometimes in high dilutions, the MFI presents a non monotonic behavior.
+#' In that case, MFI values associated with dilutions above (or equal to)
+#' `high_dose_threshold` should be removed from the analysis.
+#'
+#' For the `nplr` model the recommended number of standard curve samples
+#' is at least 4. If the high dose hook effect is detected but the number
+#' of samples below the `high_dose_threshold` is lower than 4,
+#' additional warning is printed and the samples are not removed.
+#'
+#' The function returns a logical vector that can be used to subset the MFI values.
+#'
+#' @param mfi (`numeric()`)
+#' @param dilutions (`numeric()`)
+#' @param high_dose_threshold (`numeric(1)`) MFI values associated
+#' with dilutions above this threshold should be checked for the high dose hook effect
+#'
+#' @return sample selector (`logical()`)
+handle_high_dose_hook <- function(mfi, dilutions, high_dose_threshold = 1 / 200) {
+  total_samples <- length(mfi)
+  correct_order <- order(dilutions, decreasing = TRUE)
+  high_dose_hook_samples <- dilutions[correct_order] >= high_dose_threshold
+  mfi <- mfi[correct_order]
+  if (!is.decreasing(mfi[high_dose_hook_samples])) {
+    # High dose hook detected
+    if ((total_samples - length(mfi[high_dose_hook_samples])) < 4) {
+      warning(
+        "High dose hook detected but the number of samples
+        below the high dose threshold is lower than 4.
+        The samples will not be removed from the analysis."
+      )
+      return(rep(TRUE, total_samples))
+    } else {
+      warning(
+        "High dose hook detected.
+        Removing samples with dilutions above the high dose threshold."
+      )
+      return((!high_dose_hook_samples)[order(correct_order)]) # Return the initial order
+    }
+  } else {
+    return(rep(TRUE, total_samples))
+  }
 }

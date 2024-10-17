@@ -9,6 +9,7 @@ create_standard_curve_model_analyte(
   analyte_name,
   data_type = "Median",
   source_mfi_range_from_all_analytes = FALSE,
+  detect_high_dose_hook = TRUE,
   ...
 )
 }
@@ -25,6 +26,9 @@ Data type of the value we want to use to fit the model - the same datatype as in
 \item{source_mfi_range_from_all_analytes}{(\code{logical(1)})
 If \code{TRUE}, the MFI range is calculated from all analytes; if \code{FALSE}, the MFI range is calculated only for the current analyte
 Defaults to \code{FALSE}}
+
+\item{detect_high_dose_hook}{(\code{logical(1)}) If \code{TRUE}, the high dose hook effect is detected and handled.
+For more information, please see the \link[PvSTATEM]{handle_high_dose_hook} function documentation.}
 
 \item{...}{Additional arguments passed to the model}
 }
