@@ -107,7 +107,7 @@ process_plate <-
         verbose = verbose
       )
 
-    } else {
+    } else if (normalisation_type == "RAU") {
 
 
     # RAU normalisation
@@ -118,22 +118,20 @@ process_plate <-
     verbose_cat("Fitting the models and predicting RAU for each analyte\n",
                 verbose = verbose)
 
-    for (analyte in plate$analyte_names) {
-      model <-
-        create_standard_curve_model_analyte(plate, analyte, data_type = data_type, ...)
-      test_samples_mfi <-
-        plate$get_data(analyte, "TEST", data_type = data_type)
-      test_sample_estimates <- predict(model, test_samples_mfi)
-      output_list[[analyte]] <- test_sample_estimates[, "RAU"]
+      for (analyte in plate$analyte_names) {
+        model <-
+          create_standard_curve_model_analyte(plate, analyte, data_type = data_type, ...)
+        test_samples_mfi <-
+          plate$get_data(analyte, "TEST", data_type = data_type)
+        test_sample_estimates <- predict(model, test_samples_mfi)
+        output_list[[analyte]] <- test_sample_estimates[, "RAU"]
+      }
+
+      output_df <- data.frame(output_list)
+
+      rownames(output_df) <- test_sample_names
     }
 
-    output_df <- data.frame(output_list)
-
-    verbose_cat("Saving the computed RAU values to a CSV file located in: '",
-                output_path,
-                "'\n",
-                verbose = verbose)
-    }
     if (include_raw_mfi) {
       verbose_cat("Adding the raw MFI values to the output dataframe\n")
       raw_mfi <- plate$data[[data_type]][plate$sample_types == "TEST", ]
@@ -142,6 +140,14 @@ process_plate <-
       output_df <- cbind(output_df, raw_mfi)
     }
 
-    write.csv(output_df, output_path, row.names = FALSE)
+    verbose_cat("Saving the computed", normalisation_type, "values to a CSV file located in: '",
+                  output_path,
+                  "'\n",
+                  verbose = verbose)
+                  
+    write.csv(output_df, output_path)
+
     return(output_df)
+
+
   }

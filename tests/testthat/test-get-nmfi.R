@@ -45,5 +45,4 @@ test_that("get_nmfi on artificial plate", {
   for (i in 1:ncol(mfi_values)) {
     expect_equal(nmfi[, i], mfi_values[, i] / reference_dilution_values[[i]])
   }
-
 })
