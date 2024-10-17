@@ -20,9 +20,9 @@
 #'
 #' After the model is fitted to the data, the RAU values can be predicted using the `predict` method.
 #' The RAU value is simply a predicted dilution value (using the standard curve) for a given MFI
-#' multiplied by 1 000 000 in order to have a more readable value.
+#' multiplied by 1,000 000 to have a more readable value.
 #' For more information about the differences between dilution, RAU and MFI values, please see the
-#' "Normalization" section in the "Basic PvSTATEM functionalities" vignette.
+#' "Normalisation" section in the "Basic PvSTATEM functionalities" vignette.
 #'
 #'
 #' @examples

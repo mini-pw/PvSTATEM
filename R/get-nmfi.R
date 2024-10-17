@@ -3,28 +3,28 @@
 #' @description
 #' The function calculates the normalised MFI (nMFI) values for each of the analytes in the plate.
 #'
-#' The nMFI values are calculated as the ratio of the MFI values of test samples to the MFI values of the standard curve samples with the target dilution.
+#' The nMFI values are calculated as the ratio of the test samples' MFI values to the standard curve samples with the target dilution.
 #'
 #'
 #'
 #' **When nMFI could be used?**
-#' In general it is preferred to use Relative Antibody Unit (RAU) values for any kind of analysis.
-#' However, in some cases it is impossible to fit a model to the standard curve samples.
+#' In general, it is preferred to use Relative Antibody Unit (RAU) values for any analysis.
+#' However, it is sometimes impossible to fit a model to the standard curve samples.
 #' This may happen if the MFI values of test samples are much higher than the MFI of standard curve samples.
-#' Then, the prediction would require large data extrapolation, that could lead to unreliable results.
+#' Then, the prediction would require significant data extrapolation, which could lead to unreliable results.
 #'
-#' In such cases, the nMFI values could be used as a proxy for RAU values, if we want, for instance, to account for plate-to-plate variation.
+#' In such cases, the nMFI values could be used as a proxy for RAU values if we want, for instance, to account for plate-to-plate variation.
 #'
 #' @param plate (`Plate()`) a plate object for which to calculate the nMFI values
 #' @param reference_dilution (`numeric(1) or character(1)`) the dilution value of the standard curve sample
-#' to use as a reference for normalisation. Default is `1/400`.
+#' to use as a reference for normalisation. The default is `1/400`.
 #' It should refer to a dilution of a standard curve sample in the given plate object.
 #' This parameter could be either a numeric value or a string.
 #' In case it is a character string, it should have format `1/d+`, where `d+` is any positive integer.
-#' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
-#' @param verbose (`logical(1)`) print additional information. Default is `TRUE`
+#' @param data_type (`character(1)`) type of data for the computation. Median is the default
+#' @param verbose (`logical(1)`) print additional information. The default is `TRUE`
 #'
-#' @return nmfi (`data.frame`) a data frame with normalised MFI values for each of the analytes in the plate and all test samples.
+#' @return nmfi (`data.frame`) a data frame with normalised MFI values for each analyte in the plate and all test samples.
 #'
 #' @examples
 #'

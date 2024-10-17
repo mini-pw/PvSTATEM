@@ -1,7 +1,8 @@
 #' Generate a report for a plate.
 #'
-#' This function generates a report for a plate. The report is generated using
-#' the `plate_report_template.Rmd` template.
+#' @description
+#' This function generates a report for a plate. The report contains all the necessary information about the plate, from the general plate parameters, such as examination date, to the breakdown of the analytes' plots.
+#' The report is generated using the `plate_report_template.Rmd` template.
 #'
 #' @param plate A plate object.
 #' @param use_model (`logical(1)`) A logical value indicating whether the model should be used in the report.
@@ -20,9 +21,9 @@
 #'
 #' plate <- read_luminex_data(plate_file, layout_file)
 #' tmp_dir <- tempdir(check = TRUE)
-#' generate_plate_report(
-#'   plate,
-#'   output_dir = tmp_dir, counts_lower_threshold = 40, counts_higher_threshold = 50
+#' generate_plate_report(plate,
+#'   output_dir = tmp_dir,
+#'   counts_lower_threshold = 40, counts_higher_threshold = 50
 #' )
 #' @export
 generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, output_dir = "reports", counts_lower_threshold = 50, counts_higher_threshold = 70) {
