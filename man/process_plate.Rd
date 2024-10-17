@@ -87,7 +87,9 @@ process_plate(plate, output_path = temporary_filepath)
 # create and save dataframe with computed dilutions
 
 # nMFI normalisation
-process_plate(plate, output_path = temporary_filepath,
-      normalisation_type = "nMFI", reference_dilution = 1/400)
+process_plate(plate,
+  output_path = temporary_filepath,
+  normalisation_type = "nMFI", reference_dilution = 1 / 400
+)
 
 }
