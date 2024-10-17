@@ -30,8 +30,8 @@ generate_plate_report(
 A report.
 }
 \description{
-This function generates a report for a plate. The report is generated using
-the \code{plate_report_template.Rmd} template.
+This function generates a report for a plate. The report contains all the necessary information about the plate, from the general plate parameters, such as examination date, to the breakdown of the analytes' plots.
+The report is generated using the \code{plate_report_template.Rmd} template.
 }
 \examples{
 

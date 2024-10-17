@@ -19,24 +19,24 @@ process_plate(
 \item{plate}{(\code{Plate()}) a plate object}
 
 \item{output_path}{(\code{character(1)}) path to save the computed RAU values.
-If not provided the file will be saved in the working directory with the name \verb{\{normalisation_type\}_\{plate_name\}.csv}.
+If not provided, the file will be saved in the working directory with the name \verb{\{normalisation_type\}_\{plate_name\}.csv}.
 Where the \code{{plate_name}} is the name of the plate.}
 
 \item{normalisation_type}{(\code{character(1)}) type of normalisation to use. Available options are:
 \cr \code{c(RAU, nMFI)}.
 In case}
 
-\item{data_type}{(\code{character(1)}) type of data to use for the computation. Median is the default}
+\item{data_type}{(\code{character(1)}) type of data for the computation. Median is the default}
 
-\item{adjust_blanks}{(\code{logical(1)}) adjust blanks before computing RAU values. Default is \code{FALSE}}
+\item{adjust_blanks}{(\code{logical(1)}) adjust blanks before computing RAU values. The default is \code{FALSE}}
 
-\item{verbose}{(\code{logical(1)}) print additional information. Default is \code{TRUE}}
+\item{verbose}{(\code{logical(1)}) print additional information. The default is \code{TRUE}}
 
-\item{reference_dilution}{(\code{numeric(1)}) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
+\item{reference_dilution}{(\code{numeric(1)}) target dilution for reference for the nMFI normalisation. Ignored in case of RAU normalisation.
 Default is \code{1/400}.
 It should refer to a dilution of a standard curve sample in the given plate object.
 This parameter could be either a numeric value or a string.
-In case it is a character string, it should have format \verb{1/d+}, where \verb{d+} is any positive integer.}
+In case it is a character string, it should have the format \verb{1/d+}, where \verb{d+} is any positive integer.}
 
 \item{...}{Additional arguments to be passed to the fit model function (\code{create_standard_curve_model_analyte})}
 }
@@ -47,7 +47,7 @@ a data frame with normalised values
 Depending on the \code{normalisation_type} argument, the function will compute the RAU or nMFI values for each analyte in the plate.
 \strong{RAU} is the default normalisation type.
 
-The behavior of the function, in case of RAU normalisation type, can be summarized as follows:
+The behaviour of the function, in the case of RAU normalisation type, can be summarised as follows:
 \enumerate{
 \item Adjust blanks if not already done.
 \item Fit a model to each analyte using standard curve samples.
