@@ -72,7 +72,7 @@ Kwieciński</h4>
             
             <h4 data-toc-skip class="date">2024-10-18</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/v0.0.5/vignettes/example_script.Rmd" class="external-link"><code>vignettes/example_script.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/main/vignettes/example_script.Rmd" class="external-link"><code>vignettes/example_script.Rmd</code></a></small>
       <div class="d-none name"><code>example_script.Rmd</code></div>
     </div>
 
@@ -119,7 +119,7 @@ then saved to a CSV file.</p>
 <span><span class="fu"><a href="../reference/process_plate.html">process_plate</a></span><span class="op">(</span><span class="va">plate</span>, output_path <span class="op">=</span> <span class="va">test_output_path</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Fitting the models and predicting RAU for each analyte</span></span></code></pre>
 <pre><code><span><span class="co">#&gt; Adding the raw MFI values to the output dataframe</span></span>
-<span><span class="co">#&gt; Saving the computedRAUvalues to a CSV file located in: '/tmp/Rtmp4G5d29/output.csv'</span></span></code></pre>
+<span><span class="co">#&gt; Saving the computedRAUvalues to a CSV file located in: '/tmp/RtmpAEglAK/output.csv'</span></span></code></pre>
 <pre><code><span><span class="co">#&gt;                    SampleName    Spike_6P        ME     HKU1_S    OC43_NP</span></span>
 <span><span class="co">#&gt; CO-F-226-01-CF CO-F-226-01-CF 20000.00000  5768.628   829.2993  4289.2647</span></span>
 <span><span class="co">#&gt; CO-F-263-02-KC CO-F-263-02-KC 20000.00000  4050.148  8128.2569  3681.9063</span></span>
@@ -1532,9 +1532,9 @@ function that also saves the output into the CSV file by setting the
 <span><span class="va">nmfi_output_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp_dir</span>, <span class="st">"nmfi_output.csv"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/process_plate.html">process_plate</a></span><span class="op">(</span><span class="va">plate</span>, output_path <span class="op">=</span> <span class="va">nmfi_output_path</span>, normalisation_type <span class="op">=</span> <span class="st">"nMFI"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Computing nMFI values for each analyte</span></span>
-<span><span class="co">#&gt; Saving the computed nMFI values to a CSV file located in: '/tmp/Rtmp4G5d29/nmfi_output.csv'</span></span>
+<span><span class="co">#&gt; Saving the computed nMFI values to a CSV file located in: '/tmp/RtmpAEglAK/nmfi_output.csv'</span></span>
 <span><span class="co">#&gt; Adding the raw MFI values to the output dataframe</span></span>
-<span><span class="co">#&gt; Saving the computednMFIvalues to a CSV file located in: '/tmp/Rtmp4G5d29/nmfi_output.csv'</span></span></code></pre>
+<span><span class="co">#&gt; Saving the computednMFIvalues to a CSV file located in: '/tmp/RtmpAEglAK/nmfi_output.csv'</span></span></code></pre>
 <pre><code><span><span class="co">#&gt;                  Spike_6P         ME    HKU1_S   OC43_NP    OC43_S   HKU1_NP</span></span>
 <span><span class="co">#&gt; CO-F-226-01-CF 5.84240808  1.9888889 0.3821903 1.5449180 2.4537445 1.0957643</span></span>
 <span><span class="co">#&gt; CO-F-263-02-KC 7.17106371  1.4711111 2.6996681 1.3481967 3.0638767 1.1694291</span></span>
