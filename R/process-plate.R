@@ -112,7 +112,7 @@ process_plate <-
 
       test_sample_names <-
         plate$sample_names[plate$sample_types == "TEST"]
-      output_list <- list("SampleName" = test_sample_names)
+      output_list <- list()
       verbose_cat("Fitting the models and predicting RAU for each analyte\n",
         verbose = verbose
       )
@@ -127,7 +127,6 @@ process_plate <-
       }
 
       output_df <- data.frame(output_list)
-
       rownames(output_df) <- test_sample_names
     }
 
