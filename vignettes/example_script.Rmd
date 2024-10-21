@@ -53,7 +53,13 @@ The computed RAU values are then saved to a CSV file.
 ```{r}
 tmp_dir <- tempdir(check = TRUE)
 test_output_path <- file.path(tmp_dir, "output.csv")
-process_plate(plate, output_path = test_output_path)
+df <- process_plate(plate, output_path = test_output_path)
+colnames(df)
+```
+
+We can take a look at a slice of the produced dataframe (as not to overcrowd the article).
+```{r}
+df[1:5, 1:5]
 ```
 
 ## Quality control and normalisation details
@@ -230,6 +236,7 @@ nmfi_values <- get_nmfi(plate)
 # process plate with nMFI normalisation
 
 nmfi_output_path <- file.path(tmp_dir, "nmfi_output.csv")
-process_plate(plate, output_path = nmfi_output_path, normalisation_type = "nMFI")
+df <- process_plate(plate, output_path = nmfi_output_path, normalisation_type = "nMFI")
+df[1:5, 1:5]
 ```
 
