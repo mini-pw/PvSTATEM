@@ -6,7 +6,7 @@ params:
   use_model: !r NULL
   counts_lower_threshold: !r NULL
   counts_higher_threshold: !r NULL
-  additionsl_notes: !r NULL
+  additional_notes: !r NULL
 ---
 
 ```{r param-check, echo=FALSE}
@@ -34,6 +34,9 @@ if (!is(params$counts_lower_threshold, "numeric")) {
 if (!is(params$counts_higher_threshold, "numeric")) {
   stop("The `counts_higher_threshold` must be a numeric value.")
 }
+if (!is.null(params$additional_notes) && !is(params$additional_notes, "character")) {
+  stop("The `additional_notes` must be a character value.")
+}
 ```
 
 Report generated on:  `r format(Sys.time(), "%d-%m-%Y %H:%M:%S")`.  
@@ -44,11 +47,11 @@ Standard curve sample dilutions: `r format_dilutions(params$plate$dilutions, par
 
 ------------------
 
-`r if(!is.null(params$additionsl_notes)) "### Additional notes \n" `  
+`r if(!is.null(params$additional_notes)) "### Additional notes \n" `  
 
-`r if(!is.null(params$additionsl_notes)) "dfhjdfhjhdfj" `  
+`r if(!is.null(params$additional_notes)) params$additional_notes `  
 
-`r if(!is.null(params$additionsl_notes)) "\n -------------------" ` 
+`r if(!is.null(params$additional_notes)) "\n -------------------" ` 
 
 
 ### Plate layout
