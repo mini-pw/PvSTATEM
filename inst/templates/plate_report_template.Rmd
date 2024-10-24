@@ -186,7 +186,7 @@ cat('</div>')
 
 ------------------
  
-### Details for given analayte {.tabset .tabset-fade}
+### Details for given analyte {.tabset .tabset-fade}
 
 ```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%", dev='jpeg', dpi=72}
 # Code used to create dynamic tabs based on the number of analytes
