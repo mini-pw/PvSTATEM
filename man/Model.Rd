@@ -154,7 +154,7 @@ Use values before any transformations (e.g., before the \code{log10} transformat
 \subsection{Method \code{predict()}}{
 Predict RAU values from the MFI values
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Model$predict(mfi, over_max_extrapolation = 0)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Model$predict(mfi, over_max_extrapolation = 0, eps = 0.000001)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -168,6 +168,9 @@ How much we can extrapolate the values above the maximum RAU value
 seen in standard curve samples \eqn{RAU_{max}}. Defaults to 0.
 If the value of the predicted RAU is above \eqn{RAU_{max} + \text{over_max_extrapolation}},
 the value is censored to the value of that sum.}
+
+\item{\code{eps}}{(\code{numeric(1)})\cr
+A small value used to avoid numerical issues close to the asymptotes}
 }
 \if{html}{\out{</div>}}
 }

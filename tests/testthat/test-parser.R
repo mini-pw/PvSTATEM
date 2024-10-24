@@ -8,7 +8,7 @@ test_that("Test handle_datetime with seen date formats", {
   )
 
   # Automatic recovery with xPONENT datetime format DD/MM/YYYY HH:MM
-  expect_warning(dt <- handle_datetime("26/02/2014 16:07", "xPONENT"))
+  expect_message(dt <- handle_datetime("26/02/2014 16:07", "xPONENT"))
   expect_equal(dt, as.POSIXct("2014-02-26 16:07:00", tz = ""))
 
   # Default INTELLIFLEX datetime format YYYY-MM-DD HH:MM:SS AM/PM
