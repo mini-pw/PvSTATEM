@@ -10,6 +10,7 @@
 #' @param output_dir (`character(1)`) The directory where the report should be saved. Default is 'reports'.
 #' @param counts_lower_threshold (`numeric(1)`) The lower threshold for the counts plots (works for each analyte). Default is 50.
 #' @param counts_higher_threshold (`numeric(1)`) The higher threshold for the counts plots (works for each analyte). Default is 70.
+#' @param additional_notes (`character(1)`) Additional notes to be included in the report. Contents of this fields are left to the user's discretion. If not provided, the field will not be included in the report.
 #'
 #'
 #' @return A report.
@@ -23,10 +24,12 @@
 #' tmp_dir <- tempdir(check = TRUE)
 #' generate_plate_report(plate,
 #'   output_dir = tmp_dir,
-#'   counts_lower_threshold = 40, counts_higher_threshold = 50
+#'   counts_lower_threshold = 40,
+#'   counts_higher_threshold = 50,
+#'   additional_notes = 'This is a test report.'
 #' )
 #' @export
-generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, output_dir = "reports", counts_lower_threshold = 50, counts_higher_threshold = 70) {
+generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, output_dir = "reports", counts_lower_threshold = 50, counts_higher_threshold = 70, additional_notes = NULL) {
   message("Generating report... This will take approximately 30 seconds.")
   output_file <- if (is.null(filename)) {
     paste0(plate$plate_name, "_report.html")

@@ -10,7 +10,8 @@ generate_plate_report(
   filename = NULL,
   output_dir = "reports",
   counts_lower_threshold = 50,
-  counts_higher_threshold = 70
+  counts_higher_threshold = 70,
+  additional_notes = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ generate_plate_report(
 \item{counts_lower_threshold}{(\code{numeric(1)}) The lower threshold for the counts plots (works for each analyte). Default is 50.}
 
 \item{counts_higher_threshold}{(\code{numeric(1)}) The higher threshold for the counts plots (works for each analyte). Default is 70.}
+
+\item{additional_notes}{(\code{character(1)}) Additional notes to be included in the report. Contents of this fields are left to the user's discretion. If not provided, the field will not be included in the report.}
 }
 \value{
 A report.
@@ -42,6 +45,8 @@ plate <- read_luminex_data(plate_file, layout_file)
 tmp_dir <- tempdir(check = TRUE)
 generate_plate_report(plate,
   output_dir = tmp_dir,
-  counts_lower_threshold = 40, counts_higher_threshold = 50
+  counts_lower_threshold = 40,
+  counts_higher_threshold = 50,
+  additional_notes = 'This is a test report.'
 )
 }
