@@ -24,7 +24,6 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #'
 #'
 #'
-#'
 #' In case the normalisation type is **nMFI**, the function will:
 #' 1. Adjust blanks if not already done.
 #' 2. Compute nMFI values for each analyte using the target dilution.
@@ -34,9 +33,23 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' More info about the nMFI normalisation can be found in `get_nmfi` function documentation \link[PvSTATEM]{get_nmfi}.
 #'
 #' @param plate (`Plate()`) a plate object
-#' @param output_path (`character(1)`) path to save the computed RAU values.
-#' If not provided, the file will be saved in the working directory with the name `{normalisation_type}_{plate_name}.csv`.
-#' Where the `{plate_name}` is the name of the plate.
+#' @param filename (`character(1)`) The name of the output CSV file with normalised MFI values.
+#' If not provided or equals to `NULL`, the output filename will be based on the normalisation type
+#' and the plate name, precisely: `{normalisation_type}_{plate_name}.csv`.
+#' By default the `plate_name` is the filename of the input file that contains the plate data.
+#' For more details please refer to \link[PvSTATEM]{Plate}.
+#'
+#' If the passed filename does not contain `.csv` extension, the default extension `.csv` will be added.
+#' Filename can also be a path to a file, e.g. `path/to/file.csv`. In this case, the `output_dir` and `filename` will be joined together.
+#' However, if the passed filepath is a an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
+#'
+#' If there already exists a file under a specified filepath, the function will overwrite it.
+#'
+#' @param output_dir (`character(1)`) The directory where the output CSV file should be saved.
+#' Default is 'normalised_data'.
+#' If the provided directory does not exist, it will be created.
+#' Please note that any directory path provided will create any necessary directories if they do not exist.
+#'
 #' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
 #' \cr \code{c(`r toString(VALID_NORMALISATION_TYPES)`)}.
 #' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
@@ -60,13 +73,17 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' plate <- read_luminex_data(plate_file, layout_file)
 #'
 #' tmp_dir <- tempdir(check = TRUE)
-#' temporary_filepath <- file.path(tmp_dir, "output.csv")
-#' process_plate(plate, output_path = temporary_filepath)
 #' # create and save dataframe with computed dilutions
+#' process_plate(plate, output_dir = temporary_filepath)
+#'
+#' # process plate without adjusting blanks and save the output to a file with a custom name
+#' process_plate(plate, filename = "plate_without_blanks_adjusted.csv",
+#'    output_dir = temporary_filepath, adjust_blanks = FALSE)
+#'
 #'
 #' # nMFI normalisation
 #' process_plate(plate,
-#'   output_path = temporary_filepath,
+#'   output_dir = temporary_filepath,
 #'   normalisation_type = "nMFI", reference_dilution = 1 / 400
 #' )
 #'
@@ -74,7 +91,8 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' @export
 process_plate <-
   function(plate,
-           output_path = NULL,
+           filename = NULL,
+           output_dir = "normalised_data",
            normalisation_type = "RAU",
            data_type = "Median",
            include_raw_mfi = TRUE,
@@ -87,12 +105,36 @@ process_plate <-
     stopifnot(is_valid_normalisation_type(normalisation_type))
 
 
-    if (is.null(output_path)) {
-      output_path <-
+    if (is.null(filename)) {
+      filename <-
         paste0(normalisation_type, "_", plate$plate_name, ".csv")
+    } else {
+      if (!grepl(".csv$", filename)) {
+        filename <- paste0(filename, ".csv")
+      }
+      if (R.utils::isAbsolutePath(filename)) {
+        verbose_cat("The provided filename is an absolute path. Ignoring the output directory.\n",
+          verbose = verbose
+        )
+        output_dir <- dirname(filename)
+        filename <- basename(filename)
+      }
     }
-    stopifnot(is.character(output_path))
+    stopifnot(is.character(filename))
+    stopifnot(is.character(output_dir))
     stopifnot(is.character(data_type))
+
+    output_path <- file.path(output_dir, filename)
+
+    # check the directory
+    if (!dir.exists(dirname(output_path))) {
+      verbose_cat("Creating the output directory: '", dirname(output_path), "'\n", verbose = verbose)
+      dir.create(output_dir)
+    }
+
+    if (file.exists(output_path)) {
+      warning("The specified file ", output_path, " already exists. Overwriting it.")
+    }
 
     if (!plate$blank_adjusted && adjust_blanks) {
       plate <- plate$blank_adjustment(in_place = FALSE)
@@ -101,12 +143,6 @@ process_plate <-
       verbose_cat("Computing nMFI values for each analyte\n", verbose = verbose)
       output_df <-
         get_nmfi(plate, reference_dilution = reference_dilution, data_type = data_type)
-      verbose_cat(
-        "Saving the computed nMFI values to a CSV file located in: '",
-        output_path,
-        "'\n",
-        verbose = verbose
-      )
     } else if (normalisation_type == "RAU") {
       # RAU normalisation
 
@@ -138,7 +174,7 @@ process_plate <-
       output_df <- cbind(output_df, raw_mfi)
     }
 
-    verbose_cat("Saving the computed", normalisation_type, "values to a CSV file located in: '",
+    verbose_cat("Saving the computed ", normalisation_type, " values to a CSV file located in: '",
       output_path,
       "'\n",
       verbose = verbose

@@ -30,30 +30,57 @@
 #'   additional_notes = note
 #' )
 #' @export
-generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, output_dir = "reports", counts_lower_threshold = 50, counts_higher_threshold = 70, additional_notes = NULL) {
-  message("Generating report... This will take approximately 30 seconds.")
-  output_file <- if (is.null(filename)) {
-    paste0(plate$plate_name, "_report.html")
-  } else {
-    filename
+generate_plate_report <-
+  function(plate,
+           use_model = TRUE,
+           filename = NULL,
+           output_dir = "reports",
+           counts_lower_threshold = 50,
+           counts_higher_threshold = 70,
+           additional_notes = NULL) {
+    message("Generating report... This will take approximately 30 seconds.")
+    output_file <- if (is.null(filename)) {
+      paste0(plate$plate_name, "_report.html")
+    } else {
+      filename
+    }
+
+    template_path <-
+      system.file(
+        "templates",
+        "plate_report_template.Rmd",
+        package = "PvSTATEM",
+        mustWork = TRUE
+      )
+
+    # markdown does not support single line breaks, so we need to replace them with two spaces and a line break
+    if (!is.null(additional_notes)) {
+      additional_notes <-
+        gsub(pattern = "\n",
+             replacement = "  \n",
+             x = additional_notes)
+    }
+
+    rmarkdown::render(
+      template_path,
+      params = list(
+        plate = plate,
+        use_model = use_model,
+        counts_lower_threshold = counts_lower_threshold,
+        counts_higher_threshold = counts_higher_threshold,
+        additional_notes = additional_notes
+      ),
+      output_file = output_file,
+      output_dir = output_dir,
+      quiet = TRUE
+    )
+    message(paste0(
+      "Report successfully generated, saving to: ",
+      output_dir,
+      "/",
+      output_file
+    ))
   }
-
-  template_path <- system.file("templates", "plate_report_template.Rmd", package = "PvSTATEM", mustWork = TRUE)
-
-  # markdown does not support single line breaks, so we need to replace them with two spaces and a line break
-  if (!is.null(additional_notes)) {
-    additional_notes <- gsub(pattern = "\n", replacement = "  \n", x = additional_notes)
-  }
-
-  rmarkdown::render(
-    template_path,
-    params = list(plate = plate, use_model = use_model, counts_lower_threshold = counts_lower_threshold, counts_higher_threshold = counts_higher_threshold, additional_notes = additional_notes),
-    output_file = output_file,
-    output_dir = output_dir,
-    quiet = TRUE
-  )
-  message(paste0("Report successfully generated, saving to: ", output_dir, "/", output_file))
-}
 
 
 #' Generate a report with Levey-Jennings plots.
@@ -71,22 +98,36 @@ generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, outp
 #'
 #' @return A report.
 #' @keywords internal
-generate_levey_jennings_report <- function(list_of_plates, filename = NULL, output_dir = "reports") {
-  message("Generating report... This will take approximately 30 seconds.")
-  output_file <- if (is.null(filename)) {
-    paste0("levey_jennings_report_template.html") #### change this part
-  } else {
-    filename
+generate_levey_jennings_report <-
+  function(list_of_plates,
+           filename = NULL,
+           output_dir = "reports") {
+    message("Generating report... This will take approximately 30 seconds.")
+    output_file <- if (is.null(filename)) {
+      paste0("levey_jennings_report_template.html") #### change this part
+    } else {
+      filename
+    }
+
+    template_path <-
+      system.file(
+        "templates",
+        "levey_jennings_report_template.Rmd",
+        package = "PvSTATEM",
+        mustWork = TRUE
+      )
+
+    rmarkdown::render(
+      template_path,
+      params = list(list_of_plates = list_of_plates),
+      output_file = output_file,
+      output_dir = output_dir,
+      quiet = TRUE
+    )
+    message(paste0(
+      "Report successfully generated, saving to: ",
+      output_dir,
+      "/",
+      output_file
+    ))
   }
-
-  template_path <- system.file("templates", "levey_jennings_report_template.Rmd", package = "PvSTATEM", mustWork = TRUE)
-
-  rmarkdown::render(
-    template_path,
-    params = list(list_of_plates = list_of_plates),
-    output_file = output_file,
-    output_dir = output_dir,
-    quiet = TRUE
-  )
-  message(paste0("Report successfully generated, saving to: ", output_dir, "/", output_file))
-}
