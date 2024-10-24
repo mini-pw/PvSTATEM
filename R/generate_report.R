@@ -6,6 +6,22 @@
 #'
 #' @param plate A plate object.
 #' @param use_model (`logical(1)`) A logical value indicating whether the model should be used in the report.
+#'
+#' @param filename (`character(1)`) The name of the output CSV file with normalised MFI values.
+#' If not provided or equals to `NULL`, the output filename will be based on the normalisation type
+#' and the plate name, precisely: `{plate_name}_report.html`.
+#' By default the `plate_name` is the filename of the input file that contains the plate data.
+#' For more details please refer to \link[PvSTATEM]{Plate}.
+#'
+#' If the passed filename does not contain `.html` extension, the default extension `.html` will be added.
+#' Filename can also be a path to a file, e.g. `path/to/file.html`. In this case, the `output_dir` and `filename` will be joined together.
+#' However, if the passed filepath is a an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
+#' If there already exists a file under a specified filepath, the function will overwrite it.
+#'
+#' @param output_dir (`character(1)`) The directory where the output CSV file should be saved.
+#' Please note that any directory path provided will create any necessary directories if they do not exist.
+#' If equals to `NULL` the current working directory will be used. Default is 'normalised_data'.
+#'
 #' @param filename (`character(1)`) The name of the output file. If not provided,the filename will be created based on the plate name with the suffix '_report.html'.
 #' @param output_dir (`character(1)`) The directory where the report should be saved. Default is 'reports'.
 #' @param counts_lower_threshold (`numeric(1)`) The lower threshold for the counts plots (works for each analyte). Default is 50.
@@ -38,12 +54,12 @@ generate_plate_report <-
            counts_lower_threshold = 50,
            counts_higher_threshold = 70,
            additional_notes = NULL) {
-    message("Generating report... This will take approximately 30 seconds.")
-    output_file <- if (is.null(filename)) {
-      paste0(plate$plate_name, "_report.html")
-    } else {
-      filename
-    }
+    message("Generating report...This will take approximately 30 seconds.")
+
+    output_path <- validate_filepath_and_output_dir(filename, output_dir, plate$plate_name, "report", "html")
+
+    output_dir <- dirname(output_path)
+    filename <- basename(output_path)
 
     template_path <-
       system.file(
@@ -70,15 +86,13 @@ generate_plate_report <-
         counts_higher_threshold = counts_higher_threshold,
         additional_notes = additional_notes
       ),
-      output_file = output_file,
+      output_file = filename,
       output_dir = output_dir,
       quiet = TRUE
     )
     message(paste0(
       "Report successfully generated, saving to: ",
       output_dir,
-      "/",
-      output_file
     ))
   }
 
@@ -103,11 +117,12 @@ generate_levey_jennings_report <-
            filename = NULL,
            output_dir = "reports") {
     message("Generating report... This will take approximately 30 seconds.")
-    output_file <- if (is.null(filename)) {
-      paste0("levey_jennings_report_template.html") #### change this part
-    } else {
-      filename
-    }
+
+    output_path <- validate_filepath_and_output_dir(filename, output_dir, plate$plate_name, "levey_jennings", "html")
+
+    filename <- basename(output_path)
+    output_dir <- dirname(output_path)
+
 
     template_path <-
       system.file(
@@ -126,8 +141,6 @@ generate_levey_jennings_report <-
     )
     message(paste0(
       "Report successfully generated, saving to: ",
-      output_dir,
-      "/",
-      output_file
+      output_path
     ))
   }

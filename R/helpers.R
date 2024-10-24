@@ -225,3 +225,75 @@ is.decreasing <- function(x) {
   }
   all(diff(x) < 0)
 }
+
+
+
+#' @title Validate filepath and output_dir
+#' @description This function handles the validation of the filepath and output_dir arguments.
+#'
+#' @param filename (`character(1)`) The path to the file.
+#' @param output_dir (`character(1)`) The directory where the file should be saved.
+#'
+#' @param plate_name (`character(1)`) The name of the plate.
+#' @param suffix (`character(1)`) The suffix to be added to the filename if it is not provided, e.g. `RAU`.
+#' @param extension (`character(1)`) The extension to be added to the filename if it does not have one.
+#' Passed without a dot, e.g. `csv`.
+#'
+#' @param verbose (`logical(1)`) A logical value indicating whether the function should print additional information.
+#'
+#' @return An output path.
+#' @keywords internal
+
+validate_filepath_and_output_dir <- function(filename, output_dir, plate_name, suffix, extension, verbose = TRUE) {
+  # internal checks
+  stopifnot(is.character(plate_name), is.character(suffix), is.character(extension))
+
+  if (grepl("^\\.", extension)) {
+    stop("The extension should not contain a dot in the beggining.")
+  }
+
+  if (is.null(filename)) {
+    filename <- paste0(plate_name, "_", suffix, ".", extension)
+  } else {
+    # perform checks for the filename
+
+    # verify the extension of the filename
+    extension_regex <- paste0("\\.", extension, "$")
+    if (!grepl(extension_regex, filename)) {
+      filename <- paste0(filename, ".", extension)
+    }
+
+    if (R.utils::isAbsolutePath(filename)) {
+      verbose_cat(
+        "The provided filename is an absolute path. Ignoring the output directory.\n",
+        verbose = verbose
+      )
+      output_dir <- dirname(filename)
+      filename <- basename(filename)
+    }
+  }
+
+  # checks for the output_dir
+  if (is.null(output_dir)) {
+    output_dir <- ""
+  }
+
+  # the final output path
+  output_path <- file.path(output_dir, filename)
+
+
+  # create the directories and check if the file exists
+  output_dir <- dirname(output_path)
+  filename <- basename(output_path)
+
+  if (!dir.exists(output_dir)) {
+    verbose_cat("Creating the output directory: '", output_dir, "'\n", verbose = verbose)
+    dir.create(output_dir)
+  }
+
+  if (file.exists(output_path)) {
+    warning("The specified file ", output_path, " already exists. Overwriting it.")
+  }
+
+  return(output_path)
+}

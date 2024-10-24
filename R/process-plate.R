@@ -35,20 +35,18 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' @param plate (`Plate()`) a plate object
 #' @param filename (`character(1)`) The name of the output CSV file with normalised MFI values.
 #' If not provided or equals to `NULL`, the output filename will be based on the normalisation type
-#' and the plate name, precisely: `{normalisation_type}_{plate_name}.csv`.
+#' and the plate name, precisely: `{plate_name}_{normalisation_type}.csv`.
 #' By default the `plate_name` is the filename of the input file that contains the plate data.
 #' For more details please refer to \link[PvSTATEM]{Plate}.
 #'
 #' If the passed filename does not contain `.csv` extension, the default extension `.csv` will be added.
 #' Filename can also be a path to a file, e.g. `path/to/file.csv`. In this case, the `output_dir` and `filename` will be joined together.
 #' However, if the passed filepath is a an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
-#'
 #' If there already exists a file under a specified filepath, the function will overwrite it.
 #'
 #' @param output_dir (`character(1)`) The directory where the output CSV file should be saved.
-#' Default is 'normalised_data'.
-#' If the provided directory does not exist, it will be created.
 #' Please note that any directory path provided will create any necessary directories if they do not exist.
+#' If equals to `NULL` the current working directory will be used. Default is 'normalised_data'.
 #'
 #' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
 #' \cr \code{c(`r toString(VALID_NORMALISATION_TYPES)`)}.
@@ -103,38 +101,13 @@ process_plate <-
     stopifnot(inherits(plate, "Plate"))
 
     stopifnot(is_valid_normalisation_type(normalisation_type))
-
-
-    if (is.null(filename)) {
-      filename <-
-        paste0(normalisation_type, "_", plate$plate_name, ".csv")
-    } else {
-      if (!grepl(".csv$", filename)) {
-        filename <- paste0(filename, ".csv")
-      }
-      if (R.utils::isAbsolutePath(filename)) {
-        verbose_cat("The provided filename is an absolute path. Ignoring the output directory.\n",
-          verbose = verbose
-        )
-        output_dir <- dirname(filename)
-        filename <- basename(filename)
-      }
-    }
-    stopifnot(is.character(filename))
-    stopifnot(is.character(output_dir))
     stopifnot(is.character(data_type))
 
-    output_path <- file.path(output_dir, filename)
 
-    # check the directory
-    if (!dir.exists(dirname(output_path))) {
-      verbose_cat("Creating the output directory: '", dirname(output_path), "'\n", verbose = verbose)
-      dir.create(output_dir)
-    }
+    output_path <- validate_filepath_and_output_dir(filename, output_dir,
+                                                    plate$plate_name, normalisation_type,
+                                                    "csv", verbose = verbose)
 
-    if (file.exists(output_path)) {
-      warning("The specified file ", output_path, " already exists. Overwriting it.")
-    }
 
     if (!plate$blank_adjusted && adjust_blanks) {
       plate <- plate$blank_adjustment(in_place = FALSE)
