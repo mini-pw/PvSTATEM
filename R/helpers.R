@@ -265,10 +265,11 @@ validate_filepath_and_output_dir <- function(filename, output_dir, plate_name, s
     }
 
     if (R.utils::isAbsolutePath(filename)) {
-      verbose_cat(
-        "The provided filename is an absolute path. Ignoring the output directory.\n",
-        verbose = verbose
-      )
+      if (!is.null(output_dir)) {
+        warning(
+          "The provided filename is an absolute path. Ignoring the output directory.\n"
+        )
+      }
       output_dir <- dirname(filename)
       filename <- basename(filename)
     }
