@@ -81,7 +81,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #'
 #' # nMFI normalisation
 #' process_plate(plate,
-#'   output_dir = temporary_filepath,
+#'   output_dir = tmp_dir,
 #'   normalisation_type = "nMFI", reference_dilution = 1 / 400
 #' )
 #'

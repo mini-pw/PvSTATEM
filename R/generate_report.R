@@ -86,9 +86,10 @@ generate_plate_report <-
       output_dir = output_dir,
       quiet = TRUE
     )
+
     message(paste0(
       "Report successfully generated, saving to: ",
-      output_dir,
+      output_dir
     ))
   }
 
