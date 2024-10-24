@@ -243,7 +243,8 @@ is.decreasing <- function(x) {
 #'
 #' @return An output path.
 #' @keywords internal
-
+#'
+#' @importFrom R.utils isAbsolutePath
 validate_filepath_and_output_dir <- function(filename, output_dir, plate_name, suffix, extension, verbose = TRUE) {
   # internal checks
   stopifnot(is.character(plate_name), is.character(suffix), is.character(extension))

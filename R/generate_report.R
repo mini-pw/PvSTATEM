@@ -7,9 +7,8 @@
 #' @param plate A plate object.
 #' @param use_model (`logical(1)`) A logical value indicating whether the model should be used in the report.
 #'
-#' @param filename (`character(1)`) The name of the output CSV file with normalised MFI values.
-#' If not provided or equals to `NULL`, the output filename will be based on the normalisation type
-#' and the plate name, precisely: `{plate_name}_report.html`.
+#' @param filename (`character(1)`) The name of the output HTML report file.
+#' If not provided or equals to `NULL`, the output filename will be based on the plate name, precisely: `{plate_name}_report.html`.
 #' By default the `plate_name` is the filename of the input file that contains the plate data.
 #' For more details please refer to \link[PvSTATEM]{Plate}.
 #'
@@ -20,10 +19,7 @@
 #'
 #' @param output_dir (`character(1)`) The directory where the output CSV file should be saved.
 #' Please note that any directory path provided will create any necessary directories if they do not exist.
-#' If equals to `NULL` the current working directory will be used. Default is 'normalised_data'.
-#'
-#' @param filename (`character(1)`) The name of the output file. If not provided,the filename will be created based on the plate name with the suffix '_report.html'.
-#' @param output_dir (`character(1)`) The directory where the report should be saved. Default is 'reports'.
+#' If equals to `NULL` the current working directory will be used. Default is 'reports'.
 #' @param counts_lower_threshold (`numeric(1)`) The lower threshold for the counts plots (works for each analyte). Default is 50.
 #' @param counts_higher_threshold (`numeric(1)`) The higher threshold for the counts plots (works for each analyte). Default is 70.
 #' @param additional_notes (`character(1)`) Additional notes to be included in the report. Contents of this fields are left to the user's discretion. If not provided, the field will not be included in the report.
@@ -118,6 +114,7 @@ generate_levey_jennings_report <-
            output_dir = "reports") {
     message("Generating report... This will take approximately 30 seconds.")
 
+    plate <- list_of_plates[[1]]
     output_path <- validate_filepath_and_output_dir(filename, output_dir, plate$plate_name, "levey_jennings", "html")
 
     filename <- basename(output_path)
@@ -135,7 +132,7 @@ generate_levey_jennings_report <-
     rmarkdown::render(
       template_path,
       params = list(list_of_plates = list_of_plates),
-      output_file = output_file,
+      output_file = filename,
       output_dir = output_dir,
       quiet = TRUE
     )
