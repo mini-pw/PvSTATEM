@@ -31,6 +31,9 @@ test_that("Test generate_plate_report function", {
   expect_no_error(generate_plate_report(plate, filename = "test_report.html"))
   expect_no_error(generate_plate_report(plate, counts_lower_threshold = 40, counts_higher_threshold = 80))
   expect_no_error(generate_plate_report(plate, additional_notes = "This is a test report."))
+
+  multiline_note <- "This is a test report.\nThis is a test report."
+  expect_no_error(generate_plate_report(plate, additional_notes = multiline_note))
 })
 
 test_that("Test generate_levey_jennings_report function", {

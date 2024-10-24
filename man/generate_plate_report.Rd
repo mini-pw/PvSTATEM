@@ -40,6 +40,7 @@ The report is generated using the \code{plate_report_template.Rmd} template.
 
 plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
 layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
+note <- "This is a test report.\n**Author**: Jane Doe \n**Tester**: John Doe"
 
 plate <- read_luminex_data(plate_file, layout_file)
 tmp_dir <- tempdir(check = TRUE)
@@ -47,6 +48,6 @@ generate_plate_report(plate,
   output_dir = tmp_dir,
   counts_lower_threshold = 40,
   counts_higher_threshold = 50,
-  additional_notes = 'This is a test report.'
+  additional_notes = note
 )
 }
