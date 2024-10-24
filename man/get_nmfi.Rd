@@ -55,7 +55,7 @@ plate$data[["Median"]][plate$sample_types == "TEST", ] <-
 # calculate the nMFI values
 nmfi <- get_nmfi(plate, reference_dilution = 1 / 400)
 
-# we don't do any extrapolation and the values should be comparable accross plates
+# we don't do any extrapolation and the values should be comparable across plates
 head(nmfi)
 # different params
 nmfi <- get_nmfi(plate, reference_dilution = "1/50")
