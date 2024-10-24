@@ -37,12 +37,16 @@ generate_plate_report <- function(plate, use_model = TRUE, filename = NULL, outp
     filename
   }
 
-
   template_path <- system.file("templates", "plate_report_template.Rmd", package = "PvSTATEM", mustWork = TRUE)
+
+  # markdown does not support single line breaks, so we need to replace them with two spaces and a line break
+  if (!is.null(additional_notes)) {
+    additional_notes <- gsub(pattern = "\n", replacement = "  \n", x = additional_notes)
+  }
 
   rmarkdown::render(
     template_path,
-    params = list(plate = plate, use_model = use_model, counts_lower_threshold = counts_lower_threshold, counts_higher_threshold = counts_higher_threshold),
+    params = list(plate = plate, use_model = use_model, counts_lower_threshold = counts_lower_threshold, counts_higher_threshold = counts_higher_threshold, additional_notes = additional_notes),
     output_file = output_file,
     output_dir = output_dir,
     quiet = TRUE
