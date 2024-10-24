@@ -39,3 +39,12 @@ test_that("Test plotting the full plot", {
   model <- create_standard_curve_model_analyte(plate, "Spike_6P_IPP")
   expect_no_error(plot_standard_curve_analyte_with_model(plate, model))
 })
+
+test_that("Test over max extrapolation", {
+  plate <- get_test_plate()
+  model <- create_standard_curve_model_analyte(plate, "Spike_6P_IPP")
+  expect_warning(plot_standard_curve_analyte_with_model(
+    plate, model,
+    over_max_extrapolation = Inf
+  ))
+})
