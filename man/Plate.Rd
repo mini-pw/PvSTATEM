@@ -12,7 +12,7 @@ some additional metadata and batch info
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
 \item{\code{plate_name}}{(\code{character(1)})\cr
-Name of the plate.}
+Name of the plate. Set to the name of the file from which the plate was read.}
 
 \item{\code{analyte_names}}{(\code{character()})\cr
 Names of the analytes that were examined on the plate.}

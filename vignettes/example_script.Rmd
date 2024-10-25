@@ -48,12 +48,13 @@ plate
 
 Once we have loaded the plate object, we may process it using the function `process_plate`.
 This function fits a model to each analyte using the standard curve samples. It computes RAU values for each analyte using the corresponding model.
-The computed RAU values are then saved to a CSV file.
+The computed RAU values are then saved to a CSV file in a specified folder, with a specified name, which by default is based on the plate name and the normalisation type.
+
+To get more information about the function, check `?process_plate`. 
 
 ```{r}
 tmp_dir <- tempdir(check = TRUE)
-test_output_path <- file.path(tmp_dir, "output.csv")
-df <- process_plate(plate, output_path = test_output_path)
+df <- process_plate(plate, output_dir = tmp_dir)
 colnames(df)
 ```
 
@@ -228,15 +229,14 @@ plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), over_
 ### nMFI
 In some cases, the RAU values cannot be reliably calculated. This may happen when the MFI values of test samples are way higher than those of the standard curve samples. In that case, to avoid extrapolation but to be still able to compare the samples across the plates, we introduced a new unit called nMFI (Normalized MFI). The nMFI is calculated as the MFI value of the test sample divided by the MFI value of the standard curve sample with the selected dilution value.
 
-nMFI values of the samples can be calculated in two ways - using the `get_nmfi` function or with the `process_plate` function that also saves the output into the CSV file by setting the `normalisation_type` parameter to `nMFI` in the `process_plate` function.
+nMFI values of the samples can be calculated in two ways - using the `get_nmfi` function or with the `process_plate` function that also saves the output into the CSV file by setting the `normalisation_type` parameter to `nMFI` in the `process_plate` function. By default the output will be saved as a file with the same name as the plate name but with the `_nMFI` suffix. 
 
 ```{r}
 nmfi_values <- get_nmfi(plate)
 
 # process plate with nMFI normalisation
 
-nmfi_output_path <- file.path(tmp_dir, "nmfi_output.csv")
-df <- process_plate(plate, output_path = nmfi_output_path, normalisation_type = "nMFI")
+df <- process_plate(plate, output_dir = tmp_dir, normalisation_type = "nMFI")
 df[1:5, 1:5]
 ```
 

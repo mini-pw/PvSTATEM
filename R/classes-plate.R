@@ -66,7 +66,7 @@ Plate <- R6::R6Class(
 
     #'
     #' @field plate_name  (`character(1)`)\cr
-    #'  Name of the plate.
+    #'  Name of the plate. Set to the name of the file from which the plate was read.
     plate_name = "",
     #'
     #' @field analyte_names (`character()`)\cr
