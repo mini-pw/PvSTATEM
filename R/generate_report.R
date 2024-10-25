@@ -14,12 +14,12 @@
 #'
 #' If the passed filename does not contain `.html` extension, the default extension `.html` will be added.
 #' Filename can also be a path to a file, e.g. `path/to/file.html`. In this case, the `output_dir` and `filename` will be joined together.
-#' However, if the passed filepath is a an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
-#' If there already exists a file under a specified filepath, the function will overwrite it.
+#' However, if the passed filepath is an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
+#' If a file already exists under a specified filepath, the function will overwrite it.
 #'
 #' @param output_dir (`character(1)`) The directory where the output CSV file should be saved.
 #' Please note that any directory path provided will create any necessary directories if they do not exist.
-#' If equals to `NULL` the current working directory will be used. Default is 'reports'.
+#' If it equals to `NULL` the current working directory will be used. Default is 'reports'.
 #' @param counts_lower_threshold (`numeric(1)`) The lower threshold for the counts plots (works for each analyte). Default is 50.
 #' @param counts_higher_threshold (`numeric(1)`) The higher threshold for the counts plots (works for each analyte). Default is 70.
 #' @param additional_notes (`character(1)`) Additional notes to be included in the report. Contents of this fields are left to the user's discretion. If not provided, the field will not be included in the report.

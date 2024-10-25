@@ -229,7 +229,7 @@ is.decreasing <- function(x) {
 
 
 #' @title Validate filepath and output_dir
-#' @description This function handles the validation of the filepath and output_dir arguments.
+#' @description This function validates the filepath and output_dir arguments.
 #'
 #' @param filename (`character(1)`) The path to the file.
 #' @param output_dir (`character(1)`) The directory where the file should be saved.
@@ -290,7 +290,7 @@ validate_filepath_and_output_dir <- function(filename, output_dir, plate_name, s
 
   if (!dir.exists(output_dir)) {
     verbose_cat("Creating the output directory: '", output_dir, "'\n", verbose = verbose)
-    dir.create(output_dir)
+    dir.create(output_dir, recursive = TRUE, showWarnings = TRUE)
   }
 
   if (file.exists(output_path)) {

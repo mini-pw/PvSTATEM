@@ -41,12 +41,12 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #'
 #' If the passed filename does not contain `.csv` extension, the default extension `.csv` will be added.
 #' Filename can also be a path to a file, e.g. `path/to/file.csv`. In this case, the `output_dir` and `filename` will be joined together.
-#' However, if the passed filepath is a an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
-#' If there already exists a file under a specified filepath, the function will overwrite it.
+#' However, if the passed filepath is an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
+#' If a file already exists under a specified filepath, the function will overwrite it.
 #'
 #' @param output_dir (`character(1)`) The directory where the output CSV file should be saved.
-#' Please note that any directory path provided will create any necessary directories if they do not exist.
-#' If equals to `NULL` the current working directory will be used. Default is 'normalised_data'.
+#' Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
+#' If it equals to `NULL` the current working directory will be used. Default is 'normalised_data'.
 #'
 #' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
 #' \cr \code{c(`r toString(VALID_NORMALISATION_TYPES)`)}.
