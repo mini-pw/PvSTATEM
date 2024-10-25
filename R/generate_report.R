@@ -18,7 +18,7 @@
 #' If there already exists a file under a specified filepath, the function will overwrite it.
 #'
 #' @param output_dir (`character(1)`) The directory where the output CSV file should be saved.
-#' Please note that any directory path provided will create any necessary directories if they do not exist.
+#' Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
 #' If equals to `NULL` the current working directory will be used. Default is 'reports'.
 #' @param counts_lower_threshold (`numeric(1)`) The lower threshold for the counts plots (works for each analyte). Default is 50.
 #' @param counts_higher_threshold (`numeric(1)`) The higher threshold for the counts plots (works for each analyte). Default is 70.
