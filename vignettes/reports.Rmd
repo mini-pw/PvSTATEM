@@ -49,15 +49,28 @@ generate_plate_report(plate)
 ```
 
 Default report has 4 main sections:
+
 - The most important information about the plate
+
+![plate_summary](img/plate_summary.png)
+
 - The layout of the plate
+
+![plate_layout](img/plate_layout.png)
+
 - The preview of standard curves
+
+![standard_curves](img/thumbnails.png)
+
 - Detailed information about analytes, this sections has tabs for each analyte, where the user can select the analyte of interest.
+
+![analytes](img/analyte_details.png)
 
 # Additional parameters
 
 The user can customize the report by setting additional parameters. 
 The `generate_plate_report` function has the following optional parameters:
+
 - `additonal_notes` - string with additional notes that will be added to the report
 
 ```{r, eval=FALSE}
@@ -89,7 +102,7 @@ Unordered list:
 
 even though headings #, ##, ### are supported, 
 it is recommended not to use them, as the report has its own structure,
-that is build around ### headings.
+that is build around ### headings.  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "
 generate_plate_report(plate, additional_notes = notes)
 ```
@@ -105,14 +118,11 @@ it is used to change the threshold between yellow and red colours
 - `filename` - The name of the output HTML report file. If not provided or equals to `NULL`, 
 the output filename will be based on the plate name, precisely: `{plate_name}_report.html`.
  By default the `plate_name` is the filename of the input file that contains the plate data.
- For more details please refer to \link[PvSTATEM]{Plate}.
-
- If the passed filename does not contain `.html` extension, the default extension `.html` will be added.
+ For more details please refer to documentation about `Plate` object. If the passed filename does not contain `.html` extension, the default extension `.html` will be added.
  Filename can also be a path to a file, e.g. `path/to/file.html`. In this case, the `output_dir` and `filename` will be joined together.
  However, if the passed filepath is an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
  If a file already exists under a specified filepath, the function will overwrite it.
-- `output_dir` - The directory where the output CSV file should be saved.
- Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
+- `output_dir` - The directory where the output CSV file should be saved. Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
  If it equals to `NULL` the current working directory will be used. Default is 'reports'.
 
 ```{r, eval=FALSE}
