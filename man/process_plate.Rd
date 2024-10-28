@@ -6,7 +6,8 @@
 \usage{
 process_plate(
   plate,
-  output_path = NULL,
+  filename = NULL,
+  output_dir = "normalised_data",
   normalisation_type = "RAU",
   data_type = "Median",
   include_raw_mfi = TRUE,
@@ -19,9 +20,20 @@ process_plate(
 \arguments{
 \item{plate}{(\code{Plate()}) a plate object}
 
-\item{output_path}{(\code{character(1)}) path to save the computed RAU values.
-If not provided, the file will be saved in the working directory with the name \verb{\{normalisation_type\}_\{plate_name\}.csv}.
-Where the \code{{plate_name}} is the name of the plate.}
+\item{filename}{(\code{character(1)}) The name of the output CSV file with normalised MFI values.
+If not provided or equals to \code{NULL}, the output filename will be based on the normalisation type
+and the plate name, precisely: \verb{\{plate_name\}_\{normalisation_type\}.csv}.
+By default the \code{plate_name} is the filename of the input file that contains the plate data.
+For more details please refer to \link[PvSTATEM]{Plate}.
+
+If the passed filename does not contain \code{.csv} extension, the default extension \code{.csv} will be added.
+Filename can also be a path to a file, e.g. \code{path/to/file.csv}. In this case, the \code{output_dir} and \code{filename} will be joined together.
+However, if the passed filepath is an absolute path and the \code{output_dir} parameter is also provided, the \code{output_dir} parameter will be ignored.
+If a file already exists under a specified filepath, the function will overwrite it.}
+
+\item{output_dir}{(\code{character(1)}) The directory where the output CSV file should be saved.
+Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
+If it equals to \code{NULL} the current working directory will be used. Default is 'normalised_data'.}
 
 \item{normalisation_type}{(\code{character(1)}) type of normalisation to use. Available options are:
 \cr \code{c(RAU, nMFI)}.}
@@ -80,14 +92,18 @@ layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = 
 
 plate <- read_luminex_data(plate_file, layout_file)
 
-tmp_dir <- tempdir(check = TRUE)
-temporary_filepath <- file.path(tmp_dir, "output.csv")
-process_plate(plate, output_path = temporary_filepath)
+example_dir <- tempdir(check = TRUE) # a temporary directory
 # create and save dataframe with computed dilutions
+process_plate(plate, output_dir = example_dir)
+
+# process plate without adjusting blanks and save the output to a file with a custom name
+process_plate(plate, filename = "plate_without_blanks_adjusted.csv",
+   output_dir = example_dir, adjust_blanks = FALSE)
+
 
 # nMFI normalisation
 process_plate(plate,
-  output_path = temporary_filepath,
+  output_dir = example_dir,
   normalisation_type = "nMFI", reference_dilution = 1 / 400
 )
 

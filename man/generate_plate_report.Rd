@@ -19,9 +19,19 @@ generate_plate_report(
 
 \item{use_model}{(\code{logical(1)}) A logical value indicating whether the model should be used in the report.}
 
-\item{filename}{(\code{character(1)}) The name of the output file. If not provided,the filename will be created based on the plate name with the suffix '_report.html'.}
+\item{filename}{(\code{character(1)}) The name of the output HTML report file.
+If not provided or equals to \code{NULL}, the output filename will be based on the plate name, precisely: \verb{\{plate_name\}_report.html}.
+By default the \code{plate_name} is the filename of the input file that contains the plate data.
+For more details please refer to \link[PvSTATEM]{Plate}.
 
-\item{output_dir}{(\code{character(1)}) The directory where the report should be saved. Default is 'reports'.}
+If the passed filename does not contain \code{.html} extension, the default extension \code{.html} will be added.
+Filename can also be a path to a file, e.g. \code{path/to/file.html}. In this case, the \code{output_dir} and \code{filename} will be joined together.
+However, if the passed filepath is an absolute path and the \code{output_dir} parameter is also provided, the \code{output_dir} parameter will be ignored.
+If a file already exists under a specified filepath, the function will overwrite it.}
+
+\item{output_dir}{(\code{character(1)}) The directory where the output CSV file should be saved.
+Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
+If it equals to \code{NULL} the current working directory will be used. Default is 'reports'.}
 
 \item{counts_lower_threshold}{(\code{numeric(1)}) The lower threshold for the counts plots (works for each analyte). Default is 50.}
 
@@ -43,9 +53,9 @@ layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = 
 note <- "This is a test report.\n**Author**: Jane Doe \n**Tester**: John Doe"
 
 plate <- read_luminex_data(plate_file, layout_file)
-tmp_dir <- tempdir(check = TRUE)
+example_dir <- tempdir(check = TRUE) # a temporary directory
 generate_plate_report(plate,
-  output_dir = tmp_dir,
+  output_dir = example_dir,
   counts_lower_threshold = 40,
   counts_higher_threshold = 50,
   additional_notes = note

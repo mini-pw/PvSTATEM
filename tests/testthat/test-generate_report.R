@@ -26,19 +26,31 @@ get_test_plate <- function() {
 
 test_that("Test generate_plate_report function", {
   plate <- get_test_plate()
+
+  tmp_dir <- tempdir(check = TRUE)
+
   expect_error(generate_plate_report())
-  expect_no_error(generate_plate_report(plate))
-  expect_no_error(generate_plate_report(plate, filename = "test_report.html"))
-  expect_no_error(generate_plate_report(plate, counts_lower_threshold = 40, counts_higher_threshold = 80))
-  expect_no_error(generate_plate_report(plate, additional_notes = "This is a test report."))
+  expect_no_error(generate_plate_report(plate, output_dir = tmp_dir))
+  expect_no_error(generate_plate_report(plate, output_dir = tmp_dir, filename = "test_report.html"))
+  file.remove(file.path(tmp_dir, "test_report.html"))
+  expect_no_error(generate_plate_report(plate, output_dir = tmp_dir, filename = "test_report.html",  counts_lower_threshold = 40, counts_higher_threshold = 80))
+  file.remove(file.path(tmp_dir, "test_report.html"))
+  expect_no_error(generate_plate_report(plate, output_dir = tmp_dir, filename = "test_report.html", additional_notes = "This is a test report."))
+  file.remove(file.path(tmp_dir, "test_report.html"))
+
 
   multiline_note <- "This is a test report.\nThis is a test report."
-  expect_no_error(generate_plate_report(plate, additional_notes = multiline_note))
+  expect_no_error(generate_plate_report(plate, output_dir = tmp_dir, filename = "test_report.html", additional_notes = multiline_note))
+  file.remove(file.path(tmp_dir, "test_report.html"))
+
 })
 
 test_that("Test generate_levey_jennings_report function", {
   plate <- get_test_plate()
+
+  tmp_dir <- tempdir(check = TRUE)
+
   expect_error(generate_levey_jennings_report())
-  expect_no_error(generate_levey_jennings_report(list(plate)))
-  expect_no_error(generate_levey_jennings_report(list(plate), filename = "test_report.html"))
+  expect_no_error(generate_levey_jennings_report(list(plate), output_dir = tmp_dir))
+  expect_no_error(generate_levey_jennings_report(list(plate), output_dir = tmp_dir, filename = "test_report.html"))
 })

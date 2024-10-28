@@ -100,3 +100,52 @@ test_that("Test is.decreasing function", {
   expect_error(is.decreasing(c(1, 2, NA)))
   expect_error(is.decreasing("wrong"))
 })
+
+test_that("Test validate_filepath_and_output_dir function", {
+  tmp_dir <- tempdir(check = TRUE)
+  # base case
+  expect_equal(
+    validate_filepath_and_output_dir("test", tmp_dir, "plate_name", "report", "html"),
+    file.path(tmp_dir, "test.html")
+  )
+
+  # extension handling
+  expect_equal(
+    validate_filepath_and_output_dir("test", tmp_dir, "plate_name", "report", "html.html"),
+    file.path(tmp_dir, "test.html.html")
+  )
+
+
+  expect_equal(
+    validate_filepath_and_output_dir("test.html", tmp_dir, "plate_name", "report", "html"),
+    file.path(tmp_dir, "test.html")
+  )
+
+  # trailing full stop in extension
+  expect_error(validate_filepath_and_output_dir("test", tmp_dir, "plate_name", "report", ".html"))
+
+  # default filename creation
+  expect_equal(
+    validate_filepath_and_output_dir(NULL, tmp_dir, "plate_name", "report", "html"),
+    file.path(tmp_dir, "plate_name_report.html")
+  )
+
+
+  # filename with no output_dir
+  expect_warning(
+    validate_filepath_and_output_dir(file.path(tmp_dir, "test.html"), tmp_dir, "plate_name", "report", "html"))
+
+  expect_no_warning(
+    validate_filepath_and_output_dir(file.path(tmp_dir, "test.html"), NULL, "plate_name", "report", "html"))
+
+  file.create(file.path(tmp_dir, "test.html"))
+  # overwrite existing file
+  expect_warning(
+    validate_filepath_and_output_dir(file.path(tmp_dir, "test.html"), tmp_dir, "plate_name", "report", "html"))
+
+  # create output directory
+  expect_no_error(
+    validate_filepath_and_output_dir("test.html", file.path(tmp_dir, "output"), "plate_name", "report", "html"))
+
+  expect_true(dir.exists(file.path(tmp_dir, "output")))
+})

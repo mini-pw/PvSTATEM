@@ -6,4 +6,5 @@ inst/doc
 PvSTATEM.Rproj
 *.DS_Store
 reports
+normalised_data
 docs

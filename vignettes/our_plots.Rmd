@@ -141,6 +141,6 @@ plot_standard_curve_analyte_with_model(plate, model)
 
 Here, we do not have to specify the analyte name, as the model already carries this information.
 The model is created by the `create_standard_curve_model_analyte` function, which takes the `plate` object and the analyte name as the arguments, but this is not the focus of this vignette.
-The arguments of this function are very similar to the previous one, except here there is a missing `plot_line' argument, and there are two new arguments: `plot_asymptote` and `plot_test_predictions`.
+The arguments of this function are very similar to the previous one, except here there is a missing `plot_line` argument, and there are two new arguments: `plot_asymptote` and `plot_test_predictions`.
 The first turns off the asymptotes, and the second disables plotting the test samples' predictions.
 By default, both are set to `TRUE`.
