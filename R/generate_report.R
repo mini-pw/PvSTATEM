@@ -27,6 +27,8 @@
 #'
 #' @return A report.
 #'
+#' @import svglite
+#'
 #' @examples
 #'
 #' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
@@ -68,9 +70,11 @@ generate_plate_report <-
     # markdown does not support single line breaks, so we need to replace them with two spaces and a line break
     if (!is.null(additional_notes)) {
       additional_notes <-
-        gsub(pattern = "\n",
-             replacement = "  \n",
-             x = additional_notes)
+        gsub(
+          pattern = "\n",
+          replacement = "  \n",
+          x = additional_notes
+        )
     }
 
     rmarkdown::render(
