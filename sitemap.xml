@@ -6,6 +6,7 @@
 <url><loc>/articles/index.html</loc></url>
 <url><loc>/articles/our_datasets.html</loc></url>
 <url><loc>/articles/our_plots.html</loc></url>
+<url><loc>/articles/reports.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/news/index.html</loc></url>
@@ -49,6 +50,7 @@
 <url><loc>/reference/read_xponent_format.html</loc></url>
 <url><loc>/reference/remove_empty_lists.html</loc></url>
 <url><loc>/reference/translate_sample_names_to_sample_types.html</loc></url>
+<url><loc>/reference/validate_filepath_and_output_dir.html</loc></url>
 <url><loc>/reference/verbose_cat.html</loc></url>
 <url><loc>/reference/verify_character_join.html</loc></url>
 <url><loc>/reference/verify_numeric_join.html</loc></url>
