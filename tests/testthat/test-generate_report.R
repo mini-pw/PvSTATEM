@@ -33,7 +33,7 @@ test_that("Test generate_plate_report function", {
   expect_no_error(generate_plate_report(plate, output_dir = tmp_dir))
   expect_no_error(generate_plate_report(plate, output_dir = tmp_dir, filename = "test_report.html"))
   file.remove(file.path(tmp_dir, "test_report.html"))
-  expect_no_error(generate_plate_report(plate, output_dir = tmp_dir, filename = "test_report.html",  counts_lower_threshold = 40, counts_higher_threshold = 80))
+  expect_no_error(generate_plate_report(plate, output_dir = tmp_dir, filename = "test_report.html", counts_lower_threshold = 40, counts_higher_threshold = 80))
   file.remove(file.path(tmp_dir, "test_report.html"))
   expect_no_error(generate_plate_report(plate, output_dir = tmp_dir, filename = "test_report.html", additional_notes = "This is a test report."))
   file.remove(file.path(tmp_dir, "test_report.html"))
@@ -42,7 +42,6 @@ test_that("Test generate_plate_report function", {
   multiline_note <- "This is a test report.\nThis is a test report."
   expect_no_error(generate_plate_report(plate, output_dir = tmp_dir, filename = "test_report.html", additional_notes = multiline_note))
   file.remove(file.path(tmp_dir, "test_report.html"))
-
 })
 
 test_that("Test generate_levey_jennings_report function", {

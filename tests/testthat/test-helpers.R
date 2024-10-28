@@ -133,19 +133,23 @@ test_that("Test validate_filepath_and_output_dir function", {
 
   # filename with no output_dir
   expect_warning(
-    validate_filepath_and_output_dir(file.path(tmp_dir, "test.html"), tmp_dir, "plate_name", "report", "html"))
+    validate_filepath_and_output_dir(file.path(tmp_dir, "test.html"), tmp_dir, "plate_name", "report", "html")
+  )
 
   expect_no_warning(
-    validate_filepath_and_output_dir(file.path(tmp_dir, "test.html"), NULL, "plate_name", "report", "html"))
+    validate_filepath_and_output_dir(file.path(tmp_dir, "test.html"), NULL, "plate_name", "report", "html")
+  )
 
   file.create(file.path(tmp_dir, "test.html"))
   # overwrite existing file
   expect_warning(
-    validate_filepath_and_output_dir(file.path(tmp_dir, "test.html"), tmp_dir, "plate_name", "report", "html"))
+    validate_filepath_and_output_dir(file.path(tmp_dir, "test.html"), tmp_dir, "plate_name", "report", "html")
+  )
 
   # create output directory
   expect_no_error(
-    validate_filepath_and_output_dir("test.html", file.path(tmp_dir, "output"), "plate_name", "report", "html"))
+    validate_filepath_and_output_dir("test.html", file.path(tmp_dir, "output"), "plate_name", "report", "html")
+  )
 
   expect_true(dir.exists(file.path(tmp_dir, "output")))
 })

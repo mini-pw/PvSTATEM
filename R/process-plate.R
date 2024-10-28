@@ -75,8 +75,10 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' process_plate(plate, output_dir = example_dir)
 #'
 #' # process plate without adjusting blanks and save the output to a file with a custom name
-#' process_plate(plate, filename = "plate_without_blanks_adjusted.csv",
-#'    output_dir = example_dir, adjust_blanks = FALSE)
+#' process_plate(plate,
+#'   filename = "plate_without_blanks_adjusted.csv",
+#'   output_dir = example_dir, adjust_blanks = FALSE
+#' )
 #'
 #'
 #' # nMFI normalisation
@@ -105,8 +107,10 @@ process_plate <-
 
 
     output_path <- validate_filepath_and_output_dir(filename, output_dir,
-                                                    plate$plate_name, normalisation_type,
-                                                    "csv", verbose = verbose)
+      plate$plate_name, normalisation_type,
+      "csv",
+      verbose = verbose
+    )
 
 
     if (!plate$blank_adjusted && adjust_blanks) {

@@ -46,7 +46,7 @@ test_that("Processing plate with nMFI", {
   file.remove(test_output_path)
   # Test processing of a plate with reference dilution specified
   expect_no_error(
-    process_plate(plate, output_dir = tmp_dir, filename = "output.csv",  normalisation_type = "nMFI", reference_dilution = "1/50")
+    process_plate(plate, output_dir = tmp_dir, filename = "output.csv", normalisation_type = "nMFI", reference_dilution = "1/50")
   )
   expect_true(file.exists(test_output_path))
   expect_no_error(dilutions <- read.csv(test_output_path))
@@ -85,7 +85,7 @@ test_that("raw MFI in dataframe", {
 
   # Test processing of a plate, with raw MFI
   expect_no_error(
-    output_df <- process_plate(plate, output_dir = tmp_dir, filename = "output.csv",  normalisation_type = "nMFI", include_raw_mfi = TRUE)
+    output_df <- process_plate(plate, output_dir = tmp_dir, filename = "output.csv", normalisation_type = "nMFI", include_raw_mfi = TRUE)
   )
   stopifnot(all(colnames(output_df) == c(plate$analyte_names, paste0(plate$analyte_names, "_raw"))))
 })
