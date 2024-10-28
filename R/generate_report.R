@@ -34,9 +34,9 @@
 #' note <- "This is a test report.\n**Author**: Jane Doe \n**Tester**: John Doe"
 #'
 #' plate <- read_luminex_data(plate_file, layout_file)
-#' tmp_dir <- tempdir(check = TRUE)
+#' example_dir <- tempdir(check = TRUE) # a temporary directory
 #' generate_plate_report(plate,
-#'   output_dir = tmp_dir,
+#'   output_dir = example_dir,
 #'   counts_lower_threshold = 40,
 #'   counts_higher_threshold = 50,
 #'   additional_notes = note

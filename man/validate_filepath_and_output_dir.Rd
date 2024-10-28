@@ -31,6 +31,6 @@ Passed without a dot, e.g. \code{csv}.}
 An output path.
 }
 \description{
-This function handles the validation of the filepath and output_dir arguments.
+This function validates the filepath and output_dir arguments.
 }
 \keyword{internal}

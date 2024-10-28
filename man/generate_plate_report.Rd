@@ -26,12 +26,12 @@ For more details please refer to \link[PvSTATEM]{Plate}.
 
 If the passed filename does not contain \code{.html} extension, the default extension \code{.html} will be added.
 Filename can also be a path to a file, e.g. \code{path/to/file.html}. In this case, the \code{output_dir} and \code{filename} will be joined together.
-However, if the passed filepath is a an absolute path and the \code{output_dir} parameter is also provided, the \code{output_dir} parameter will be ignored.
-If there already exists a file under a specified filepath, the function will overwrite it.}
+However, if the passed filepath is an absolute path and the \code{output_dir} parameter is also provided, the \code{output_dir} parameter will be ignored.
+If a file already exists under a specified filepath, the function will overwrite it.}
 
 \item{output_dir}{(\code{character(1)}) The directory where the output CSV file should be saved.
-Please note that any directory path provided will create any necessary directories if they do not exist.
-If equals to \code{NULL} the current working directory will be used. Default is 'reports'.}
+Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
+If it equals to \code{NULL} the current working directory will be used. Default is 'reports'.}
 
 \item{counts_lower_threshold}{(\code{numeric(1)}) The lower threshold for the counts plots (works for each analyte). Default is 50.}
 
@@ -53,9 +53,9 @@ layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = 
 note <- "This is a test report.\n**Author**: Jane Doe \n**Tester**: John Doe"
 
 plate <- read_luminex_data(plate_file, layout_file)
-tmp_dir <- tempdir(check = TRUE)
+example_dir <- tempdir(check = TRUE) # a temporary directory
 generate_plate_report(plate,
-  output_dir = tmp_dir,
+  output_dir = example_dir,
   counts_lower_threshold = 40,
   counts_higher_threshold = 50,
   additional_notes = note

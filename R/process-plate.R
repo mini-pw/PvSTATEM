@@ -70,18 +70,18 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #'
 #' plate <- read_luminex_data(plate_file, layout_file)
 #'
-#' tmp_dir <- tempdir(check = TRUE)
+#' example_dir <- tempdir(check = TRUE) # a temporary directory
 #' # create and save dataframe with computed dilutions
-#' process_plate(plate, output_dir = tmp_dir)
+#' process_plate(plate, output_dir = example_dir)
 #'
 #' # process plate without adjusting blanks and save the output to a file with a custom name
 #' process_plate(plate, filename = "plate_without_blanks_adjusted.csv",
-#'    output_dir = tmp_dir, adjust_blanks = FALSE)
+#'    output_dir = example_dir, adjust_blanks = FALSE)
 #'
 #'
 #' # nMFI normalisation
 #' process_plate(plate,
-#'   output_dir = tmp_dir,
+#'   output_dir = example_dir,
 #'   normalisation_type = "nMFI", reference_dilution = 1 / 400
 #' )
 #'

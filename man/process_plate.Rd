@@ -28,12 +28,12 @@ For more details please refer to \link[PvSTATEM]{Plate}.
 
 If the passed filename does not contain \code{.csv} extension, the default extension \code{.csv} will be added.
 Filename can also be a path to a file, e.g. \code{path/to/file.csv}. In this case, the \code{output_dir} and \code{filename} will be joined together.
-However, if the passed filepath is a an absolute path and the \code{output_dir} parameter is also provided, the \code{output_dir} parameter will be ignored.
-If there already exists a file under a specified filepath, the function will overwrite it.}
+However, if the passed filepath is an absolute path and the \code{output_dir} parameter is also provided, the \code{output_dir} parameter will be ignored.
+If a file already exists under a specified filepath, the function will overwrite it.}
 
 \item{output_dir}{(\code{character(1)}) The directory where the output CSV file should be saved.
-Please note that any directory path provided will create any necessary directories if they do not exist.
-If equals to \code{NULL} the current working directory will be used. Default is 'normalised_data'.}
+Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
+If it equals to \code{NULL} the current working directory will be used. Default is 'normalised_data'.}
 
 \item{normalisation_type}{(\code{character(1)}) type of normalisation to use. Available options are:
 \cr \code{c(RAU, nMFI)}.}
@@ -92,18 +92,18 @@ layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = 
 
 plate <- read_luminex_data(plate_file, layout_file)
 
-tmp_dir <- tempdir(check = TRUE)
+example_dir <- tempdir(check = TRUE) # a temporary directory
 # create and save dataframe with computed dilutions
-process_plate(plate, output_dir = tmp_dir)
+process_plate(plate, output_dir = example_dir)
 
 # process plate without adjusting blanks and save the output to a file with a custom name
 process_plate(plate, filename = "plate_without_blanks_adjusted.csv",
-   output_dir = tmp_dir, adjust_blanks = FALSE)
+   output_dir = example_dir, adjust_blanks = FALSE)
 
 
 # nMFI normalisation
 process_plate(plate,
-  output_dir = tmp_dir,
+  output_dir = example_dir,
   normalisation_type = "nMFI", reference_dilution = 1 / 400
 )
 
