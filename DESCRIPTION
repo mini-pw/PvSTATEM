@@ -31,7 +31,8 @@ Imports:
     tools,
     ggrepel,
     lubridate,
-    R.utils
+    R.utils,
+    svglite
 Suggests:
     knitr,
     qpdf,

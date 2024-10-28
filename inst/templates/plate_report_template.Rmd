@@ -164,7 +164,7 @@ plot_layout(params$plate)
 
 
 
-```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="100%", dev='jpeg', dpi=72}
+```{r standard-curves-overview, results='asis', echo=FALSE, message=FALSE, warning=FALSE, out.width="100%", out.height="100%", dev='svglite', dpi=36}
 # Code used to create dynamic tabs based on the number of analytes
 # Start a grid for the plots
 cat('<div class="plot-grid">')
@@ -188,7 +188,7 @@ cat('</div>')
  
 ### Details for given analyte {.tabset .tabset-fade}
 
-```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%", dev='jpeg', dpi=72}
+```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%", out.height="325", dev='svglite', dpi=72, warning=FALSE}
 # Code used to create dynamic tabs based on the number of analytes
 for (i in seq_along(params$plate$analyte_names)) {
   cat(paste0("#### ", params$plate$analyte_names[i], "\n"))
