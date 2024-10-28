@@ -23,8 +23,8 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The `PvSTATEM` package provides for now one report that can be generated using the `generate_plate_report` function. 
-It is a HTML report that contains a summary of the plate. It was optimized for size to be easily sent via email. 
+The `PvSTATEM` package provides, for now, one report that can be generated using the `generate_plate_report` function. 
+It is an HTML report that contains a summary of the plate. It was optimized for size so it could be sent via email. 
 In the future, we plan to add to the package report about Levey-Jennings plots. For now, we will focus on the plate summary report. 
 To present this functionality, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. 
 Firstly, let us load the dataset as the `plate` object.
@@ -62,7 +62,7 @@ Default report has 4 main sections:
 
 <img src="img/report_thumbnails.png" alt="Image description" width="600px" style="border: 1px solid black;" />
 
-- Detailed information about analytes, this sections has tabs for each analyte, where the user can select the analyte of interest.
+- Detailed information about analytes: this section has tabs for each analyte, where the user can select the analyte of interest.
 
 <img src="img/report_analyte_details.png" alt="Image description" width="600px" style="border: 1px solid black;" />
 
@@ -100,7 +100,7 @@ Unordered list:
 ##### This is a subheading
 ###### This is a subsubheading
 
-Even though headings #, ##, ### are supported, it is recommended not to use them, as the report has its own structure, that is build around ### headings.
+Even though headings #, ##, ### are supported, it is recommended not to use them, as the report has its own structure that is built around ### headings.
 "
 generate_plate_report(plate, additional_notes = notes)
 ```
@@ -117,7 +117,7 @@ it is used to change the threshold between yellow and red colours
 - `filename` - The name of the output HTML report file. If not provided or equals to `NULL`, 
 the output filename will be based on the plate name, precisely: `{plate_name}_report.html`.
  By default the `plate_name` is the filename of the input file that contains the plate data.
- For more details please refer to documentation about `Plate` object. If the passed filename does not contain `.html` extension, the default extension `.html` will be added.
+ For more details, please refer to the documentation about the `Plate` object. If the passed filename does not contain the `.html` extension, the default extension `.html` will be added.
  Filename can also be a path to a file, e.g. `path/to/file.html`. In this case, the `output_dir` and `filename` will be joined together.
  However, if the passed filepath is an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
  If a file already exists under a specified filepath, the function will overwrite it.
