@@ -1,3 +1,14 @@
+PvSTATEM 0.1.0
+---------------------------------------------------------------
+* enhanced and unified file saving for generate_plate_report and process_plate
+* reduced HTML report size and improved its structure
+* remove extraneous column from RAU output
+* added notes field in the HTML report
+* made nplr warnings more informative
+* added vignette for generate_plate_report function
+* limited the amount of data frame presented in the vignettes
+
+
 PvSTATEM 0.0.5
 ---------------------------------------------------------------
 * added function `generate_plate_report` generating the html report
