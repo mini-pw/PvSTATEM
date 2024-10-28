@@ -78,7 +78,7 @@ notes <- "
 This is an example of additional notes that can be added to the report.
 The notes support markdown syntax, for example:
 **Author: Jane Doe** - bold
-*Date: 2021-09-01* - italic
+*Date: 2024-10-28* - italic
 ~~Complited~~ - strikethrough
 H~2~O - subscripts
 X^2^ - superscripts
@@ -100,15 +100,14 @@ Unordered list:
 ##### This is a subheading
 ###### This is a subsubheading
 
-even though headings #, ##, ### are supported, 
-it is recommended not to use them, as the report has its own structure,
-that is build around ### headings.  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Even though headings #, ##, ### are supported, it is recommended not to use them, as the report has its own structure, that is build around ### headings.
 "
 generate_plate_report(plate, additional_notes = notes)
 ```
 
 Such notes looks like this in the report:
 
+![additional_notes](img/additional_notes.png)
 
 
 - `counts_lower_threshold` - the lower threshold for counts plot, works the same way as in the `plot_counts` function
