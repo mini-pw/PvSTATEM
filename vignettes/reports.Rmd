@@ -94,7 +94,7 @@ Unordered list:
 - Second item
 - Third item
 
-> This is a blockquote 
+> This is a blockquote
 
 #### This is a heading
 ##### This is a subheading
@@ -125,11 +125,12 @@ the output filename will be based on the plate name, precisely: `{plate_name}_re
  If it equals to `NULL` the current working directory will be used. Default is 'reports'.
 
 ```{r, eval=FALSE}
-generate_plate_report(plate, 
-                      additional_notes = notes,
-                      counts_lower_threshold = 10,
-                      counts_higher_threshold = 100,
-                      filename = "example_report.html",
-                      output_dir = "reports_from_new_plates")
+generate_plate_report(plate,
+  additional_notes = notes,
+  counts_lower_threshold = 10,
+  counts_higher_threshold = 100,
+  filename = "example_report.html",
+  output_dir = "reports_from_new_plates"
+)
 ```
 
