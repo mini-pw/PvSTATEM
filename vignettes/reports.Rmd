@@ -52,19 +52,19 @@ Default report has 4 main sections:
 
 - The most important information about the plate
 
-![plate_summary](img/plate_summary.png)
+![](img/report_summary.png)
 
 - The layout of the plate
 
-![plate_layout](img/plate_layout.png)
+![](img/report_layout.jpg)
 
 - The preview of standard curves
 
-![standard_curves](img/thumbnails.png)
+![](img/report_thumbnails.png)
 
 - Detailed information about analytes, this sections has tabs for each analyte, where the user can select the analyte of interest.
 
-![analytes](img/analyte_details.png)
+![](img/report_analyte_details.png)
 
 # Additional parameters
 
@@ -107,7 +107,7 @@ generate_plate_report(plate, additional_notes = notes)
 
 Such notes looks like this in the report:
 
-![additional_notes](img/additional_notes.png)
+![](img/additional_notes.jpg)
 
 
 - `counts_lower_threshold` - the lower threshold for counts plot, works the same way as in the `plot_counts` function
