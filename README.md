@@ -46,7 +46,7 @@ The first command loads the `devtools` library (you might need to install it fir
 ## Examples and instructions
 
 The example use of the package and its functionalities can be found in [the vignettes](https://mini-pw.github.io/PvSTATEM/articles/example_script.html).
-For more detailed documentation, check [the package website](https://mini-pw.github.io/PvSTATEM).
+For more detailed documentation, check [the package website](https://mini-pw.github.io/PvSTATEM/).
 
 
 ## Contributing and issues
