@@ -1,3 +1,8 @@
+PvSTATEM 0.1.1
+---------------------------------------------------------------
+* released the package to CRAN
+* fixed minor formatting issues
+
 PvSTATEM 0.1.0
 ---------------------------------------------------------------
 * enhanced and unified file saving for generate_plate_report and process_plate
