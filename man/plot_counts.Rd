@@ -22,9 +22,9 @@ plot_counts(
 
 \item{plot_legend}{Logical indicating if the legend should be plotted}
 
-\item{lower_threshold}{The lower threshold for the counts, it separates green and yellow colors}
+\item{lower_threshold}{The lower threshold for the counts, it separates green and yellow colours}
 
-\item{higher_threshold}{The higher threshold for the counts, it separates yellow and red colors}
+\item{higher_threshold}{The higher threshold for the counts, it separates yellow and red colours}
 }
 \value{
 A ggplot object

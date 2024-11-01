@@ -104,7 +104,7 @@ verbose_cat <- function(..., verbose = TRUE) {
 
 
 #
-# colors for WARNING, NOTE, DEFAULT
+# colours for WARNING, NOTE, DEFAULT
 #
 color_codes <- list(
   yellow_start = "\033[33m",

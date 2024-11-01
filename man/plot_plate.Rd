@@ -5,7 +5,7 @@
 \title{Plot a 96-well plate with coloured wells}
 \usage{
 plot_plate(
-  colors,
+  colours,
   plot_numbers = FALSE,
   numbers = NULL,
   plot_title = "Plate",
@@ -14,6 +14,8 @@ plot_plate(
 )
 }
 \arguments{
+\item{colours}{A vector with 96 colours will be used to colour the wells; the order is from left to right and top to bottom}
+
 \item{plot_numbers}{Logical value indicating if the well numbers should be plotted, default is \code{FALSE}}
 
 \item{numbers}{An optional vector with 96 numbers plotted on the wells. Order is from left to right and top to bottom and must have the same length as colours.
@@ -24,8 +26,6 @@ It could be used, for instance, to plot the bead count of each well. Must be pro
 \item{plot_legend}{Logical value indicating if the legend should be plotted, default is \code{FALSE}}
 
 \item{legend_mapping}{A named vector with the colour mapping used to create the legend}
-
-\item{colours}{A vector with 96 colours will be used to colour the wells; the order is from left to right and top to bottom}
 }
 \value{
 A ggplot object
