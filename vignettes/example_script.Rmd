@@ -176,7 +176,7 @@ More information about the model can be found in the `nplr` package documentatio
 By reversing that logistic function, we can predict the dilution of the samples based on the MFI values.
 The RAU value is then the predicted dilution of the sample multiplied by $1,000,000$.
 
-To limit the extrapolation error from above (values above maximum RAU value $RAU_{max}$ for the standard curve samples), we clip all predictions above $M = RAU_{max} + \text{over_max_extrapolation}$ to $M$ where `over_max_extrapolation` is user controlled parameter to the `predict` function.
+To limit the extrapolation error from above (values above maximum RAU value \eqn{\text{RAU}_{max}} for the standard curve samples), we clip all predictions above \eqn{M = RAU_{max} + \text{over\_max\_extrapolation}} to $M$ where `over_max_extrapolation` is user controlled parameter to the `predict` function.
 By default `over_max_extrapolation` is set to $0$.
 
 #### Usage
