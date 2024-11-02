@@ -58,3 +58,20 @@ test_that("properly specified thresholds for counts", {
   plate <- get_real_plate()
   expect_no_error(p <- plot_counts(plate, "OC43_NP_NA", plot_counts = FALSE, plot_legend = TRUE, lower_threshold = 50, higher_threshold = 150))
 })
+
+test_that("test plot_plate internal function", {
+  plate <- get_test_plate()
+  colours <- rep("red", 96)
+  legend_mapping <- c("BLANK" = "red", "STANDARD CURVE" = "blue", "TEST" = "green")
+  expect_no_error(plot_plate(colours, legend_mapping = legend_mapping))
+
+  # incorrect colours length
+  expect_error(plot_plate(colours[1:95], legend_mapping = legend_mapping))
+
+  # incorrect legend mapping
+  colours <- rep(c("red", "blue"), 48)
+  legend_mapping <- c("BLANK" = "red")
+  expect_error(plot_plate(colours, legend_mapping = legend_mapping))
+
+})
+
