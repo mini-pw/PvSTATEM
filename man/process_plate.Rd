@@ -87,10 +87,11 @@ More info about the nMFI normalisation can be found in \code{get_nmfi} function 
 }
 \examples{
 
-plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
-layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
+plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "PvSTATEM")
+# a plate file with reduced number of analytes to speed up the computation
+layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM")
 
-plate <- read_luminex_data(plate_file, layout_file)
+plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
 
 example_dir <- tempdir(check = TRUE) # a temporary directory
 # create and save dataframe with computed dilutions
