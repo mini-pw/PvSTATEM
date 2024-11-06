@@ -72,6 +72,4 @@ test_that("test plot_plate internal function", {
   colours <- rep(c("red", "blue"), 48)
   legend_mapping <- c("BLANK" = "red")
   expect_error(plot_plate(colours, legend_mapping = legend_mapping))
-
 })
-
