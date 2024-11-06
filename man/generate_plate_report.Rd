@@ -48,11 +48,12 @@ The report is generated using the \code{plate_report_template.Rmd} template.
 }
 \examples{
 
-plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
-layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
+plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "PvSTATEM")
+# a plate file with reduced number of analytes to speed up the computation
+layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM")
 note <- "This is a test report.\n**Author**: Jane Doe \n**Tester**: John Doe"
 
-plate <- read_luminex_data(plate_file, layout_file)
+plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
 example_dir <- tempdir(check = TRUE) # a temporary directory
 generate_plate_report(plate,
   output_dir = example_dir,

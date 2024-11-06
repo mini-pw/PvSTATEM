@@ -23,10 +23,10 @@
 #' @importFrom grDevices dev.size
 #'
 #' @keywords internal
-plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate",
+plot_plate <- function(colours, plot_numbers = FALSE, numbers = NULL, plot_title = "Plate",
                        plot_legend = FALSE, legend_mapping = NULL) {
-  if (length(colors) != 96) {
-    stop("The colors vector must have 96 elements")
+  if (length(colours) != 96) {
+    stop("The colours vector must have 96 elements")
   }
 
   if (plot_numbers && is.null(numbers)) {
@@ -41,8 +41,8 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
     stop("The legend_mapping vector must always be provided")
   }
 
-  if (length(legend_mapping) < length(unique(colors))) {
-    stop("The legend_mapping vector must have at least the same length as the unique colors")
+  if (length(legend_mapping) < length(unique(colours))) {
+    stop("The legend_mapping vector must have at least the same length as the unique colours")
   }
 
   # Load the background image
@@ -55,8 +55,8 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
     y = seq(0.904, 0.095, length.out = 8)
   )
 
-  # Add colors to the well positions data frame
-  well_positions$color <- colors
+  # Add colours to the well positions data frame
+  well_positions$color <- colours
   well_positions$numbers <- numbers
 
   # Define the aspect ratio of the background image
@@ -121,8 +121,8 @@ plot_plate <- function(colors, plot_numbers = FALSE, numbers = NULL, plot_title 
 #' @param analyte_name The name of the analyte
 #' @param plot_counts Logical indicating if the counts should be plotted
 #' @param plot_legend Logical indicating if the legend should be plotted
-#' @param lower_threshold The lower threshold for the counts, it separates green and yellow colors
-#' @param higher_threshold The higher threshold for the counts, it separates yellow and red colors
+#' @param lower_threshold The lower threshold for the counts, it separates green and yellow colours
+#' @param higher_threshold The higher threshold for the counts, it separates yellow and red colours
 #'
 #' @return A ggplot object
 #'
@@ -174,7 +174,7 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
     # it is a space because otherwise "missing" would be included in legend
   )
 
-  # mapping function from counts to colors
+  # mapping function from counts to colours
   map_to_color <- function(count, lower_threshold, higher_threshold) {
     count <- as.integer(ifelse(count == " ", -1, count))
     if (count < 0) {
@@ -192,10 +192,10 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 
 
   # Apply the mapping function to the counts vector
-  colors <- sapply(counts, map_to_color, lower_threshold = lower_threshold, higher_threshold = higher_threshold)
+  colours <- sapply(counts, map_to_color, lower_threshold = lower_threshold, higher_threshold = higher_threshold)
   title <- paste("Counts for", analyte_name)
 
-  plot_plate(colors, plot_title = title, plot_numbers = plot_counts, numbers = counts, plot_legend = plot_legend, legend_mapping = color_map)
+  plot_plate(colours, plot_title = title, plot_numbers = plot_counts, numbers = counts, plot_legend = plot_legend, legend_mapping = color_map)
 }
 
 
@@ -259,11 +259,11 @@ plot_layout <- function(plate, plot_legend = TRUE) {
   }
 
   # Apply the mapping function to the sample_types vector
-  colors <- sapply(sample_types, map_to_color)
+  colours <- sapply(sample_types, map_to_color)
 
   title <- paste("Layout of", plate_name)
 
-  plot_plate(colors, plot_title = title, plot_numbers = FALSE, plot_legend = plot_legend, legend_mapping = color_map)
+  plot_plate(colours, plot_title = title, plot_numbers = FALSE, plot_legend = plot_legend, legend_mapping = color_map)
 }
 
 #' @title Remove holes from a vector

@@ -168,6 +168,8 @@ plot_layout(params$plate)
 # Code used to create dynamic tabs based on the number of analytes
 # Start a grid for the plots
 cat('<div class="plot-grid">')
+
+models_list <- list()
 # Generate the clickable plots within the grid
 for (i in seq_along(params$plate$analyte_names)) {
   # HTML structure for each plot with a clickable link
@@ -175,6 +177,7 @@ for (i in seq_along(params$plate$analyte_names)) {
              '<a href="#', tolower(params$plate$analyte_names[i]), '" role="tab" data-toggle="tab" aria-controls="', tolower(params$plate$analyte_names[i]), '" aria-expanded="false">'))
   # Generate the plot
   model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
+  models_list[[params$plate$analyte_names[i]]] <- model
   print(plot_standard_curve_thumbnail(params$plate, params$plate$analyte_names[i])) 
 #  print(plot_standard_curve_analyte_with_model(params$plate, model, plot_legend = FALSE, #plot_asymptote = FALSE, plot_rau_bounds = FALSE))
   cat('</a></div>')
@@ -202,7 +205,7 @@ for (i in seq_along(params$plate$analyte_names)) {
   # Plot Standard Curve
   print(plot_standard_curve_analyte(params$plate, params$plate$analyte_names[i]))
   if (params$use_model) {
-    model <- create_standard_curve_model_analyte(params$plate, params$plate$analyte_names[i])
+    model <- models_list[[params$plate$analyte_names[i]]]
     print(plot_standard_curve_analyte_with_model(params$plate, model))
   }
 

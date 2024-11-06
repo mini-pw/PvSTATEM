@@ -165,8 +165,8 @@ MFI values for which we want to predict the RAU values}
 
 \item{\code{over_max_extrapolation}}{(\code{numeric(1)})\cr
 How much we can extrapolate the values above the maximum RAU value
-seen in standard curve samples \eqn{RAU_{max}}. Defaults to 0.
-If the value of the predicted RAU is above \eqn{RAU_{max} + \text{over_max_extrapolation}},
+seen in standard curve samples \eqn{\text{RAU}_{max}}. Defaults to 0.
+If the value of the predicted RAU is above \eqn{RAU_{max} + \text{over\_max\_extrapolation}},
 the value is censored to the value of that sum.}
 
 \item{\code{eps}}{(\code{numeric(1)})\cr
