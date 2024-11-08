@@ -89,6 +89,7 @@ generate_plate_report <-
       ),
       output_file = filename,
       output_dir = output_dir,
+      knit_root_dir = output_dir,
       quiet = TRUE
     )
 
