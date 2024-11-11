@@ -3,7 +3,7 @@ Type: Package
 Title: Reading, Quality Control and Preprocessing of MBA (Multiplex Bead Assay) Data 
 Description: Speeds up the process of loading raw data from MBA (Multiplex Bead Assay) examinations, performs quality control checks, and automatically normalises the data, preparing it for more advanced, downstream tasks. The main objective of the package is to create a simple environment for a user, who does not necessarily have experience with R language. The package is developed within the project of the same name - 'PvSTATEM', which is an international project aiming for malaria elimination.
 BugReports: https://github.com/mini-pw/PvSTATEM/issues
-Version: 0.1.1
+Version: 0.1.2
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 Authors@R: c(
