@@ -3,4 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   example_script: example_script.html
-last_built: 2024-11-08T12:09Z
+  our_datasets: our_datasets.html
+  our_plots: our_plots.html
+  reports: reports.html
+last_built: 2024-11-25T15:46Z
