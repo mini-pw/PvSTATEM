@@ -28,7 +28,7 @@ Passed without a dot, e.g. \code{csv}.}
 \item{verbose}{(\code{logical(1)}) A logical value indicating whether the function should print additional information.}
 }
 \value{
-An output path.
+An absolute output path.
 }
 \description{
 This function validates the filepath and output_dir arguments.
