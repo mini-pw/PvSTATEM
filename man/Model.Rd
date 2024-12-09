@@ -154,7 +154,7 @@ Use values before any transformations (e.g., before the \code{log10} transformat
 \subsection{Method \code{predict()}}{
 Predict RAU values from the MFI values
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Model$predict(mfi, over_max_extrapolation = 0, eps = 1e-06)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Model$predict(mfi, over_max_extrapolation = 0, eps = 0.000001)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
