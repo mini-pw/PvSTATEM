@@ -241,10 +241,11 @@ is.decreasing <- function(x) {
 #'
 #' @param verbose (`logical(1)`) A logical value indicating whether the function should print additional information.
 #'
-#' @return An output path.
+#' @return An absolute output path.
 #' @keywords internal
 #'
 #' @importFrom R.utils isAbsolutePath
+#' @importFrom fs path_abs
 validate_filepath_and_output_dir <- function(filename, output_dir, plate_name, suffix, extension, verbose = TRUE) {
   # internal checks
   stopifnot(is.character(plate_name), is.character(suffix), is.character(extension))
@@ -283,6 +284,8 @@ validate_filepath_and_output_dir <- function(filename, output_dir, plate_name, s
   # the final output path
   output_path <- file.path(output_dir, filename)
 
+  # make sure the output path is an absolute path
+  output_path <- fs::path_abs(output_path)
 
   # create the directories and check if the file exists
   output_dir <- dirname(output_path)
