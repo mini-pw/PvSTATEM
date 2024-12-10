@@ -143,7 +143,7 @@ get_output_dir <- function(
 }
 
 #' @title
-#' Process a dir of files to generate normalized data and reports
+#' Process a dir of files to generate normalised data and reports
 #'
 #' @import fs
 #'
@@ -155,7 +155,7 @@ process_dir <- function(
     flatten_output = FALSE,
     layout_filepath = NULL,
     format = NULL,
-    normalization_types = c("RAU", "nMFI"),
+    normalisation_types = c("RAU", "nMFI"),
     generate_reports = FALSE,
     verbose = TRUE,
     dry_run = FALSE,
@@ -222,7 +222,7 @@ process_dir <- function(
       layout_filepath = ifelse(is.na(layouts[i]), NULL, layouts[i]),
       output_dir = current_output_dir,
       format = formats[i],
-      normalization_types = normalization_types,
+      normalisation_types = normalisation_types,
       generate_report = generate_reports,
       verbose = verbose,
       ...

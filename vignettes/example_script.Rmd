@@ -227,7 +227,7 @@ plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), over_
 ```
 
 ### nMFI
-In some cases, the RAU values cannot be reliably calculated. This may happen when the MFI values of test samples are way higher than those of the standard curve samples. In that case, to avoid extrapolation but to be still able to compare the samples across the plates, we introduced a new unit called nMFI (Normalized MFI). The nMFI is calculated as the MFI value of the test sample divided by the MFI value of the standard curve sample with the selected dilution value.
+In some cases, the RAU values cannot be reliably calculated. This may happen when the MFI values of test samples are way higher than those of the standard curve samples. In that case, to avoid extrapolation but to be still able to compare the samples across the plates, we introduced a new unit called nMFI (Normalised MFI). The nMFI is calculated as the MFI value of the test sample divided by the MFI value of the standard curve sample with the selected dilution value.
 
 nMFI values of the samples can be calculated in two ways - using the `get_nmfi` function or with the `process_plate` function that also saves the output into the CSV file by setting the `normalisation_type` parameter to `nMFI` in the `process_plate` function. By default the output will be saved as a file with the same name as the plate name but with the `_nMFI` suffix. 
 

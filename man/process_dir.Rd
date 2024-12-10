@@ -2,7 +2,7 @@
 % Please edit documentation in R/process-dir.R
 \name{process_dir}
 \alias{process_dir}
-\title{Process a dir of files to generate normalized data and reports}
+\title{Process a dir of files to generate normalised data and reports}
 \usage{
 process_dir(
   input_dir,
@@ -11,7 +11,7 @@ process_dir(
   flatten_output = FALSE,
   layout_filepath = NULL,
   format = NULL,
-  normalization_types = c("RAU", "nMFI"),
+  normalisation_types = c("RAU", "nMFI"),
   generate_reports = FALSE,
   verbose = TRUE,
   dry_run = FALSE,
@@ -20,5 +20,5 @@ process_dir(
 )
 }
 \description{
-Process a dir of files to generate normalized data and reports
+Process a dir of files to generate normalised data and reports
 }

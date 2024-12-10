@@ -10,7 +10,7 @@ process_file(
   output_dir = "normalised_data",
   format = "xPONENT",
   generate_report = FALSE,
-  normalization_types = c("RAU", "nMFI"),
+  normalisation_types = c("RAU", "nMFI"),
   verbose = TRUE,
   ...
 )
@@ -26,7 +26,7 @@ process_file(
 
 \item{generate_report}{(\code{logical(1)}) If \code{TRUE}, generate a quality control report. The default is \code{FALSE}.}
 
-\item{normalization_types}{(\code{character()}) A vector of normalization types to use. The default is \code{c("RAU", "nMFI")}.}
+\item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("RAU", "nMFI")}.}
 
 \item{verbose}{(\code{logical(1)}) Print additional information. The default is \code{TRUE}.}
 
@@ -35,7 +35,7 @@ process_file(
 \description{
 Perform \code{process_plate} and \code{generate_plate_report} for a given plate file.
 In more detail, this function reads the plate file and calls the \code{process_plate}
-on the processed plate objects across all the normalization types including the raw MFI vales.
+on the processed plate objects across all the normalisation types including the raw MFI vales.
 If the user has specifed the \code{generate_report} flag, it will also call the \code{generate_plate_report} function
 generating the quality control report.
 }
