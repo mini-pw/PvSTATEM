@@ -2,12 +2,13 @@
 % Please edit documentation in R/process-file.R
 \name{process_file}
 \alias{process_file}
-\title{Process a file to generate normalized data and reports}
+\title{Process a file to generate normalised data and reports}
 \usage{
 process_file(
   plate_filepath,
   layout_filepath,
-  output_dir = "normalized_data",
+  output_dir = "normalised_data",
+  format = "xPONENT",
   generate_report = FALSE,
   normalization_types = c("RAU", "nMFI"),
   verbose = TRUE,
@@ -19,13 +20,17 @@ process_file(
 
 \item{layout_filepath}{(\code{character(1)}) The path to the layout file.}
 
-\item{output_dir}{(\code{character(1)}) The directory where the output files should be saved. The default is \code{"normalized_data"}.}
+\item{output_dir}{(\code{character(1)}) The directory where the output files should be saved. The default is \code{"normalised_data"}.}
+
+\item{format}{(\code{character(1)}) The format of the Luminex data. The default is \code{"xPONENT"}. Available options are \code{"xPONENT"} and \code{"INTELLIFLEX"}.}
 
 \item{generate_report}{(\code{logical(1)}) If \code{TRUE}, generate a quality control report. The default is \code{FALSE}.}
 
 \item{normalization_types}{(\code{character()}) A vector of normalization types to use. The default is \code{c("RAU", "nMFI")}.}
 
 \item{verbose}{(\code{logical(1)}) Print additional information. The default is \code{TRUE}.}
+
+\item{...}{Additional arguments to for the \code{read_luminex_data} function.}
 }
 \description{
 Perform \code{process_plate} and \code{generate_plate_report} for a given plate file.

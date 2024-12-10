@@ -1,0 +1,239 @@
+#' @title
+#' Find any layout file given plate filepath
+#'
+#' @import fs
+#' @importFrom stringr str_split
+#'
+#' @keywords internal
+#'
+find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
+  if (!is.null(layout_filepath)) {
+    stopifnot(fs::file_exists(layout_filepath))
+    return(layout_filepath)
+  }
+
+  stopifnot(fs::is_absolute_path(plate_filepath))
+
+  file_dir <- fs::path_dir(plate_filepath)
+  filename <- fs::path_file(plate_filepath)
+  filename_splitted <- stringr::str_split(filename, "\\.")
+  filename_basename <- filename_splitted[[1]][1]
+
+  supported_layout_exts <- c("xlsx", "csv")
+  layout_file_glob <- paste0(
+    filename_basename, "_layout",
+    "\\.(", paste(supported_layout_exts, collapse = "|"), ")$"
+  )
+  possible_files <- list.files(file_dir, pattern = layout_file_glob)
+  if (length(possible_files) == 0) {
+    stop(
+      paste0("Layout file for a file ", plate_filepath, " could not be found.")
+    )
+  }
+
+  possible_layout_filename <- possible_files[1]
+  possible_layout_path <- fs::path_join(c(file_dir, possible_layout_filename))
+  if (fs::file_exists(possible_layout_path)) {
+    return(possible_layout_path)
+  } else {
+    stop(
+      paste0("Layout file for a file ", plate_filepath, " could not be found.")
+    )
+  }
+}
+
+#' @title
+#' Identify if a file is a MBR data file
+#'
+#' @import fs
+#' @importFrom stringr str_split
+#'
+#' @keywords internal
+#'
+is_mbr_data_file <- function(filepath) {
+  format_pattern <- "xpontent|xponent|intelliflex"
+  extension_pattern <- "\\.(xlsx|csv)$"
+  output_pattern <- "RAU|nMFI"
+  layout_pattern <- "_layout"
+
+  stopifnot(fs::file_exists(filepath))
+  filename <- fs::path_file(filepath)
+  filename_splitted <- stringr::str_split(filename, "\\.")
+  basename <- filename_splitted[[1]][1]
+
+  # plate filename has to contain supported format
+  if (!grepl(format_pattern, filename, ignore.case = TRUE)) {
+    return(FALSE)
+  }
+
+  # plate filename extensions has to be supported
+  if (!grepl(extension_pattern, filename)) {
+    return(FALSE)
+  }
+
+  # plate filename has not to contain layout pattern
+  if (grepl(layout_pattern, basename, fixed = TRUE)) {
+    return(FALSE)
+  }
+
+  # plate filename has not to contain supported output format
+  # as not to mix it up with output files
+  if (grepl(output_pattern, basename, ignore.case = TRUE)) {
+    return(FALSE)
+  }
+
+  return(TRUE)
+}
+
+#' @title
+#' Try to detect the format of a file
+#'
+#' @import fs
+#' @importFrom stringr str_split
+#'
+#' @keywords internal
+#'
+detect_mbr_format <- function(filepath, format = NULL) {
+  if (!is.null(format)) {
+    stopifnot(format %in% c("xPONENT", "INTELLIFLEX"))
+    return(format)
+  }
+
+  stopifnot(fs::file_exists(filepath))
+  filename <- fs::path_file(filepath)
+  filename_splitted <- stringr::str_split(filename, "\\.")
+  basename <- filename_splitted[[1]][1]
+
+  xponent_pattern <- "(xpontent|xponent)"
+  intelliflex_format <- "(intelliflex)"
+  if (grepl(xponent_pattern, basename, ignore.case = TRUE)) {
+    return("xPONENT")
+  } else if (grepl(intelliflex_format, basename, ignore.case = TRUE)) {
+    return("INTELLIFLEX")
+  } else {
+    stop("The format of the file could not be detected.")
+  }
+}
+
+#' @title
+#' Get output directory for a given input file
+#'
+#' @import fs
+#'
+#' @keywords internal
+#'
+get_output_dir <- function(
+    input_file,
+    input_dir,
+    output_dir = NULL,
+    flatten_output = FALSE) {
+  output_root <- ifelse(is.null(output_dir), input_dir, output_dir)
+  if (!fs::dir_exists(output_root)) {
+    stop("Output directory does not exist.")
+  }
+  if (flatten_output) {
+    current_output_dir <- output_root
+  } else {
+    input_file_rel_path <- fs::path_rel(input_file, input_dir)
+    current_output_dir <- fs::path_dir(
+      fs::path_join(c(output_root, input_file_rel_path))
+    )
+  }
+  return(fs::path(current_output_dir))
+}
+
+#' @title
+#' Process a dir of files to generate normalized data and reports
+#'
+#' @import fs
+#'
+#' @export
+process_dir <- function(
+    input_dir,
+    output_dir = NULL,
+    recurse = FALSE,
+    flatten_output = FALSE,
+    layout_filepath = NULL,
+    format = NULL,
+    normalization_types = c("RAU", "nMFI"),
+    generate_reports = FALSE,
+    verbose = TRUE,
+    dry_run = FALSE,
+    return_plates = FALSE,
+    ...) {
+  stopifnot(fs::dir_exists(input_dir))
+  stopifnot(is.null(output_dir) || fs::dir_exists(output_dir))
+  stopifnot(is.null(layout_filepath) || fs::file_exists(layout_filepath))
+  stopifnot(is.null(format) || (format %in% c("xPONENT", "INTELLIFLEX")))
+
+  input_files <- c()
+  for (input_file in fs::dir_ls(input_dir, recurse = recurse)) {
+    if (is_mbr_data_file(input_file)) {
+      input_files <- c(input_files, input_file)
+    }
+  }
+
+  if (length(input_files) == 0) {
+    verbose_cat("No files found in the input directory.\n", verbose = verbose)
+    return(NULL)
+  }
+
+  formats <- rep(NA, length(input_files))
+  for (i in seq_along(input_files)) {
+    formats[i] <- detect_mbr_format(input_files[i], format = format)
+  }
+  stopifnot(all(!is.na(formats)))
+
+  layouts <- rep(NA, length(input_files))
+  for (i in seq_along(input_files)) {
+    layouts[i] <- find_layout_file(
+      input_files[i],
+      layout_filepath = layout_filepath
+    )
+  }
+  stopifnot(all(!is.na(layouts)))
+
+  if (dry_run) {
+    cat("Dry run mode enabled.\n")
+    cat("The following files will be processed:\n")
+    for (i in seq_along(input_files)) {
+      current_output_dir <- get_output_dir(input_files[i], input_dir,
+        output_dir = output_dir, flatten_output = flatten_output
+      )
+      cat(
+        "\n",
+        "File: ", input_files[i], "\n",
+        "Layout: ", layouts[i], "\n",
+        "Format: ", formats[i], "\n",
+        "Output:", current_output_dir, "\n"
+      )
+    }
+    return(NULL)
+  }
+
+  plates <- list()
+
+  for (i in seq_along(input_files)) {
+    current_output_dir <- get_output_dir(input_files[i], input_dir,
+      output_dir = output_dir, flatten_output = flatten_output
+    )
+    plate <- process_file(
+      input_files[i],
+      layout_filepath = ifelse(is.na(layouts[i]), NULL, layouts[i]),
+      output_dir = current_output_dir,
+      format = formats[i],
+      normalization_types = normalization_types,
+      generate_report = generate_reports,
+      verbose = verbose,
+      ...
+    )
+
+    if (return_plates) {
+      plates[[plate$plate_name]] <- plate
+    }
+  }
+
+  if (return_plates) {
+    return(plates)
+  }
+}
