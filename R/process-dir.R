@@ -145,6 +145,27 @@ get_output_dir <- function(
 #' @title
 #' Process a dir of files to generate normalised data and reports
 #'
+#' @description
+#' The output files will be created alongside their corresponding input files preserving
+#' the directory structure of the input directory unless the `flatten_output` parameter is set to `TRUE`.
+#'
+#' @param input_dir (`character(1)`) The directory containing the input files. May be nested.
+#' @param output_dir (`character(1)`) Optional overwrite directory where the output files should be saved. The default is `NULL`.
+#' By default the output directory is the same as the input directory.
+#' @param recurse (`logical(1)`) If `TRUE`, the function will search for files recursively in the input directory. The default is `FALSE`.
+#' @param flatten_output (`logical(1)`) If `TRUE`, the output files will be saved in the output directory directly. The default is `FALSE`.
+#' @param format (`character(1)`) The format of the Luminex data. The default is `NULL` and the format will have to
+#' be determined automatically based on the file name. Available options are `xPONENT` and `INTELLIFLEX`.
+#' @param layout_filepath (`character(1)`) The path to the layout file. The default is `NULL` and the layout file will have to
+#' be determined automatically based on the file name.
+#' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("RAU", "nMFI")`.
+#' @param generate_reports (`logical(1)`) If `TRUE`, generate quality control reports for each file. The default is `FALSE`.
+#' @param return_plate (`logical(1)`) If `TRUE`, return a list of processed plates. The default is `FALSE`.
+#' @param dry_run (`logical(1)`) If `TRUE`, the function will not process any files
+#' but will print the information about the files that would be processed. The default is `FALSE`.
+#' @param verbose (`logical(1)`) Print additional information. The default is `TRUE`.
+#' @param ... Additional arguments to for the `process_file` function.
+#'
 #' @import fs
 #'
 #' @export
@@ -157,9 +178,9 @@ process_dir <- function(
     format = NULL,
     normalisation_types = c("RAU", "nMFI"),
     generate_reports = FALSE,
-    verbose = TRUE,
-    dry_run = FALSE,
     return_plates = FALSE,
+    dry_run = FALSE,
+    verbose = TRUE,
     ...) {
   stopifnot(fs::dir_exists(input_dir))
   stopifnot(is.null(output_dir) || fs::dir_exists(output_dir))

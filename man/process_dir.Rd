@@ -13,12 +13,42 @@ process_dir(
   format = NULL,
   normalisation_types = c("RAU", "nMFI"),
   generate_reports = FALSE,
-  verbose = TRUE,
-  dry_run = FALSE,
   return_plates = FALSE,
+  dry_run = FALSE,
+  verbose = TRUE,
   ...
 )
 }
+\arguments{
+\item{input_dir}{(\code{character(1)}) The directory containing the input files. May be nested.}
+
+\item{output_dir}{(\code{character(1)}) Optional overwrite directory where the output files should be saved. The default is \code{NULL}.
+By default the output directory is the same as the input directory.}
+
+\item{recurse}{(\code{logical(1)}) If \code{TRUE}, the function will search for files recursively in the input directory. The default is \code{FALSE}.}
+
+\item{flatten_output}{(\code{logical(1)}) If \code{TRUE}, the output files will be saved in the output directory directly. The default is \code{FALSE}.}
+
+\item{layout_filepath}{(\code{character(1)}) The path to the layout file. The default is \code{NULL} and the layout file will have to
+be determined automatically based on the file name.}
+
+\item{format}{(\code{character(1)}) The format of the Luminex data. The default is \code{NULL} and the format will have to
+be determined automatically based on the file name. Available options are \code{xPONENT} and \code{INTELLIFLEX}.}
+
+\item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("RAU", "nMFI")}.}
+
+\item{generate_reports}{(\code{logical(1)}) If \code{TRUE}, generate quality control reports for each file. The default is \code{FALSE}.}
+
+\item{dry_run}{(\code{logical(1)}) If \code{TRUE}, the function will not process any files
+but will print the information about the files that would be processed. The default is \code{FALSE}.}
+
+\item{verbose}{(\code{logical(1)}) Print additional information. The default is \code{TRUE}.}
+
+\item{...}{Additional arguments to for the \code{process_file} function.}
+
+\item{return_plate}{(\code{logical(1)}) If \code{TRUE}, return a list of processed plates. The default is \code{FALSE}.}
+}
 \description{
-Process a dir of files to generate normalised data and reports
+The output files will be created alongside their corresponding input files preserving
+the directory structure of the input directory unless the \code{flatten_output} parameter is set to \code{TRUE}.
 }
