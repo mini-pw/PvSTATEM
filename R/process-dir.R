@@ -160,7 +160,7 @@ get_output_dir <- function(
 #' be determined automatically based on the file name.
 #' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("RAU", "nMFI")`.
 #' @param generate_reports (`logical(1)`) If `TRUE`, generate quality control reports for each file. The default is `FALSE`.
-#' @param return_plate (`logical(1)`) If `TRUE`, return a list of processed plates. The default is `FALSE`.
+#' @param return_plates (`logical(1)`) If `TRUE`, return a list of processed plates. The default is `FALSE`.
 #' @param dry_run (`logical(1)`) If `TRUE`, the function will not process any files
 #' but will print the information about the files that would be processed. The default is `FALSE`.
 #' @param verbose (`logical(1)`) Print additional information. The default is `TRUE`.

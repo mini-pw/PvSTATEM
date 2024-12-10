@@ -39,14 +39,14 @@ be determined automatically based on the file name. Available options are \code{
 
 \item{generate_reports}{(\code{logical(1)}) If \code{TRUE}, generate quality control reports for each file. The default is \code{FALSE}.}
 
+\item{return_plates}{(\code{logical(1)}) If \code{TRUE}, return a list of processed plates. The default is \code{FALSE}.}
+
 \item{dry_run}{(\code{logical(1)}) If \code{TRUE}, the function will not process any files
 but will print the information about the files that would be processed. The default is \code{FALSE}.}
 
 \item{verbose}{(\code{logical(1)}) Print additional information. The default is \code{TRUE}.}
 
 \item{...}{Additional arguments to for the \code{process_file} function.}
-
-\item{return_plate}{(\code{logical(1)}) If \code{TRUE}, return a list of processed plates. The default is \code{FALSE}.}
 }
 \description{
 The output files will be created alongside their corresponding input files preserving
