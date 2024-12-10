@@ -302,3 +302,21 @@ validate_filepath_and_output_dir <- function(filename, output_dir, plate_name, s
 
   return(output_path)
 }
+
+#' @title
+#' Check if two paths are equal
+#'
+#' @description
+#' Function checks if two paths are equal after converting them to absolute paths.
+#'
+#' @param path1 (`character(1)`) The first path to be compared.
+#' @param path2 (`character(1)`) The second path to be compared.
+#'
+#' @return (`logical(1)`) `TRUE` if the paths are equal, `FALSE` otherwise.
+#'
+#' @keywords internal
+check_path_equal <- function(path1, path2) {
+  path1 <- fs::path_abs(path1)
+  path2 <- fs::path_abs(path2)
+  return(identical(path1, path2))
+}

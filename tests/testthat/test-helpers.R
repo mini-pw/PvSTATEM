@@ -160,3 +160,15 @@ test_that("Test validate_filepath_and_output_dir function", {
 
   expect_true(dir.exists(file.path(tmp_dir, "output")))
 })
+
+test_that("Test path checking", {
+  plate1_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+  plate2_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+  plate1_rel_filepath <- fs::path_rel(plate1_filepath, start = getwd())
+
+  expect_true(check_path_equal(plate1_filepath, plate1_filepath))
+  expect_true(check_path_equal(plate1_filepath, plate1_rel_filepath))
+  expect_false(check_path_equal(plate1_filepath, plate2_filepath))
+  expect_false(check_path_equal(plate1_filepath, NULL))
+  expect_false(check_path_equal(plate1_filepath, "/tmp/non_existent.tsv"))
+})
