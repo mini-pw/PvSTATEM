@@ -1,5 +1,5 @@
 #' @title
-#' Find any layout file given plate filepath
+#' Find a layout file given plate filepath
 #'
 #' @import fs
 #' @importFrom stringr str_split
@@ -43,14 +43,14 @@ find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
 }
 
 #' @title
-#' Identify if a file is a MBR data file
+#' Identify if a file is a MBA data file
 #'
 #' @import fs
 #' @importFrom stringr str_split
 #'
 #' @keywords internal
 #'
-is_mbr_data_file <- function(filepath) {
+is_mba_data_file <- function(filepath) {
   format_pattern <- "xpontent|xponent|intelliflex"
   extension_pattern <- "\\.(xlsx|csv)$"
   output_pattern <- "RAU|nMFI"
@@ -66,7 +66,7 @@ is_mbr_data_file <- function(filepath) {
     return(FALSE)
   }
 
-  # plate filename extensions has to be supported
+  # plate filename extensions have to be supported
   if (!grepl(extension_pattern, filename)) {
     return(FALSE)
   }
@@ -146,17 +146,17 @@ get_output_dir <- function(
 #' Process a dir of files to generate normalised data and reports
 #'
 #' @description
-#' The output files will be created alongside their corresponding input files preserving
+#' The output files will be created alongside their corresponding input files, preserving
 #' the directory structure of the input directory unless the `flatten_output` parameter is set to `TRUE`.
 #'
-#' @param input_dir (`character(1)`) The directory containing the input files. May be nested.
+#' @param input_dir (`character(1)`) The directory containing the input files. It may be nested.
 #' @param output_dir (`character(1)`) Optional overwrite directory where the output files should be saved. The default is `NULL`.
-#' By default the output directory is the same as the input directory.
+#' By default, the output directory is the same as the input directory.
 #' @param recurse (`logical(1)`) If `TRUE`, the function will search for files recursively in the input directory. The default is `FALSE`.
 #' @param flatten_output (`logical(1)`) If `TRUE`, the output files will be saved in the output directory directly. The default is `FALSE`.
-#' @param format (`character(1)`) The format of the Luminex data. The default is `NULL` and the format will have to
+#' @param format (`character(1)`) The format of the Luminex data. The default is `NULL`, and the format will have to
 #' be determined automatically based on the file name. Available options are `xPONENT` and `INTELLIFLEX`.
-#' @param layout_filepath (`character(1)`) The path to the layout file. The default is `NULL` and the layout file will have to
+#' @param layout_filepath (`character(1)`) The path to the layout file. The default is `NULL`, and the layout file will have to
 #' be determined automatically based on the file name.
 #' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("RAU", "nMFI")`.
 #' @param generate_reports (`logical(1)`) If `TRUE`, generate quality control reports for each file. The default is `FALSE`.
@@ -189,7 +189,7 @@ process_dir <- function(
 
   input_files <- c()
   for (input_file in fs::dir_ls(input_dir, recurse = recurse)) {
-    if (is_mbr_data_file(input_file)) {
+    if (is_mba_data_file(input_file)) {
       input_files <- c(input_files, input_file)
     }
   }
