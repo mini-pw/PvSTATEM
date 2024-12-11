@@ -10,18 +10,18 @@ test_that("Test finding layout file", {
   expect_error(find_layout_file(random_plate_filepath))
 })
 
-test_that("Test checking for mbr file", {
+test_that("Test checking for mba file", {
   plate1_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
   plate2_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
   plate3_filepath <- system.file("extdata", "random_intelliflex.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
   non_matched_filepath <- system.file("extdata", "random.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
   layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
 
-  expect_true(is_mbr_data_file(plate1_filepath))
-  expect_true(is_mbr_data_file(plate2_filepath))
-  expect_true(is_mbr_data_file(plate3_filepath))
-  expect_false(is_mbr_data_file(non_matched_filepath))
-  expect_false(is_mbr_data_file(layout_filepath))
+  expect_true(is_mba_data_file(plate1_filepath))
+  expect_true(is_mba_data_file(plate2_filepath))
+  expect_true(is_mba_data_file(plate3_filepath))
+  expect_false(is_mba_data_file(non_matched_filepath))
+  expect_false(is_mba_data_file(layout_filepath))
 })
 
 test_that("Test detecting format", {
@@ -29,9 +29,9 @@ test_that("Test detecting format", {
   plate2_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
   plate3_filepath <- system.file("extdata", "random_intelliflex.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
 
-  expect_equal(detect_mbr_format(plate1_filepath), "xPONENT")
-  expect_equal(detect_mbr_format(plate2_filepath), "xPONENT")
-  expect_equal(detect_mbr_format(plate3_filepath), "INTELLIFLEX")
+  expect_equal(detect_mba_format(plate1_filepath), "xPONENT")
+  expect_equal(detect_mba_format(plate2_filepath), "xPONENT")
+  expect_equal(detect_mba_format(plate3_filepath), "INTELLIFLEX")
 })
 
 test_that("Test obtaining an output directory", {

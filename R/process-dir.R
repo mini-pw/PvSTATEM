@@ -93,7 +93,7 @@ is_mba_data_file <- function(filepath) {
 #'
 #' @keywords internal
 #'
-detect_mbr_format <- function(filepath, format = NULL) {
+detect_mba_format <- function(filepath, format = NULL) {
   if (!is.null(format)) {
     stopifnot(format %in% c("xPONENT", "INTELLIFLEX"))
     return(format)
@@ -201,7 +201,7 @@ process_dir <- function(
 
   formats <- rep(NA, length(input_files))
   for (i in seq_along(input_files)) {
-    formats[i] <- detect_mbr_format(input_files[i], format = format)
+    formats[i] <- detect_mba_format(input_files[i], format = format)
   }
   stopifnot(all(!is.na(formats)))
 

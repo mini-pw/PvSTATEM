@@ -2,11 +2,11 @@
 % Please edit documentation in R/process-dir.R
 \name{find_layout_file}
 \alias{find_layout_file}
-\title{Find any layout file given plate filepath}
+\title{Find a layout file given plate filepath}
 \usage{
 find_layout_file(plate_filepath, layout_filepath = NULL)
 }
 \description{
-Find any layout file given plate filepath
+Find a layout file given plate filepath
 }
 \keyword{internal}
