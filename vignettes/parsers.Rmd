@@ -19,15 +19,14 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Our package's main purpose is to read, perform quality control, and normalise raw MBA data. 
-The entire package is made to be as user-friendly as possible so in most of your code you will read the data from 
-xPONENT or INTELLIFLEX file using the `read_luminex_data` function and interact with the created `Plate` object.
+Our package primarily aims to read, perform quality control, and normalise raw MBA data. 
+The entire package is made to be as user-friendly as possible, so in most of your code, you will read the data from 
+xPONENT or INTELLIFLEX file using the `read_luminex_data` function and interacting with the created `Plate` object.
 
-Under the hood the `read_luminex_data` function uses a specific function to read a data from a given format 
-and later standardizes this output to finally create a `Plate` object.
+Under the hood, the `read_luminex_data` function uses a specific function to read data from a given format 
+and later standardises this output to finally create a `Plate` object.
 
-This article will go a little bit deeper into the details of the our data parsers and show you how to use them 
-even outside the PvSTATEM package.
+This article will go deeper into the details of our data parsers, illustrate how the reading system works and show you how to use them even outside the PvSTATEM package.
 
 # Basic data loading
 
@@ -44,10 +43,9 @@ summary(plate)
 data.frame(plate)[c(1, 2), c(1, 2)]
 ```
 
-The function itself has many parameters that can be used to customize the reading process.
+The function has many parameters that can be used to customise the reading process.
 
-For example we can change which datatype we want to find in the file. By default the datatype we are looking for
-is the Median MFI value, but we can change it the Mean MFI value across beads.
+For example, we can change the data type we want to find in the file. By default, the datatype we are looking for is the Median MFI value. This default value can be changed, e.g. for the Mean value, as illustrated below. In this way, we provide more flexibility to the user.
 
 ```{r}
 plate <- read_luminex_data(plate_filepath, layout_filepath, default_data_type = "Mean")
@@ -56,18 +54,16 @@ summary(plate)
 data.frame(plate)[c(1, 2), c(1, 2)]
 ```
 
-For the full list of parameters and their description please refer to the `read_luminex_data` documentation.
+For the complete list of parameters and their description, please refer to the `read_luminex_data` documentation.
 
-# PvSTATEM as a MBA reader
+# PvSTATEM as an MBA data reader
 
-The `read_luminex_data` function enforces additional constrains on the raw MBA data such as the sample
-names should follow a specific pattern in order to be correctly classified. If your data does not follow
-
-our standards but you still want to use our parsers you can directly use the format specific functions here:
+The `read_luminex_data` function enforces additional constraints on the raw MBA data, such as the sample
+names following a specific pattern to be correctly classified. If your data does not follow our standards but you still want to use our parsers, you can directly use the format-specific functions here:
 - `read_xponent_format`
 - `read_intelliflex_format`
 
-For example let us read the xPONENT file above using the `read_xponent_format`.
+For example, let us read the xPONENT file above using the `read_xponent_format`.
 
 ```{r}
 output <- read_xponent_format(plate_filepath)
@@ -80,6 +76,4 @@ output[["Results"]][["Median"]][c(1, 2), c(1, 2, 3)]
 ```
 
 We can see now that the output of that function is a nested list containing the information parsed from the file.
-As the structure of the output may be different across the formats this is not the recommended way to read the data
-but the package is open enough to allow you to do so.
-
+As the structure of the output may be different across the formats, this is not the recommended way to read the data, but the package is open enough to allow you to do so.
