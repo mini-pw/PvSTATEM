@@ -282,3 +282,35 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
     )
   p
 }
+
+#' @title Standard curve stacked plot for levey-jennings report
+#'
+#' @description
+#' Function generates a plot of stacked on top of each other standard curves for a given plate.
+#' The plot is created with the levey-jennings report in mind. But it can be run by itself.
+#'
+#' @param plate Plate object
+#'
+#' @return ggplot object with the plot
+#'
+#' @export
+plot_standard_curve_stacked <- function(plate) {
+  if (!inherits(plate, "Plate")) {
+    stop("plate object should be a Plate")
+  }
+  analyte_names <- plate$analyte_names
+  n_analytes <- length(analyte_names)
+  p <- ggplot2::ggplot() +
+    ggplot2::labs(title = "Standard curves") +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      plot.title = element_text(hjust = 0.5, size = 20),
+      legend.position = "none"
+    )
+  for (i in 1:n_analytes) {
+    p <- p + ggplot2::annotation_custom(
+      ggplotGrob(plot_standard_curve_thumbnail(plate, analyte_names[i]))
+    )
+  }
+  p
+}
