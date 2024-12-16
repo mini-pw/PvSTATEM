@@ -294,23 +294,68 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
 #' @return ggplot object with the plot
 #'
 #' @export
-plot_standard_curve_stacked <- function(plate) {
+plot_standard_curve_stacked <- function(plate,
+                                        data_type = "Median",
+                                        decreasing_dilution_order = TRUE,
+                                        log_scale = c("all"),
+                                        verbose = TRUE) {
+
+  AVAILABLE_LOG_SCALE_VALUES <- c("all", "RAU", "MFI")
+
   if (!inherits(plate, "Plate")) {
     stop("plate object should be a Plate")
   }
-  analyte_names <- plate$analyte_names
-  n_analytes <- length(analyte_names)
-  p <- ggplot2::ggplot() +
-    ggplot2::labs(title = "Standard curves") +
+  if (!is.null(log_scale) && !all(log_scale %in% AVAILABLE_LOG_SCALE_VALUES)) {
+    stop("log_scale should be a character vector containing elements from set: ", paste(AVAILABLE_LOG_SCALE_VALUES, collapse = ", ", "\nInstead passed: ", log_scale))
+  }
+
+  plot_name <- paste0("Standard curves of: ", plate$plate_name)
+
+  # Scale x and y if needed
+  x_log_scale <- "RAU" %in% log_scale || "all" %in% log_scale
+  y_log_scale <- "MFI" %in% log_scale || "all" %in% log_scale
+  x_trans <- ifelse(x_log_scale, "log10", "identity")
+  x_cords_trans <- ifelse(decreasing_dilution_order, "reverse", "identity")
+  y_trans <- ifelse(y_log_scale, "log10", "identity")
+
+  xlab <- ifelse(x_log_scale, "RAU (log scale)", "RAU")
+  # x_ticks <- c(plot_data$RAU, max(plot_data$RAU) + 1)
+  # x_labels <- c(sprintf("%0.2f", plot_data$RAU), "")
+  ylab <- ifelse(y_log_scale, paste("MFI ", data_type, "(log scale)"), paste("MFI ", data_type))
+
+  options(scipen = 30)
+  p <- ggplot2::ggplot()
+  p <- p + ggplot2::labs(title = plot_name, x = xlab, y = ylab) +
+    ggplot2::scale_x_continuous(
+      # breaks = x_ticks, labels = x_labels,
+      trans = x_trans
+    ) +
+    ggplot2::scale_y_continuous(trans = y_trans) +
+    ggplot2::coord_trans(x = x_cords_trans) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
-      plot.title = element_text(hjust = 0.5, size = 20),
+      axis.line = element_line(colour = "black"),
+      axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
+      axis.text.y = element_text(size = 9),
       legend.position = "none"
     )
+
+
+  analyte_names <- plate$analyte_names
+  n_analytes <- length(analyte_names)
   for (i in 1:n_analytes) {
-    p <- p + ggplot2::annotation_custom(
-      ggplotGrob(plot_standard_curve_thumbnail(plate, analyte_names[i]))
+    analyte_name <- analyte_names[i]
+    plot_data <- data.frame(
+    MFI = plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type),
+    plate = plate$plate_name,
+    RAU = dilution_to_rau(plate$get_dilution_values("STANDARD CURVE"))
     )
+    blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
+
+    p <- p + ggplot2::ggplot(plot_data, aes(x = .data$RAU, y = .data$MFI)) +
+    ggplot2::geom_point(aes(color = "Standard curve samples"), size = 3) +
+    ggplot2::geom_line(aes(color = "Standard curve samples"), linewidth = 1.2)
   }
+
   p
 }
