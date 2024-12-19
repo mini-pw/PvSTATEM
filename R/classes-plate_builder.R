@@ -92,18 +92,7 @@ PlateBuilder <- R6::R6Class(
 
         dilutions <- dilutions[all_locations %in% self$sample_locations]
 
-        if (length(dilutions) > length(self$sample_names)) {
-          dilutions <- dilutions[1:length(self$sample_names)]
-          verbose_cat(
-            "(",
-            color_codes$red_start,
-            "WARNING",
-            color_codes$red_end,
-            ")",
-            "\nNumber of layout fields is higher than the number of samples. Please check the layout file. Using only first ", length(self$sample_names), " dilutions from the layout file. \n",
-            verbose = private$verbose
-          )
-        } else if (length(dilutions) < length(self$sample_names)) {
+        if (length(dilutions) != length(self$sample_names)) {
           stop("Number of layout fields is lower than the number of samples. Can't extract the dilution values")
         }
       } else {
