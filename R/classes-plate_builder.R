@@ -151,6 +151,10 @@ PlateBuilder <- R6::R6Class(
           stop("Layout is not provided. But `use_layout_types` is set to `TRUE` - cannot extract the sample types from the layout")
         }
         layout_names <- self$layout_as_vector
+        all_locations <- get_location_matrix(nrow = 8, ncol = 12)
+        # select only the relevant samples that are mentioned in the layout file
+        layout_names <- layout_names[all_locations %in% self$sample_locations]
+
         sample_types <- translate_sample_names_to_sample_types(self$sample_names, layout_names)
       } else {
         sample_types <- translate_sample_names_to_sample_types(self$sample_names)
@@ -535,8 +539,8 @@ translate_sample_names_to_sample_types <- function(sample_names, sample_names_fr
 #' @return a matrix with locations
 #' @keywords internal
 get_location_matrix <- function(nrow = 8, ncol = 12) {
-  rows <- rep(LETTERS[1:nrow], each = n_columns)
-  columns <- as.character(1:n_columns)
+  rows <- rep(LETTERS[1:nrow], each = ncol)
+  columns <- as.character(1:ncol)
   all_locations <- paste0(rows, columns)
   matrix(all_locations, nrow = nrow, ncol = ncol)
 }
