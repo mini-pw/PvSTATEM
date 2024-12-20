@@ -346,15 +346,16 @@ plot_standard_curve_stacked <- function(plate,
   for (i in 1:n_analytes) {
     analyte_name <- analyte_names[i]
     plot_data <- data.frame(
-    MFI = plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type),
-    plate = plate$plate_name,
-    RAU = dilution_to_rau(plate$get_dilution_values("STANDARD CURVE"))
+      MFI = plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type),
+      plate = plate$plate_name,
+      RAU = dilution_to_rau(plate$get_dilution_values("STANDARD CURVE"))
     )
+
     blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
 
-    p <- p + ggplot2::ggplot(plot_data, aes(x = .data$RAU, y = .data$MFI)) +
-    ggplot2::geom_point(aes(color = "Standard curve samples"), size = 3) +
-    ggplot2::geom_line(aes(color = "Standard curve samples"), linewidth = 1.2)
+    # Add layers to the plot
+    p <- p + ggplot2::geom_point(data = plot_data, aes(x = RAU, y = MFI, color = "Standard curve samples"), size = 3) +
+      ggplot2::geom_line(data = plot_data, aes(x = RAU, y = MFI, color = "Standard curve samples"), linewidth = 1.2)
   }
 
   p
