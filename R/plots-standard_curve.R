@@ -316,7 +316,7 @@ plot_standard_curve_stacked <- function(list_of_plates,
     stop("log_scale should be a character vector containing elements from set: ", paste(AVAILABLE_LOG_SCALE_VALUES, collapse = ", ", "\nInstead passed: ", log_scale))
   }
 
-  plot_name <- paste0("Standard curves of: ", plate$plate_name)
+  plot_name <- paste0("Standard curves of: ", analyte_name)
 
   # Scale x and y if needed
   x_log_scale <- "RAU" %in% log_scale || "all" %in% log_scale
@@ -347,11 +347,7 @@ plot_standard_curve_stacked <- function(list_of_plates,
       legend.position = "none"
     )
 
-
-  analyte_names <- plate$analyte_names
-  n_analytes <- length(analyte_names)
-  for (i in 1:n_analytes) {
-    analyte_name <- analyte_names[i]
+  for  (plate in list_of_plates) {
     plot_data <- data.frame(
       MFI = plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type),
       plate = plate$plate_name,
