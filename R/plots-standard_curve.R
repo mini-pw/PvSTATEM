@@ -286,15 +286,17 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
 #' @title Standard curve stacked plot for levey-jennings report
 #'
 #' @description
-#' Function generates a plot of stacked on top of each other standard curves for a given plate.
-#' The plot is created with the levey-jennings report in mind. But it can be run by itself.
+#' Function generates a plot of stacked on top of each other standard curves
+#' for a given analyte form a list of plates. The plot is created with the
+#' levey-jennings report in mind, but it can be run by itself.
 #'
-#' @param plate Plate object
+#' @param list_of_plates list of Plate objects
 #'
 #' @return ggplot object with the plot
 #'
 #' @export
-plot_standard_curve_stacked <- function(plate,
+plot_standard_curve_stacked <- function(list_of_plates,
+                                        analyte_name,
                                         data_type = "Median",
                                         decreasing_dilution_order = TRUE,
                                         log_scale = c("all"),
@@ -302,8 +304,13 @@ plot_standard_curve_stacked <- function(plate,
 
   AVAILABLE_LOG_SCALE_VALUES <- c("all", "RAU", "MFI")
 
-  if (!inherits(plate, "Plate")) {
-    stop("plate object should be a Plate")
+  for (plate in list_of_plates) {
+    if (!inherits(plate, "Plate")) {
+      stop("list_of_plates should contain only a Plate objects")
+    }
+    if (!(analyte_name %in% plate$analyte_names)) {
+      stop(analyte_name, " not found in one of the plate on list_of_plates")
+    }
   }
   if (!is.null(log_scale) && !all(log_scale %in% AVAILABLE_LOG_SCALE_VALUES)) {
     stop("log_scale should be a character vector containing elements from set: ", paste(AVAILABLE_LOG_SCALE_VALUES, collapse = ", ", "\nInstead passed: ", log_scale))
