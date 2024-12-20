@@ -70,6 +70,4 @@ test_that("Test xponent file with holes in the layout", {
 
   expect_equal(plate$layout[96], "1/102400")
   expect_equal(plate$sample_locations[1], "H1")
-
-
 })
