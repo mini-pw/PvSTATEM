@@ -372,10 +372,11 @@ plot_standard_curve_stacked <- function(list_of_plates,
   number_of_colors <- length(list_of_plates)
   counter <- 1
   if (monochromatic) {
-    palette <- colorRampPalette(c("white", "blue"))
     # I don't want white and next one to be colors since on white background it's not visible
     number_of_colors <- number_of_colors + 2
     counter <- counter + 2 # skip white and next one
+
+    palette <- grDevices::colorRampPalette(c("white", "blue"))
     colors <- palette(number_of_colors)
   } else {
     colors <- scales::hue_pal()(number_of_colors)

@@ -33,7 +33,8 @@ Imports:
     lubridate,
     R.utils,
     svglite,
-    fs
+    fs,
+    scales
 Suggests:
     knitr,
     qpdf,
