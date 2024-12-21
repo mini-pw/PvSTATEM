@@ -282,3 +282,107 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
     )
   p
 }
+
+#' @title Standard curve stacked plot for levey-jennings report
+#'
+#' @description
+#' Function generates a plot of stacked on top of each other standard curves
+#' for a given analyte form a list of plates. The plot is created with the
+#' levey-jennings report in mind, but it can be run by itself.
+#'
+#' @param list_of_plates list of Plate objects
+#' @param analyte_name Name of the analyte of which standard curves we want to plot.
+#' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Median`
+#' @param decreasing_dilution_order If `TRUE` the dilution values are plotted in decreasing order, `TRUE` by default
+#' @param log_scale Which elements on the plot should be displayed in log scale. By default `"all"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
+#' @param verbose If `TRUE` prints messages, `TRUE` by default
+#'
+#' @return ggplot object with the plot
+#'
+#' @export
+plot_standard_curve_stacked <- function(list_of_plates,
+                                        analyte_name,
+                                        data_type = "Median",
+                                        decreasing_dilution_order = TRUE,
+                                        log_scale = c("all"),
+                                        verbose = TRUE) {
+
+  AVAILABLE_LOG_SCALE_VALUES <- c("all", "dilutions", "MFI")
+
+  if (!is.null(log_scale) && !all(log_scale %in% AVAILABLE_LOG_SCALE_VALUES)) {
+    stop("log_scale should be a character vector containing elements from set: ", paste(AVAILABLE_LOG_SCALE_VALUES, collapse = ", ", "\nInstead passed: ", log_scale))
+  }
+  if (!is.list(list_of_plates)) {
+    stop("list_of_plates should be a list of Plate objects, create it using `process_dir` function")
+  }
+  if (length(list_of_plates) == 0) {
+    stop("list_of_plates should contain at least one Plate object")
+  }
+  for (plate in list_of_plates) {
+    if (!inherits(plate, "Plate")) {
+      stop("list_of_plates should contain only a Plate objects, create it using `process_dir` function")
+    }
+    if (!(analyte_name %in% plate$analyte_names)) {
+      stop(analyte_name, " not found in one of the plate on list_of_plates")
+    }
+  }
+
+  plot_name <- paste0("Standard curves of: ", analyte_name)
+
+  # Scale x and y if needed
+  x_log_scale <- "dilutions" %in% log_scale || "all" %in% log_scale
+  y_log_scale <- "MFI" %in% log_scale || "all" %in% log_scale
+  x_trans <- ifelse(x_log_scale, "log10", "identity")
+  x_cords_trans <- ifelse(decreasing_dilution_order, "reverse", "identity")
+  y_trans <- ifelse(y_log_scale, "log10", "identity")
+
+  xlab <- ifelse(x_log_scale, "Dilutions (log scale)", "Dilutions")
+  x_ticks <- list_of_plates[[1]]$get_dilution_values("STANDARD CURVE")
+  x_labels <- list_of_plates[[1]]$get_dilution("STANDARD CURVE")
+
+  x_ticks <- c(x_ticks, min(x_ticks) / 2)
+  x_labels <- c(x_labels, "B")
+  ylab <- ifelse(y_log_scale, paste("MFI ", data_type, "(log scale)"), paste("MFI ", data_type))
+
+  options(scipen = 30)
+  p <- ggplot2::ggplot()
+  p <- p + ggplot2::labs(title = plot_name, x = xlab, y = ylab) +
+    ggplot2::scale_x_continuous(
+      labels = x_labels,
+      breaks = x_ticks,
+      trans = x_trans
+    ) +
+    ggplot2::scale_y_continuous(trans = y_trans) +
+    ggplot2::coord_trans(x = x_cords_trans) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.line = element_line(colour = "black"),
+      axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
+      axis.text.y = element_text(size = 9),
+      legend.position = "none"
+    )
+  
+  palette <- colorRampPalette(c("white", "blue"))
+  n_lines <- length(list_of_plates) + 2
+  # I don't want white and next one to be colors since on white background it's not visible
+  colors <- palette(n_lines)
+  counter <- 3 # skip white and next one
+
+  for  (plate in list_of_plates) {
+    blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
+
+    plot_data <- data.frame(
+      MFI = c(plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type), blank_mean),
+      dilutions_value = c(plate$get_dilution_values("STANDARD CURVE"), min(plate$get_dilution_values("STANDARD CURVE")) / 2)
+    )
+
+    # Add layers to the plot
+    p <- p + ggplot2::geom_point(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], size = 3) +
+      ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = "black", linewidth = 1.5) +
+      ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], linewidth = 1.1)
+    
+    counter <- counter + 1
+  }
+
+  p
+}
