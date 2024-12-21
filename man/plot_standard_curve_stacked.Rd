@@ -9,6 +9,7 @@ plot_standard_curve_stacked(
   analyte_name,
   data_type = "Median",
   decreasing_dilution_order = TRUE,
+  monochromatic = TRUE,
   log_scale = c("all"),
   verbose = TRUE
 )
@@ -21,6 +22,8 @@ plot_standard_curve_stacked(
 \item{data_type}{Data type of the value we want to plot - the same datatype as in the plate file. By default equals to \code{Median}}
 
 \item{decreasing_dilution_order}{If \code{TRUE} the dilution values are plotted in decreasing order, \code{TRUE} by default}
+
+\item{monochromatic}{If \code{TRUE} the color of standard curves changes from white (the olders) to blue (the newest) it helps to observe drift in calibration of device, otherwise more varied colors are used \code{TRUE} by default}
 
 \item{log_scale}{Which elements on the plot should be displayed in log scale. By default \code{"all"}. If \code{NULL} or \code{c()} no log scale is used, if \code{"all"} or \code{c("dilutions", "MFI")} all elements are displayed in log scale.}
 
