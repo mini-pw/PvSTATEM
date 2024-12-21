@@ -302,30 +302,36 @@ plot_standard_curve_stacked <- function(list_of_plates,
                                         log_scale = c("all"),
                                         verbose = TRUE) {
 
-  AVAILABLE_LOG_SCALE_VALUES <- c("all", "RAU", "MFI")
+  AVAILABLE_LOG_SCALE_VALUES <- c("all", "dilutions", "MFI")
 
+  if (!is.null(log_scale) && !all(log_scale %in% AVAILABLE_LOG_SCALE_VALUES)) {
+    stop("log_scale should be a character vector containing elements from set: ", paste(AVAILABLE_LOG_SCALE_VALUES, collapse = ", ", "\nInstead passed: ", log_scale))
+  }
+  if (!is.list(list_of_plates)) {
+    stop("list_of_plates should be a list of Plate objects, create it using `process_dir` function")
+  }
+  if (length(list_of_plates) == 0) {
+    stop("list_of_plates should contain at least one Plate object")
+  }
   for (plate in list_of_plates) {
     if (!inherits(plate, "Plate")) {
-      stop("list_of_plates should contain only a Plate objects")
+      stop("list_of_plates should contain only a Plate objects, create it using `process_dir` function")
     }
     if (!(analyte_name %in% plate$analyte_names)) {
       stop(analyte_name, " not found in one of the plate on list_of_plates")
     }
   }
-  if (!is.null(log_scale) && !all(log_scale %in% AVAILABLE_LOG_SCALE_VALUES)) {
-    stop("log_scale should be a character vector containing elements from set: ", paste(AVAILABLE_LOG_SCALE_VALUES, collapse = ", ", "\nInstead passed: ", log_scale))
-  }
 
   plot_name <- paste0("Standard curves of: ", analyte_name)
 
   # Scale x and y if needed
-  x_log_scale <- "RAU" %in% log_scale || "all" %in% log_scale
+  x_log_scale <- "dilutions" %in% log_scale || "all" %in% log_scale
   y_log_scale <- "MFI" %in% log_scale || "all" %in% log_scale
   x_trans <- ifelse(x_log_scale, "log10", "identity")
   x_cords_trans <- ifelse(decreasing_dilution_order, "reverse", "identity")
   y_trans <- ifelse(y_log_scale, "log10", "identity")
 
-  xlab <- ifelse(x_log_scale, "RAU (log scale)", "RAU")
+  xlab <- ifelse(x_log_scale, "Dilutions (log scale)", "Dilutions")
   # x_ticks <- c(plot_data$RAU, max(plot_data$RAU) + 1)
   # x_labels <- c(sprintf("%0.2f", plot_data$RAU), "")
   ylab <- ifelse(y_log_scale, paste("MFI ", data_type, "(log scale)"), paste("MFI ", data_type))
@@ -357,15 +363,15 @@ plot_standard_curve_stacked <- function(list_of_plates,
     plot_data <- data.frame(
       MFI = plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type),
       plate = plate$plate_name,
-      RAU = dilution_to_rau(plate$get_dilution_values("STANDARD CURVE"))
+      dilutions_value = plate$get_dilution_values("STANDARD CURVE")
     )
 
     blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
 
     # Add layers to the plot
-    p <- p + ggplot2::geom_point(data = plot_data, aes(x = RAU, y = MFI), color = colors[counter], size = 3) +
-      ggplot2::geom_line(data = plot_data, aes(x = RAU, y = MFI), color = "black", linewidth = 1.5) +
-      ggplot2::geom_line(data = plot_data, aes(x = RAU, y = MFI), color = colors[counter], linewidth = 1.1)
+    p <- p + ggplot2::geom_point(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], size = 3) +
+      ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = "black", linewidth = 1.5) +
+      ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], linewidth = 1.1)
     
     counter <- counter + 1
   }
