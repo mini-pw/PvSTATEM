@@ -293,6 +293,7 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
 #' @param list_of_plates list of Plate objects
 #' @param analyte_name Name of the analyte of which standard curves we want to plot.
 #' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Median`
+#' @param monochromatic If `TRUE` the color of standard curves changes from white (the olders) to blue (the newest) it helps to observe drift in calibration of device, otherwise more varied colors are used `TRUE` by default
 #' @param decreasing_dilution_order If `TRUE` the dilution values are plotted in decreasing order, `TRUE` by default
 #' @param log_scale Which elements on the plot should be displayed in log scale. By default `"all"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
@@ -304,6 +305,7 @@ plot_standard_curve_stacked <- function(list_of_plates,
                                         analyte_name,
                                         data_type = "Median",
                                         decreasing_dilution_order = TRUE,
+                                        monochromatic = TRUE,
                                         log_scale = c("all"),
                                         verbose = TRUE) {
 
@@ -377,9 +379,13 @@ plot_standard_curve_stacked <- function(list_of_plates,
     )
 
     # Add layers to the plot
-    p <- p + ggplot2::geom_point(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], size = 3) +
-      ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = "black", linewidth = 1.5) +
-      ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], linewidth = 1.1)
+    if (monochromatic) {
+      p <- p + ggplot2::geom_point(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], size = 3) +
+        ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = "black", linewidth = 1.5) +
+        ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], linewidth = 1.1)
+    } else {
+      p
+    }
     
     counter <- counter + 1
   }
