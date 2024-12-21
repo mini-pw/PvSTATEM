@@ -332,15 +332,16 @@ plot_standard_curve_stacked <- function(list_of_plates,
   y_trans <- ifelse(y_log_scale, "log10", "identity")
 
   xlab <- ifelse(x_log_scale, "Dilutions (log scale)", "Dilutions")
-  # x_ticks <- c(plot_data$RAU, max(plot_data$RAU) + 1)
-  # x_labels <- c(sprintf("%0.2f", plot_data$RAU), "")
+  x_ticks <- list_of_plates[[1]]$get_dilution_values("STANDARD CURVE")
+  x_labels <- list_of_plates[[1]]$get_dilution("STANDARD CURVE")
   ylab <- ifelse(y_log_scale, paste("MFI ", data_type, "(log scale)"), paste("MFI ", data_type))
 
   options(scipen = 30)
   p <- ggplot2::ggplot()
   p <- p + ggplot2::labs(title = plot_name, x = xlab, y = ylab) +
     ggplot2::scale_x_continuous(
-      # breaks = x_ticks, labels = x_labels,
+      labels = x_labels,
+      breaks = x_ticks,
       trans = x_trans
     ) +
     ggplot2::scale_y_continuous(trans = y_trans) +
