@@ -291,6 +291,11 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
 #' levey-jennings report in mind, but it can be run by itself.
 #'
 #' @param list_of_plates list of Plate objects
+#' @param analyte_name Name of the analyte of which standard curves we want to plot.
+#' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Median`
+#' @param decreasing_dilution_order If `TRUE` the dilution values are plotted in decreasing order, `TRUE` by default
+#' @param log_scale Which elements on the plot should be displayed in log scale. By default `"all"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
+#' @param verbose If `TRUE` prints messages, `TRUE` by default
 #'
 #' @return ggplot object with the plot
 #'

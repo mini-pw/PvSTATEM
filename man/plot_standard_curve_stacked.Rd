@@ -4,15 +4,33 @@
 \alias{plot_standard_curve_stacked}
 \title{Standard curve stacked plot for levey-jennings report}
 \usage{
-plot_standard_curve_stacked(plate)
+plot_standard_curve_stacked(
+  list_of_plates,
+  analyte_name,
+  data_type = "Median",
+  decreasing_dilution_order = TRUE,
+  log_scale = c("all"),
+  verbose = TRUE
+)
 }
 \arguments{
-\item{plate}{Plate object}
+\item{list_of_plates}{list of Plate objects}
+
+\item{analyte_name}{Name of the analyte of which standard curves we want to plot.}
+
+\item{data_type}{Data type of the value we want to plot - the same datatype as in the plate file. By default equals to \code{Median}}
+
+\item{decreasing_dilution_order}{If \code{TRUE} the dilution values are plotted in decreasing order, \code{TRUE} by default}
+
+\item{log_scale}{Which elements on the plot should be displayed in log scale. By default \code{"all"}. If \code{NULL} or \code{c()} no log scale is used, if \code{"all"} or \code{c("dilutions", "MFI")} all elements are displayed in log scale.}
+
+\item{verbose}{If \code{TRUE} prints messages, \code{TRUE} by default}
 }
 \value{
 ggplot object with the plot
 }
 \description{
-Function generates a plot of stacked on top of each other standard curves for a given plate.
-The plot is created with the levey-jennings report in mind. But it can be run by itself.
+Function generates a plot of stacked on top of each other standard curves
+for a given analyte form a list of plates. The plot is created with the
+levey-jennings report in mind, but it can be run by itself.
 }
