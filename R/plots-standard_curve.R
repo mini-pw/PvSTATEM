@@ -342,9 +342,13 @@ plot_standard_curve_stacked <- function(list_of_plates,
   x_ticks <- list_of_plates[[1]]$get_dilution_values("STANDARD CURVE")
   x_labels <- list_of_plates[[1]]$get_dilution("STANDARD CURVE")
 
+  # Add the last dilution value - BLANK
   x_ticks <- c(x_ticks, min(x_ticks) / 2)
   x_labels <- c(x_labels, "B")
   ylab <- ifelse(y_log_scale, paste("MFI ", data_type, "(log scale)"), paste("MFI ", data_type))
+
+  # Make the minor grid lines less visible
+  col_grid <- scales::alpha("grey", .5)
 
   options(scipen = 30)
   p <- ggplot2::ggplot()
@@ -359,9 +363,10 @@ plot_standard_curve_stacked <- function(list_of_plates,
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.line = element_line(colour = "black"),
-      axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
+      axis.text.x = element_text(size = 9, angle = 45, hjust = 1, vjust = 1),
       axis.text.y = element_text(size = 9),
-      legend.position = "none"
+      legend.position = "none",
+      panel.grid.minor = element_line(color = col_grid, size = 0.1)
     )
 
   number_of_colors <- length(list_of_plates)
@@ -371,10 +376,9 @@ plot_standard_curve_stacked <- function(list_of_plates,
     # I don't want white and next one to be colors since on white background it's not visible
     number_of_colors <- number_of_colors + 2
     counter <- counter + 2 # skip white and next one
-    
     colors <- palette(number_of_colors)
   } else {
-    colors <- rainbow(length(list_of_plates))
+    colors <- scales::hue_pal()(number_of_colors)
   }
 
   for  (plate in list_of_plates) {
