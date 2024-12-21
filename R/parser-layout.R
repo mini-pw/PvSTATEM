@@ -36,6 +36,8 @@ read_location_data_xlsx <- function(location_file_path, ...) {
 #'
 #' @import readxl
 #' @import utils
+#'
+#' @export
 read_layout_data <- function(layout_file_path, ...) {
   if (!file.exists(layout_file_path)) stop("Layout file '", layout_file_path, "' not found")
 
