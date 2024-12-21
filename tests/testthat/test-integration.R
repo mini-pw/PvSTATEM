@@ -57,3 +57,17 @@ test_that("Read a INTELLIFLEX mock file", {
   expect_no_error(output <- read_intelliflex_format(path, verbose = verbose))
   expect_no_error(postprocess_intelliflex(output, verbose = verbose))
 })
+
+test_that("Test xponent file with holes in the layout", {
+  path <- system.file("extdata", "CovidOISExPONTENT_CO_with_holes.csv", package = "PvSTATEM", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_CO_with_holes_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+
+  plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE)
+
+
+  expect_equal(sum(plate$sample_types == "STANDARD CURVE"), 11)
+  expect_equal(sum(plate$sample_types == "BLANK"), 1)
+
+  expect_equal(plate$layout[96], "1/102400")
+  expect_equal(plate$sample_locations[1], "H1")
+})

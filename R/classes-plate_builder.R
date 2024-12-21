@@ -87,18 +87,12 @@ PlateBuilder <- R6::R6Class(
         }
         layout_names <- self$layout_as_vector
         dilutions <- extract_dilutions_from_layout(layout_names)
-        if (length(dilutions) > length(self$sample_names)) {
-          dilutions <- dilutions[1:length(self$sample_names)]
-          verbose_cat(
-            "(",
-            color_codes$red_start,
-            "WARNING",
-            color_codes$red_end,
-            ")",
-            "\nNumber of layout fields is higher than the number of samples. Please check the layout file. Using only first ", length(self$sample_names), " dilutions from the layout file. \n",
-            verbose = private$verbose
-          )
-        } else if (length(dilutions) < length(self$sample_names)) {
+
+        all_locations <- get_location_matrix(nrow = 8, ncol = 12)
+
+        dilutions <- dilutions[all_locations %in% self$sample_locations]
+
+        if (length(dilutions) != length(self$sample_names)) {
           stop("Number of layout fields is lower than the number of samples. Can't extract the dilution values")
         }
       } else {
@@ -146,6 +140,10 @@ PlateBuilder <- R6::R6Class(
           stop("Layout is not provided. But `use_layout_types` is set to `TRUE` - cannot extract the sample types from the layout")
         }
         layout_names <- self$layout_as_vector
+        all_locations <- get_location_matrix(nrow = 8, ncol = 12)
+        # select only the relevant samples that are mentioned in the layout file
+        layout_names <- layout_names[all_locations %in% self$sample_locations]
+
         sample_types <- translate_sample_names_to_sample_types(self$sample_names, layout_names)
       } else {
         sample_types <- translate_sample_names_to_sample_types(self$sample_names)
@@ -352,12 +350,10 @@ PlateBuilder <- R6::R6Class(
 extract_sample_names_from_layout <- function(layout_names, locations) {
   stopifnot(is.character(layout_names) && length(layout_names) > 0)
   stopifnot(is.character(locations) && length(locations) > 0)
-  stopifnot(length(layout_names) == 96)
 
+  all_locations <- get_location_matrix(nrow = 8, ncol = 12)
 
-  rows <- rep(LETTERS[1:8], each = 12)
-  columns <- as.character(1:12)
-  all_locations <- paste0(rows, columns)
+  stopifnot(length(layout_names) == length(all_locations))
 
   sample_names <- layout_names[all_locations %in% locations]
   sample_names
@@ -517,4 +513,23 @@ translate_sample_names_to_sample_types <- function(sample_names, sample_names_fr
   }
 
   return(sample_types)
+}
+
+
+
+#' Generate the matrix of plate locations
+#' @description
+#' The function generates a matrix of plate locations. The locations are represented in a nrow x ncol matrix.
+#' Usually number of rows equals to 8 and number of columns to 12, and the total matrix size is 96.
+#'
+#' The fields are represented as `E3`, where the letter corresponds to the row and the number to the column.
+#' @param nrow Number of rows in the plate
+#' @param ncol Number of columns in the plate
+#' @return a matrix with locations
+#' @keywords internal
+get_location_matrix <- function(nrow = 8, ncol = 12) {
+  rows <- rep(LETTERS[1:nrow], each = ncol)
+  columns <- as.character(1:ncol)
+  all_locations <- paste0(rows, columns)
+  matrix(all_locations, nrow = nrow, ncol = ncol)
 }

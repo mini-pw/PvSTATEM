@@ -1,5 +1,12 @@
 library(testthat)
 
+
+expect_equal_paths <- function(path1, path2) {
+  path1 <- fs::path_abs(path1)
+  path2 <- fs::path_abs(path2)
+  expect_equal(path1, path2)
+}
+
 test_that("Test verify numeric join", {
   expect_true(verify_numeric_join(1, 1))
   expect_true(verify_numeric_join(NA, 1))
@@ -104,19 +111,19 @@ test_that("Test is.decreasing function", {
 test_that("Test validate_filepath_and_output_dir function", {
   tmp_dir <- tempdir(check = TRUE)
   # base case
-  expect_equal(
+  expect_equal_paths(
     validate_filepath_and_output_dir("test", tmp_dir, "plate_name", "report", "html"),
     file.path(tmp_dir, "test.html")
   )
 
   # extension handling
-  expect_equal(
+  expect_equal_paths(
     validate_filepath_and_output_dir("test", tmp_dir, "plate_name", "report", "html.html"),
     file.path(tmp_dir, "test.html.html")
   )
 
 
-  expect_equal(
+  expect_equal_paths(
     validate_filepath_and_output_dir("test.html", tmp_dir, "plate_name", "report", "html"),
     file.path(tmp_dir, "test.html")
   )
@@ -125,7 +132,7 @@ test_that("Test validate_filepath_and_output_dir function", {
   expect_error(validate_filepath_and_output_dir("test", tmp_dir, "plate_name", "report", ".html"))
 
   # default filename creation
-  expect_equal(
+  expect_equal_paths(
     validate_filepath_and_output_dir(NULL, tmp_dir, "plate_name", "report", "html"),
     file.path(tmp_dir, "plate_name_report.html")
   )
