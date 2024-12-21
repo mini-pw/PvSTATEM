@@ -334,6 +334,9 @@ plot_standard_curve_stacked <- function(list_of_plates,
   xlab <- ifelse(x_log_scale, "Dilutions (log scale)", "Dilutions")
   x_ticks <- list_of_plates[[1]]$get_dilution_values("STANDARD CURVE")
   x_labels <- list_of_plates[[1]]$get_dilution("STANDARD CURVE")
+
+  x_ticks <- c(x_ticks, min(x_ticks) / 2)
+  x_labels <- c(x_labels, "B")
   ylab <- ifelse(y_log_scale, paste("MFI ", data_type, "(log scale)"), paste("MFI ", data_type))
 
   options(scipen = 30)
@@ -361,13 +364,12 @@ plot_standard_curve_stacked <- function(list_of_plates,
   counter <- 3 # skip white and next one
 
   for  (plate in list_of_plates) {
-    plot_data <- data.frame(
-      MFI = plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type),
-      plate = plate$plate_name,
-      dilutions_value = plate$get_dilution_values("STANDARD CURVE")
-    )
-
     blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
+
+    plot_data <- data.frame(
+      MFI = c(plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type), blank_mean),
+      dilutions_value = c(plate$get_dilution_values("STANDARD CURVE"), min(plate$get_dilution_values("STANDARD CURVE")) / 2)
+    )
 
     # Add layers to the plot
     p <- p + ggplot2::geom_point(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], size = 3) +
