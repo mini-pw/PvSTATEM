@@ -363,12 +363,19 @@ plot_standard_curve_stacked <- function(list_of_plates,
       axis.text.y = element_text(size = 9),
       legend.position = "none"
     )
-  
-  palette <- colorRampPalette(c("white", "blue"))
-  n_lines <- length(list_of_plates) + 2
-  # I don't want white and next one to be colors since on white background it's not visible
-  colors <- palette(n_lines)
-  counter <- 3 # skip white and next one
+
+  number_of_colors <- length(list_of_plates)
+  counter <- 1
+  if (monochromatic) {
+    palette <- colorRampPalette(c("white", "blue"))
+    # I don't want white and next one to be colors since on white background it's not visible
+    number_of_colors <- number_of_colors + 2
+    counter <- counter + 2 # skip white and next one
+    
+    colors <- palette(number_of_colors)
+  } else {
+    colors <- rainbow(length(list_of_plates))
+  }
 
   for  (plate in list_of_plates) {
     blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
@@ -379,13 +386,9 @@ plot_standard_curve_stacked <- function(list_of_plates,
     )
 
     # Add layers to the plot
-    if (monochromatic) {
-      p <- p + ggplot2::geom_point(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], size = 3) +
-        ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = "black", linewidth = 1.5) +
-        ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], linewidth = 1.1)
-    } else {
-      p
-    }
+    p <- p + ggplot2::geom_point(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], size = 3) +
+      ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = "black", linewidth = 1.5) +
+      ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], linewidth = 1.1)
     
     counter <- counter + 1
   }
