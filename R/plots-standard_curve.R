@@ -346,6 +346,12 @@ plot_standard_curve_stacked <- function(list_of_plates,
       axis.text.y = element_text(size = 9),
       legend.position = "none"
     )
+  
+  palette <- colorRampPalette(c("white", "blue"))
+  n_lines <- length(list_of_plates) + 2
+  # I don't want white and next one to be colors since on white background it's not visible
+  colors <- palette(n_lines)
+  counter <- 3 # skip white and next one
 
   for  (plate in list_of_plates) {
     plot_data <- data.frame(
@@ -357,8 +363,11 @@ plot_standard_curve_stacked <- function(list_of_plates,
     blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
 
     # Add layers to the plot
-    p <- p + ggplot2::geom_point(data = plot_data, aes(x = RAU, y = MFI, color = "Standard curve samples"), size = 3) +
-      ggplot2::geom_line(data = plot_data, aes(x = RAU, y = MFI, color = "Standard curve samples"), linewidth = 1.2)
+    p <- p + ggplot2::geom_point(data = plot_data, aes(x = RAU, y = MFI), color = colors[counter], size = 3) +
+      ggplot2::geom_line(data = plot_data, aes(x = RAU, y = MFI), color = "black", linewidth = 1.5) +
+      ggplot2::geom_line(data = plot_data, aes(x = RAU, y = MFI), color = colors[counter], linewidth = 1.1)
+    
+    counter <- counter + 1
   }
 
   p
