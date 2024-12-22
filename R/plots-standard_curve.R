@@ -134,11 +134,15 @@ plot_standard_curve_analyte <- function(plate,
 #'
 #' @param plate Plate object
 #' @param model fitted `Model` object, which predictions we want to plot
-#' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Median`
-#' @param decreasing_rau_order If `TRUE` the RAU values are plotted in decreasing order, `TRUE` by default.
-#' @param log_scale Which elements on the plot should be displayed in log scale. By default `"all"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("RAU", "MFI")` all elements are displayed in log scale.
+#' @param data_type Data type of the value we want to plot - the same
+#' datatype as in the plate file. By default equals to `Median`
+#' @param decreasing_rau_order If `TRUE` the RAU values are plotted in
+#' decreasing order, `TRUE` by default.
+#' @param log_scale Which elements on the plot should be displayed in log scale.
+#' By default `"all"`. If `NULL` or `c()` no log scale is used,
+#' if `"all"` or `c("RAU", "MFI")` all elements are displayed in log scale.
 #' @param plot_asymptote If `TRUE` the asymptotes are plotted, `TRUE` by default
-#' @param plot_test_predictions If `TRUE` the predictions for the test samples are plotted, `TRUE` by default
+#' @param plot_test_predictions If `TRUE` the predictions for the test samples are plotted, `TRUE` by default.
 #' The predictions are obtained through extrapolation of the model
 #' @param plot_blank_mean If `TRUE` the mean of the blank samples is plotted, `TRUE` by default
 #' @param plot_rau_bounds If `TRUE` the RAU bounds are plotted, `TRUE` by default
@@ -232,12 +236,15 @@ plot_standard_curve_analyte_with_model <- function(plate,
 #'
 #' @param plate Plate object
 #' @param analyte_name Name of the analyte of which standard curve we want to plot.
-#' @param data_type Data type of the value we want to plot - the same types as in the plate file. By default equals to `median`
+#' @param data_type Data type of the value we want to plot - the same
+#' types as in the plate file. By default equals to `median`
 #'
 #' @return ggplot object with the plot
 #'
 #' @keywords internal
-plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Median") {
+plot_standard_curve_thumbnail <- function(plate,
+                                          analyte_name,
+                                          data_type = "Median") {
   if (!inherits(plate, "Plate")) {
     stop("plate object should be a Plate")
   }
@@ -292,10 +299,16 @@ plot_standard_curve_thumbnail <- function(plate, analyte_name, data_type = "Medi
 #'
 #' @param list_of_plates list of Plate objects
 #' @param analyte_name Name of the analyte of which standard curves we want to plot.
-#' @param data_type Data type of the value we want to plot - the same datatype as in the plate file. By default equals to `Median`
-#' @param monochromatic If `TRUE` the color of standard curves changes from white (the olders) to blue (the newest) it helps to observe drift in calibration of device, otherwise more varied colors are used `TRUE` by default
-#' @param decreasing_dilution_order If `TRUE` the dilution values are plotted in decreasing order, `TRUE` by default
-#' @param log_scale Which elements on the plot should be displayed in log scale. By default `"all"`. If `NULL` or `c()` no log scale is used, if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
+#' @param data_type Data type of the value we want to plot - the same
+#' datatype as in the plate file. By default equals to `Median`
+#' @param monochromatic If `TRUE` the color of standard curves changes
+#' from white (the olders) to blue (the newest) it helps to observe drift in
+#' calibration of device, otherwise more varied colors are used `TRUE` by default
+#' @param decreasing_dilution_order If `TRUE` the dilution values are
+#' plotted in decreasing order, `TRUE` by default
+#' @param log_scale Which elements on the plot should be displayed in log scale. 
+#' By default `"all"`. If `NULL` or `c()` no log scale is used,
+#' if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
 #'
 #' @return ggplot object with the plot
