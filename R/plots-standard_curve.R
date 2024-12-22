@@ -342,13 +342,10 @@ plot_standard_curve_stacked <- function(list_of_plates,
   x_ticks <- list_of_plates[[1]]$get_dilution_values("STANDARD CURVE")
   x_labels <- list_of_plates[[1]]$get_dilution("STANDARD CURVE")
 
-  # Add the last dilution value - BLANK
+  # Add the BLANK to the plot
   x_ticks <- c(x_ticks, min(x_ticks) / 2)
   x_labels <- c(x_labels, "B")
   ylab <- ifelse(y_log_scale, paste("MFI ", data_type, "(log scale)"), paste("MFI ", data_type))
-
-  # Make the minor grid lines less visible
-  col_grid <- scales::alpha("grey", .5)
 
   options(scipen = 30)
   p <- ggplot2::ggplot()
@@ -366,7 +363,7 @@ plot_standard_curve_stacked <- function(list_of_plates,
       axis.text.x = element_text(size = 9, angle = 45, hjust = 1, vjust = 1),
       axis.text.y = element_text(size = 9),
       legend.position = "none",
-      panel.grid.minor = element_line(color = col_grid, size = 0.1)
+      panel.grid.minor = element_line(color = scales::alpha("grey", .5), size = 0.1) # Make the minor grid lines less visible
     )
 
   number_of_colors <- length(list_of_plates)
@@ -374,7 +371,7 @@ plot_standard_curve_stacked <- function(list_of_plates,
   if (monochromatic) {
     # I don't want white and next one to be colors since on white background it's not visible
     number_of_colors <- number_of_colors + 2
-    counter <- counter + 2 # skip white and next one
+    counter <- counter + 2 # skip white and closest one to white
 
     palette <- grDevices::colorRampPalette(c("white", "blue"))
     colors <- palette(number_of_colors)
@@ -390,7 +387,7 @@ plot_standard_curve_stacked <- function(list_of_plates,
       dilutions_value = c(plate$get_dilution_values("STANDARD CURVE"), min(plate$get_dilution_values("STANDARD CURVE")) / 2)
     )
 
-    # Add layers to the plot
+    # Add standard curve samples to the plot
     p <- p + ggplot2::geom_point(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], size = 3) +
       ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = "black", linewidth = 1.5) +
       ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], linewidth = 1.1)
