@@ -30,6 +30,9 @@ plot_levey_jennings <- function(list_of_plates,
   stopifnot(is.list(list_of_plates))
   stopifnot(length(list_of_plates) > 0)
   stopifnot(all(sapply(list_of_plates, inherits, "Plate")))
+  if (length(list_of_plates) <= 10) {
+    warning("The number of plates is less than 10. For the Levey-Jennings chart it is recommended to have at least 10 plates.")
+  }
 
   stopifnot(is.character(analyte_name))
   stopifnot(all(sapply(list_of_plates, function(plate) analyte_name %in% plate$analyte_names)))
@@ -43,12 +46,27 @@ plot_levey_jennings <- function(list_of_plates,
   mfi_values <- c()
   for (plate in list_of_plates) {
     dilutions <- plate$get_dilution("STANDARD CURVE")
-    data <- plate$get_data(analyte_name, "STANDARD CURVE", data_type)
+    plate_data <- plate$get_data(analyte_name, "STANDARD CURVE", data_type)
 
     date_of_experiment <- c(date_of_experiment, plate$plate_datetime)
-    mfi_values <- c(mfi_values, data[dilutions == dilution])
+    mfi_values <- c(mfi_values, plate_data[dilutions == dilution])
   }
 
   mean <- mean(mfi_values)
   sd <- sd(mfi_values)
+
+  plot_data <- data.frame(date = date_of_experiment, mfi = mfi_values)
+  p <- ggplot(data = plot_data,aes(x = date, y = mfi)) +
+    geom_point() +
+    geom_hline(yintercept = mean) +
+    labs(title = paste("Levey-Jennings chart for", analyte_name),
+         x = "Date",
+         y = "MFI") +
+    theme_minimal()
+
+  # Add standard deviation lines
+  for (sd_line in sd_lines) {
+    p <- p + geom_hline(yintercept = mean + sd_line * sd, linetype = "dashed")
+    p <- p + geom_hline(yintercept = mean - sd_line * sd, linetype = "dashed")
+  }
 }
