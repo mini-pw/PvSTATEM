@@ -33,6 +33,7 @@ Imports:
     lubridate,
     R.utils,
     svglite,
+    scales,
     fs
 Suggests:
     knitr,

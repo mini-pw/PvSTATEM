@@ -11,7 +11,8 @@ plot_standard_curve_thumbnail(plate, analyte_name, data_type = "Median")
 
 \item{analyte_name}{Name of the analyte of which standard curve we want to plot.}
 
-\item{data_type}{Data type of the value we want to plot - the same types as in the plate file. By default equals to \code{median}}
+\item{data_type}{Data type of the value we want to plot - the same
+types as in the plate file. By default equals to \code{median}}
 }
 \value{
 ggplot object with the plot
