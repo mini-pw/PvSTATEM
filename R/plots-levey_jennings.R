@@ -39,5 +39,16 @@ plot_levey_jennings <- function(list_of_plates,
 
   stopifnot(is.numeric(sd_lines))
 
-  
+  date_of_experiment <- c()
+  mfi_values <- c()
+  for (plate in list_of_plates) {
+    dilutions <- plate$get_dilution("STANDARD CURVE")
+    data <- plate$get_data(analyte_name, "STANDARD CURVE", data_type)
+
+    date_of_experiment <- c(date_of_experiment, plate$plate_datetime)
+    mfi_values <- c(mfi_values, data[dilutions == dilution])
+  }
+
+  mean <- mean(mfi_values)
+  sd <- sd(mfi_values)
 }

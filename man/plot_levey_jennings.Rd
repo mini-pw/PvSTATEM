@@ -7,20 +7,24 @@
 plot_levey_jennings(
   list_of_plates,
   analyte_name,
+  dilution = "1/400",
   sd_lines = c(1.96),
   data_type = "Median"
 )
 }
 \arguments{
-\item{list_of_plates}{A list of plate objects for which to plot the Levey-Jennings chart}
+\item{list_of_plates}{A list of plate objects for which to plot the
+Levey-Jennings chart}
 
-\item{analyte_name}{(\code{character(1)}) the analyte for which to plot the Levey-Jennings chart}
+\item{analyte_name}{(\code{character(1)}) the analyte for which to plot the
+Levey-Jennings chart}
 
 \item{sd_lines}{(\code{numeric}) the vector of coefficients for the
-standard deviation lines to plot for example c(1.96, 2.58)
-will plot four horizontal lines: mean +/- 1.96\emph{sd, mean +/- 2.58}sd}
+standard deviation lines to plot, for example, c(1.96, 2.58)
+will plot four horizontal lines: mean +/- 1.96\emph{sd, mean +/- 2.58}sd
+default is c(1.96) which will plot two lines mean +/- 1.96*sd}
 
-\item{data_type}{(\code{character(1)}) the type of data used plot. Default is "Median"}
+\item{data_type}{(\code{character(1)}) the type of data used plot. The default is "Median"}
 }
 \value{
 A ggplot object with the Levey-Jennings chart
