@@ -3,6 +3,7 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml)
 ![Downloads](https://cranlogs.r-pkg.org/badges/PvSTATEM)
+[![codecov](https://codecov.io/gh/mini-pw/PvSTATEM/graph/badge.svg?token=11EVHXMHDO)](https://codecov.io/gh/mini-pw/PvSTATEM)
 <!-- badges: end -->
 
 
