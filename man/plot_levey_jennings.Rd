@@ -19,6 +19,9 @@ Levey-Jennings chart}
 \item{analyte_name}{(\code{character(1)}) the analyte for which to plot the
 Levey-Jennings chart}
 
+\item{dilution}{(\code{character(1)}) the dilution for which to plot the
+Levey-Jennings chart. The default is "1/400"}
+
 \item{sd_lines}{(\code{numeric}) the vector of coefficients for the
 standard deviation lines to plot, for example, c(1.96, 2.58)
 will plot four horizontal lines: mean +/- 1.96\emph{sd, mean +/- 2.58}sd

@@ -13,6 +13,8 @@
 #' Levey-Jennings chart
 #' @param analyte_name (`character(1)`) the analyte for which to plot the
 #' Levey-Jennings chart
+#' @param dilution (`character(1)`) the dilution for which to plot the
+#' Levey-Jennings chart. The default is "1/400"
 #' @param sd_lines (`numeric`) the vector of coefficients for the
 #' standard deviation lines to plot, for example, c(1.96, 2.58)
 #' will plot four horizontal lines: mean +/- 1.96*sd, mean +/- 2.58*sd
@@ -30,9 +32,9 @@ plot_levey_jennings <- function(list_of_plates,
   stopifnot(is.list(list_of_plates))
   stopifnot(length(list_of_plates) > 0)
   stopifnot(all(sapply(list_of_plates, inherits, "Plate")))
-  if (length(list_of_plates) <= 10) {
-    warning("The number of plates is less than 10. For the Levey-Jennings chart it is recommended to have at least 10 plates.")
-  }
+#   if (length(list_of_plates) <= 10) {
+#     warning("The number of plates is less than 10. For the Levey-Jennings chart it is recommended to have at least 10 plates.")
+#   }
 
   stopifnot(is.character(analyte_name))
   stopifnot(all(sapply(list_of_plates, function(plate) analyte_name %in% plate$analyte_names)))
@@ -58,7 +60,7 @@ plot_levey_jennings <- function(list_of_plates,
   plot_data <- data.frame(date = date_of_experiment, mfi = mfi_values)
   p <- ggplot(data = plot_data,aes(x = date, y = mfi)) +
     geom_point() +
-    geom_hline(yintercept = mean) +
+    geom_hline(yintercept = mean, color = "black", size = 1.2) +
     labs(title = paste("Levey-Jennings chart for", analyte_name),
          x = "Date",
          y = "MFI") +
@@ -69,4 +71,6 @@ plot_levey_jennings <- function(list_of_plates,
     p <- p + geom_hline(yintercept = mean + sd_line * sd, linetype = "dashed")
     p <- p + geom_hline(yintercept = mean - sd_line * sd, linetype = "dashed")
   }
+
+  return(p)
 }
