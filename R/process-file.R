@@ -4,8 +4,9 @@
 #' @description
 #' Perform `process_plate` and `generate_plate_report` for a given plate file.
 #' In more detail, this function reads the plate file and calls the `process_plate`
-#' on the processed plate objects across all the normalisation types including the raw MFI vales.
-#' If the user has specifed the `generate_report` flag, it will also call the `generate_plate_report` function
+#' on the processed plate objects across all the normalisation types, including the raw MFI values.
+#' If the user has specified the `generate_report` flag, it will also call the `generate_plate_report` function
+
 #' generating the quality control report.
 #'
 #' @param plate_filepath (`character(1)`) The path to the plate file.
