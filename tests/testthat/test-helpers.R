@@ -179,3 +179,13 @@ test_that("Test mba format function", {
   expect_false(is_mba_format(NULL, allow_nullable = FALSE))
   expect_false(is_mba_format("invalid", allow_nullable = FALSE))
 })
+
+test_that("Test sorting a list", {
+  l <- list(a = 2, b = 1)
+  sl <- list(b = 1, a = 2)
+  expect_equal(sort_list_by(l, decreasing = FALSE), sl)
+
+  l <- list(a = list(v = 2), b = list(v = 1))
+  sl <- list(b = list(v = 1), a = list(v = 2))
+  expect_equal(sort_list_by(l, decreasing = FALSE, value_f = function(x) x$v), sl)
+})

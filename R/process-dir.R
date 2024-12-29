@@ -164,6 +164,10 @@ get_output_dir <- function(
 #' @param verbose (`logical(1)`) Print additional information. The default is `TRUE`.
 #' @param ... Additional arguments to for the `process_file` function.
 #'
+#' @return If the `return_plates` parameter is set to `TRUE` the function returns a list of plates
+#' sorted by the `plate_datetime` (The time of the experiment noted in the csv file) in increasing order (oldest plates first).
+#' If the `return_plates` parameters is set to `FALSE` the function returns `NULL`.
+#'
 #' @examples
 #' # Select input directory to process
 #' dir <- system.file("extdata", "multiplate_lite", package = "PvSTATEM", mustWork = TRUE)
@@ -263,6 +267,11 @@ process_dir <- function(
   }
 
   if (return_plates) {
+    plates <- sort_list_by(
+      plates,
+      value_f = function(p) p$plate_datetime,
+      decreasing = FALSE
+    )
     return(plates)
   }
 }

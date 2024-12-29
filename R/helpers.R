@@ -334,9 +334,25 @@ check_path_equal <- function(path1, path2) {
 #'
 #' @return (`logical(1)`) `TRUE` if the format is in the supported list, else `FALSE`
 #'
+#' @keywords internal
 is_mba_format <- function(format, allow_nullable = FALSE) {
   if (is.null(format)) {
     return(allow_nullable)
   }
   return(format %in% PvSTATEM.env$mba_formats)
+}
+
+#' @title
+#' Sort a flat list by value
+#'
+#' @param list_obj A list to sort
+#' @param value_f Function that expects a element of the list
+#' and returns a value to sort the list by.
+#' @param decreasing Should the sorting by decreasing or increasing
+#'
+sort_list_by <- function(list_obj, decreasing = FALSE, value_f = function(elem) elem) {
+  values <- lapply(list_obj, value_f)
+  values_order <- order(unlist(values), decreasing = decreasing)
+  sorted_names <- names(list_obj)[values_order]
+  list_obj[sorted_names]
 }

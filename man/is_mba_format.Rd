@@ -18,3 +18,4 @@ Defaults to \code{FALSE}.}
 \description{
 Check if a given format is supported.
 }
+\keyword{internal}

@@ -48,6 +48,11 @@ but will print the information about the files that would be processed. The defa
 
 \item{...}{Additional arguments to for the \code{process_file} function.}
 }
+\value{
+If the \code{return_plates} parameter is set to \code{TRUE} the function returns a list of plates
+sorted by the \code{plate_datetime} (The time of the experiment noted in the csv file) in increasing order (oldest plates first).
+If the \code{return_plates} parameters is set to \code{FALSE} the function returns \code{NULL}.
+}
 \description{
 The output files will be created alongside their corresponding input files, preserving
 the directory structure of the input directory unless the \code{flatten_output} parameter is set to \code{TRUE}.
