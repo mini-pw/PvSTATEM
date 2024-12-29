@@ -52,3 +52,14 @@ but will print the information about the files that would be processed. The defa
 The output files will be created alongside their corresponding input files, preserving
 the directory structure of the input directory unless the \code{flatten_output} parameter is set to \code{TRUE}.
 }
+\examples{
+# Select input directory to process
+dir <- system.file("extdata", "multiplate_lite", package = "PvSTATEM", mustWork = TRUE)
+
+# Select output directory
+output_dir <- tempdir(check = TRUE)
+
+# Process input directory and return plates
+plates <- process_dir(dir, return_plates = TRUE, output_dir = output_dir)
+
+}

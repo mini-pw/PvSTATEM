@@ -35,7 +35,7 @@ process_file(
 \description{
 Perform \code{process_plate} and \code{generate_plate_report} for a given plate file.
 In more detail, this function reads the plate file and calls the \code{process_plate}
-on the processed plate objects across all the normalisation types including the raw MFI vales.
-If the user has specifed the \code{generate_report} flag, it will also call the \code{generate_plate_report} function
+on the processed plate objects across all the normalisation types, including the raw MFI values.
+If the user has specified the \code{generate_report} flag, it will also call the \code{generate_plate_report} function
 generating the quality control report.
 }

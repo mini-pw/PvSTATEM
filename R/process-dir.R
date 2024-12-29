@@ -62,9 +62,6 @@ is_mba_data_file <- function(filepath) {
   basename <- filename_splitted[[1]][1]
 
   # plate filename has to contain supported format
-  print("HERE")
-  print(format_pattern)
-  print(filename)
   if (!grepl(format_pattern, filename, ignore.case = TRUE)) {
     return(FALSE)
   }
@@ -166,6 +163,16 @@ get_output_dir <- function(
 #' but will print the information about the files that would be processed. The default is `FALSE`.
 #' @param verbose (`logical(1)`) Print additional information. The default is `TRUE`.
 #' @param ... Additional arguments to for the `process_file` function.
+#'
+#' @examples
+#' # Select input directory to process
+#' dir <- system.file("extdata", "multiplate_lite", package = "PvSTATEM", mustWork = TRUE)
+#'
+#' # Select output directory
+#' output_dir <- tempdir(check = TRUE)
+#'
+#' # Process input directory and return plates
+#' plates <- process_dir(dir, return_plates = TRUE, output_dir = output_dir)
 #'
 #' @import fs
 #'

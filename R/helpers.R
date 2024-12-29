@@ -327,7 +327,12 @@ check_path_equal <- function(path1, path2) {
 #' @description
 #' Check if a given format is supported.
 #'
+#'
 #' @param format (`character(1`) Format string
+#' @param allow_nullable (`logical(1)`) Set to `TRUE` if a format can be NULL
+#' Defaults to `FALSE`.
+#'
+#' @return (`logical(1)`) `TRUE` if the format is in the supported list, else `FALSE`
 #'
 is_mba_format <- function(format, allow_nullable = FALSE) {
   if (is.null(format)) {
