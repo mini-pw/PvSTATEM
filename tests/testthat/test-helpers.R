@@ -172,3 +172,10 @@ test_that("Test path checking", {
   expect_false(check_path_equal(plate1_filepath, NULL))
   expect_false(check_path_equal(plate1_filepath, "/tmp/non_existent.tsv"))
 })
+
+test_that("Test mba format function", {
+  expect_true(is_mba_format(PvSTATEM.env$mba_formats[1]))
+  expect_true(is_mba_format(NULL, allow_nullable = TRUE))
+  expect_false(is_mba_format(NULL, allow_nullable = FALSE))
+  expect_false(is_mba_format("invalid", allow_nullable = FALSE))
+})

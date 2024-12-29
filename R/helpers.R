@@ -320,3 +320,18 @@ check_path_equal <- function(path1, path2) {
   path2 <- fs::path_abs(path2)
   return(identical(path1, path2))
 }
+
+#' @title
+#' Check if a mba format is supported
+#'
+#' @description
+#' Check if a given format is supported.
+#'
+#' @param format (`character(1`) Format string
+#'
+is_mba_format <- function(format, allow_nullable = FALSE) {
+  if (is.null(format)) {
+    return(allow_nullable)
+  }
+  return(format %in% PvSTATEM.env$mba_formats)
+}

@@ -51,7 +51,7 @@ find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
 #' @keywords internal
 #'
 is_mba_data_file <- function(filepath) {
-  format_pattern <- "xpontent|xponent|intelliflex"
+  format_pattern <- PvSTATEM.env$mba_pattern
   extension_pattern <- "\\.(xlsx|csv)$"
   output_pattern <- "RAU|nMFI"
   layout_pattern <- "_layout"
@@ -62,6 +62,9 @@ is_mba_data_file <- function(filepath) {
   basename <- filename_splitted[[1]][1]
 
   # plate filename has to contain supported format
+  print("HERE")
+  print(format_pattern)
+  print(filename)
   if (!grepl(format_pattern, filename, ignore.case = TRUE)) {
     return(FALSE)
   }
@@ -95,7 +98,7 @@ is_mba_data_file <- function(filepath) {
 #'
 detect_mba_format <- function(filepath, format = NULL) {
   if (!is.null(format)) {
-    stopifnot(format %in% c("xPONENT", "INTELLIFLEX"))
+    stopifnot(is_mba_format(format, allow_nullable = FALSE))
     return(format)
   }
 
@@ -104,11 +107,9 @@ detect_mba_format <- function(filepath, format = NULL) {
   filename_splitted <- stringr::str_split(filename, "\\.")
   basename <- filename_splitted[[1]][1]
 
-  xponent_pattern <- "(xpontent|xponent)"
-  intelliflex_format <- "(intelliflex)"
-  if (grepl(xponent_pattern, basename, ignore.case = TRUE)) {
+  if (grepl(PvSTATEM.env$xponent_pattern, basename, ignore.case = TRUE)) {
     return("xPONENT")
-  } else if (grepl(intelliflex_format, basename, ignore.case = TRUE)) {
+  } else if (grepl(PvSTATEM.env$intelliflex_pattern, basename, ignore.case = TRUE)) {
     return("INTELLIFLEX")
   } else {
     stop("The format of the file could not be detected.")
@@ -185,7 +186,7 @@ process_dir <- function(
   stopifnot(fs::dir_exists(input_dir))
   stopifnot(is.null(output_dir) || fs::dir_exists(output_dir))
   stopifnot(is.null(layout_filepath) || fs::file_exists(layout_filepath))
-  stopifnot(is.null(format) || (format %in% c("xPONENT", "INTELLIFLEX")))
+  stopifnot(is_mba_format(format, allow_nullable = TRUE))
 
   input_files <- c()
   for (input_file in fs::dir_ls(input_dir, recurse = recurse)) {
