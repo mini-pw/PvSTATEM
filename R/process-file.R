@@ -18,6 +18,20 @@
 #' @param verbose (`logical(1)`) Print additional information. The default is `TRUE`.
 #' @param ... Additional arguments to for the `read_luminex_data` function.
 #'
+#' @examples
+#'
+#' # Select an input csv file for processing and corresponding layout file
+#' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "PvSTATEM")
+#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM")
+#'
+#' example_dir <- tempdir(check = TRUE) # a temporary directory
+#' # create and save dataframe with computed dilutions for all suported noramlization types
+#' process_file(plate_file, layout_file, output_dir = example_dir)
+#'
+#' example_dir2 <- tempdir(check = TRUE) # a temporary directory
+#' # process the plate for a specific normalization type
+#' process_file(plate_file, layout_file, output_dir = example_dir2, normalisation_types = c("RAU"))
+#'
 #' @importFrom fs file_exists
 #'
 #' @export

@@ -39,3 +39,18 @@ on the processed plate objects across all the normalisation types, including the
 If the user has specified the \code{generate_report} flag, it will also call the \code{generate_plate_report} function
 generating the quality control report.
 }
+\examples{
+
+# Select an input csv file for processing and corresponding layout file
+plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "PvSTATEM")
+layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM")
+
+example_dir <- tempdir(check = TRUE) # a temporary directory
+# create and save dataframe with computed dilutions for all suported noramlization types
+process_file(plate_file, layout_file, output_dir = example_dir)
+
+example_dir2 <- tempdir(check = TRUE) # a temporary directory
+# process the plate for a specific normalization type
+process_file(plate_file, layout_file, output_dir = example_dir2, normalisation_types = c("RAU"))
+
+}
