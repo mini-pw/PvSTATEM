@@ -207,7 +207,7 @@ process_dir <- function(
   }
 
   if (length(input_files) == 0) {
-    verbose_cat("No files found in the input directory.\n", verbose = verbose)
+    verbose_cat("No files found in the input directory.\n", verbose = TRUE)
     return(NULL)
   }
 
