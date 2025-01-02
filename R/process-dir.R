@@ -45,12 +45,17 @@ find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
 #' @title
 #' Identify if a file is a MBA data file
 #'
+#' @param filepath (`character(1)`) The path to the file.
+#' @param check_format (`logical(1)`) If `TRUE`, the function will check if the file name contains a supported format. The default is `TRUE`.
+#'
+#' @return `TRUE` if the file is a MBA data file, `FALSE` otherwise.
+#'
 #' @import fs
 #' @importFrom stringr str_split
 #'
 #' @keywords internal
 #'
-is_mba_data_file <- function(filepath) {
+is_mba_data_file <- function(filepath, check_format = TRUE) {
   format_pattern <- PvSTATEM.env$mba_pattern
   extension_pattern <- "\\.(xlsx|csv)$"
   output_pattern <- "RAU|nMFI"
@@ -62,8 +67,10 @@ is_mba_data_file <- function(filepath) {
   basename <- filename_splitted[[1]][1]
 
   # plate filename has to contain supported format
-  if (!grepl(format_pattern, filename, ignore.case = TRUE)) {
-    return(FALSE)
+  if (check_format) {
+    if (!grepl(format_pattern, filename, ignore.case = TRUE)) {
+      return(FALSE)
+    }
   }
 
   # plate filename extensions have to be supported
@@ -201,13 +208,31 @@ process_dir <- function(
 
   input_files <- c()
   for (input_file in fs::dir_ls(input_dir, recurse = recurse)) {
-    if (is_mba_data_file(input_file)) {
+    if (is_mba_data_file(input_file, check_format = is.null(format))) {
       input_files <- c(input_files, input_file)
     }
   }
 
+  if (dry_run) {
+    cat("Dry run mode enabled.\n")
+    cat("Input directory: ", input_dir, "\n")
+    if (!is.null(format)) {
+      cat("MBA format: static (", format, ") \n")
+    } else {
+      cat("MBA format: dynamic \n")
+    }
+    if (!is.null(layout_filepath)) {
+      cat("Layout file: static (", layout_filepath, ") \n")
+    } else {
+      cat("Layout file: dynamic \n")
+    }
+  }
+
   if (length(input_files) == 0) {
-    verbose_cat("No files found in the input directory.\n", verbose = TRUE)
+    cat("No files found in the input directory.\n")
+    cat("Check if files inside the input directory are named correctly. ")
+    cat("If files are not named according to the convention, ")
+    cat("one should provide a global MBA format and layout file.\n")
     return(NULL)
   }
 
@@ -227,7 +252,6 @@ process_dir <- function(
   stopifnot(all(!is.na(layouts)))
 
   if (dry_run) {
-    cat("Dry run mode enabled.\n")
     cat("The following files will be processed:\n")
     for (i in seq_along(input_files)) {
       current_output_dir <- get_output_dir(input_files[i], input_dir,
