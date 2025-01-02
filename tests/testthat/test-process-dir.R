@@ -32,6 +32,7 @@ test_that("Test detecting format", {
   expect_equal(detect_mba_format(plate1_filepath), "xPONENT")
   expect_equal(detect_mba_format(plate2_filepath), "xPONENT")
   expect_equal(detect_mba_format(plate3_filepath), "INTELLIFLEX")
+  expect_equal(detect_mba_format(NULL, format = "INTELLIFLEX"), "INTELLIFLEX")
 })
 
 test_that("Test obtaining an output directory", {
@@ -75,6 +76,16 @@ test_that("Test processing a mock directory", {
   ))
   expect_no_error(capture.output(
     process_dir(dir, dry_run = T, recurse = T, flatten_output = F, output_dir = tempdir(check = TRUE))
+  ))
+
+  dir <- tempdir(check = TRUE)
+
+  # Clean up the tmp directory
+  unlink(dir, recursive = T)
+  dir.create(dir)
+
+  expect_no_error(capture.output(
+    process_dir(dir, dry_run = T, recurse = F, output_dir = dir)
   ))
 })
 
