@@ -401,9 +401,9 @@ plot_standard_curve_stacked <- function(list_of_plates,
     )
 
     # Add standard curve samples to the plot
-    p <- p + ggplot2::geom_point(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], size = 3) +
-      ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = "black", linewidth = 1.5) +
-      ggplot2::geom_line(data = plot_data, aes(x = dilutions_value, y = MFI), color = colors[counter], linewidth = 1.1)
+    p <- p + ggplot2::geom_point(data = plot_data, aes(x = .data$dilutions_value, y = .data$MFI), color = colors[counter], size = 3) +
+      ggplot2::geom_line(data = plot_data, aes(x = .data$dilutions_value, y = .data$MFI), color = "black", linewidth = 1.5) +
+      ggplot2::geom_line(data = plot_data, aes(x = .data$dilutions_value, y = .data$MFI), color = colors[counter], linewidth = 1.1)
     
     counter <- counter + 1
   }
