@@ -510,6 +510,8 @@ crc32_parser <- function(separator) {
 #'
 #' @import stringr
 #' @import readr
+#'
+#' @export
 read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", separator = ",", verbose = TRUE) {
   lines <- readr::read_lines(
     path,
