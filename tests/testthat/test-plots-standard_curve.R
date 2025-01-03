@@ -30,6 +30,12 @@ get_test_list_of_plates <- function() {
   )
 }
 
+get_list_of_plates <- function() {
+  dir <- system.file("extdata", "multiplate_reallife_reduced", package = "PvSTATEM", mustWork = TRUE)
+  real_list_of_plates <- process_dir(dir, return_plates = TRUE, format="xPONENT")
+  real_list_of_plates
+}
+
 test_that("Test plotting the standard curve samples from a plate object", {
   plate <- get_test_plate()
   expect_no_error(plot_standard_curve_analyte(plate, "Spike_6P_IPP"))
@@ -98,4 +104,24 @@ test_that("Plot Stacked Standard Curve with string instead of list", {
 test_that("Plot Stacked Standard Curve with number instead of list", {
   list_of_plates <- 123.45
   expect_error(plot_standard_curve_stacked(list_of_plates, "Spike_6P_IPP"))
+})
+
+test_that("Plot Stacked Standard Curve with real data", {
+  list_of_plates <- get_list_of_plates()
+  expect_no_error(plot_standard_curve_stacked(list_of_plates, "ME"))
+})
+
+test_that("Plot Stacked Standard Curve with real data and only dilution in log scale", {
+  list_of_plates <- get_list_of_plates()
+  expect_no_error(plot_standard_curve_stacked(list_of_plates, "ME", log_scale = "dilutions"))
+})
+
+test_that("Plot Stacked Standard Curve with real data and only MFI in log scale", {
+  list_of_plates <- get_list_of_plates()
+  expect_no_error(plot_standard_curve_stacked(list_of_plates, "ME", log_scale = "MFI"))
+})
+
+test_that("Plot Stacked Standard Curve with real data and no existing analyte", {
+  list_of_plates <- get_list_of_plates()
+  expect_error(plot_standard_curve_stacked(list_of_plates, "not_existing"))
 })
