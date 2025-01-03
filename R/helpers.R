@@ -302,3 +302,57 @@ validate_filepath_and_output_dir <- function(filename, output_dir, plate_name, s
 
   return(output_path)
 }
+
+#' @title
+#' Check if two paths are equal
+#'
+#' @description
+#' Function checks if two paths are equal after converting them to absolute paths.
+#'
+#' @param path1 (`character(1)`) The first path to be compared.
+#' @param path2 (`character(1)`) The second path to be compared.
+#'
+#' @return (`logical(1)`) `TRUE` if the paths are equal, `FALSE` otherwise.
+#'
+#' @keywords internal
+check_path_equal <- function(path1, path2) {
+  path1 <- fs::path_abs(path1)
+  path2 <- fs::path_abs(path2)
+  return(identical(path1, path2))
+}
+
+#' @title
+#' Check if a mba format is supported
+#'
+#' @description
+#' Check if a given format is supported.
+#'
+#'
+#' @param format (`character(1`) Format string
+#' @param allow_nullable (`logical(1)`) Set to `TRUE` if a format can be NULL
+#' Defaults to `FALSE`.
+#'
+#' @return (`logical(1)`) `TRUE` if the format is in the supported list, else `FALSE`
+#'
+#' @keywords internal
+is_mba_format <- function(format, allow_nullable = FALSE) {
+  if (is.null(format)) {
+    return(allow_nullable)
+  }
+  return(format %in% PvSTATEM.env$mba_formats)
+}
+
+#' @title
+#' Sort a flat list by value
+#'
+#' @param list_obj A list to sort
+#' @param value_f Function that expects a element of the list
+#' and returns a value to sort the list by.
+#' @param decreasing Should the sorting by decreasing or increasing
+#'
+sort_list_by <- function(list_obj, decreasing = FALSE, value_f = function(elem) elem) {
+  values <- lapply(list_obj, value_f)
+  values_order <- order(unlist(values), decreasing = decreasing)
+  sorted_names <- names(list_obj)[values_order]
+  list_obj[sorted_names]
+}
