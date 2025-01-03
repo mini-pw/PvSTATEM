@@ -35,6 +35,15 @@ test_that("Test plotting the standard curve samples from a plate object", {
   expect_no_error(plot_standard_curve_analyte(plate, "Spike_6P_IPP"))
 })
 
+test_that("Test plotting the standard curve samples with not a plate object", {
+  expect_error(plot_standard_curve_analyte("not_plate", "Spike_6P_IPP"))
+})
+
+test_that("Test plotting the standard curve samples with not existing analyte", {
+  plate <- get_test_plate()
+  expect_error(plot_standard_curve_analyte(plate, "not_existing"))
+})
+
 test_that("Test creating analyte model from a plate object", {
   plate <- get_test_plate()
   expect_no_error(create_standard_curve_model_analyte(plate, "Spike_6P_IPP"))
@@ -79,4 +88,14 @@ test_that("Plot Stacked Standard Curve with invalids object in list", {
 test_that("Plot Stacked Standard Curve with invalid log scale", {
   list_of_plates <- get_test_list_of_plates()
   expect_error(plot_standard_curve_stacked(list_of_plates, "Spike_6P_IPP", log_scale = "not_existing"))
+})
+
+test_that("Plot Stacked Standard Curve with string instead of list", {
+  list_of_plates <- "not_list"
+  expect_error(plot_standard_curve_stacked(list_of_plates, "Spike_6P_IPP"))
+})
+
+test_that("Plot Stacked Standard Curve with number instead of list", {
+  list_of_plates <- 123.45
+  expect_error(plot_standard_curve_stacked(list_of_plates, "Spike_6P_IPP"))
 })
