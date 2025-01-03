@@ -29,6 +29,7 @@ test_that("Test processing of a plate", {
   expect_error(
     process_plate(plate, output_dir = tmp_dir, normalisation_type = "incorrect")
   )
+  unlink(tmp_dir, recursive = TRUE)
 })
 
 test_that("Processing plate with nMFI", {
@@ -64,6 +65,7 @@ test_that("Processing plate with nMFI", {
   expect_error(
     process_plate(plate, output_dir = tmp_dir, reference_dilution = "1/401", normalisation_type = "nMFI")
   )
+  unlink(tmp_dir, recursive = TRUE)
 })
 
 
@@ -88,4 +90,6 @@ test_that("raw MFI in dataframe", {
     output_df <- process_plate(plate, output_dir = tmp_dir, filename = "output.csv", normalisation_type = "nMFI", include_raw_mfi = TRUE)
   )
   stopifnot(all(colnames(output_df) == c(plate$analyte_names, paste0(plate$analyte_names, "_raw"))))
+
+  unlink(tmp_dir, recursive = TRUE)
 })
