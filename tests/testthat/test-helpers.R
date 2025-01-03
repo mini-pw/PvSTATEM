@@ -160,3 +160,32 @@ test_that("Test validate_filepath_and_output_dir function", {
 
   expect_true(dir.exists(file.path(tmp_dir, "output")))
 })
+
+test_that("Test path checking", {
+  plate1_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+  plate2_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+  plate1_rel_filepath <- fs::path_rel(plate1_filepath, start = getwd())
+
+  expect_true(check_path_equal(plate1_filepath, plate1_filepath))
+  expect_true(check_path_equal(plate1_filepath, plate1_rel_filepath))
+  expect_false(check_path_equal(plate1_filepath, plate2_filepath))
+  expect_false(check_path_equal(plate1_filepath, NULL))
+  expect_false(check_path_equal(plate1_filepath, "/tmp/non_existent.tsv"))
+})
+
+test_that("Test mba format function", {
+  expect_true(is_mba_format(PvSTATEM.env$mba_formats[1]))
+  expect_true(is_mba_format(NULL, allow_nullable = TRUE))
+  expect_false(is_mba_format(NULL, allow_nullable = FALSE))
+  expect_false(is_mba_format("invalid", allow_nullable = FALSE))
+})
+
+test_that("Test sorting a list", {
+  l <- list(a = 2, b = 1)
+  sl <- list(b = 1, a = 2)
+  expect_equal(sort_list_by(l, decreasing = FALSE), sl)
+
+  l <- list(a = list(v = 2), b = list(v = 1))
+  sl <- list(b = list(v = 1), a = list(v = 2))
+  expect_equal(sort_list_by(l, decreasing = FALSE, value_f = function(x) x$v), sl)
+})
