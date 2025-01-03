@@ -1,7 +1,5 @@
-VALID_NORMALISATION_TYPES <- c("RAU", "nMFI")
-
 is_valid_normalisation_type <- function(normalisation_type) {
-  normalisation_type %in% VALID_NORMALISATION_TYPES
+  normalisation_type %in% PvSTATEM.env$normalisation_types
 }
 
 #' @title
@@ -49,7 +47,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' If it equals to `NULL` the current working directory will be used. Default is 'normalised_data'.
 #'
 #' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
-#' \cr \code{c(`r toString(VALID_NORMALISATION_TYPES)`)}.
+#' \cr \code{c(`r toString(PvSTATEM.env$normalisation_types)`)}.
 #' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
 #' @param include_raw_mfi (`logical(1)`) include raw MFI values in the output. The default is `TRUE`.
 #' In case this option is `TRUE`, the output dataframe contains two columns for each analyte: one for the normalised values and one for the raw MFI values.
