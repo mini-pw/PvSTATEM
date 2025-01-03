@@ -24,6 +24,12 @@ get_test_plate <- function() {
   )
 }
 
+get_test_list_of_plates <- function() {
+  list(
+    test = get_test_plate()
+  )
+}
+
 test_that("Test plotting the standard curve samples from a plate object", {
   plate <- get_test_plate()
   expect_no_error(plot_standard_curve_analyte(plate, "Spike_6P_IPP"))
@@ -47,4 +53,30 @@ test_that("Test over max extrapolation", {
     plate, model,
     over_max_extrapolation = Inf
   ))
+})
+
+test_that("Plot Stacked Standard Curve", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_no_error(plot_stacked_standard_curve(list_of_plates, "Spike_6P_IPP"))
+})
+
+
+test_that("Plot Stacked Standard Curve with not existing analyte", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_error(plot_stacked_standard_curve(list_of_plates, "not_existing"))
+})
+
+test_that("Plot Stacked Standard Curve with empty list", {
+  list_of_plates <- list()
+  expect_error(plot_stacked_standard_curve(list_of_plates, "Spike_6P_IPP"))
+})
+
+test_that("Plot Stacked Standard Curve with invalids object in list", {
+  list_of_plates <- list("not_plate", get_test_plate(), "not_other_plate")
+  expect_error(plot_stacked_standard_curve(list_of_plates, "Spike_6P_IPP"))
+})
+
+test_that("Plot Stacked Standard Curve with invalid log scale", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_error(plot_stacked_standard_curve(list_of_plates, "Spike_6P_IPP", log_scale = "not_existing"))
 })
