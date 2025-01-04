@@ -443,22 +443,32 @@ plot_standard_curve_stacked <- function(list_of_plates,
   } else {
     colors <- scales::hue_pal()(number_of_colors)
   }
+  custom_colors <- list()
 
   for  (plate in list_of_plates) {
     blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
 
     plot_data <- data.frame(
       MFI = c(plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type), blank_mean),
-      dilutions_value = c(plate$get_dilution_values("STANDARD CURVE"), min(plate$get_dilution_values("STANDARD CURVE")) / 2)
+      dilutions_value = c(plate$get_dilution_values("STANDARD CURVE"), min(plate$get_dilution_values("STANDARD CURVE")) / 2),
+      label = plate$plate_name
     )
 
+    current_color <- colors[counter]
+    custom_colors[[plate$plate_name]] <- current_color
+
     # Add standard curve samples to the plot
-    p <- p + ggplot2::geom_point(data = plot_data, aes(x = .data$dilutions_value, y = .data$MFI), color = colors[counter], size = 3) +
+    p <- p +
       ggplot2::geom_line(data = plot_data, aes(x = .data$dilutions_value, y = .data$MFI), color = "black", linewidth = 1.5) +
-      ggplot2::geom_line(data = plot_data, aes(x = .data$dilutions_value, y = .data$MFI), color = colors[counter], linewidth = 1.1)
-    
+      ggplot2::geom_line(data = plot_data, aes(x = .data$dilutions_value, y = .data$MFI), color = current_color, linewidth = 1.1) +
+      ggplot2::geom_point(data = plot_data, aes(x = .data$dilutions_value, y = .data$MFI, color = .data$label), size = 3)
+
     counter <- counter + 1
   }
+
+  p <- p + ggplot2::scale_color_manual(
+    values = custom_colors,
+  )
 
   p
 }
