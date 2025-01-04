@@ -303,7 +303,7 @@ plot_standard_curve_thumbnail <- function(plate,
 #' datatype as in the plate file. By default equals to `Median`
 #' @param monochromatic If `TRUE` the color of standard curves changes
 #' from white (the oldest) to blue (the newest) it helps to observe drift in
-#' calibration of device, otherwise more varied colors are used `TRUE` by default
+#' calibration of the device; otherwise, more varied colours are used, `TRUE` by default
 #' @param decreasing_dilution_order If `TRUE` the dilution values are
 #' plotted in decreasing order, `TRUE` by default
 #' @param log_scale Which elements on the plot should be displayed in log scale. 
