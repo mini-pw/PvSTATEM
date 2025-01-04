@@ -171,3 +171,7 @@ Each plate is more distinct from the others, which can be helpful when looking f
 ```{r}
 plot_standard_curve_stacked(list_of_plates, "ME", monochromatic = FALSE)
 ```
+
+There is one more useful parameter in this function mainly `legend_type'. By default it is set to `NULL` which means that the legend type
+is determined based on the `monochromatic` value. If `monochromatic` is equal to `TRUE` then legend type is set to `date`, if it is `FALSE` then legend
+type is set to `plate_name`. User can override this behavior by setting explicitly `legend_type` to `date` or `plate_name`.

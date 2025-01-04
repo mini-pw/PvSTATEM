@@ -406,6 +406,10 @@ plot_standard_curve_stacked <- function(list_of_plates,
   x_labels <- c(x_labels, "B")
   ylab <- ifelse(y_log_scale, paste("MFI ", data_type, "(log scale)"), paste("MFI ", data_type))
 
+  if (is.null(legend_type)) {
+    legend_type <- ifelse(monochromatic, "date", "plate_name")
+  }
+
   options(scipen = 30)
   p <- ggplot2::ggplot()
   p <- p + ggplot2::labs(title = plot_name, x = xlab, y = ylab) +
@@ -421,7 +425,9 @@ plot_standard_curve_stacked <- function(list_of_plates,
       axis.line = element_line(colour = "black"),
       axis.text.x = element_text(size = 9, angle = 45, hjust = 1, vjust = 1),
       axis.text.y = element_text(size = 9),
-      legend.position = "none",
+      legend.position = "right",
+      legend.background = element_rect(fill = "white", color = "black"),
+      legend.title = element_blank(),
       panel.grid.minor = element_line(color = scales::alpha("grey", .5), size = 0.1) # Make the minor grid lines less visible
     )
 
