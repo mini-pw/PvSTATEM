@@ -302,7 +302,7 @@ plot_standard_curve_thumbnail <- function(plate,
 #' @param data_type Data type of the value we want to plot - the same
 #' datatype as in the plate file. By default equals to `Median`
 #' @param monochromatic If `TRUE` the color of standard curves changes
-#' from white (the olders) to blue (the newest) it helps to observe drift in
+#' from white (the oldest) to blue (the newest) it helps to observe drift in
 #' calibration of device, otherwise more varied colors are used `TRUE` by default
 #' @param decreasing_dilution_order If `TRUE` the dilution values are
 #' plotted in decreasing order, `TRUE` by default
