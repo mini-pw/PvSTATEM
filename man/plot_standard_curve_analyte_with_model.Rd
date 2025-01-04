@@ -24,15 +24,19 @@ plot_standard_curve_analyte_with_model(
 
 \item{model}{fitted \code{Model} object, which predictions we want to plot}
 
-\item{data_type}{Data type of the value we want to plot - the same datatype as in the plate file. By default equals to \code{Median}}
+\item{data_type}{Data type of the value we want to plot - the same
+datatype as in the plate file. By default equals to \code{Median}}
 
-\item{decreasing_rau_order}{If \code{TRUE} the RAU values are plotted in decreasing order, \code{TRUE} by default.}
+\item{decreasing_rau_order}{If \code{TRUE} the RAU values are plotted in
+decreasing order, \code{TRUE} by default.}
 
-\item{log_scale}{Which elements on the plot should be displayed in log scale. By default \code{"all"}. If \code{NULL} or \code{c()} no log scale is used, if \code{"all"} or \code{c("RAU", "MFI")} all elements are displayed in log scale.}
+\item{log_scale}{Which elements on the plot should be displayed in log scale.
+By default \code{"all"}. If \code{NULL} or \code{c()} no log scale is used,
+if \code{"all"} or \code{c("RAU", "MFI")} all elements are displayed in log scale.}
 
 \item{plot_asymptote}{If \code{TRUE} the asymptotes are plotted, \code{TRUE} by default}
 
-\item{plot_test_predictions}{If \code{TRUE} the predictions for the test samples are plotted, \code{TRUE} by default
+\item{plot_test_predictions}{If \code{TRUE} the predictions for the test samples are plotted, \code{TRUE} by default.
 The predictions are obtained through extrapolation of the model}
 
 \item{plot_blank_mean}{If \code{TRUE} the mean of the blank samples is plotted, \code{TRUE} by default}
@@ -50,4 +54,16 @@ a ggplot object with the plot
 }
 \description{
 Function plots the values of standard curve samples and the fitted model.
+}
+\examples{
+path <- system.file("extdata", "CovidOISExPONTENT.csv",
+   package = "PvSTATEM", mustWork = TRUE
+)
+layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx",
+   package = "PvSTATEM", mustWork = TRUE
+)
+plate <- read_luminex_data(path, layout_filepath = layout_path, verbose = FALSE)
+model <- create_standard_curve_model_analyte(plate, analyte_name = "Spike_B16172")
+plot_standard_curve_analyte_with_model(plate, model, decreasing_rau_order = FALSE)
+
 }

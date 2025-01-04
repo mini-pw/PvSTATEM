@@ -144,3 +144,34 @@ The model is created by the `create_standard_curve_model_analyte` function, whic
 The arguments of this function are very similar to the previous one, except here there is a missing `plot_line` argument, and there are two new arguments: `plot_asymptote` and `plot_test_predictions`.
 The first turns off the asymptotes, and the second disables plotting the test samples' predictions.
 By default, both are set to `TRUE`.
+
+## Standard curve plot stacked 
+
+As another quality control measure, that detects either plates with inconsistent results or deterioration of calibration in time we can use the `plot_standard_curve_stacked` function. 
+This function plots all standard curves on the same plot for a given analyte, which allows us to compare them easily. 
+In order to run this function, we need to provide the `list_of_plates` which is a list of plate objects and the analyte name as the arguments.
+
+```{r}
+dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
+  package = "PvSTATEM", mustWork = TRUE
+)
+list_of_plates <- process_dir(dir_with_luminex_files,
+  return_plates = TRUE, format = "xPONENT"
+)
+plot_standard_curve_stacked(list_of_plates, "ME")
+```
+
+While we can pass to this function parameters found in other standard curve plots, like `log_scale`, `decreasing_rau_order`, `data_type` there is one additional parameter that we want to focus on.
+Parameter is called `monochromatic` and its default value is `TRUE`. This results in a plots with a different shades of blue for each plate. The more recent plates are darker while the older ones are almost white.
+This helps quickly visualize drift in calibration of the equipment over time.
+
+When the `monochromatic` parameter is set to `FALSE`, there is more variety in the colours of the plates, which can be useful when comparing many plates.
+Each plate is more distinct from the others, which can be helpful when looking for outliers.
+
+```{r}
+plot_standard_curve_stacked(list_of_plates, "ME", monochromatic = FALSE)
+```
+
+There is one more useful parameter in this function mainly `legend_type'. By default it is set to `NULL` which means that the legend type
+is determined based on the `monochromatic` value. If `monochromatic` is equal to `TRUE` then legend type is set to `date`, if it is `FALSE` then legend
+type is set to `plate_name`. User can override this behavior by setting explicitly `legend_type` to `date` or `plate_name`.
