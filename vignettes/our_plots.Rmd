@@ -152,18 +152,13 @@ This function plots all standard curves on the same plot for a given analyte, wh
 In order to run this function, we need to provide the `list_of_plates` which is a list of plate objects and the analyte name as the arguments.
 
 ```{r}
-output_dir <- tempdir(check = TRUE)
-dir.create(output_dir)
 dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
   package = "PvSTATEM", mustWork = TRUE
 )
 list_of_plates <- process_dir(dir_with_luminex_files,
-  return_plates = TRUE, format = "xPONENT", output_dir = output_dir
+  return_plates = TRUE, format = "xPONENT"
 )
 plot_standard_curve_stacked(list_of_plates, "ME")
-
-# remove the temporary directory
-unlink(output_dir, recursive = TRUE)
 ```
 
 While we can pass to this function parameters found in other standard curve plots, like `log_scale`, `decreasing_rau_order`, `data_type` there is one additional parameter that we want to focus on.
