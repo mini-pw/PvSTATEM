@@ -26,8 +26,8 @@ datatype as in the plate file. By default equals to \code{Median}}
 plotted in decreasing order, \code{TRUE} by default}
 
 \item{monochromatic}{If \code{TRUE} the color of standard curves changes
-from white (the olders) to blue (the newest) it helps to observe drift in
-calibration of device, otherwise more varied colors are used \code{TRUE} by default}
+from white (the oldest) to blue (the newest) it helps to observe drift in
+calibration of the device; otherwise, more varied colours are used, \code{TRUE} by default}
 
 \item{log_scale}{Which elements on the plot should be displayed in log scale.
 By default \code{"all"}. If \code{NULL} or \code{c()} no log scale is used,
@@ -42,4 +42,18 @@ ggplot object with the plot
 Function generates a plot of stacked on top of each other standard curves
 for a given analyte form a list of plates. The plot is created with the
 levey-jennings report in mind, but it can be run by itself.
+}
+\examples{
+
+# creating temporary directory for the example
+output_dir <- tempdir(check = TRUE)
+dir.create(output_dir)
+
+dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced", package = "PvSTATEM", mustWork = TRUE)
+list_of_plates <- process_dir(dir_with_luminex_files, return_plates = TRUE, format="xPONENT", output_dir = output_dir)
+plot_standard_curve_stacked(list_of_plates, "ME", data_type = "Median", monochromatic = FALSE)
+
+# remove the temporary directory
+unlink(output_dir, recursive = TRUE)
+
 }
