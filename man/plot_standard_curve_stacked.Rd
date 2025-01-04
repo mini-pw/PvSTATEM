@@ -10,6 +10,7 @@ plot_standard_curve_stacked(
   data_type = "Median",
   decreasing_dilution_order = TRUE,
   monochromatic = TRUE,
+  legend_type = NULL,
   log_scale = c("all"),
   verbose = TRUE
 )
@@ -28,6 +29,12 @@ plotted in decreasing order, \code{TRUE} by default}
 \item{monochromatic}{If \code{TRUE} the color of standard curves changes
 from white (the oldest) to blue (the newest) it helps to observe drift in
 calibration of the device; otherwise, more varied colours are used, \code{TRUE} by default}
+
+\item{legend_type}{default value is \code{NULL}, then legend type is determined
+based on monochromatic value. If monochromatic is equal to \code{TRUE} then legend
+type is set to \code{date}, if it is \code{FALSE} then legend
+type is set to \code{plate_name}. User can override this behavior by
+setting explicitly \code{legend_type} to \code{date} or \code{plate_name}.}
 
 \item{log_scale}{Which elements on the plot should be displayed in log scale.
 By default \code{"all"}. If \code{NULL} or \code{c()} no log scale is used,

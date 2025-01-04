@@ -324,6 +324,11 @@ plot_standard_curve_thumbnail <- function(plate,
 #' @param monochromatic If `TRUE` the color of standard curves changes
 #' from white (the oldest) to blue (the newest) it helps to observe drift in
 #' calibration of the device; otherwise, more varied colours are used, `TRUE` by default
+#' @param legend_type default value is `NULL`, then legend type is determined
+#' based on monochromatic value. If monochromatic is equal to `TRUE` then legend
+#' type is set to `date`, if it is `FALSE` then legend
+#' type is set to `plate_name`. User can override this behavior by
+#' setting explicitly `legend_type` to `date` or `plate_name`.
 #' @param decreasing_dilution_order If `TRUE` the dilution values are
 #' plotted in decreasing order, `TRUE` by default
 #' @param log_scale Which elements on the plot should be displayed in log scale. 
@@ -356,6 +361,7 @@ plot_standard_curve_stacked <- function(list_of_plates,
                                         data_type = "Median",
                                         decreasing_dilution_order = TRUE,
                                         monochromatic = TRUE,
+                                        legend_type = NULL,
                                         log_scale = c("all"),
                                         verbose = TRUE) {
 
@@ -377,6 +383,9 @@ plot_standard_curve_stacked <- function(list_of_plates,
     if (!(analyte_name %in% plate$analyte_names)) {
       stop(analyte_name, " not found in one of the plate on list_of_plates")
     }
+  }
+  if (!is.null(legend_type) && !legend_type %in% c("date", "plate_name")) {
+    stop("legend_type should be either 'date' or 'plate_name' or NULL")
   }
 
   plot_name <- paste0("Standard curves of: ", analyte_name)

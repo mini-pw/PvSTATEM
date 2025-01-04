@@ -110,6 +110,21 @@ test_that("Plot Stacked Standard Curve with number instead of list", {
   expect_error(plot_standard_curve_stacked(list_of_plates, "Spike_6P_IPP"))
 })
 
+test_that("Plot Stacked Standard Curve invalid date legend type", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_no_error(plot_standard_curve_stacked(list_of_plates, "Spike_6P_IPP", legend_type = "date"))
+})
+
+test_that("Plot Stacked Standard Curve invalid plate_name legend type", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_no_error(plot_standard_curve_stacked(list_of_plates, "Spike_6P_IPP", legend_type = "plate_name"))
+})
+
+test_that("Plot Stacked Standard Curve invalid legend type", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_error(plot_standard_curve_stacked(list_of_plates, "Spike_6P_IPP", legend_type = "not_existing"))
+})
+
 test_that("Plot Stacked Standard Curve with real data", {
   list_of_plates <- get_list_of_plates()
   expect_no_error(plot_standard_curve_stacked(list_of_plates, "ME"))
