@@ -22,6 +22,24 @@
 #' @param data_type (`character(1)`) the type of data used plot. The default is "Median"
 #'
 #' @return A ggplot object with the Levey-Jennings chart
+#' 
+#' @examples
+#' # creating temporary directory for the example
+#' output_dir <- tempdir(check = TRUE)
+#' dir.create(output_dir)
+#'
+#' dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
+#'    package = "PvSTATEM", mustWork = TRUE
+#' )
+#' list_of_plates <- process_dir(dir_with_luminex_files,
+#'    return_plates = TRUE, format="xPONENT", output_dir = output_dir
+#' )
+#' list_of_plates <- rep(list_of_plates, 10) # since we have only 3 plates i will repeat them 10 times
+#' 
+#' plot_levey_jennings(list_of_plates, "ME", dilution = "1/400", sd_lines = c(0.5, 1, 1.96, 2.58))
+#' 
+#' # remove the temporary directory
+#' unlink(output_dir, recursive = TRUE)
 #'
 #' @export
 plot_levey_jennings <- function(list_of_plates,
@@ -102,7 +120,7 @@ plot_levey_jennings <- function(list_of_plates,
   counter = 1
   # Add standard deviation lines
   for (sd_line in sd_lines) {
-    line_labels <- c(line_labels, paste0("Mean +/- ", sd_line, "*SD"))
+    line_labels <- c(line_labels, paste0("Mean +/- ", sd_line, " SD"))
     line_level <- c(line_level, mean + sd_line * sd)
     p <- p + ggplot2::geom_hline(yintercept = mean - sd_line * sd, linetype = line_types[counter])
     counter = counter + 1
