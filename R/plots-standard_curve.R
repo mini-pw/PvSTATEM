@@ -444,18 +444,26 @@ plot_standard_curve_stacked <- function(list_of_plates,
     colors <- scales::hue_pal()(number_of_colors)
   }
   custom_colors <- list()
+  past_labels <- c()
 
   for  (plate in list_of_plates) {
     blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
 
+    legend_label <- ifelse(legend_type == "plate_name", plate$plate_name, format(plate$plate_datetime, format = "%Y-%m-%d %H:%M"))
+    past_labels <- c(past_labels, legend_label)
+    if (legend_label %in% names(custom_colors)) {
+      repetitions <- sum(past_labels == legend_label)
+      legend_label <- paste0(legend_label, " (", repetitions, ")")
+    }
+
     plot_data <- data.frame(
       MFI = c(plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type), blank_mean),
       dilutions_value = c(plate$get_dilution_values("STANDARD CURVE"), min(plate$get_dilution_values("STANDARD CURVE")) / 2),
-      label = plate$plate_name
+      label = legend_label
     )
 
     current_color <- colors[counter]
-    custom_colors[[plate$plate_name]] <- current_color
+    custom_colors[[legend_label]] <- current_color
 
     # Add standard curve samples to the plot
     p <- p +
