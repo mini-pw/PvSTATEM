@@ -20,6 +20,8 @@
 #' will plot four horizontal lines: mean +/- 1.96*sd, mean +/- 2.58*sd
 #' default is c(1.96) which will plot two lines mean +/- 1.96*sd
 #' @param data_type (`character(1)`) the type of data used plot. The default is "Median"
+#' 
+#' @importFrom stats setNames
 #'
 #' @return A ggplot object with the Levey-Jennings chart
 #' 
@@ -129,7 +131,7 @@ plot_levey_jennings <- function(list_of_plates,
   sd_lines_df <- data.frame(yintercept = line_level, label = line_labels)
   p <- p + ggplot2::geom_hline(
     data = sd_lines_df,
-    aes(yintercept = yintercept, linetype = label),
+    aes(yintercept = .data$yintercept, linetype = .data$label),
     color = "black"
   )
   p <- p + ggplot2::scale_linetype_manual(
