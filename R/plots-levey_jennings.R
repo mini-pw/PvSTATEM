@@ -78,8 +78,8 @@ plot_levey_jennings <- function(list_of_plates,
 
   plot_data <- data.frame(date = date_of_experiment, mfi = mfi_values, counter = counter)
   p <- ggplot2::ggplot(data = plot_data, aes(x = counter, y = .data$mfi)) +
-    ggplot2::geom_point(size = 3) +
-    ggplot2::geom_line(size = 1.3) +
+    ggplot2::geom_point(size = 3, colour = "blue") +
+    ggplot2::geom_line(size = 1.3, colour = "blue") +
     ggplot2::geom_hline(yintercept = mean, color = "black", size = 1) +
     ggplot2::labs(title = paste("Levey-Jennings chart for", analyte_name),
          x = "Control measurement number",
