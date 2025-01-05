@@ -29,20 +29,35 @@ plot_levey_jennings <- function(list_of_plates,
                                 dilution = "1/400",
                                 sd_lines = c(1.96),
                                 data_type = "Median") {
-  stopifnot(is.list(list_of_plates))
-  stopifnot(length(list_of_plates) > 0)
-  stopifnot(all(sapply(list_of_plates, inherits, "Plate")))
-#   if (length(list_of_plates) <= 10) {
-#     warning("The number of plates is less than 10. For the Levey-Jennings chart it is recommended to have at least 10 plates.")
-#   }
-
-  stopifnot(is.character(analyte_name))
-  stopifnot(all(sapply(list_of_plates, function(plate) analyte_name %in% plate$analyte_names)))
-
-  stopifnot(is.character(dilution))
-  stopifnot(all(sapply(list_of_plates, function(plate) dilution %in% plate$get_dilution("STANDARD CURVE"))))
-
-  stopifnot(is.numeric(sd_lines))
+  if (!is.list(list_of_plates)) {
+    stop("The list_of_plates is not a list.")
+  }
+  if (length(list_of_plates) == 0) {
+    stop("The list_of_plates is empty.")
+  }
+  if (length(list_of_plates) <= 10) {
+    warning("The number of plates is less than 10. For the Levey-Jennings chart it is recommended to have at least 10 plates.")
+  }
+  if (!all(sapply(list_of_plates, inherits, "Plate"))) {
+    stop("The list_of_plates contains objects that are not of class Plate.")
+  }
+  if (!is.character(analyte_name)) {
+    stop("The analyte_name is not a string.")
+  }
+  if (!all(sapply(list_of_plates, function(plate) analyte_name %in% plate$analyte_names))) {
+    plate_where_analyte_is_missing <- which(sapply(list_of_plates, function(plate) !(analyte_name %in% plate$analyte_names)))
+    stop("The analyte_name is not present in plates ", paste(plate_where_analyte_is_missing, collapse = ", "))
+  }
+  if (!is.character(dilution)) {
+    stop("The dilution is not a string.")
+  }
+  if (!all(sapply(list_of_plates, function(plate) dilution %in% plate$get_dilution("STANDARD CURVE")))) {
+    plate_where_dilution_is_missing <- which(sapply(list_of_plates, function(plate) !(dilution %in% plate$get_dilution("STANDARD CURVE"))))
+    stop("The dilution is not present in plates ", paste(plate_where_dilution_is_missing, collapse = ", "))
+  }
+  if (!is.numeric(sd_lines)) {
+    stop("The sd_lines is not a numeric vector.")
+  }
 
   date_of_experiment <- c()
   mfi_values <- c()
