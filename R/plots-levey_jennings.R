@@ -81,19 +81,20 @@ plot_levey_jennings <- function(list_of_plates,
     ggplot2::geom_point(size = 3, colour = "blue") +
     ggplot2::geom_line(size = 1.3, colour = "blue") +
     ggplot2::geom_hline(yintercept = mean, color = "black", size = 1) +
-    ggplot2::labs(title = paste("Levey-Jennings chart for", analyte_name),
+    ggplot2::labs(title = paste("Levey-Jennings chart for", analyte_name, "at", dilution, "dilution"),
          x = "Control measurement number",
          y = "MFI") +
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.line = element_line(colour = "black"),
-      axis.text.x = element_text(size = 9, hjust = 1, vjust = 1),
+      axis.text.x = element_text(size = 9, vjust = 1),
       axis.text.y = element_text(size = 9),
       legend.position = "right",
       legend.background = element_rect(fill = "white", color = "black"),
       legend.title = element_blank(),
       panel.grid.minor = element_line(color = scales::alpha("grey", .5), size = 0.1) # Make the minor grid lines less visible
-    )
+    ) +
+    ggplot2::scale_x_continuous(breaks = plot_data$counter, labels = plot_data$counter)  # Add custom x-axis labels
 
   line_types <- c("dashed", "dotted", "dotdash", "longdash", "twodash", "1F")
   line_labels <- c()
