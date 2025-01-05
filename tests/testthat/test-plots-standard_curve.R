@@ -35,7 +35,7 @@ get_list_of_plates <- function() {
 
   output_dir <- tempdir(check = TRUE)
   dir.create(output_dir)
-  real_list_of_plates <- process_dir(dir, return_plates = TRUE, format="xPONENT", output_dir = output_dir)
+  real_list_of_plates <- process_dir(dir, return_plates = TRUE, format = "xPONENT", output_dir = output_dir)
   unlink(output_dir, recursive = TRUE)
   real_list_of_plates
 }
