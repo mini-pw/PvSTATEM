@@ -50,3 +50,48 @@ test_that("Plot Levey-Jennings chart", {
   list_of_plates <- get_test_list_of_plates()
   expect_no_error(plot_levey_jennings(list_of_plates, "Spike_6P_IPP"))
 })
+
+test_that("Plot Levey-Jennings chart with not a list", {
+  expect_error(plot_levey_jennings("not_list", "Spike_6P_IPP"))
+})
+
+test_that("Plot Levey-Jennings chart with empty list", {
+  expect_error(plot_levey_jennings(list(), "Spike_6P_IPP"))
+})
+
+test_that("Plot Levey-Jennings chart with less than 10 plates", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_warning(plot_levey_jennings(list_of_plates, "Spike_6P_IPP"))
+})
+
+test_that("Plot Levey-Jennings chart with not a Plate object", {
+  list_of_plates <- list("not_plate")
+  expect_error(plot_levey_jennings(list_of_plates, "Spike_6P_IPP"))
+})
+
+test_that("Plot Levey-Jennings chart with not existing analyte", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_error(plot_levey_jennings(list_of_plates, "not_existing"))
+})
+
+
+test_that("Plot Levey-Jennings chart with not existing dilution", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_error(plot_levey_jennings(list_of_plates, "Spike_6P_IPP", "1/2"))
+})
+
+test_that("Plot Levey-Jennings chart with incorrect format of dilution", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_error(plot_levey_jennings(list_of_plates, "Spike_6P_IPP", 1 / 400))
+})
+
+
+test_that("Plot Levey-Jennings chart with invalid horizontal lines parameter", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_error(plot_levey_jennings(list_of_plates, "Spike_6P_IPP", "1/400", "not_numeric"))
+})
+
+test_that("Plot Levey-Jennings chart with not a string analyte", {
+  list_of_plates <- get_test_list_of_plates()
+  expect_error(plot_levey_jennings(list_of_plates, 1, "1/400"))
+})
