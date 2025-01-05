@@ -68,16 +68,17 @@ plot_levey_jennings <- function(list_of_plates,
     date_of_experiment <- c(date_of_experiment, plate$plate_datetime)
     mfi_values <- c(mfi_values, plate_data[dilutions == dilution])
   }
+  counter <- seq(1, length(mfi_values))
 
   mean <- mean(mfi_values)
   sd <- sd(mfi_values)
 
-  plot_data <- data.frame(date = date_of_experiment, mfi = mfi_values)
-  p <- ggplot(data = plot_data,aes(x = date, y = mfi)) +
+  plot_data <- data.frame(date = date_of_experiment, mfi = mfi_values, counter = counter)
+  p <- ggplot(data = plot_data, aes(x = counter, y = .data$mfi)) +
     geom_point() +
     geom_hline(yintercept = mean, color = "black", size = 1.2) +
     labs(title = paste("Levey-Jennings chart for", analyte_name),
-         x = "Date",
+         x = "Control measurement number",
          y = "MFI") +
     theme_minimal()
 
