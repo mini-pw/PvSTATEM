@@ -74,13 +74,23 @@ plot_levey_jennings <- function(list_of_plates,
   sd <- sd(mfi_values)
 
   plot_data <- data.frame(date = date_of_experiment, mfi = mfi_values, counter = counter)
-  p <- ggplot(data = plot_data, aes(x = counter, y = .data$mfi)) +
-    geom_point() +
-    geom_hline(yintercept = mean, color = "black", size = 1.2) +
-    labs(title = paste("Levey-Jennings chart for", analyte_name),
+  p <- ggplot2::ggplot(data = plot_data, aes(x = counter, y = .data$mfi)) +
+    ggplot2::geom_point(size = 10) +
+    ggplot2::geom_line(size = 1.3) +
+    ggplot2::geom_hline(yintercept = mean, color = "black", size = 1.1) +
+    ggplot2::labs(title = paste("Levey-Jennings chart for", analyte_name),
          x = "Control measurement number",
          y = "MFI") +
-    theme_minimal()
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.line = element_line(colour = "black"),
+      axis.text.x = element_text(size = 9, angle = 45, hjust = 1, vjust = 1),
+      axis.text.y = element_text(size = 9),
+      legend.position = "right",
+      legend.background = element_rect(fill = "white", color = "black"),
+      legend.title = element_blank(),
+      panel.grid.minor = element_line(color = scales::alpha("grey", .5), size = 0.1) # Make the minor grid lines less visible
+    )
 
   # Add standard deviation lines
   for (sd_line in sd_lines) {
