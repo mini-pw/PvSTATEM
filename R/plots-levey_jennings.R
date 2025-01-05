@@ -58,6 +58,9 @@ plot_levey_jennings <- function(list_of_plates,
   if (!is.numeric(sd_lines)) {
     stop("The sd_lines is not a numeric vector.")
   }
+  if (length(sd_lines) > 6) {
+    stop("It is impossible to have more than 6 pairs of standard deviation lines.")
+  }
 
   date_of_experiment <- c()
   mfi_values <- c()
@@ -75,16 +78,16 @@ plot_levey_jennings <- function(list_of_plates,
 
   plot_data <- data.frame(date = date_of_experiment, mfi = mfi_values, counter = counter)
   p <- ggplot2::ggplot(data = plot_data, aes(x = counter, y = .data$mfi)) +
-    ggplot2::geom_point(size = 10) +
+    ggplot2::geom_point(size = 3) +
     ggplot2::geom_line(size = 1.3) +
-    ggplot2::geom_hline(yintercept = mean, color = "black", size = 1.1) +
+    ggplot2::geom_hline(yintercept = mean, color = "black", size = 1) +
     ggplot2::labs(title = paste("Levey-Jennings chart for", analyte_name),
          x = "Control measurement number",
          y = "MFI") +
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.line = element_line(colour = "black"),
-      axis.text.x = element_text(size = 9, angle = 45, hjust = 1, vjust = 1),
+      axis.text.x = element_text(size = 9, hjust = 1, vjust = 1),
       axis.text.y = element_text(size = 9),
       legend.position = "right",
       legend.background = element_rect(fill = "white", color = "black"),
@@ -92,16 +95,26 @@ plot_levey_jennings <- function(list_of_plates,
       panel.grid.minor = element_line(color = scales::alpha("grey", .5), size = 0.1) # Make the minor grid lines less visible
     )
 
+  line_types <- c("dashed", "dotted", "dotdash", "longdash", "twodash", "1F")
+  line_labels <- c()
+  line_level <- c()
+  counter = 1
   # Add standard deviation lines
   for (sd_line in sd_lines) {
-    p <- p + ggplot2::geom_hline(
-      aes(yintercept = mean + sd_line * sd, linetype = "Mean + SD"),
-      color = "black"
-    )
-    p <- p + ggplot2::geom_hline(yintercept = mean - sd_line * sd, linetype = "dashed")
+    line_labels <- c(line_labels, paste0("Mean +/- ", sd_line, "*SD"))
+    line_level <- c(line_level, mean + sd_line * sd)
+    p <- p + ggplot2::geom_hline(yintercept = mean - sd_line * sd, linetype = line_types[counter])
+    counter = counter + 1
   }
+
+  sd_lines_df <- data.frame(yintercept = line_level, label = line_labels)
+  p <- p + ggplot2::geom_hline(
+    data = sd_lines_df,
+    aes(yintercept = yintercept, linetype = label),
+    color = "black"
+  )
   p <- p + ggplot2::scale_linetype_manual(
-    values = c("Mean + SD" = "dashed")
+    values = setNames(line_types[seq_along(line_labels)], line_labels)
   )
 
   return(p)
