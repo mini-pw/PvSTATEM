@@ -184,10 +184,10 @@ The function takes the `list_of_plates` and the `analyte_name` as the mandatory 
 The `list_of_plates` can be obtained by the `process_dir` function, which reads the plates 
 from the directory, it is recommended way or creating list of plates.
 
-# ```{r}
-# list_of_plates <- rep(list_of_plates, 10) # since we have only 3 plates i will repeat them 10 times to show the plot
-# plot_levey_jennings(list_of_plates, "ME", dilution="1/100", sd_lines = c(1, 2, 3))
-# ```
+```{r}
+list_of_plates <- rep(list_of_plates, 10) # since we have only 3 plates i will repeat them 10 times to show the plot
+plot_levey_jennings(list_of_plates, "ME", dilution="1/100", sd_lines = c(1, 2, 3))
+```
 
 The plot above shows the Levey-Jennings plot for the analyte "ME" with the samples with `dilution` "1/100". 
 The default value of `dilution` is "1/400".

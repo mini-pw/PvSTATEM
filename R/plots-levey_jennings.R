@@ -39,9 +39,6 @@
 #' list_of_plates <- rep(list_of_plates, 10) # since we have only 3 plates i will repeat them 10 times
 #' 
 #' plot_levey_jennings(list_of_plates, "ME", dilution = "1/400", sd_lines = c(0.5, 1, 1.96, 2.58))
-#' 
-#' # remove the temporary directory
-#' unlink(output_dir, recursive = TRUE)
 #'
 #' @export
 plot_levey_jennings <- function(list_of_plates,
