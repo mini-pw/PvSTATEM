@@ -94,9 +94,15 @@ plot_levey_jennings <- function(list_of_plates,
 
   # Add standard deviation lines
   for (sd_line in sd_lines) {
-    p <- p + geom_hline(yintercept = mean + sd_line * sd, linetype = "dashed")
-    p <- p + geom_hline(yintercept = mean - sd_line * sd, linetype = "dashed")
+    p <- p + ggplot2::geom_hline(
+      aes(yintercept = mean + sd_line * sd, linetype = "Mean + SD"),
+      color = "black"
+    )
+    p <- p + ggplot2::geom_hline(yintercept = mean - sd_line * sd, linetype = "dashed")
   }
+  p <- p + ggplot2::scale_linetype_manual(
+    values = c("Mean + SD" = "dashed")
+  )
 
   return(p)
 }
