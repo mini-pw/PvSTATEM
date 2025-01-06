@@ -350,6 +350,7 @@ is_mba_format <- function(format, allow_nullable = FALSE) {
 #' and returns a value to sort the list by.
 #' @param decreasing Should the sorting by decreasing or increasing
 #'
+#' @keywords internal
 sort_list_by <- function(list_obj, decreasing = FALSE, value_f = function(elem) elem) {
   values <- lapply(list_obj, value_f)
   values_order <- order(unlist(values), decreasing = decreasing)
