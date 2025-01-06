@@ -1,3 +1,10 @@
+PvSTATEM 0.2.0
+---------------------------------------------------------------
+* added processing of multiple plates
+* added stacked plot, levey-jennings plot and multiple plate report
+* fixed the search option in the documentation
+
+
 PvSTATEM 0.1.3
 ---------------------------------------------------------------
 * fixed an issue with writing into the home user's directory
