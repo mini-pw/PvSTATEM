@@ -17,3 +17,4 @@ and returns a value to sort the list by.}
 \description{
 Sort a flat list by value
 }
+\keyword{internal}

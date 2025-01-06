@@ -42,7 +42,6 @@ in the laboratories across the world.
 \examples{
 # creating temporary directory for the example
 output_dir <- tempdir(check = TRUE)
-dir.create(output_dir)
 
 dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
   package = "PvSTATEM", mustWork = TRUE
