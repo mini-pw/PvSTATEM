@@ -175,3 +175,23 @@ plot_standard_curve_stacked(list_of_plates, "ME", monochromatic = FALSE)
 There is one more useful parameter in this function mainly `legend_type'. By default it is set to `NULL` which means that the legend type
 is determined based on the `monochromatic` value. If `monochromatic` is equal to `TRUE` then legend type is set to `date`, if it is `FALSE` then legend
 type is set to `plate_name`. User can override this behavior by setting explicitly `legend_type` to `date` or `plate_name`.
+
+# Levey-Jennings plot
+
+The `plot_levey_jennings` function allows us to visualize the Levey-Jennings plot for the given analyte.
+This plot is useful for spotting trends in the data, such as shifts or drifts in the data.
+The function takes the `list_of_plates` and the `analyte_name` as the mandatory arguments.
+The `list_of_plates` can be obtained by the `process_dir` function, which reads the plates 
+from the directory, it is recommended way or creating list of plates.
+
+```{r}
+list_of_plates <- rep(list_of_plates, 10) # since we have only 3 plates i will repeat them 10 times to show the plot
+plot_levey_jennings(list_of_plates, "ME", dilution="1/100", sd_lines = c(1, 2, 3))
+```
+
+The plot above shows the Levey-Jennings plot for the analyte "ME" with the samples with `dilution` "1/100". 
+The default value of `dilution` is "1/400".
+The `sd_lines` parameter allows us to set the distance of horizontal lines from the mean.
+For example, `sd_lines = c(1, 2)` will plot four lines at +/- 1*SD and +/- 2*SD, where SD is the standard deviation of the data.
+The default value of the `sd_lines` parameter is `c(1.96)`, which 
+
