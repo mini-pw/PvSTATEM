@@ -194,3 +194,4 @@ The default value of `dilution` is "1/400".
 The `sd_lines` parameter allows us to set the distance of horizontal lines from the mean.
 For example, `sd_lines = c(1, 2)` will plot four lines at +/- 1*SD and +/- 2*SD, where SD is the standard deviation of the data.
 The default value of the `sd_lines` parameter is `c(1.96)`, which 
+

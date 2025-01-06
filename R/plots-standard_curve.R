@@ -18,10 +18,10 @@
 #'
 #' @examples
 #' path <- system.file("extdata", "CovidOISExPONTENT.csv",
-#'    package = "PvSTATEM", mustWork = TRUE
+#'   package = "PvSTATEM", mustWork = TRUE
 #' )
 #' layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx",
-#'    package = "PvSTATEM", mustWork = TRUE
+#'   package = "PvSTATEM", mustWork = TRUE
 #' )
 #' plate <- read_luminex_data(path, layout_filepath = layout_path, verbose = FALSE)
 #' plot_standard_curve_analyte(plate, "Spike_6P", plot_legend = FALSE, data_type = "Median")
@@ -164,10 +164,10 @@ plot_standard_curve_analyte <- function(plate,
 #
 #' @examples
 #' path <- system.file("extdata", "CovidOISExPONTENT.csv",
-#'    package = "PvSTATEM", mustWork = TRUE
+#'   package = "PvSTATEM", mustWork = TRUE
 #' )
 #' layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx",
-#'    package = "PvSTATEM", mustWork = TRUE
+#'   package = "PvSTATEM", mustWork = TRUE
 #' )
 #' plate <- read_luminex_data(path, layout_filepath = layout_path, verbose = FALSE)
 #' model <- create_standard_curve_model_analyte(plate, analyte_name = "Spike_B16172")
@@ -331,7 +331,7 @@ plot_standard_curve_thumbnail <- function(plate,
 #' setting explicitly `legend_type` to `date` or `plate_name`.
 #' @param decreasing_dilution_order If `TRUE` the dilution values are
 #' plotted in decreasing order, `TRUE` by default
-#' @param log_scale Which elements on the plot should be displayed in log scale. 
+#' @param log_scale Which elements on the plot should be displayed in log scale.
 #' By default `"all"`. If `NULL` or `c()` no log scale is used,
 #' if `"all"` or `c("dilutions", "MFI")` all elements are displayed in log scale.
 #' @param verbose If `TRUE` prints messages, `TRUE` by default
@@ -345,10 +345,10 @@ plot_standard_curve_thumbnail <- function(plate,
 #' dir.create(output_dir)
 #'
 #' dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
-#'    package = "PvSTATEM", mustWork = TRUE
+#'   package = "PvSTATEM", mustWork = TRUE
 #' )
 #' list_of_plates <- process_dir(dir_with_luminex_files,
-#'    return_plates = TRUE, format="xPONENT", output_dir = output_dir
+#'   return_plates = TRUE, format = "xPONENT", output_dir = output_dir
 #' )
 #' plot_standard_curve_stacked(list_of_plates, "ME", data_type = "Median", monochromatic = FALSE)
 #'
@@ -364,7 +364,6 @@ plot_standard_curve_stacked <- function(list_of_plates,
                                         legend_type = NULL,
                                         log_scale = c("all"),
                                         verbose = TRUE) {
-
   AVAILABLE_LOG_SCALE_VALUES <- c("all", "dilutions", "MFI")
 
   if (!is.null(log_scale) && !all(log_scale %in% AVAILABLE_LOG_SCALE_VALUES)) {
@@ -444,18 +443,26 @@ plot_standard_curve_stacked <- function(list_of_plates,
     colors <- scales::hue_pal()(number_of_colors)
   }
   custom_colors <- list()
+  past_labels <- c()
 
   for  (plate in list_of_plates) {
     blank_mean <- mean(plate$get_data(analyte_name, "BLANK", data_type = data_type))
 
+    legend_label <- ifelse(legend_type == "plate_name", plate$plate_name, format(plate$plate_datetime, format = "%Y-%m-%d %H:%M"))
+    past_labels <- c(past_labels, legend_label)
+    if (legend_label %in% names(custom_colors)) {
+      repetitions <- sum(past_labels == legend_label)
+      legend_label <- paste0(legend_label, " (", repetitions, ")")
+    }
+
     plot_data <- data.frame(
       MFI = c(plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type), blank_mean),
       dilutions_value = c(plate$get_dilution_values("STANDARD CURVE"), min(plate$get_dilution_values("STANDARD CURVE")) / 2),
-      label = plate$plate_name
+      label = legend_label
     )
 
     current_color <- colors[counter]
-    custom_colors[[plate$plate_name]] <- current_color
+    custom_colors[[legend_label]] <- current_color
 
     # Add standard curve samples to the plot
     p <- p +
