@@ -20,24 +20,24 @@
 #' will plot four horizontal lines: mean +/- 1.96*sd, mean +/- 2.58*sd
 #' default is c(1.96) which will plot two lines mean +/- 1.96*sd
 #' @param data_type (`character(1)`) the type of data used plot. The default is "Median"
-#' 
+#'
 #' @importFrom stats setNames
 #'
 #' @return A ggplot object with the Levey-Jennings chart
-#' 
+#'
 #' @examples
 #' # creating temporary directory for the example
 #' output_dir <- tempdir(check = TRUE)
 #' dir.create(output_dir)
 #'
 #' dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
-#'    package = "PvSTATEM", mustWork = TRUE
+#'   package = "PvSTATEM", mustWork = TRUE
 #' )
 #' list_of_plates <- process_dir(dir_with_luminex_files,
-#'    return_plates = TRUE, format="xPONENT", output_dir = output_dir
+#'   return_plates = TRUE, format = "xPONENT", output_dir = output_dir
 #' )
 #' list_of_plates <- rep(list_of_plates, 10) # since we have only 3 plates i will repeat them 10 times
-#' 
+#'
 #' plot_levey_jennings(list_of_plates, "ME", dilution = "1/400", sd_lines = c(0.5, 1, 1.96, 2.58))
 #'
 #' @export
@@ -98,9 +98,11 @@ plot_levey_jennings <- function(list_of_plates,
     ggplot2::geom_point(size = 3, colour = "blue") +
     ggplot2::geom_line(size = 1.3, colour = "blue") +
     ggplot2::geom_hline(yintercept = mean, color = "black", size = 1) +
-    ggplot2::labs(title = paste("Levey-Jennings chart for", analyte_name, "at", dilution, "dilution"),
-         x = "Control measurement number",
-         y = "MFI") +
+    ggplot2::labs(
+      title = paste("Levey-Jennings chart for", analyte_name, "at", dilution, "dilution"),
+      x = "Control measurement number",
+      y = "MFI"
+    ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.line = element_line(colour = "black"),
@@ -111,18 +113,18 @@ plot_levey_jennings <- function(list_of_plates,
       legend.title = element_blank(),
       panel.grid.minor = element_line(color = scales::alpha("grey", .5), size = 0.1) # Make the minor grid lines less visible
     ) +
-    ggplot2::scale_x_continuous(breaks = plot_data$counter, labels = plot_data$counter)  # Add custom x-axis labels
+    ggplot2::scale_x_continuous(breaks = plot_data$counter, labels = plot_data$counter) # Add custom x-axis labels
 
   line_types <- c("dashed", "dotted", "dotdash", "longdash", "twodash", "1F")
   line_labels <- c()
   line_level <- c()
-  counter = 1
+  counter <- 1
   # Add standard deviation lines
   for (sd_line in sd_lines) {
     line_labels <- c(line_labels, paste0("Mean +/- ", sd_line, " SD"))
     line_level <- c(line_level, mean + sd_line * sd)
     p <- p + ggplot2::geom_hline(yintercept = mean - sd_line * sd, linetype = line_types[counter])
-    counter = counter + 1
+    counter <- counter + 1
   }
 
   sd_lines_df <- data.frame(yintercept = line_level, label = line_labels)

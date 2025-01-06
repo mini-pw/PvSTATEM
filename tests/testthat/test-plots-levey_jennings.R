@@ -34,14 +34,16 @@ get_test_list_of_plates <- function() {
 
 get_list_of_plates <- function() {
   dir <- system.file("extdata", "multiplate_reallife_reduced",
-                     package = "PvSTATEM", mustWork = TRUE)
+    package = "PvSTATEM", mustWork = TRUE
+  )
 
   output_dir <- tempdir(check = TRUE)
   dir.create(output_dir)
   real_list_of_plates <- process_dir(dir,
-                                     return_plates = TRUE,
-                                     format = "xPONENT",
-                                     output_dir = output_dir)
+    return_plates = TRUE,
+    format = "xPONENT",
+    output_dir = output_dir
+  )
   unlink(output_dir, recursive = TRUE)
   real_list_of_plates
 }
