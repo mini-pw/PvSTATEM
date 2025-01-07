@@ -24,6 +24,9 @@ sometimes in high dilutions, the MFI presents a non monotonic behavior.
 In that case, MFI values associated with dilutions above (or equal to)
 \code{high_dose_threshold} should be removed from the analysis.
 
+For more information about this effect please refer to:
+Namburi, R. P. et. al. (2014) High-dose hook effect.
+
 For the \code{nplr} model the recommended number of standard curve samples
 is at least 4. If the high dose hook effect is detected but the number
 of samples below the \code{high_dose_threshold} is lower than 4,
