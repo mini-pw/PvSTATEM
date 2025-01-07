@@ -1,3 +1,6 @@
+url: https://mini-pw.github.io/PvSTATEM/
+
+
 template:
   light-switch: true
   bootstrap: 5
@@ -9,6 +12,8 @@ reference:
     contents:
     - read_luminex_data
     - process_plate
+    - process_file
+    - process_dir
     - generate_plate_report
   - title: Plate and Model classes
     desc: Instances of the Plate and Model classes and additional functions for predictions and normalisation. These methods are used to store the data and the model and faciliate the analysis.
@@ -27,6 +32,8 @@ reference:
     - plot_mfi_for_analyte
     - plot_standard_curve_analyte
     - plot_standard_curve_analyte_with_model
+    - plot_standard_curve_stacked
+    - plot_levey_jennings
   - title: Helper functions
     desc: Additional, lower level functions that are used in the analysis
     contents:

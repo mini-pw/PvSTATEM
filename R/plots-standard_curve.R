@@ -342,7 +342,6 @@ plot_standard_curve_thumbnail <- function(plate,
 #'
 #' # creating temporary directory for the example
 #' output_dir <- tempdir(check = TRUE)
-#' dir.create(output_dir)
 #'
 #' dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
 #'   package = "PvSTATEM", mustWork = TRUE
@@ -351,9 +350,6 @@ plot_standard_curve_thumbnail <- function(plate,
 #'   return_plates = TRUE, format = "xPONENT", output_dir = output_dir
 #' )
 #' plot_standard_curve_stacked(list_of_plates, "ME", data_type = "Median", monochromatic = FALSE)
-#'
-#' # remove the temporary directory
-#' unlink(output_dir, recursive = TRUE)
 #'
 #' @export
 plot_standard_curve_stacked <- function(list_of_plates,
