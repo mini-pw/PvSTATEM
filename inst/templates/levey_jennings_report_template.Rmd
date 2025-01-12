@@ -84,7 +84,46 @@ Standard curve sample dilutions: `r format_dilutions(params$list_of_plates[[1]]$
 `r if(!is.null(params$additional_notes)) "\n -------------------" ` 
 
 
+### Plate layout
 
+<details open>
+  <summary>Click to show/hide layout</summary>
+```{r plate-layout, fig.width=7, fig.height=4, fig.align='center', dev='jpeg', echo=FALSE, dpi=72}
+plot_layout(params$list_of_plates[[1]])
+```
+</details>
+
+------------------
+ 
+### Details for given analyte {.tabset .tabset-fade}
+
+```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%", out.height="325", dev='svglite', dpi=72, warning=FALSE}
+# Code used to create dynamic tabs based on the number of analytes
+for (i in seq_along(analyte_names)) {
+  cat(paste0("#### ", analyte_names[i], "\n"))
+
+  for (dilution in params$dilutions) {
+    cat(paste0("##### Dilution: ", dilution, "\n"))
+
+    # # Plot counts
+    # print(plot_counts(params$plate, params$plate$analyte_names[i], lower_threshold = params$counts_lower_threshold, higher_threshold = params$counts_higher_threshold))
+
+    # # Plot MFI
+    # print(plot_mfi_for_analyte(params$plate, params$plate$analyte_names[i], plot_type = "violin"))
+
+    # # Plot Standard Curve
+    # print(plot_standard_curve_analyte(params$plate, params$plate$analyte_names[i]))
+    # if (params$use_model) {
+    #   model <- models_list[[params$plate$analyte_names[i]]]
+    #   print(plot_standard_curve_analyte_with_model(params$plate, model))
+    # }
+  }
+
+  cat("\n\n")
+}
+```
+
+------------------
 
 ------------------
 
