@@ -50,6 +50,6 @@ test_that("Test generate_levey_jennings_report function", {
   tmp_dir <- tempdir(check = TRUE)
 
   expect_error(generate_levey_jennings_report())
-  expect_no_error(generate_levey_jennings_report(list(plate), output_dir = tmp_dir))
-  expect_no_error(generate_levey_jennings_report(list(plate), output_dir = tmp_dir, filename = "test_report.html"))
+  expect_no_error(generate_levey_jennings_report(list(plate), report_title = "some title", output_dir = tmp_dir))
+  expect_no_error(generate_levey_jennings_report(list(plate), report_title = "other title", output_dir = tmp_dir, filename = "test_report.html"))
 })
