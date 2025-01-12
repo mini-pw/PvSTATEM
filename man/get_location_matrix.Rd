@@ -4,12 +4,14 @@
 \alias{get_location_matrix}
 \title{Generate the matrix of plate locations}
 \usage{
-get_location_matrix(nrow = 8, ncol = 12)
+get_location_matrix(nrow = 8, ncol = 12, as_vector = FALSE)
 }
 \arguments{
 \item{nrow}{Number of rows in the plate}
 
 \item{ncol}{Number of columns in the plate}
+
+\item{as_vector}{logical value indicating whether to return the locations as a vector}
 }
 \value{
 a matrix with locations
