@@ -9,7 +9,8 @@ generate_levey_jennings_report(
   report_title,
   dilutions = c("1/100", "1/400"),
   filename = NULL,
-  output_dir = "reports"
+  output_dir = "reports",
+  additional_notes = NULL
 )
 }
 \arguments{
