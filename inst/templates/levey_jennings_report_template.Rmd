@@ -36,12 +36,28 @@ if (is.null(params$dilutions)) {
 if (!is.character(params$dilutions)) {
   stop("The `dilutions` must be a character value.")
 }
-
-
+if (!all(grepl("(^1\\s*)\\/(\\s*\\d+$)", params$dilutions))) {
+  stop("The `dilutions` must be in the format '1/digit'.")
+}
+for (dilution in params$dilutions) {
+  if (!all(sapply(list_of_plates, function(plate) dilution %in% plate$get_dilution("STANDARD CURVE")))) {
+    plate_where_dilution_is_missing <- which(sapply(list_of_plates, function(plate) !(dilution %in% plate$get_dilution("STANDARD CURVE"))))
+    stop("The dilution", dilution, "is not present in plates ", paste(plate_where_dilution_is_missing, collapse = ", "))
+  }
+}
+analyte_names <- list_of_plates[[1]]$analyte_names
+for (plate in list_of_plates) {
+  if (!identical(plate$analyte_names, analyte_names)) {
+    stop("The plates do not contain the same analytes.")
+  }
+}
 if (!is.null(params$additional_notes) && !is(params$additional_notes, "character")) {
   stop("The `additional_notes` must be a character value.")
 }
 ```
+
+Report generated on:  `r format(Sys.time(), "%d-%m-%Y %H:%M:%S")`.  
+
 
 ------------------
 
