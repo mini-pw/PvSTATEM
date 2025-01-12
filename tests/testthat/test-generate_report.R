@@ -24,6 +24,12 @@ get_test_plate <- function() {
   )
 }
 
+get_test_list_of_plates <- function() {
+  list(
+    test = get_test_plate()
+  )
+}
+
 test_that("Test generate_plate_report function", {
   plate <- get_test_plate()
 
@@ -45,11 +51,11 @@ test_that("Test generate_plate_report function", {
 })
 
 test_that("Test generate_levey_jennings_report function", {
-  plate <- get_test_plate()
+  list_of_plates <- get_test_list_of_plates()
 
   tmp_dir <- tempdir(check = TRUE)
 
   expect_error(generate_levey_jennings_report())
-  expect_no_error(generate_levey_jennings_report(list(plate), report_title = "some title", output_dir = tmp_dir))
-  expect_no_error(generate_levey_jennings_report(list(plate), report_title = "other title", output_dir = tmp_dir, filename = "test_report.html"))
+  expect_no_error(generate_levey_jennings_report(list_of_plates, report_title = "some title", output_dir = tmp_dir))
+  expect_no_error(generate_levey_jennings_report(list_of_plates, report_title = "other title", output_dir = tmp_dir, filename = "test_report.html"))
 })
