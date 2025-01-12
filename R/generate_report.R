@@ -118,8 +118,11 @@ generate_plate_report <-
 #' @export
 generate_levey_jennings_report <-
   function(list_of_plates,
+           report_title,
+           dilutions = c("1/100", "1/400"),
            filename = NULL,
-           output_dir = "reports") {
+           output_dir = "reports",
+           additional_notes = NULL) {
     message("Generating report... This will take approximately 30 seconds.")
 
     plate <- list_of_plates[[1]]
@@ -137,11 +140,28 @@ generate_levey_jennings_report <-
         mustWork = TRUE
       )
 
+    # markdown does not support single line breaks, so we need to replace them with two spaces and a line break
+    if (!is.null(additional_notes)) {
+      additional_notes <-
+        gsub(
+          pattern = "\n",
+          replacement = "  \n",
+          x = additional_notes
+        )
+    }
+
     rmarkdown::render(
       template_path,
-      params = list(list_of_plates = list_of_plates),
+      params = list(
+        list_of_plates = list_of_plates,
+        report_title = report_title,
+        dilutions = dilutions,
+        additional_notes = additional_notes
+      ),
       output_file = filename,
       output_dir = output_dir,
+      knit_root_dir = output_dir,
+      intermediates_dir = output_dir,
       quiet = TRUE
     )
     message(paste0(
