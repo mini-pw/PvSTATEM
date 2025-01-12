@@ -1,9 +1,9 @@
 ---
-title: "Levey-Jennings Raport: `r paste0('*', params$raport_title, '*')`"
+title: "Levey-Jennings Raport: `r paste0('*', params$report_title, '*')`"
 output: html_document
 params:
   list_of_plates: !r NULL
-  raport_title: !r NULL
+  report_title: !r NULL
   dilutions: !r NULL
   additional_notes: !r NULL
 ---
@@ -24,11 +24,11 @@ if (length(params$list_of_plates) < 10) {
 if (!all(sapply(params$list_of_plates, inherits, "Plate"))) {
   stop("The list_of_plates contains objects that are not of class Plate.")
 }
-if (is.null(params$raport_title)) {
-  stop("The `raport_title` must be provided when rendering the document.")
+if (is.null(params$report_title)) {
+  stop("The `report_title` must be provided when rendering the document.")
 }
-if (!is(params$raport_title, "character")) {
-  stop("The `raport_title` must be a character value.")
+if (!is(params$report_title, "character")) {
+  stop("The `report_title` must be a character value.")
 }
 if (is.null(params$dilutions)) {
   stop("The `dilutions` must be provided when rendering the document.")
