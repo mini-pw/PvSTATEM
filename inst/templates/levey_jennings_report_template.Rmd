@@ -1,10 +1,48 @@
 ---
-title: "TEST"
+title: "Levey-Jennings Raport: `r paste0('*', params$raport_title, '*')`"
 output: html_document
 params:
   list_of_plates: !r NULL
+  raport_title: !r NULL
+  dilutions: !r NULL
+  additional_notes: !r NULL
 ---
-Report generated on:  `r format(Sys.time(), "%d-%m-%Y %H:%M:%S")`.  
+
+```{r param-check, echo=FALSE}
+if (is.null(params$list_of_plates)) {
+  stop("The `list_of_plates` must be provided when rendering the document.")
+}
+if (!is.list(params$list_of_plates)) {
+  stop("The `list_of_plates` must be a list of `Plate` instances.")
+}
+if (length(params$list_of_plates) == 0) {
+  stop("The `list_of_plates` must contain at least one `Plate` instance.")
+}
+if (length(params$list_of_plates) < 10) {
+  warning("The `list_of_plates` should contain at least 10 `Plate` instances to generate a comprehensive report.")
+}
+if (!all(sapply(list_of_plates, inherits, "Plate"))) {
+  stop("The list_of_plates contains objects that are not of class Plate.")
+}
+if (is.null(params$raport_title)) {
+  stop("The `raport_title` must be provided when rendering the document.")
+}
+if (!is(params$raport_title, "character")) {
+  stop("The `raport_title` must be a character value.")
+}
+if (is.null(params$dilutions)) {
+  stop("The `dilutions` must be provided when rendering the document.")
+}
+if (!is.character(params$dilutions)) {
+  stop("The `dilutions` must be a character value.")
+}
+
+
+if (!is.null(params$additional_notes) && !is(params$additional_notes, "character")) {
+  stop("The `additional_notes` must be a character value.")
+}
+```
+
 ------------------
 
 ### &nbsp;
