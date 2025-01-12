@@ -6,6 +6,8 @@
 \usage{
 generate_levey_jennings_report(
   list_of_plates,
+  report_title,
+  dilutions = c("1/100", "1/400"),
   filename = NULL,
   output_dir = "reports"
 )
@@ -27,4 +29,3 @@ A report.
 This function generates a report with Levey-Jennings plots.
 The report is generated using the \code{levey_jennings_report_template.Rmd} template.
 }
-\keyword{internal}

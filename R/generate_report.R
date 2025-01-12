@@ -115,7 +115,7 @@ generate_plate_report <-
 #'
 #'
 #' @return A report.
-#' @keywords internal
+#' @export
 generate_levey_jennings_report <-
   function(list_of_plates,
            filename = NULL,

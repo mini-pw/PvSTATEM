@@ -157,7 +157,7 @@ clamp <- function(x, lower = -Inf, upper = Inf) {
 #'
 #' @return A formatted string that lists the dilution factors and their counts. Returns `NULL` if `dilutions` is `NULL`.
 #'
-#' @export
+#' @keywords internal
 format_dilutions <- function(dilutions, dilution_values, sample_types) {
   if (is.null(dilutions)) {
     return(NULL)
