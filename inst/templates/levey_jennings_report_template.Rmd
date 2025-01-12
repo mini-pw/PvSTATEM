@@ -72,7 +72,7 @@ First plate was run on: `r if(!is.null(date_of_first_plate)) format(date_of_firs
 Last plate was run on: `r if(!is.null(date_of_last_plate)) format(date_of_last_plate, "%d-%m-%Y %H:%M") else "Date of running plate was not found in Luminex file"`.  
 Time span: `r if(!is.null(time_span)) paste0(round(time_span, 2), " days") else "Dates were not found in Luminex file"`.  
 Number of plates used in report: `r length(params$list_of_plates)`.  
-Those plates have `r paste0(length(analyte_names), " analytes")`.  
+Plates have `r paste0(length(analyte_names), " analytes")`.  
 Standard curve sample dilutions: `r format_dilutions(params$list_of_plates[[1]]$dilutions, params$list_of_plates[[1]]$dilution_values, params$list_of_plates[[1]]$sample_types)`.
 
 ------------------
@@ -102,28 +102,21 @@ plot_layout(params$list_of_plates[[1]])
 for (i in seq_along(analyte_names)) {
   cat(paste0("#### ", analyte_names[i], "\n"))
 
+  # Plot stacked curves monochromatic
+  print(plot_standard_curve_stacked(params$list_of_plates, analyte_names[i]))
+
+  # Plot stacked curves colored
+  print(plot_standard_curve_stacked(params$list_of_plates, analyte_names[i], monochromatic = FALSE))
+
   for (dilution in params$dilutions) {
-    cat(paste0("##### Dilution: ", dilution, "\n"))
 
-    # # Plot counts
-    # print(plot_counts(params$plate, params$plate$analyte_names[i], lower_threshold = params$counts_lower_threshold, higher_threshold = params$counts_higher_threshold))
-
-    # # Plot MFI
-    # print(plot_mfi_for_analyte(params$plate, params$plate$analyte_names[i], plot_type = "violin"))
-
-    # # Plot Standard Curve
-    # print(plot_standard_curve_analyte(params$plate, params$plate$analyte_names[i]))
-    # if (params$use_model) {
-    #   model <- models_list[[params$plate$analyte_names[i]]]
-    #   print(plot_standard_curve_analyte_with_model(params$plate, model))
-    # }
+    # Plot levey-jennings
+    print(plot_levey_jennings(params$list_of_plates, analyte_names[i], dilution))
   }
 
   cat("\n\n")
 }
 ```
-
-------------------
 
 ------------------
 
