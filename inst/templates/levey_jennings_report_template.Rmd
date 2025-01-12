@@ -21,7 +21,7 @@ if (length(params$list_of_plates) == 0) {
 if (length(params$list_of_plates) < 10) {
   warning("The `list_of_plates` should contain at least 10 `Plate` instances to generate a comprehensive report.")
 }
-if (!all(sapply(list_of_plates, inherits, "Plate"))) {
+if (!all(sapply(params$list_of_plates, inherits, "Plate"))) {
   stop("The list_of_plates contains objects that are not of class Plate.")
 }
 if (is.null(params$raport_title)) {
@@ -40,13 +40,13 @@ if (!all(grepl("(^1\\s*)\\/(\\s*\\d+$)", params$dilutions))) {
   stop("The `dilutions` must be in the format '1/digit'.")
 }
 for (dilution in params$dilutions) {
-  if (!all(sapply(list_of_plates, function(plate) dilution %in% plate$get_dilution("STANDARD CURVE")))) {
+  if (!all(sapply(params$list_of_plates, function(plate) dilution %in% plate$get_dilution("STANDARD CURVE")))) {
     plate_where_dilution_is_missing <- which(sapply(list_of_plates, function(plate) !(dilution %in% plate$get_dilution("STANDARD CURVE"))))
     stop("The dilution", dilution, "is not present in plates ", paste(plate_where_dilution_is_missing, collapse = ", "))
   }
 }
-analyte_names <- list_of_plates[[1]]$analyte_names
-for (plate in list_of_plates) {
+analyte_names <- params$list_of_plates[[1]]$analyte_names
+for (plate in params$list_of_plates) {
   if (!identical(plate$analyte_names, analyte_names)) {
     stop("The plates do not contain the same analytes.")
   }
@@ -54,9 +54,29 @@ for (plate in list_of_plates) {
 if (!is.null(params$additional_notes) && !is(params$additional_notes, "character")) {
   stop("The `additional_notes` must be a character value.")
 }
+
+date_of_first_plate <- min(sapply(params$list_of_plates, function(plate) plate$plate_datetime))
+date_of_last_plate <- max(sapply(params$list_of_plates, function(plate) plate$plate_datetime))
+time_span <- difftime(date_of_last_plate, date_of_first_plate, units = "days")
 ```
 
 Report generated on:  `r format(Sys.time(), "%d-%m-%Y %H:%M:%S")`.  
+First plate was run on: `r if(!is.null(date_of_first_plate)) format(date_of_first_plate, "%d-%m-%Y %H:%M:%S") else "Date of running plate was not found in Luminex file"`.  
+Last plate was run on: `r if(!is.null(date_of_last_plate)) format(date_of_last_plate, "%d-%m-%Y %H:%M:%S") else "Date of running plate was not found in Luminex file"`.  
+Time span: `r if(!is.null(time_span)) paste0(time_span, " days") else "Dates were not found in Luminex file"`.
+Number of plates used in report: `r length(params$list_of_plates)`.  
+Those plates have `r paste0(length(analyte_names), " analytes")`.  
+Standard curve sample dilutions: `r format_dilutions(params$list_of_plates[[1]]$dilutions, params$list_of_plates[[1]]$dilution_values, params$list_of_plates[[1]]$sample_types)`.
+
+------------------
+
+`r if(!is.null(params$additional_notes)) "### Additional notes \n" `  
+
+`r if(!is.null(params$additional_notes)) params$additional_notes `  
+
+`r if(!is.null(params$additional_notes)) "\n -------------------" ` 
+
+
 
 
 ------------------
