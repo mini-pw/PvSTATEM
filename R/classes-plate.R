@@ -74,7 +74,8 @@ Plate <- R6::R6Class(
     analyte_names = character(),
     #'
     #' @field sample_names (`character()`)\cr
-    #' Names of the samples that were examined on the plate.
+    #' Names of the samples that were examined on the plate. The order of the
+    #' samples in this vector is identical with order in the CSV source file.
     sample_names = character(),
     ## Must be set if validated ---
     #'
@@ -87,21 +88,24 @@ Plate <- R6::R6Class(
     plate_datetime = NULL,
     #'
     #' @field sample_locations (`character()`)\cr
-    #' Locations of the samples on the plate.
+    #' Locations of the samples on the plate. This vector is in the same order
+    #' as the `sample_names` vector.
     sample_locations = NULL,
     #'
     #' @field sample_types (`character()`)\cr
     #' Types of the samples that were examined on the plate.
     #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
+    #' This vector is in the same order as the `sample_names` vector.
     sample_types = NULL,
     #'
     #' @field dilutions (`character()`)\cr
     #' A list containing names of the samples as keys and string representing dilutions as values.
-    #' The dilutions are represented as strings.
+    #' The dilutions are represented as strings. This vector is in the same order as the `sample_names` vector.
     dilutions = NULL,
     #'
     #' @field dilution_values (`numeric()`)\cr
     #' A list containing names of the samples as keys and numeric values representing dilutions as values.
+    #' It is in the same order as the `sample_names` vector.
     dilution_values = NULL,
     #'
     #' @field default_data_type (`character(1)`)\cr
@@ -428,11 +432,11 @@ Plate <- R6::R6Class(
              If you want to try doing it using different method, consider reversing this process")
       }
       method <- switch(threshold,
-        "min" = min,
-        "max" = max,
-        "mean" = mean,
-        "median" = median,
-        stop(threshold, " not available for `threshold`, consider using one of the following: ", available_methods)
+                       "min" = min,
+                       "max" = max,
+                       "mean" = mean,
+                       "median" = median,
+                       stop(threshold, " not available for `threshold`, consider using one of the following: ", available_methods)
       )
 
       plate <- if (in_place) self else self$clone(deep = TRUE)
