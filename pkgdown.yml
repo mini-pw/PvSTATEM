@@ -5,5 +5,9 @@ articles:
   example_script: example_script.html
   our_datasets: our_datasets.html
   our_plots: our_plots.html
-  reports: reports.html
-last_built: 2024-12-23T23:04Z
+  our_reports: our_reports.html
+  parsers: parsers.html
+last_built: 2025-01-13T12:21Z
+urls:
+  reference: https://mini-pw.github.io/PvSTATEM/reference
+  article: https://mini-pw.github.io/PvSTATEM/articles
