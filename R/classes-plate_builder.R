@@ -49,7 +49,7 @@ PlateBuilder <- R6::R6Class(
       stopifnot(is.character(sample_names) && length(sample_names) > 0)
       self$sample_names <- sample_names
       stopifnot(is.character(analyte_names) &&
-                  length(analyte_names) > 0)
+        length(analyte_names) > 0)
       self$analyte_names <- analyte_names
 
       stopifnot(is.character(batch_name) && is.scalar(batch_name))
@@ -65,7 +65,7 @@ PlateBuilder <- R6::R6Class(
     #' @param sample_locations vector of sample locations pretty name ie. A1, B2
     set_sample_locations = function(sample_locations) {
       stopifnot(is.character(sample_locations) &&
-                  length(sample_locations) > 0)
+        length(sample_locations) > 0)
       stopifnot(length(sample_locations) == length(self$sample_names))
       stopifnot(all(stringr::str_detect(sample_locations, "^[A-Z][0-9]+$")))
 
@@ -240,8 +240,9 @@ PlateBuilder <- R6::R6Class(
           stop("Data type `", name, "` is not a valid data type")
         }
       }
-      stopifnot(all(sapply(data, function(x)
-        is.data.frame(x))))
+      stopifnot(all(sapply(data, function(x) {
+        is.data.frame(x)
+      })))
       for (data_type_df in data) {
         if (nrow(data_type_df) != length(self$sample_names)) {
           stop("Number of rows in data frame does not match the number of samples")
@@ -339,8 +340,10 @@ PlateBuilder <- R6::R6Class(
     validate = function() {
       errors <- list()
       if (length(self$sample_names) != length(self$sample_locations)) {
-        append(errors,
-               "Length of sample_names and sample_locations is not equal")
+        append(
+          errors,
+          "Length of sample_names and sample_locations is not equal"
+        )
       }
       if (length(self$sample_names) != length(self$dilutions)) {
         append(errors, "Length of sample_names and dilutions is not equal")
@@ -427,7 +430,7 @@ is_dilution <- function(character_vector) {
   dilution_regex <- "^\\d+/\\d+$"
   is_valid_dilution <-
     (!is.na(character_vector)) &
-    (stringr::str_detect(character_vector, dilution_regex))
+      (stringr::str_detect(character_vector, dilution_regex))
   is_valid_dilution
 }
 
@@ -527,15 +530,15 @@ translate_sample_names_to_sample_types <-
       positive_control_pattern <-
         "^(P.|POS.+|[A-Za-z0-9/-_]+ )(1/\\d+)$"
       if (grepl(positive_control_pattern, name) ||
-          grepl(positive_control_pattern, name_layout)) {
+        grepl(positive_control_pattern, name_layout)) {
         sample_type <- "POSITIVE CONTROL"
       }
       # Check if the sample is a negative control
       negative_types <- c("NEGATIVE CONTROL", "N")
       negative_pattern <- "^(N..|.*\\bNEG\\b)"
       if (name %in% negative_types ||
-          grepl(negative_pattern, name) ||
-          grepl(negative_pattern, name_layout)) {
+        grepl(negative_pattern, name) ||
+        grepl(negative_pattern, name_layout)) {
         sample_type <- "NEGATIVE CONTROL"
       }
       # Check if the sample is a standard curve
@@ -543,8 +546,8 @@ translate_sample_names_to_sample_types <-
       standard_curve_pattern <- "^(S_|S|S\\s|CP.+)(1/\\d+)$"
       standard_curve_loc_pattern <- "^(1/\\d+)$"
       if (name %in% standard_curve_types ||
-          grepl(standard_curve_pattern, name) ||
-          grepl(standard_curve_loc_pattern, name_layout)) {
+        grepl(standard_curve_pattern, name) ||
+        grepl(standard_curve_loc_pattern, name_layout)) {
         sample_type <- "STANDARD CURVE"
       }
       # Assign the determined sample type
@@ -575,7 +578,8 @@ get_location_matrix <- function(nrow = 8, ncol = 12, as_vector = FALSE) {
     return(all_locations)
   }
   all_location_matrix <- matrix(all_locations,
-         nrow = nrow,
-         ncol = ncol,
-         byrow = TRUE)
+    nrow = nrow,
+    ncol = ncol,
+    byrow = TRUE
+  )
 }

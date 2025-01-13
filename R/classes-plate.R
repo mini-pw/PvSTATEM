@@ -432,11 +432,11 @@ Plate <- R6::R6Class(
              If you want to try doing it using different method, consider reversing this process")
       }
       method <- switch(threshold,
-                       "min" = min,
-                       "max" = max,
-                       "mean" = mean,
-                       "median" = median,
-                       stop(threshold, " not available for `threshold`, consider using one of the following: ", available_methods)
+        "min" = min,
+        "max" = max,
+        "mean" = mean,
+        "median" = median,
+        stop(threshold, " not available for `threshold`, consider using one of the following: ", available_methods)
       )
 
       plate <- if (in_place) self else self$clone(deep = TRUE)
