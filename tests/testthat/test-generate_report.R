@@ -11,6 +11,7 @@ get_test_plate <- function() {
   values <- c(19, 11713, 8387, 5711, 3238.5, 2044, 1078, 571, 262, 138, 81, 4000)
   dilutions <- c("1/2", "1/50", "1/100", "1/200", "1/400", "1/800", "1/1600", "1/3200", "1/6400", "1/12800", "1/25600", "1/102400")
   dilution_values <- convert_dilutions_to_numeric(dilutions)
+  plate_datetime <- as.POSIXct("2020-01-01 12:00:00", tz = "UTC")
 
   Plate$new(
     plate_name = "plate",
@@ -20,13 +21,15 @@ get_test_plate <- function() {
     analyte_names = c("Spike_6P_IPP"),
     dilutions = dilutions,
     dilution_values = dilution_values,
-    data = list(Median = data.frame(Spike_6P_IPP = values), Count = data.frame(Spike_6P_IPP = values))
+    data = list(Median = data.frame(Spike_6P_IPP = values), Count = data.frame(Spike_6P_IPP = values)),
+    plate_datetime = plate_datetime
   )
 }
 
 get_test_list_of_plates <- function() {
   list(
-    test = get_test_plate()
+    test = get_test_plate(),
+    test2 = get_test_plate()
   )
 }
 
