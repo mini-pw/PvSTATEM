@@ -61,4 +61,5 @@ test_that("Test generate_levey_jennings_report function", {
   expect_error(generate_levey_jennings_report())
   expect_no_error(generate_levey_jennings_report(list_of_plates, report_title = "some title", output_dir = tmp_dir))
   expect_no_error(generate_levey_jennings_report(list_of_plates, report_title = "other title", output_dir = tmp_dir, filename = "test_report.html"))
+  expect_no_error(generate_levey_jennings_report(list_of_plates, report_title = "another title", output_dir = tmp_dir, filename = "test_report_2.html", additional_notes = "This is a test report."))
 })
