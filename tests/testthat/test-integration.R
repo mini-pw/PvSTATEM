@@ -38,7 +38,6 @@ test_that("Test error catching without the layout file", {
   # dilution values
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", verbose = FALSE, use_layout_dilutions = FALSE))
   expect_true(all(is.na(plate$dilutions)))
-
 })
 
 test_that("Test reading with layout", {
@@ -107,8 +106,4 @@ test_that("Test xponent file with holes in the layout", {
 
   expect_equal(sum(is.na(plate$sample_names)), 0)
   expect_equal(sum(is.na(plate$sample_types)), 0)
-
-
-
-
 })
