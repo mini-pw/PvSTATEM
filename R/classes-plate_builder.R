@@ -96,7 +96,7 @@ PlateBuilder <- R6::R6Class(
         layout_names <- self$layout_as_vector
         dilutions <- extract_dilutions_from_layout(layout_names)
 
-        all_locations <- get_location_matrix(nrow = 8, ncol = 12)
+        all_locations <- get_location_matrix(nrow = 8, ncol = 12, as_vector = TRUE)
 
         dilutions <-
           dilutions[all_locations %in% self$sample_locations]
