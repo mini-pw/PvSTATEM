@@ -154,3 +154,18 @@ test_that("Test setting sample names", {
 
   expect_error(plate$set_sample_names(TRUE))
 })
+
+test_that("Test get_location_matrix the location matrix", {
+  location_matrix <- get_location_matrix(4, 3)
+
+  expect_equal(location_matrix[2,2], "B2")
+
+  expect_equal(location_matrix[4,3], "D3")
+
+  expect_equal(location_matrix[1,1], "A1")
+
+  vector_location_matrix <- get_location_matrix(4, 3, as_vector = TRUE)
+  expect_equal(vector_location_matrix, c("A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3", "D1", "D2", "D3"))
+  expect_equal(length(vector_location_matrix), 12)
+
+})
