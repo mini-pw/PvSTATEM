@@ -32,7 +32,7 @@ test_that("Test error catching without the layout file", {
   # sample types
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", verbose = FALSE, use_layout_types = FALSE))
 
-  expect_equal(plate$sample_names[10:13], c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE", "TEST"))
+  expect_equal(plate$sample_types[10:13], c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE", "TEST"))
   expect_true(all(is.na(plate$dilutions)))
 
   # dilution values
