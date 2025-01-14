@@ -80,4 +80,14 @@ test_that("Test xponent file with holes in the layout", {
 
   expect_equal(plate$layout[96], "1/102400")
   expect_equal(plate$sample_locations[1], "H1")
+
+  expect_equal(sum(!is.na(plate$dilutions)), 11)
+  expect_equal(length(plate$sample_locations), 44)
+
+  expect_equal(sum(is.na(plate$sample_names)), 0)
+  expect_equal(sum(is.na(plate$sample_types)), 0)
+
+
+
+
 })
