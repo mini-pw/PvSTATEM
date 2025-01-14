@@ -243,21 +243,33 @@ PlateBuilder <- R6::R6Class(
       stopifnot(all(sapply(data, function(x) {
         is.data.frame(x)
       })))
-      for (data_type_df in data) {
+
+      validated_datatypes <- c()
+      for (data_type_name in names(data)) {
+        data_type_df <- data[[data_type_name]]
         if (nrow(data_type_df) != length(self$sample_names)) {
-          stop("Number of rows in data frame does not match the number of samples")
+          warning(
+            "Number of rows in data frame does not match the number of samples.\n",
+            "Data type `", data_type_name, "` will be skipped"
+          )
+          next
         }
         if (ncol(data_type_df) != length(self$analyte_names)) {
-          stop("Number of columns in data frame does not match the number of analytes")
+          warning(
+            "Number of columns in data frame does not match the number of analytes.\n",
+            "Data type `", data_type_name, "` will be skipped"
+          )
+          next
         }
         for (colname in colnames(data_type_df)) {
           if (!colname %in% self$analyte_names) {
             stop("Column `", colname, "` is not a valid analyte name")
           }
         }
+        validated_datatypes <- c(validated_datatypes, data_type_name)
       }
 
-      self$data <- data
+      self$data <- data[validated_datatypes]
     },
 
     #' @description

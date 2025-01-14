@@ -248,13 +248,12 @@ read_luminex_data <- function(plate_filepath,
     )
   }
 
+  # Setting of samples names has to happen before setting sample types
   plate_builder$set_sample_names(use_layout_sample_names)
-
   plate_builder$set_sample_types(use_layout_types, sample_types)
 
-  plate_builder$set_data(parser_output$data)
-  plate_builder$set_default_data_type(default_data_type)
   plate_builder$set_batch_info(parser_output$batch_info)
+  plate_builder$set_default_data_type(default_data_type)
   plate_builder$set_data(parser_output$data)
 
   plate_builder$set_dilutions(use_layout_dilutions, dilutions)
