@@ -153,7 +153,7 @@ generate_levey_jennings_report <-
            filename = NULL,
            output_dir = "reports",
            additional_notes = NULL) {
-    message("Generating report... For larger reports with more than 30 plates this will take few minutes.")
+    message("Generating report... For large reports with more than 30 plates, this will take a few minutes.")
 
     plate <- list_of_plates[[1]]
     output_path <- validate_filepath_and_output_dir(filename, output_dir, plate$plate_name, "levey_jennings", "html")

@@ -83,6 +83,16 @@ Standard curve sample dilutions: `r format_dilutions(params$list_of_plates[[1]]$
 
 `r if(!is.null(params$additional_notes)) "\n -------------------" ` 
 
+### Plates used in this report
+
+<details open>
+  <summary>Click to show/hide list</summary>
+```{r list-of-plates, echo=FALSE, results='asis'}
+for (plate in params$list_of_plates) {
+  cat(paste0("- ", plate$plate_name, "\n"))
+}
+```
+</details>
 
 ### Plate layout
 
