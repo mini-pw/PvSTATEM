@@ -20,6 +20,26 @@ test_that("Fully Parse CovidOISExPONTENT.csv plate data", {
   expect_equal(plate$blank_adjusted, TRUE)
 })
 
+test_that("Test error catching without the layout file", {
+  # Read plate
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
+
+  # sample names
+  expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", verbose = FALSE, use_layout_sample_names = FALSE))
+
+  expect_equal(plate$sample_names[10:13], c("S", "S", "S", "Unknown2"))
+
+  # sample types
+  expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", verbose = FALSE, use_layout_types = FALSE))
+
+  expect_equal(plate$sample_types[10:13], c("STANDARD CURVE", "STANDARD CURVE", "STANDARD CURVE", "TEST"))
+  expect_true(all(is.na(plate$dilutions)))
+
+  # dilution values
+  expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", verbose = FALSE, use_layout_dilutions = FALSE))
+  expect_true(all(is.na(plate$dilutions)))
+})
+
 test_that("Test reading with layout", {
   path <- system.file("extdata", "random_no_standard_curve.csv", package = "PvSTATEM", mustWork = TRUE)
   layout_path <- system.file("extdata", "random_layout_no_standard_curve.xlsx", package = "PvSTATEM", mustWork = TRUE)
@@ -80,4 +100,10 @@ test_that("Test xponent file with holes in the layout", {
 
   expect_equal(plate$layout[96], "1/102400")
   expect_equal(plate$sample_locations[1], "H1")
+
+  expect_equal(sum(!is.na(plate$dilutions)), 11)
+  expect_equal(length(plate$sample_locations), 44)
+
+  expect_equal(sum(is.na(plate$sample_names)), 0)
+  expect_equal(sum(is.na(plate$sample_types)), 0)
 })

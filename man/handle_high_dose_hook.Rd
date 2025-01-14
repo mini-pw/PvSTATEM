@@ -45,5 +45,4 @@ plot_standard_curve_analyte(plate, "RBD_omicron")
 # here we create the model with the high dose hook effect handled
 model <- create_standard_curve_model_analyte(plate, "RBD_omicron")
 
-
 }

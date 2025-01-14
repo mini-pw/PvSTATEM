@@ -57,7 +57,7 @@ find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
 #'
 is_mba_data_file <- function(filepath, check_format = TRUE) {
   format_pattern <- PvSTATEM.env$mba_pattern
-  extension_pattern <- "\\.(xlsx|csv)$"
+  extension_pattern <- "\\.([xX][lL][sS][xX]|[cC][sS][vV])$"
   output_pattern <- "RAU|nMFI"
   layout_pattern <- "_layout"
 

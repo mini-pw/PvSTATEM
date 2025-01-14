@@ -397,7 +397,6 @@ create_standard_curve_model_analyte <- function(plate, analyte_name,
 #' # here we create the model with the high dose hook effect handled
 #' model <- create_standard_curve_model_analyte(plate, "RBD_omicron")
 #'
-#'
 #' @return sample selector (`logical()`)
 handle_high_dose_hook <- function(mfi, dilutions, high_dose_threshold = 1 / 200) {
   total_samples <- length(mfi)

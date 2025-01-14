@@ -18,7 +18,8 @@ Name of the plate. Set to the name of the file from which the plate was read.}
 Names of the analytes that were examined on the plate.}
 
 \item{\code{sample_names}}{(\code{character()})\cr
-Names of the samples that were examined on the plate.}
+Names of the samples that were examined on the plate. The order of the
+samples in this vector is identical with order in the CSV source file.}
 
 \item{\code{batch_name}}{(\code{character(1)})\cr
 Name of the batch to which the plate belongs.}
@@ -27,18 +28,21 @@ Name of the batch to which the plate belongs.}
 A date and time when the plate was created by the machine}
 
 \item{\code{sample_locations}}{(\code{character()})\cr
-Locations of the samples on the plate.}
+Locations of the samples on the plate. This vector is in the same order
+as the \code{sample_names} vector.}
 
 \item{\code{sample_types}}{(\code{character()})\cr
 Types of the samples that were examined on the plate.
-The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.}
+The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.
+This vector is in the same order as the \code{sample_names} vector.}
 
 \item{\code{dilutions}}{(\code{character()})\cr
 A list containing names of the samples as keys and string representing dilutions as values.
-The dilutions are represented as strings.}
+The dilutions are represented as strings. This vector is in the same order as the \code{sample_names} vector.}
 
 \item{\code{dilution_values}}{(\code{numeric()})\cr
-A list containing names of the samples as keys and numeric values representing dilutions as values.}
+A list containing names of the samples as keys and numeric values representing dilutions as values.
+It is in the same order as the \code{sample_names} vector.}
 
 \item{\code{default_data_type}}{(\code{character(1)})\cr
 The default data type that will be returned by the \code{get_data} method.

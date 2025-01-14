@@ -3,7 +3,7 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml)
 ![Downloads](https://cranlogs.r-pkg.org/badges/PvSTATEM)
-[![codecov](https://codecov.io/gh/mini-pw/PvSTATEM/graph/badge.svg?token=11EVHXMHDO)](https://codecov.io/gh/mini-pw/PvSTATEM)
+[![codecov](https://codecov.io/gh/mini-pw/PvSTATEM/graph/badge.svg?token=11EVHXMHDO)](https://app.codecov.io/gh/mini-pw/PvSTATEM)
 <!-- badges: end -->
 
 
@@ -19,9 +19,6 @@ The package includes three main steps for preprocessing the data:
 
 `PvSTATEM` package is developed within the project of the same name - [PvSTATEM](https://www.pvstatem.eu/), an international project aiming at malaria elimination and is financially supported by the HORIZON grant HORIZON-WIDERA-2022-ACCESS-07-01.
 
-### 🟡 *Semi-release* version
-
-The package is still in a *semi-release* version, and new functionalities are being added. We plan to finish this stage of development by the end of 2024 by adding summary reports, quality control tools comparing multiple plates, and different normalisation methods.
 
 ## Installation
 

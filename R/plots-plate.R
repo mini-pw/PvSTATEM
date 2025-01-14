@@ -278,16 +278,14 @@ plot_layout <- function(plate, plot_legend = TRUE) {
 #' @keywords internal
 create_vector_without_holes <- function(vector, locations) {
   # Create a vector with all the locations
-  rows <- rep(LETTERS[1:8], each = 12)
-  columns <- as.character(1:12)
-  all_locations <- paste0(rows, columns)
+  all_locations <- get_location_matrix(nrow = 8, ncol = 12, as_vector = TRUE)
 
   # Create a vector with all the locations and set the missing values
   without_holes <- rep(" ", length(all_locations))
   names(without_holes) <- all_locations
 
   # Update the present positions with the corresponding values
-  without_holes[locations] <- vector
+  without_holes[all_locations %in% locations] <- vector
 
   # Output vector
   without_holes <- unname(without_holes)
