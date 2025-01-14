@@ -420,7 +420,7 @@ Plate <- R6::R6Class(
     #' @param threshold The method used to calculate the background value for each analyte.
     #' Every value below this threshold will be clamped to the threshold value.
     #' By default `max`. Available methods are: `min`, `max`, `mean`, `median`.
-    #' @param inplace Whether the method should produce new plate with adjusted
+    #' @param in_place Whether the method should produce new plate with adjusted
     #' values or not, By default `TRUE` - operates on the current plate.
     blank_adjustment = function(threshold = "max", in_place = TRUE) {
       if (self$blank_adjusted) {
