@@ -577,9 +577,11 @@ get_location_matrix <- function(nrow = 8, ncol = 12, as_vector = FALSE) {
   if (as_vector) {
     return(all_locations)
   }
-  all_location_matrix <- matrix(all_locations,
-    nrow = nrow,
-    ncol = ncol,
-    byrow = TRUE
+  return(
+    matrix(all_locations,
+      nrow = nrow,
+      ncol = ncol,
+      byrow = TRUE
+    )
   )
 }

@@ -109,3 +109,48 @@ test_that("Handling of empty layout names", {
     c("BLANK", "STANDARD CURVE", "POSITIVE CONTROL", "NEGATIVE CONTROL")
   )
 })
+
+# Test setters for dilutions, sample types and sample names
+test_that("Test setting dilutions", {
+  plate <- PlateBuilder$new(sample_names = c("S1", "S2", "S3", "S4"),
+                            analyte_names = c("A1", "A2", "A3", "A4"))
+  plate$set_dilutions(FALSE, c("1/50", "1/100", "1/200", NA))
+  expect_equal(plate$dilutions, c("1/50", "1/100", "1/200", NA))
+
+
+  plate <- PlateBuilder$new(sample_names = c("S1", "S2", "S3", "S4"),
+                            analyte_names = c("A1", "A2", "A3", "A4"))
+  plate$set_dilutions(TRUE, c("1/50", "1/100", "1/200", NA))
+  expect_equal(plate$dilutions, c("1/50", "1/100", "1/200", NA))
+
+
+  plate$dilutions <- NULL
+  expect_error(plate$set_dilutions(TRUE))
+})
+
+
+test_that("Test setting sample types", {
+  plate <- PlateBuilder$new(sample_names = c("S1", "S2", "S3", "S4"),
+                            analyte_names = c("A1", "A2", "A3", "A4"))
+  plate$set_sample_types(FALSE, c("STANDARD CURVE", "NEGATIVE CONTROL", "POSITIVE CONTROL", "TEST"))
+  expect_equal(plate$sample_types, c("STANDARD CURVE", "NEGATIVE CONTROL", "POSITIVE CONTROL", "TEST"))
+
+  expect_error(plate$set_sample_types(FALSE, NULL))
+
+  plate <- PlateBuilder$new(sample_names = c("S1", "S2", "S3", "S4"),
+                            analyte_names = c("A1", "A2", "A3", "A4"))
+  plate$set_sample_types(TRUE, c("STANDARD CURVE", "NEGATIVE CONTROL", "POSITIVE CONTROL", "TEST"))
+  expect_equal(plate$sample_types, c("STANDARD CURVE", "NEGATIVE CONTROL", "POSITIVE CONTROL", "TEST"))
+
+  expect_error(plate$set_sample_types(TRUE))
+})
+
+
+test_that("Test setting sample names", {
+  plate <- PlateBuilder$new(sample_names = c("S1", "S2", "S3", "S4"),
+                            analyte_names = c("A1", "A2", "A3", "A4"))
+  plate$set_sample_names(FALSE)
+  expect_equal(plate$sample_names, c("S1", "S2", "S3", "S4"))
+
+  expect_error(plate$set_sample_names(TRUE))
+})
