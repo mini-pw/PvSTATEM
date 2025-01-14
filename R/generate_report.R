@@ -101,20 +101,50 @@ generate_plate_report <-
   }
 
 
-#' Generate a report with Levey-Jennings plots.
+#' Generate a Levey-Jennings Report for Multiple Plates.
 #'
-#' This function generates a report with Levey-Jennings plots.
+#' @description
+#' This function generates a Levey-Jennings report for a list of plates. The report includes layout plot, levey jennings plot, for each analyte and selected dilutions.
+#' The report also includes stacked standard curves plot in both monochromatic and color versions for each analyte.
 #' The report is generated using the `levey_jennings_report_template.Rmd` template.
 #'
 #' @param list_of_plates A list of plate objects.
-#' @param filename (`character(1)`) The name of the output file. If not
-#' provided, the filename will be created based on the plate name
-#' with the suffix '_report.html'.
-#' @param output_dir (`character(1)`) The directory where the report
-#' should be saved. Default is 'reports'.
+#' @param report_title (`character(1)`) The title of the report.
+#' @param dilutions (`character`) A character vector specifying the dilutions to be included in the report. Default is `c("1/100", "1/400")`.
+#' @param filename (`character(1)`) The name of the output HTML report file.
+#' If not provided or set to `NULL`, the filename will be based on the first plate name, formatted as `{plate_name}_levey_jennings.html`.
+#' If the filename does not contain the `.html` extension, it will be automatically added.
+#' Absolute file paths in `filename` will override `output_dir`.
+#' Existing files at the specified path will be overwritten.
 #'
+#' @param output_dir (`character(1)`) The directory where the report will be saved. Defaults to 'reports'.
+#' If `NULL`, the current working directory will be used. Necessary directories will be created if they do not exist.
 #'
-#' @return A report.
+#' @param additional_notes (`character(1)`) Additional notes to be included in the report. Markdown formatting is supported. If not provided, the section will be omitted.
+#'
+#' @return A Levey-Jennings report in HTML format.
+#'
+#' @import svglite
+#'
+#' @examples
+#' output_dir <- tempdir(check = TRUE)
+#'
+#' dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
+#'   package = "PvSTATEM", mustWork = TRUE
+#' )
+#' list_of_plates <- process_dir(dir_with_luminex_files,
+#'   return_plates = TRUE, format = "xPONENT", output_dir = output_dir
+#' )
+#' note <- "This is a Levey-Jennings report.\n**Author**: Jane Doe \n**Tester**: John Doe"
+#'
+# ' generate_levey_jennings_report(
+# '   list_of_plates = list_of_plates,
+# '   report_title = "QC Report",
+# '   dilutions = c("1/100", "1/200"),
+# '   output_dir = tempdir(),
+# '   additional_notes = note
+# ' )
+#'
 #' @export
 generate_levey_jennings_report <-
   function(list_of_plates,
@@ -123,7 +153,7 @@ generate_levey_jennings_report <-
            filename = NULL,
            output_dir = "reports",
            additional_notes = NULL) {
-    message("Generating report... This will take approximately 30 seconds.")
+    message("Generating report... For larger reports with more than 30 plates this will take few minutes.")
 
     plate <- list_of_plates[[1]]
     output_path <- validate_filepath_and_output_dir(filename, output_dir, plate$plate_name, "levey_jennings", "html")

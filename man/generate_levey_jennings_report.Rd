@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate_report.R
 \name{generate_levey_jennings_report}
 \alias{generate_levey_jennings_report}
-\title{Generate a report with Levey-Jennings plots.}
+\title{Generate a Levey-Jennings Report for Multiple Plates.}
 \usage{
 generate_levey_jennings_report(
   list_of_plates,
@@ -16,17 +16,39 @@ generate_levey_jennings_report(
 \arguments{
 \item{list_of_plates}{A list of plate objects.}
 
-\item{filename}{(\code{character(1)}) The name of the output file. If not
-provided, the filename will be created based on the plate name
-with the suffix '_report.html'.}
+\item{report_title}{(\code{character(1)}) The title of the report.}
 
-\item{output_dir}{(\code{character(1)}) The directory where the report
-should be saved. Default is 'reports'.}
+\item{dilutions}{(\code{character}) A character vector specifying the dilutions to be included in the report. Default is \code{c("1/100", "1/400")}.}
+
+\item{filename}{(\code{character(1)}) The name of the output HTML report file.
+If not provided or set to \code{NULL}, the filename will be based on the first plate name, formatted as \verb{\{plate_name\}_levey_jennings.html}.
+If the filename does not contain the \code{.html} extension, it will be automatically added.
+Absolute file paths in \code{filename} will override \code{output_dir}.
+Existing files at the specified path will be overwritten.}
+
+\item{output_dir}{(\code{character(1)}) The directory where the report will be saved. Defaults to 'reports'.
+If \code{NULL}, the current working directory will be used. Necessary directories will be created if they do not exist.}
+
+\item{additional_notes}{(\code{character(1)}) Additional notes to be included in the report. Markdown formatting is supported. If not provided, the section will be omitted.}
 }
 \value{
-A report.
+A Levey-Jennings report in HTML format.
 }
 \description{
-This function generates a report with Levey-Jennings plots.
+This function generates a Levey-Jennings report for a list of plates. The report includes layout plot, levey jennings plot, for each analyte and selected dilutions.
+The report also includes stacked standard curves plot in both monochromatic and color versions for each analyte.
 The report is generated using the \code{levey_jennings_report_template.Rmd} template.
+}
+\examples{
+output_dir <- tempdir(check = TRUE)
+
+dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
+  package = "PvSTATEM", mustWork = TRUE
+)
+list_of_plates <- process_dir(dir_with_luminex_files,
+  return_plates = TRUE, format = "xPONENT", output_dir = output_dir
+)
+note <- "This is a Levey-Jennings report.\n**Author**: Jane Doe \n**Tester**: John Doe"
+
+
 }
