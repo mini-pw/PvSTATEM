@@ -10,6 +10,7 @@ process_file(
   output_dir = "normalised_data",
   format = "xPONENT",
   generate_report = FALSE,
+  process_plate = TRUE,
   normalisation_types = c("RAU", "nMFI"),
   verbose = TRUE,
   ...
@@ -25,6 +26,9 @@ process_file(
 \item{format}{(\code{character(1)}) The format of the Luminex data. The default is \code{"xPONENT"}. Available options are \code{"xPONENT"} and \code{"INTELLIFLEX"}.}
 
 \item{generate_report}{(\code{logical(1)}) If \code{TRUE}, generate a quality control report. The default is \code{FALSE}.}
+
+\item{process_plate}{(\code{logical(1)}) If \code{TRUE}, process the plate. The default is \code{TRUE}.
+If the value is set to \code{FALSE} the function will only read the plate file and return the plate object.}
 
 \item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("RAU", "nMFI")}.}
 

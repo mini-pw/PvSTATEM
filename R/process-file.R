@@ -14,6 +14,8 @@
 #' @param output_dir (`character(1)`) The directory where the output files should be saved. The default is `"normalised_data"`.
 #' @param format (`character(1)`) The format of the Luminex data. The default is `"xPONENT"`. Available options are `"xPONENT"` and `"INTELLIFLEX"`.
 #' @param generate_report (`logical(1)`) If `TRUE`, generate a quality control report. The default is `FALSE`.
+#' @param process_plate (`logical(1)`) If `TRUE`, process the plate. The default is `TRUE`.
+#' If the value is set to `FALSE` the function will only read the plate file and return the plate object.
 #' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("RAU", "nMFI")`.
 #' @param verbose (`logical(1)`) Print additional information. The default is `TRUE`.
 #' @param ... Additional arguments to for the `read_luminex_data` function.
@@ -40,6 +42,7 @@ process_file <- function(
     output_dir = "normalised_data",
     format = "xPONENT",
     generate_report = FALSE,
+    process_plate = TRUE,
     normalisation_types = c("RAU", "nMFI"),
     verbose = TRUE,
     ...) {
@@ -52,12 +55,14 @@ process_file <- function(
 
   verbose_cat("Processing plate '", plate$plate_name, "'\n", verbose = verbose)
 
-  for (normalisation_type in normalisation_types) {
-    process_plate(
-      plate,
-      normalisation_type = normalisation_type, output_dir = output_dir,
-      include_raw_mfi = TRUE, adjust_blanks = TRUE, verbose = verbose
-    )
+  if (process_plate) {
+    for (normalisation_type in normalisation_types) {
+      process_plate(
+        plate,
+        normalisation_type = normalisation_type, output_dir = output_dir,
+        include_raw_mfi = TRUE, adjust_blanks = TRUE, verbose = verbose
+      )
+    }
   }
 
   if (generate_report) {

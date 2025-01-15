@@ -8,6 +8,7 @@ process_plate(
   plate,
   filename = NULL,
   output_dir = "normalised_data",
+  write_output = TRUE,
   normalisation_type = "RAU",
   data_type = "Median",
   include_raw_mfi = TRUE,
@@ -34,6 +35,9 @@ If a file already exists under a specified filepath, the function will overwrite
 \item{output_dir}{(\code{character(1)}) The directory where the output CSV file should be saved.
 Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
 If it equals to \code{NULL} the current working directory will be used. Default is 'normalised_data'.}
+
+\item{write_output}{(\code{logical(1)}) whether or not to write the output to a file
+specified by \code{filename} parameter. The default is \code{TRUE}.}
 
 \item{normalisation_type}{(\code{character(1)}) type of normalisation to use. Available options are:
 \cr \code{c(RAU, nMFI)}.}
