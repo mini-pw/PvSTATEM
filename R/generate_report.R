@@ -137,13 +137,13 @@ generate_plate_report <-
 #' )
 #' note <- "This is a Levey-Jennings report.\n**Author**: Jane Doe \n**Tester**: John Doe"
 #'
-# ' generate_levey_jennings_report(
-# '   list_of_plates = list_of_plates,
-# '   report_title = "QC Report",
-# '   dilutions = c("1/100", "1/200"),
-# '   output_dir = tempdir(),
-# '   additional_notes = note
-# ' )
+#' generate_levey_jennings_report(
+#'   list_of_plates = list_of_plates,
+#'   report_title = "QC Report",
+#'   dilutions = c("1/100", "1/200"),
+#'   output_dir = tempdir(),
+#'   additional_notes = note
+#' )
 #'
 #' @export
 generate_levey_jennings_report <-
