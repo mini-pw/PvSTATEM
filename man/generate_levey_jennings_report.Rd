@@ -50,5 +50,12 @@ list_of_plates <- process_dir(dir_with_luminex_files,
 )
 note <- "This is a Levey-Jennings report.\n**Author**: Jane Doe \n**Tester**: John Doe"
 
+generate_levey_jennings_report(
+  list_of_plates = list_of_plates,
+  report_title = "QC Report",
+  dilutions = c("1/100", "1/200"),
+  output_dir = tempdir(),
+  additional_notes = note
+)
 
 }
