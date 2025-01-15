@@ -81,3 +81,17 @@ test_that("Test xponent file with holes in the layout", {
   expect_equal(plate$layout[96], "1/102400")
   expect_equal(plate$sample_locations[1], "H1")
 })
+
+test_that("Test ignoring datatypes with missing rows", {
+  path <- system.file("extdata", "CovidOISExPONTENT_missing_rows.csv", package = "PvSTATEM", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+
+  expect_warning(
+    plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE)
+  )
+
+  expect_equal(sum(plate$sample_types == "STANDARD CURVE"), 11)
+  expect_true("Median" %in% names(plate$data))
+  expect_false("Net MFI" %in% names(plate$data))
+  expect_equal(length(plate$sample_types), 96)
+})
