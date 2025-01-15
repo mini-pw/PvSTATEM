@@ -8,7 +8,7 @@ get_output_dir(
   input_file,
   input_dir,
   output_dir = NULL,
-  flatten_output = FALSE
+  flatten_output_dir = FALSE
 )
 }
 \description{

@@ -131,12 +131,12 @@ get_output_dir <- function(
     input_file,
     input_dir,
     output_dir = NULL,
-    flatten_output = FALSE) {
+    flatten_output_dir = FALSE) {
   output_root <- ifelse(is.null(output_dir), input_dir, output_dir)
   if (!fs::dir_exists(output_root)) {
     stop("Output directory does not exist.")
   }
-  if (flatten_output) {
+  if (flatten_output_dir) {
     current_output_dir <- output_root
   } else {
     input_file_rel_path <- fs::path_rel(input_file, input_dir)
@@ -152,13 +152,13 @@ get_output_dir <- function(
 #'
 #' @description
 #' The output files will be created alongside their corresponding input files, preserving
-#' the directory structure of the input directory unless the `flatten_output` parameter is set to `TRUE`.
+#' the directory structure of the input directory unless the `flatten_output_dir` parameter is set to `TRUE`.
 #'
 #' @param input_dir (`character(1)`) The directory containing the input files. It may be nested.
 #' @param output_dir (`character(1)`) Optional overwrite directory where the output files should be saved. The default is `NULL`.
 #' By default, the output directory is the same as the input directory.
 #' @param recurse (`logical(1)`) If `TRUE`, the function will search for files recursively in the input directory. The default is `FALSE`.
-#' @param flatten_output (`logical(1)`) If `TRUE`, the output files will be saved in the output directory directly. The default is `FALSE`.
+#' @param flatten_output_dir (`logical(1)`) If `TRUE`, the output files will be saved in the output directory directly. The default is `FALSE`.
 #' @param format (`character(1)`) The format of the Luminex data. The default is `NULL`, and the format will have to
 #' be determined automatically based on the file name. Available options are `xPONENT` and `INTELLIFLEX`.
 #' @param layout_filepath (`character(1)`) The path to the layout file. The default is `NULL`, and the layout file will have to
@@ -192,7 +192,7 @@ process_dir <- function(
     input_dir,
     output_dir = NULL,
     recurse = FALSE,
-    flatten_output = FALSE,
+    flatten_output_dir = FALSE,
     layout_filepath = NULL,
     format = NULL,
     normalisation_types = c("RAU", "nMFI"),
@@ -255,7 +255,7 @@ process_dir <- function(
     cat("The following files will be processed:\n")
     for (i in seq_along(input_files)) {
       current_output_dir <- get_output_dir(input_files[i], input_dir,
-        output_dir = output_dir, flatten_output = flatten_output
+        output_dir = output_dir, flatten_output_dir = flatten_output_dir
       )
       cat(
         "\n",
@@ -269,10 +269,9 @@ process_dir <- function(
   }
 
   plates <- list()
-
   for (i in seq_along(input_files)) {
     current_output_dir <- get_output_dir(input_files[i], input_dir,
-      output_dir = output_dir, flatten_output = flatten_output
+      output_dir = output_dir, flatten_output_dir = flatten_output_dir
     )
     plate <- process_file(
       input_files[i],
@@ -285,9 +284,7 @@ process_dir <- function(
       ...
     )
 
-    if (return_plates) {
-      plates[[plate$plate_name]] <- plate
-    }
+    plates[[plate$plate_name]] <- plate
   }
 
   if (return_plates) {

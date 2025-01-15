@@ -8,7 +8,7 @@ process_dir(
   input_dir,
   output_dir = NULL,
   recurse = FALSE,
-  flatten_output = FALSE,
+  flatten_output_dir = FALSE,
   layout_filepath = NULL,
   format = NULL,
   normalisation_types = c("RAU", "nMFI"),
@@ -27,7 +27,7 @@ By default, the output directory is the same as the input directory.}
 
 \item{recurse}{(\code{logical(1)}) If \code{TRUE}, the function will search for files recursively in the input directory. The default is \code{FALSE}.}
 
-\item{flatten_output}{(\code{logical(1)}) If \code{TRUE}, the output files will be saved in the output directory directly. The default is \code{FALSE}.}
+\item{flatten_output_dir}{(\code{logical(1)}) If \code{TRUE}, the output files will be saved in the output directory directly. The default is \code{FALSE}.}
 
 \item{layout_filepath}{(\code{character(1)}) The path to the layout file. The default is \code{NULL}, and the layout file will have to
 be determined automatically based on the file name.}
@@ -55,7 +55,7 @@ If the \code{return_plates} parameters is set to \code{FALSE} the function retur
 }
 \description{
 The output files will be created alongside their corresponding input files, preserving
-the directory structure of the input directory unless the \code{flatten_output} parameter is set to \code{TRUE}.
+the directory structure of the input directory unless the \code{flatten_output_dir} parameter is set to \code{TRUE}.
 }
 \examples{
 # Select input directory to process

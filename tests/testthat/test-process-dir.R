@@ -45,11 +45,11 @@ test_that("Test obtaining an output directory", {
   expect_equal(get_output_dir(plate_filepath, input_dir), input_dir)
   expect_equal(get_output_dir(
     plate_filepath, input_dir_parent,
-    flatten_output = FALSE
+    flatten_output_dir = FALSE
   ), input_dir)
   expect_equal(get_output_dir(
     plate_filepath, input_dir_parent,
-    flatten_output = TRUE
+    flatten_output_dir = TRUE
   ), input_dir_parent)
   expect_equal(get_output_dir(
     plate_filepath, input_dir_parent,
@@ -58,7 +58,7 @@ test_that("Test obtaining an output directory", {
   expect_equal(get_output_dir(
     plate_filepath, input_dir_parent,
     output_dir = specified_output_dir,
-    flatten_output = TRUE
+    flatten_output_dir = TRUE
   ), specified_output_dir)
 })
 
@@ -66,16 +66,16 @@ test_that("Test obtaining an output directory", {
 test_that("Test processing a mock directory", {
   dir <- system.file("extdata", "multiplate_mock", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = T, flatten_output = T)
+    process_dir(dir, dry_run = T, recurse = T, flatten_output_dir = T)
   ))
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = F, flatten_output = T)
+    process_dir(dir, dry_run = T, recurse = F, flatten_output_dir = T)
   ))
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = T, flatten_output = F)
+    process_dir(dir, dry_run = T, recurse = T, flatten_output_dir = F)
   ))
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = T, flatten_output = F, output_dir = tempdir(check = TRUE))
+    process_dir(dir, dry_run = T, recurse = T, flatten_output_dir = F, output_dir = tempdir(check = TRUE))
   ))
 
   dir <- tempdir(check = TRUE)
