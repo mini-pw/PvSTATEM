@@ -21,11 +21,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+
 # Introduction
 
-The `PvSTATEM` package provides, for now, one report that can be generated using the `generate_plate_report` function. 
+The `PvSTATEM` package provides plate report that can be generated using the `generate_plate_report` function. 
 It is an HTML report that contains a summary of the plate. It was optimized for size so it could be sent via email. 
-In the future, we plan to add to the package report about Levey-Jennings plots. For now, we will focus on the plate summary report. 
 To present this functionality, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. 
 Firstly, let us load the dataset as the `plate` object.
 
@@ -38,8 +38,9 @@ plate <- read_luminex_data(plate_filepath, layout_filepath)
 
 plate
 ```
+# Plate summary report
 
-# Generating the report
+## Generating the report
 
 To generate the report, we need to use the `generate_plate_report` function. There is one parameter that needs to be set, which is the `plate` object.
 Generation of the report takes a few seconds, so please be patient. It can take up to a minute for a large plate.
@@ -66,12 +67,12 @@ Default report has 4 main sections:
 
 <img src="img/report_analyte_details.png" alt="Image description" width="600px" style="border: 1px solid black;" />
 
-# Additional parameters
+## Additional parameters
 
 The user can customize the report by setting additional parameters. 
 The `generate_plate_report` function has the following optional parameters:
 
-- `additonal_notes` - string with additional notes that will be added to the report
+- `additional_notes` - string with additional notes that will be added to the report
 
 ```{r, eval=FALSE}
 notes <- "
@@ -79,7 +80,7 @@ This is an example of additional notes that can be added to the report.
 The notes support markdown syntax, for example:
 **Author: Jane Doe** - bold
 *Date: 2024-10-28* - italic
-~~Complited~~ - strikethrough
+~~Completed~~ - strikethrough
 H~2~O - subscripts
 X^2^ - superscripts
 [text that will be displayed](https://www.google.com) - link to resource

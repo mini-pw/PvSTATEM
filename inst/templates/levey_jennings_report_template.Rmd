@@ -57,7 +57,6 @@ if (!is.null(params$additional_notes) && !is(params$additional_notes, "character
 
 date_of_first_plate <- min(sapply(params$list_of_plates, function(plate) plate$plate_datetime))
 date_of_last_plate <- max(sapply(params$list_of_plates, function(plate) plate$plate_datetime))
-time_span <- difftime(date_of_last_plate, date_of_first_plate, units = "days")
 
 # i need to add this trick otherwise i get error in format function
 # Error in prettyNum(.Internal(format(x, trim, digits, nsmall, width, 3L,  :
@@ -65,6 +64,7 @@ time_span <- difftime(date_of_last_plate, date_of_first_plate, units = "days")
 # it may cause some problems with timezones but few hours difference is not a big deal
 date_of_first_plate <- as.POSIXct(date_of_first_plate, origin = "1970-01-01", tz = "UTC")
 date_of_last_plate <- as.POSIXct(date_of_last_plate, origin = "1970-01-01", tz = "UTC")
+time_span <- difftime(date_of_last_plate, date_of_first_plate, units = "days")
 ```
 
 Report generated on:  `r format(Sys.time(), "%d-%m-%Y %H:%M:%S")`.  
