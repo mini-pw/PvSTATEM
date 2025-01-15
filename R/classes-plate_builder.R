@@ -280,6 +280,8 @@ PlateBuilder <- R6::R6Class(
     #' @description
     #' Set the plate name for the plate.
     #' The plate name is extracted from the filepath
+    #'
+    #' @param file_path a character value representing the path to the file
     set_plate_name = function(file_path) {
       stopifnot(is.character(file_path) && is.scalar(file_path))
       file_name_without_extension <-

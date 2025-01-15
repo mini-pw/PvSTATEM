@@ -313,7 +313,7 @@ Skipping it before further analysis is allowed, but will result in a warning.
 Every value below this threshold will be clamped to the threshold value.
 By default \code{max}. Available methods are: \code{min}, \code{max}, \code{mean}, \code{median}.}
 
-\item{\code{inplace}}{Whether the method should produce new plate with adjusted
+\item{\code{in_place}}{Whether the method should produce new plate with adjusted
 values or not, By default \code{TRUE} - operates on the current plate.}
 }
 \if{html}{\out{</div>}}

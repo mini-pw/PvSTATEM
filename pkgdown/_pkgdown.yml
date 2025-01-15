@@ -15,8 +15,9 @@ reference:
     - process_file
     - process_dir
     - generate_plate_report
+    - generate_levey_jennings_report
   - title: Plate and Model classes
-    desc: Instances of the Plate and Model classes and additional functions for predictions and normalisation. These methods are used to store the data and the model and faciliate the analysis.
+    desc: Instances of the Plate and Model classes and additional functions for predictions and normalisation. These methods are used to store the data and the model and facilitate the analysis.
     contents:
     - Model
     - Plate

@@ -21,11 +21,21 @@ knitr::opts_chunk$set(
 )
 ```
 
+
 # Introduction
 
-The `PvSTATEM` package provides, for now, one report that can be generated using the `generate_plate_report` function. 
-It is an HTML report that contains a summary of the plate. It was optimized for size so it could be sent via email. 
-In the future, we plan to add to the package report about Levey-Jennings plots. For now, we will focus on the plate summary report. 
+The `PvSTATEM` package provides for two reports:
+- plate report that can be generated using the `generate_plate_report` function,
+- Levey-Jennings report that can be generated using the `generate_levey_jennings_report` function. 
+
+They are HTML report that were optimized for size so they could be sent via email.
+The first one contains a summary of the plate. It includes information about the plate, the layout of the plate, the preview of standard curves, and detailed information about analytes.
+The second one contains information about the quality control over time. It includes plots of stacked standard curves and Levey-Jennings plots for each analyte.
+
+# Plate summary report
+
+## Generating the report
+
 To present this functionality, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. 
 Firstly, let us load the dataset as the `plate` object.
 
@@ -38,8 +48,6 @@ plate <- read_luminex_data(plate_filepath, layout_filepath)
 
 plate
 ```
-
-# Generating the report
 
 To generate the report, we need to use the `generate_plate_report` function. There is one parameter that needs to be set, which is the `plate` object.
 Generation of the report takes a few seconds, so please be patient. It can take up to a minute for a large plate.
@@ -66,12 +74,12 @@ Default report has 4 main sections:
 
 <img src="img/report_analyte_details.png" alt="Image description" width="600px" style="border: 1px solid black;" />
 
-# Additional parameters
+## Additional parameters
 
 The user can customize the report by setting additional parameters. 
 The `generate_plate_report` function has the following optional parameters:
 
-- `additonal_notes` - string with additional notes that will be added to the report
+- `additional_notes` - string with additional notes that will be added to the report
 
 ```{r, eval=FALSE}
 notes <- "
@@ -79,7 +87,7 @@ This is an example of additional notes that can be added to the report.
 The notes support markdown syntax, for example:
 **Author: Jane Doe** - bold
 *Date: 2024-10-28* - italic
-~~Complited~~ - strikethrough
+~~Completed~~ - strikethrough
 H~2~O - subscripts
 X^2^ - superscripts
 [text that will be displayed](https://www.google.com) - link to resource
@@ -134,3 +142,66 @@ generate_plate_report(plate,
 )
 ```
 
+# Levey-Jennings report
+
+## Generating the report
+
+To present this functionality, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package.
+Firstly, let us load the dataset as the `list_of_plates` object.
+
+```{r, eval=FALSE}
+dir <- system.file("extdata", "multiplate_reallife_reduced",
+  package = "PvSTATEM", mustWork = TRUE
+)
+
+# Create a temporary directory for the output
+output_dir <- tempdir(check = TRUE)
+dir.create(output_dir)
+list_of_plates <- process_dir(dir,
+  return_plates = TRUE,
+  format = "xPONENT",
+  output_dir = output_dir
+)
+
+# Clean up the output directory
+unlink(output_dir, recursive = TRUE)
+```
+
+To generate the report, we need to use the `generate_levey_jennings_report` function. There are two parameters that need to be set, which are:
+- `list_of_plates` - list of `Plate` instances, it is recommended generate is with `process_dir` function
+- `report_title` - title of the report
+
+Generation of the report takes a several minutes, so please be patient. It can take up around 5 minutes for reports with more than 30 plates.
+
+```{r, eval=FALSE}
+generate_levey_jennings_report(list_of_plates, report_title = "Example study")
+```
+
+Default report has 3 main sections:
+
+- The most important information about the report
+
+This section contains information about the report, the number of plates, the number of analytes, list of dilutions, and the date range of the plates.
+It also contains list of plates used to crate report. This list can be hidden by clicking on the "Show/hide plates" button. 
+
+- Layout of the plate
+
+This part of report contains a plot with the layout of the plate. 
+To create this visualization, the first plate from the list (oldest one) is used.
+
+- Detailed information about analytes
+
+This section contains tabs for each analyte. Each tab contains two types of plots: stacked standard curves and Levey-Jennings plots.
+First type of plot shows the stacked standard curves for each plate, there are two version of this plot included in the report: monochromatic and colored.
+Then there is second type of plot, Levey-Jennings plot. This plot shows the concentration of the analyte over time. By default there are plotted two 
+charts for dilution "1/100" and "1/400".
+
+## Additional parameters
+
+The user can customize the report by setting additional parameters.
+The `generate_levey_jennings_report` function has the following optional parameters:
+
+- `dilutions` - vector of dilutions that will be used to create Levey-Jennings plots. By default, it is set to `c("1/100", "1/400")`
+- `additional_notes` - string with additional notes that will be added to the report, works the same way as in the `generate_plate_report` function
+- `filename` - The name of the output HTML report file. It works the same way as in the `generate_plate_report` function
+- `output_dir` - The directory where the output CSV file should be saved. It works the same way as in the `generate_plate_report` function

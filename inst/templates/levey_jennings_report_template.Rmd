@@ -1,10 +1,133 @@
 ---
-title: "TEST"
+title: "Levey-Jennings Raport: `r paste0('*', params$report_title, '*')`"
 output: html_document
 params:
   list_of_plates: !r NULL
+  report_title: !r NULL
+  dilutions: !r NULL
+  additional_notes: !r NULL
 ---
+
+```{r param-check, echo=FALSE}
+if (is.null(params$list_of_plates)) {
+  stop("The `list_of_plates` must be provided when rendering the document.")
+}
+if (!is.list(params$list_of_plates)) {
+  stop("The `list_of_plates` must be a list of `Plate` instances.")
+}
+if (length(params$list_of_plates) == 0) {
+  stop("The `list_of_plates` must contain at least one `Plate` instance.")
+}
+if (length(params$list_of_plates) < 10) {
+  warning("The `list_of_plates` should contain at least 10 `Plate` instances to generate a comprehensive report.")
+}
+if (!all(sapply(params$list_of_plates, inherits, "Plate"))) {
+  stop("The list_of_plates contains objects that are not of class Plate.")
+}
+if (is.null(params$report_title)) {
+  stop("The `report_title` must be provided when rendering the document.")
+}
+if (!is(params$report_title, "character")) {
+  stop("The `report_title` must be a character value.")
+}
+if (is.null(params$dilutions)) {
+  stop("The `dilutions` must be provided when rendering the document.")
+}
+if (!is.character(params$dilutions)) {
+  stop("The `dilutions` must be a character value.")
+}
+if (!all(grepl("(^1\\s*)\\/(\\s*\\d+$)", params$dilutions))) {
+  stop("The `dilutions` must be in the format '1/digit'.")
+}
+for (dilution in params$dilutions) {
+  if (!all(sapply(params$list_of_plates, function(plate) dilution %in% plate$get_dilution("STANDARD CURVE")))) {
+    plate_where_dilution_is_missing <- which(sapply(list_of_plates, function(plate) !(dilution %in% plate$get_dilution("STANDARD CURVE"))))
+    stop("The dilution", dilution, "is not present in plates ", paste(plate_where_dilution_is_missing, collapse = ", "))
+  }
+}
+analyte_names <- params$list_of_plates[[1]]$analyte_names
+for (plate in params$list_of_plates) {
+  if (!identical(plate$analyte_names, analyte_names)) {
+    stop("The plates do not contain the same analytes.")
+  }
+}
+if (!is.null(params$additional_notes) && !is(params$additional_notes, "character")) {
+  stop("The `additional_notes` must be a character value.")
+}
+
+date_of_first_plate <- min(sapply(params$list_of_plates, function(plate) plate$plate_datetime))
+date_of_last_plate <- max(sapply(params$list_of_plates, function(plate) plate$plate_datetime))
+
+# i need to add this trick otherwise i get error in format function
+# Error in prettyNum(.Internal(format(x, trim, digits, nsmall, width, 3L,  :
+#  invalid 'trim' argument
+# it may cause some problems with timezones but few hours difference is not a big deal
+date_of_first_plate <- as.POSIXct(date_of_first_plate, origin = "1970-01-01", tz = "UTC")
+date_of_last_plate <- as.POSIXct(date_of_last_plate, origin = "1970-01-01", tz = "UTC")
+time_span <- difftime(date_of_last_plate, date_of_first_plate, units = "days")
+```
+
 Report generated on:  `r format(Sys.time(), "%d-%m-%Y %H:%M:%S")`.  
+First plate was run on: `r if(!is.null(date_of_first_plate)) format(date_of_first_plate, "%d-%m-%Y %H:%M") else "Date of running plate was not found in Luminex file"`.  
+Last plate was run on: `r if(!is.null(date_of_last_plate)) format(date_of_last_plate, "%d-%m-%Y %H:%M") else "Date of running plate was not found in Luminex file"`.  
+Time span: `r if(!is.null(time_span)) paste0(round(time_span, 2), " days") else "Dates were not found in Luminex file"`.  
+Number of plates used in report: `r length(params$list_of_plates)`.  
+Plates have `r paste0(length(analyte_names), " analytes")`.  
+Standard curve sample dilutions: `r format_dilutions(params$list_of_plates[[1]]$dilutions, params$list_of_plates[[1]]$dilution_values, params$list_of_plates[[1]]$sample_types)`.
+
+------------------
+
+`r if(!is.null(params$additional_notes)) "### Additional notes \n" `  
+
+`r if(!is.null(params$additional_notes)) params$additional_notes `  
+
+`r if(!is.null(params$additional_notes)) "\n -------------------" ` 
+
+### Plates used in this report
+
+<details open>
+  <summary>Click to show/hide list</summary>
+```{r list-of-plates, echo=FALSE, results='asis'}
+for (plate in params$list_of_plates) {
+  cat(paste0("- ", plate$plate_name, "\n"))
+}
+```
+</details>
+
+### Plate layout
+
+<details open>
+  <summary>Click to show/hide layout</summary>
+```{r plate-layout, fig.width=7, fig.height=4, fig.align='center', dev='jpeg', echo=FALSE, dpi=72}
+plot_layout(params$list_of_plates[[1]])
+```
+</details>
+
+------------------
+ 
+### Details for given analyte {.tabset .tabset-fade}
+
+```{r quality-control, results='asis', echo=FALSE, message=FALSE, out.width="50%", out.height="325", dev='svglite', dpi=72, warning=FALSE}
+# Code used to create dynamic tabs based on the number of analytes
+for (i in seq_along(analyte_names)) {
+  cat(paste0("#### ", analyte_names[i], "\n"))
+
+  # Plot stacked curves monochromatic
+  print(plot_standard_curve_stacked(params$list_of_plates, analyte_names[i]))
+
+  # Plot stacked curves colored
+  print(plot_standard_curve_stacked(params$list_of_plates, analyte_names[i], monochromatic = FALSE))
+
+  for (dilution in params$dilutions) {
+
+    # Plot levey-jennings
+    print(plot_levey_jennings(params$list_of_plates, analyte_names[i], dilution))
+  }
+
+  cat("\n\n")
+}
+```
+
 ------------------
 
 ### &nbsp;

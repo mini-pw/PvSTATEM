@@ -101,26 +101,59 @@ generate_plate_report <-
   }
 
 
-#' Generate a report with Levey-Jennings plots.
+#' Generate a Levey-Jennings Report for Multiple Plates.
 #'
-#' This function generates a report with Levey-Jennings plots.
+#' @description
+#' This function generates a Levey-Jennings report for a list of plates. The report includes layout plot, levey jennings plot, for each analyte and selected dilutions.
+#' The report also includes stacked standard curves plot in both monochromatic and color versions for each analyte.
 #' The report is generated using the `levey_jennings_report_template.Rmd` template.
 #'
 #' @param list_of_plates A list of plate objects.
-#' @param filename (`character(1)`) The name of the output file. If not
-#' provided, the filename will be created based on the plate name
-#' with the suffix '_report.html'.
-#' @param output_dir (`character(1)`) The directory where the report
-#' should be saved. Default is 'reports'.
+#' @param report_title (`character(1)`) The title of the report.
+#' @param dilutions (`character`) A character vector specifying the dilutions to be included in the report. Default is `c("1/100", "1/400")`.
+#' @param filename (`character(1)`) The name of the output HTML report file.
+#' If not provided or set to `NULL`, the filename will be based on the first plate name, formatted as `{plate_name}_levey_jennings.html`.
+#' If the filename does not contain the `.html` extension, it will be automatically added.
+#' Absolute file paths in `filename` will override `output_dir`.
+#' Existing files at the specified path will be overwritten.
 #'
+#' @param output_dir (`character(1)`) The directory where the report will be saved. Defaults to 'reports'.
+#' If `NULL`, the current working directory will be used. Necessary directories will be created if they do not exist.
 #'
-#' @return A report.
-#' @keywords internal
+#' @param additional_notes (`character(1)`) Additional notes to be included in the report. Markdown formatting is supported. If not provided, the section will be omitted.
+#'
+#' @return A Levey-Jennings report in HTML format.
+#'
+#' @import svglite
+#'
+#' @examples
+#' output_dir <- tempdir(check = TRUE)
+#'
+#' dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
+#'   package = "PvSTATEM", mustWork = TRUE
+#' )
+#' list_of_plates <- process_dir(dir_with_luminex_files,
+#'   return_plates = TRUE, format = "xPONENT", output_dir = output_dir
+#' )
+#' note <- "This is a Levey-Jennings report.\n**Author**: Jane Doe \n**Tester**: John Doe"
+#'
+#' generate_levey_jennings_report(
+#'   list_of_plates = list_of_plates,
+#'   report_title = "QC Report",
+#'   dilutions = c("1/100", "1/200"),
+#'   output_dir = tempdir(),
+#'   additional_notes = note
+#' )
+#'
+#' @export
 generate_levey_jennings_report <-
   function(list_of_plates,
+           report_title,
+           dilutions = c("1/100", "1/400"),
            filename = NULL,
-           output_dir = "reports") {
-    message("Generating report... This will take approximately 30 seconds.")
+           output_dir = "reports",
+           additional_notes = NULL) {
+    message("Generating report... For large reports with more than 30 plates, this will take a few minutes.")
 
     plate <- list_of_plates[[1]]
     output_path <- validate_filepath_and_output_dir(filename, output_dir, plate$plate_name, "levey_jennings", "html")
@@ -137,11 +170,28 @@ generate_levey_jennings_report <-
         mustWork = TRUE
       )
 
+    # markdown does not support single line breaks, so we need to replace them with two spaces and a line break
+    if (!is.null(additional_notes)) {
+      additional_notes <-
+        gsub(
+          pattern = "\n",
+          replacement = "  \n",
+          x = additional_notes
+        )
+    }
+
     rmarkdown::render(
       template_path,
-      params = list(list_of_plates = list_of_plates),
+      params = list(
+        list_of_plates = list_of_plates,
+        report_title = report_title,
+        dilutions = dilutions,
+        additional_notes = additional_notes
+      ),
       output_file = filename,
       output_dir = output_dir,
+      knit_root_dir = output_dir,
+      intermediates_dir = output_dir,
       quiet = TRUE
     )
     message(paste0(

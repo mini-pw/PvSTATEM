@@ -243,6 +243,13 @@ The plate name is extracted from the filepath
 \if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$set_plate_name(file_path)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{file_path}}{a character value representing the path to the file}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PlateBuilder-set_layout"></a>}}
