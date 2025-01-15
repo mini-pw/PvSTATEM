@@ -95,3 +95,18 @@ test_that("Test processing a directory with a single plate", {
   plates <- process_dir(dir, return_plates = T, output_dir = output_dir)
   expect_length(plates, 1)
 })
+
+test_that("Test processing a reallife directory with merge output", {
+  dir <- system.file("extdata", "multiplate_reallife_reduced", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+  output_dir <- tempdir(check = TRUE)
+
+  # Clean up the tmp directory
+  unlink(output_dir, recursive = T)
+  dir.create(output_dir)
+
+  plates <- process_dir(dir, return_plates = T, output_dir = output_dir, merge_outputs = T)
+  expect_length(plates, 3)
+  expect_true(
+    length(fs::dir_ls(output_dir, type = "file", glob = "*merged*")) >= 2
+  ) # The gte is used to account for the possibility of the file being created in the previous test
+})

@@ -165,6 +165,9 @@ get_output_dir <- function(
 #' be determined automatically based on the file name.
 #' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("RAU", "nMFI")`.
 #' @param generate_reports (`logical(1)`) If `TRUE`, generate quality control reports for each file. The default is `FALSE`.
+#' @param merge_outputs (`logical(1)`) If `TRUE`, merge the outputs of all plates into a single CSV file for each normalisation type.
+#' The resulting file will be saved in the output directory with the name `merged_{normalisation_type}_{timestamp}.csv`.
+#' Example: `merged_nMFI_20250115_230735.csv`.
 #' @param return_plates (`logical(1)`) If `TRUE`, return a list of processed plates. The default is `FALSE`.
 #' @param dry_run (`logical(1)`) If `TRUE`, the function will not process any files
 #' but will print the information about the files that would be processed. The default is `FALSE`.
@@ -197,6 +200,7 @@ process_dir <- function(
     format = NULL,
     normalisation_types = c("RAU", "nMFI"),
     generate_reports = FALSE,
+    merge_outputs = FALSE,
     return_plates = FALSE,
     dry_run = FALSE,
     verbose = TRUE,
@@ -278,6 +282,7 @@ process_dir <- function(
       layout_filepath = ifelse(is.na(layouts[i]), NULL, layouts[i]),
       output_dir = current_output_dir,
       format = formats[i],
+      process_plate = !merge_outputs,
       normalisation_types = normalisation_types,
       generate_report = generate_reports,
       verbose = verbose,
@@ -287,12 +292,40 @@ process_dir <- function(
     plates[[plate$plate_name]] <- plate
   }
 
+  plates <- sort_list_by(
+    plates,
+    value_f = function(p) p$plate_datetime,
+    decreasing = FALSE
+  )
+
+  file_ending <- format(now(), "%Y%m%d_%H%M%S")
+  if (merge_outputs) {
+    for (normalisation_type in normalisation_types) {
+      main_output_df <- data.frame()
+      for (plate in plates) {
+        output_df <- process_plate(plate,
+          normalisation_type = normalisation_type, write_output = FALSE,
+          include_raw_mfi = TRUE, adjust_blanks = TRUE, verbose = verbose
+        )
+        df_header_columns <- data.frame(
+          plate_name = plate$plate_name,
+          sample_name = rownames(output_df)
+        )
+        rownames(output_df) <- NULL
+        modifed_output_df <- cbind(df_header_columns, output_df)
+        main_output_df <- rbind(main_output_df, modifed_output_df)
+      }
+
+      file_name <- paste0(
+        "merged_", normalisation_type, "_", file_ending, ".csv"
+      )
+      output_path <- fs::path_join(c(output_dir, file_name))
+      write.csv(main_output_df, output_path, row.names = FALSE)
+      verbose_cat("Merged output saved to: ", output_path, "\n", verbose = verbose)
+    }
+  }
+
   if (return_plates) {
-    plates <- sort_list_by(
-      plates,
-      value_f = function(p) p$plate_datetime,
-      decreasing = FALSE
-    )
     return(plates)
   }
 }

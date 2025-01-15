@@ -13,6 +13,7 @@ process_dir(
   format = NULL,
   normalisation_types = c("RAU", "nMFI"),
   generate_reports = FALSE,
+  merge_outputs = FALSE,
   return_plates = FALSE,
   dry_run = FALSE,
   verbose = TRUE,
@@ -38,6 +39,10 @@ be determined automatically based on the file name. Available options are \code{
 \item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("RAU", "nMFI")}.}
 
 \item{generate_reports}{(\code{logical(1)}) If \code{TRUE}, generate quality control reports for each file. The default is \code{FALSE}.}
+
+\item{merge_outputs}{(\code{logical(1)}) If \code{TRUE}, merge the outputs of all plates into a single CSV file for each normalisation type.
+The resulting file will be saved in the output directory with the name \verb{merged_\{normalisation_type\}_\{timestamp\}.csv}.
+Example: \code{merged_nMFI_20250115_230735.csv}.}
 
 \item{return_plates}{(\code{logical(1)}) If \code{TRUE}, return a list of processed plates. The default is \code{FALSE}.}
 
