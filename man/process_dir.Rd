@@ -8,11 +8,13 @@ process_dir(
   input_dir,
   output_dir = NULL,
   recurse = FALSE,
-  flatten_output = FALSE,
+  flatten_output_dir = FALSE,
   layout_filepath = NULL,
   format = NULL,
   normalisation_types = c("RAU", "nMFI"),
   generate_reports = FALSE,
+  merge_outputs = FALSE,
+  column_collision_strategy = "intersection",
   return_plates = FALSE,
   dry_run = FALSE,
   verbose = TRUE,
@@ -27,7 +29,7 @@ By default, the output directory is the same as the input directory.}
 
 \item{recurse}{(\code{logical(1)}) If \code{TRUE}, the function will search for files recursively in the input directory. The default is \code{FALSE}.}
 
-\item{flatten_output}{(\code{logical(1)}) If \code{TRUE}, the output files will be saved in the output directory directly. The default is \code{FALSE}.}
+\item{flatten_output_dir}{(\code{logical(1)}) If \code{TRUE}, the output files will be saved in the output directory directly. The default is \code{FALSE}.}
 
 \item{layout_filepath}{(\code{character(1)}) The path to the layout file. The default is \code{NULL}, and the layout file will have to
 be determined automatically based on the file name.}
@@ -38,6 +40,13 @@ be determined automatically based on the file name. Available options are \code{
 \item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("RAU", "nMFI")}.}
 
 \item{generate_reports}{(\code{logical(1)}) If \code{TRUE}, generate quality control reports for each file. The default is \code{FALSE}.}
+
+\item{merge_outputs}{(\code{logical(1)}) If \code{TRUE}, merge the outputs of all plates into a single CSV file for each normalisation type.
+The resulting file will be saved in the output directory with the name \verb{merged_\{normalisation_type\}_\{timestamp\}.csv}.
+Example: \code{merged_nMFI_20250115_230735.csv}.}
+
+\item{column_collision_strategy}{(\code{character(1)}) A method for handling missing or additional columns when merging outputs.
+Possible options are \code{union} and \code{intersection}. The default is \code{intersection}.}
 
 \item{return_plates}{(\code{logical(1)}) If \code{TRUE}, return a list of processed plates. The default is \code{FALSE}.}
 
@@ -55,7 +64,7 @@ If the \code{return_plates} parameters is set to \code{FALSE} the function retur
 }
 \description{
 The output files will be created alongside their corresponding input files, preserving
-the directory structure of the input directory unless the \code{flatten_output} parameter is set to \code{TRUE}.
+the directory structure of the input directory unless the \code{flatten_output_dir} parameter is set to \code{TRUE}.
 }
 \examples{
 # Select input directory to process

@@ -45,11 +45,11 @@ test_that("Test obtaining an output directory", {
   expect_equal(get_output_dir(plate_filepath, input_dir), input_dir)
   expect_equal(get_output_dir(
     plate_filepath, input_dir_parent,
-    flatten_output = FALSE
+    flatten_output_dir = FALSE
   ), input_dir)
   expect_equal(get_output_dir(
     plate_filepath, input_dir_parent,
-    flatten_output = TRUE
+    flatten_output_dir = TRUE
   ), input_dir_parent)
   expect_equal(get_output_dir(
     plate_filepath, input_dir_parent,
@@ -58,7 +58,7 @@ test_that("Test obtaining an output directory", {
   expect_equal(get_output_dir(
     plate_filepath, input_dir_parent,
     output_dir = specified_output_dir,
-    flatten_output = TRUE
+    flatten_output_dir = TRUE
   ), specified_output_dir)
 })
 
@@ -66,16 +66,16 @@ test_that("Test obtaining an output directory", {
 test_that("Test processing a mock directory", {
   dir <- system.file("extdata", "multiplate_mock", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = T, flatten_output = T)
+    process_dir(dir, dry_run = T, recurse = T, flatten_output_dir = T)
   ))
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = F, flatten_output = T)
+    process_dir(dir, dry_run = T, recurse = F, flatten_output_dir = T)
   ))
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = T, flatten_output = F)
+    process_dir(dir, dry_run = T, recurse = T, flatten_output_dir = F)
   ))
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = T, flatten_output = F, output_dir = tempdir(check = TRUE))
+    process_dir(dir, dry_run = T, recurse = T, flatten_output_dir = F, output_dir = tempdir(check = TRUE))
   ))
 
   dir <- tempdir(check = TRUE)
@@ -94,4 +94,19 @@ test_that("Test processing a directory with a single plate", {
   output_dir <- tempdir(check = TRUE)
   plates <- process_dir(dir, return_plates = T, output_dir = output_dir)
   expect_length(plates, 1)
+})
+
+test_that("Test processing a reallife directory with merge output", {
+  dir <- system.file("extdata", "multiplate_reallife_reduced", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
+  output_dir <- tempdir(check = TRUE)
+
+  # Clean up the tmp directory
+  unlink(output_dir, recursive = T)
+  dir.create(output_dir)
+
+  plates <- process_dir(dir, return_plates = T, output_dir = output_dir, merge_outputs = T)
+  expect_length(plates, 3)
+  expect_true(
+    length(fs::dir_ls(output_dir, type = "file", glob = "*merged*")) >= 2
+  ) # The gte is used to account for the possibility of the file being created in the previous test
 })
