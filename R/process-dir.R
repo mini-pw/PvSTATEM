@@ -168,6 +168,8 @@ get_output_dir <- function(
 #' @param merge_outputs (`logical(1)`) If `TRUE`, merge the outputs of all plates into a single CSV file for each normalisation type.
 #' The resulting file will be saved in the output directory with the name `merged_{normalisation_type}_{timestamp}.csv`.
 #' Example: `merged_nMFI_20250115_230735.csv`.
+#' @param column_collision_strategy (`character(1)`) A method for handling missing or additional columns when merging outputs.
+#' Possible options are `union` and `intersection`. The default is `intersection`.
 #' @param return_plates (`logical(1)`) If `TRUE`, return a list of processed plates. The default is `FALSE`.
 #' @param dry_run (`logical(1)`) If `TRUE`, the function will not process any files
 #' but will print the information about the files that would be processed. The default is `FALSE`.
@@ -201,6 +203,7 @@ process_dir <- function(
     normalisation_types = c("RAU", "nMFI"),
     generate_reports = FALSE,
     merge_outputs = FALSE,
+    column_collision_strategy = "intersection",
     return_plates = FALSE,
     dry_run = FALSE,
     verbose = TRUE,
@@ -301,7 +304,7 @@ process_dir <- function(
   file_ending <- format(now(), "%Y%m%d_%H%M%S")
   if (merge_outputs) {
     for (normalisation_type in normalisation_types) {
-      main_output_df <- data.frame()
+      dataframes <- list()
       for (plate in plates) {
         output_df <- process_plate(plate,
           normalisation_type = normalisation_type, write_output = FALSE,
@@ -313,8 +316,14 @@ process_dir <- function(
         )
         rownames(output_df) <- NULL
         modifed_output_df <- cbind(df_header_columns, output_df)
-        main_output_df <- rbind(main_output_df, modifed_output_df)
+        dataframes[[plate$plate_name]] <- modifed_output_df
       }
+
+      main_output_df <- merge_dataframes(
+        dataframes,
+        column_collision_strategy = column_collision_strategy,
+        fill_value = NA
+      )
 
       file_name <- paste0(
         "merged_", normalisation_type, "_", file_ending, ".csv"

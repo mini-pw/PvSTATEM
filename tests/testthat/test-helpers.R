@@ -189,3 +189,49 @@ test_that("Test sorting a list", {
   sl <- list(b = list(v = 1), a = list(v = 2))
   expect_equal(sort_list_by(l, decreasing = FALSE, value_f = function(x) x$v), sl)
 })
+
+test_that("Test select columns function", {
+  df <- data.frame(A = 1:3, B = 4:6)
+  result <- select_columns(df, c("A", "B"))
+  expect_equal(result, df)
+
+  result <- select_columns(df, c("A", "B", "C"), replace_value = 0)
+  expected <- data.frame(A = 1:3, B = 4:6, C = c(0, 0, 0))
+  expect_equal(result, expected)
+})
+
+test_that("Test merging dataframes via handles intersection", {
+  df1 <- data.frame(A = 1:3, B = 4:6)
+  df2 <- data.frame(A = 3:5, B = 7:9)
+  df3 <- data.frame(A = 7:9, C = 10:12)
+
+  result1 <- merge_dataframes(list(df1), column_collision_strategy = "intersection")
+  expected1 <- df1
+  expect_equal(result1, expected1)
+
+  result2 <- merge_dataframes(list(df1, df2), column_collision_strategy = "intersection")
+  expected2 <- rbind(df1, df2)
+  expect_equal(result2, expected2)
+
+  result3 <- merge_dataframes(list(df1, df2, df3), column_collision_strategy = "intersection")
+  expected3 <- data.frame(A = c(1:3, 3:5, 7:9))
+  expect_equal(result3, expected3)
+})
+
+test_that("Test merging dataframes via handles union", {
+  df1 <- data.frame(A = 1:3, B = 4:6)
+  df2 <- data.frame(A = 3:5, B = 7:9)
+  df3 <- data.frame(A = 7:9, C = 10:12)
+
+  result1 <- merge_dataframes(list(df1), column_collision_strategy = "union")
+  expected1 <- df1
+  expect_equal(result1, expected1)
+
+  result2 <- merge_dataframes(list(df1, df2), column_collision_strategy = "union", fill_value = NA)
+  expected2 <- rbind(df1, df2)
+  expect_equal(result2, expected2)
+
+  result3 <- merge_dataframes(list(df1, df2, df3), column_collision_strategy = "union", fill_value = NA)
+  expected3 <- data.frame(A = c(1:3, 3:5, 7:9), B = c(4:6, 7:9, rep(NA, 3)), C = c(rep(NA, 3), rep(NA, 3), 10:12))
+  expect_equal(result3, expected3)
+})
