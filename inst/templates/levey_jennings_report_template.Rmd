@@ -48,7 +48,7 @@ for (dilution in params$dilutions) {
 analyte_names <- params$list_of_plates[[1]]$analyte_names
 for (plate in params$list_of_plates) {
   if (!identical(plate$analyte_names, analyte_names)) {
-    stop("The plates do not contain the same analytes.")
+    warning("The plates do not contain the same analytes.")
   }
 }
 if (!is.null(params$additional_notes) && !is(params$additional_notes, "character")) {
@@ -119,7 +119,6 @@ for (i in seq_along(analyte_names)) {
   print(plot_standard_curve_stacked(params$list_of_plates, analyte_names[i], monochromatic = FALSE))
 
   for (dilution in params$dilutions) {
-
     # Plot levey-jennings
     print(plot_levey_jennings(params$list_of_plates, analyte_names[i], dilution))
   }
