@@ -108,12 +108,15 @@ process_plate <-
     stopifnot(is_valid_normalisation_type(normalisation_type))
     stopifnot(is.character(data_type))
 
-
-    output_path <- validate_filepath_and_output_dir(filename, output_dir,
-      plate$plate_name, normalisation_type,
-      "csv",
-      verbose = verbose
-    )
+    if (write_output) {
+      output_path <- validate_filepath_and_output_dir(filename, output_dir,
+        plate$plate_name, normalisation_type,
+        "csv",
+        verbose = verbose
+      )
+    } else {
+      output_path <- NULL
+    }
 
 
     if (!plate$blank_adjusted && adjust_blanks) {
