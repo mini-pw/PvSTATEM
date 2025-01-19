@@ -1,3 +1,12 @@
+PvSTATEM 0.2.1
+---------------------------------------------------------------
+* updated the multiple plate report layout
+* merged output files of `process_dir`
+* accelerated the model fitting
+* reading plate made less restrictive - added an option to skip some datatypes
+* bug fixes
+
+
 PvSTATEM 0.2.0
 ---------------------------------------------------------------
 * added processing of multiple plates
