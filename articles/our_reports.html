@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PvSTATEM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,7 @@
                         <h4 data-toc-skip class="author">Mateusz
 Nizwantowski</h4>
             
-            <h4 data-toc-skip class="date">2025-01-13</h4>
+            <h4 data-toc-skip class="date">2025-01-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/main/vignettes/our_reports.Rmd" class="external-link"><code>vignettes/our_reports.Rmd</code></a></small>
       <div class="d-none name"><code>our_reports.Rmd</code></div>
@@ -83,15 +83,28 @@ Nizwantowski</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <code>PvSTATEM</code> package provides, for now, one report that
-can be generated using the <code>generate_plate_report</code> function.
-It is an HTML report that contains a summary of the plate. It was
-optimized for size so it could be sent via email. In the future, we plan
-to add to the package report about Levey-Jennings plots. For now, we
-will focus on the plate summary report. To present this functionality,
-we use a sample dataset from the Covid OISE study, which is pre-loaded
-into the package. Firstly, let us load the dataset as the
-<code>plate</code> object.</p>
+<p>The <code>PvSTATEM</code> package provides for two reports: - plate
+report that can be generated using the
+<code>generate_plate_report</code> function, - Levey-Jennings report
+that can be generated using the
+<code>generate_levey_jennings_report</code> function.</p>
+<p>They are HTML report that were optimized for size so they could be
+sent via email. The first one contains a summary of the plate. It
+includes information about the plate, the layout of the plate, the
+preview of standard curves, and detailed information about analytes. The
+second one contains information about the quality control over time. It
+includes plots of stacked standard curves and Levey-Jennings plots for
+each analyte.</p>
+</div>
+<div class="section level2">
+<h2 id="plate-summary-report">Plate summary report<a class="anchor" aria-label="anchor" href="#plate-summary-report"></a>
+</h2>
+<div class="section level3">
+<h3 id="generating-the-report">Generating the report<a class="anchor" aria-label="anchor" href="#generating-the-report"></a>
+</h3>
+<p>To present this functionality, we use a sample dataset from the Covid
+OISE study, which is pre-loaded into the package. Firstly, let us load
+the dataset as the <code>plate</code> object.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mini-pw/PvSTATEM" class="external-link">PvSTATEM</a></span><span class="op">)</span></span>
 <span></span>
@@ -106,10 +119,6 @@ into the package. Firstly, let us load the dataset as the
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Plate with 96 samples and 30 analytes</span></span></code></pre>
-</div>
-<div class="section level2">
-<h2 id="generating-the-report">Generating the report<a class="anchor" aria-label="anchor" href="#generating-the-report"></a>
-</h2>
 <p>To generate the report, we need to use the
 <code>generate_plate_report</code> function. There is one parameter that
 needs to be set, which is the <code>plate</code> object. Generation of
@@ -136,15 +145,15 @@ analyte, where the user can select the analyte of interest.</li>
 </ul>
 <p><img src="img/report_analyte_details.png" alt="Image description" width="600px" style="border: 1px solid black;"></p>
 </div>
-<div class="section level2">
-<h2 id="additional-parameters">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters"></a>
-</h2>
+<div class="section level3">
+<h3 id="additional-parameters">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters"></a>
+</h3>
 <p>The user can customize the report by setting additional parameters.
 The <code>generate_plate_report</code> function has the following
 optional parameters:</p>
 <ul>
 <li>
-<code>additonal_notes</code> - string with additional notes that
+<code>additional_notes</code> - string with additional notes that
 will be added to the report</li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -153,7 +162,7 @@ will be added to the report</li>
 <span><span class="st">The notes support markdown syntax, for example:</span></span>
 <span><span class="st">**Author: Jane Doe** - bold</span></span>
 <span><span class="st">*Date: 2024-10-28* - italic</span></span>
-<span><span class="st">~~Complited~~ - strikethrough</span></span>
+<span><span class="st">~~Completed~~ - strikethrough</span></span>
 <span><span class="st">H~2~O - subscripts</span></span>
 <span><span class="st">X^2^ - superscripts</span></span>
 <span><span class="st">[text that will be displayed](https://www.google.com) - link to resource</span></span>
@@ -220,6 +229,95 @@ directory will be used. Default is ‘reports’.</li>
 <span>  filename <span class="op">=</span> <span class="st">"example_report.html"</span>,</span>
 <span>  output_dir <span class="op">=</span> <span class="st">"reports_from_new_plates"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="levey-jennings-report">Levey-Jennings report<a class="anchor" aria-label="anchor" href="#levey-jennings-report"></a>
+</h2>
+<div class="section level3">
+<h3 id="generating-the-report-1">Generating the report<a class="anchor" aria-label="anchor" href="#generating-the-report-1"></a>
+</h3>
+<p>To present this functionality, we use a sample dataset from the Covid
+OISE study, which is pre-loaded into the package. Firstly, let us load
+the dataset as the <code>list_of_plates</code> object.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"multiplate_reallife_reduced"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"PvSTATEM"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create a temporary directory for the output</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span>check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">output_dir</span><span class="op">)</span></span>
+<span><span class="va">list_of_plates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_dir.html">process_dir</a></span><span class="op">(</span><span class="va">dir</span>,</span>
+<span>  return_plates <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  format <span class="op">=</span> <span class="st">"xPONENT"</span>,</span>
+<span>  output_dir <span class="op">=</span> <span class="va">output_dir</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Clean up the output directory</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">output_dir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>To generate the report, we need to use the
+<code>generate_levey_jennings_report</code> function. There are two
+parameters that need to be set, which are: - <code>list_of_plates</code>
+- list of <code>Plate</code> instances, it is recommended generate is
+with <code>process_dir</code> function - <code>report_title</code> -
+title of the report</p>
+<p>Generation of the report takes a several minutes, so please be
+patient. It can take up around 5 minutes for reports with more than 30
+plates.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/generate_levey_jennings_report.html">generate_levey_jennings_report</a></span><span class="op">(</span><span class="va">list_of_plates</span>, report_title <span class="op">=</span> <span class="st">"Example study"</span><span class="op">)</span></span></code></pre></div>
+<p>Default report has 3 main sections:</p>
+<ul>
+<li>The most important information about the report</li>
+</ul>
+<p>This section contains information about the report, the number of
+plates, the number of analytes, list of dilutions, and the date range of
+the plates. It also contains list of plates used to crate report. This
+list can be hidden by clicking on the “Show/hide plates” button.</p>
+<ul>
+<li>Layout of the plate</li>
+</ul>
+<p>This part of report contains a plot with the layout of the plate. To
+create this visualization, the first plate from the list (oldest one) is
+used.</p>
+<ul>
+<li>Detailed information about analytes</li>
+</ul>
+<p>This section contains tabs for each analyte. Each tab contains two
+types of plots: stacked standard curves and Levey-Jennings plots. First
+type of plot shows the stacked standard curves for each plate, there are
+two version of this plot included in the report: monochromatic and
+colored. Then there is second type of plot, Levey-Jennings plot. This
+plot shows the concentration of the analyte over time. By default there
+are plotted two charts for dilution “1/100” and “1/400”.</p>
+</div>
+<div class="section level3">
+<h3 id="additional-parameters-1">Additional parameters<a class="anchor" aria-label="anchor" href="#additional-parameters-1"></a>
+</h3>
+<p>The user can customize the report by setting additional parameters.
+The <code>generate_levey_jennings_report</code> function has the
+following optional parameters:</p>
+<ul>
+<li>
+<code>dilutions</code> - vector of dilutions that will be used to
+create Levey-Jennings plots. By default, it is set to
+<code>c("1/100", "1/400")</code>
+</li>
+<li>
+<code>additional_notes</code> - string with additional notes that
+will be added to the report, works the same way as in the
+<code>generate_plate_report</code> function</li>
+<li>
+<code>filename</code> - The name of the output HTML report file. It
+works the same way as in the <code>generate_plate_report</code>
+function</li>
+<li>
+<code>output_dir</code> - The directory where the output CSV file
+should be saved. It works the same way as in the
+<code>generate_plate_report</code> function</li>
+</ul>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

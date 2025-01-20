@@ -45,7 +45,7 @@ More info about the nMFI normalisation can be found in get_nmfi function documen
 
     <a class="navbar-brand me-2" href="../index.html">PvSTATEM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,6 +108,7 @@ More info about the nMFI normalisation can be found in get_nmfi function documen
 <span>  <span class="va">plate</span>,</span>
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output_dir <span class="op">=</span> <span class="st">"normalised_data"</span>,</span>
+<span>  write_output <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  normalisation_type <span class="op">=</span> <span class="st">"RAU"</span>,</span>
 <span>  data_type <span class="op">=</span> <span class="st">"Median"</span>,</span>
 <span>  include_raw_mfi <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -142,6 +143,11 @@ If a file already exists under a specified filepath, the function will overwrite
 <dd><p>(<code>character(1)</code>) The directory where the output CSV file should be saved.
 Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
 If it equals to <code>NULL</code> the current working directory will be used. Default is 'normalised_data'.</p></dd>
+
+
+<dt id="arg-write-output">write_output<a class="anchor" aria-label="anchor" href="#arg-write-output"></a></dt>
+<dd><p>(<code>logical(1)</code>) whether or not to write the output to a file
+specified by <code>filename</code> parameter. The default is <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-normalisation-type">normalisation_type<a class="anchor" aria-label="anchor" href="#arg-normalisation-type"></a></dt>
@@ -196,10 +202,10 @@ In case it is a character string, it should have the format <code>1/d+</code>, w
 <span class="r-in"><span><span class="va">example_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span>check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># a temporary directory</span></span></span>
 <span class="r-in"><span><span class="co"># create and save dataframe with computed dilutions</span></span></span>
 <span class="r-in"><span><span class="fu">process_plate</span><span class="op">(</span><span class="va">plate</span>, output_dir <span class="op">=</span> <span class="va">example_dir</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The specified file /tmp/RtmpdGePL2/CovidOISExPONTENT_CO_reduced_RAU.csv already exists. Overwriting it.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The specified file /tmp/RtmpFPTjFr/CovidOISExPONTENT_CO_reduced_RAU.csv already exists. Overwriting it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fitting the models and predicting RAU for each analyte</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Adding the raw MFI values to the output dataframe</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Saving the computed RAU values to a CSV file located in: '/tmp/RtmpdGePL2/CovidOISExPONTENT_CO_reduced_RAU.csv'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Saving the computed RAU values to a CSV file located in: '/tmp/RtmpFPTjFr/CovidOISExPONTENT_CO_reduced_RAU.csv'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Spike_6P_IPP      ME_NA Spike_6P_IPP_raw ME_NA_raw</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> K086-LM   3292.26101  2128.6098           4658.5     365.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> M254-VM     85.38753  5496.4318            209.5     814.0</span>
@@ -246,7 +252,7 @@ In case it is a character string, it should have the format <code>1/d+</code>, w
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fitting the models and predicting RAU for each analyte</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Adding the raw MFI values to the output dataframe</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Saving the computed RAU values to a CSV file located in: '/tmp/RtmpdGePL2/plate_without_blanks_adjusted.csv'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Saving the computed RAU values to a CSV file located in: '/tmp/RtmpFPTjFr/plate_without_blanks_adjusted.csv'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Spike_6P_IPP      ME_NA Spike_6P_IPP_raw ME_NA_raw</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> K086-LM   3292.26101  2128.6098           4658.5     365.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> M254-VM     85.38753  5496.4318            209.5     814.0</span>
@@ -292,10 +298,10 @@ In case it is a character string, it should have the format <code>1/d+</code>, w
 <span class="r-in"><span>  output_dir <span class="op">=</span> <span class="va">example_dir</span>,</span></span>
 <span class="r-in"><span>  normalisation_type <span class="op">=</span> <span class="st">"nMFI"</span>, reference_dilution <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">400</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The specified file /tmp/RtmpdGePL2/CovidOISExPONTENT_CO_reduced_nMFI.csv already exists. Overwriting it.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The specified file /tmp/RtmpFPTjFr/CovidOISExPONTENT_CO_reduced_nMFI.csv already exists. Overwriting it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Computing nMFI values for each analyte</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Adding the raw MFI values to the output dataframe</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Saving the computed nMFI values to a CSV file located in: '/tmp/RtmpdGePL2/CovidOISExPONTENT_CO_reduced_nMFI.csv'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Saving the computed nMFI values to a CSV file located in: '/tmp/RtmpFPTjFr/CovidOISExPONTENT_CO_reduced_nMFI.csv'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Spike_6P_IPP     ME_NA Spike_6P_IPP_raw ME_NA_raw</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> K086-LM   1.32720798 0.9407979           4658.5     365.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> M254-VM   0.05968661 2.0952381            209.5     814.0</span>

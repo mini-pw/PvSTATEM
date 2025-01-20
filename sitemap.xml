@@ -43,6 +43,7 @@
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/is_outlier.html</loc></url>
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/is_valid_data_type.html</loc></url>
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/is_valid_sample_type.html</loc></url>
+<url><loc>https://mini-pw.github.io/PvSTATEM/reference/merge_dataframes.html</loc></url>
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/plot_counts.html</loc></url>
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/plot_layout.html</loc></url>
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/plot_levey_jennings.html</loc></url>
@@ -61,6 +62,7 @@
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/read_luminex_data.html</loc></url>
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/read_xponent_format.html</loc></url>
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/remove_empty_lists.html</loc></url>
+<url><loc>https://mini-pw.github.io/PvSTATEM/reference/select_columns.html</loc></url>
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/sort_list_by.html</loc></url>
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/translate_sample_names_to_sample_types.html</loc></url>
 <url><loc>https://mini-pw.github.io/PvSTATEM/reference/validate_filepath_and_output_dir.html</loc></url>

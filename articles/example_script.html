@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PvSTATEM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,7 @@
                         <h4 data-toc-skip class="author">Tymoteusz
 Kwieciński</h4>
             
-            <h4 data-toc-skip class="date">2025-01-13</h4>
+            <h4 data-toc-skip class="date">2025-01-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mini-pw/PvSTATEM/blob/main/vignettes/example_script.Rmd" class="external-link"><code>vignettes/example_script.Rmd</code></a></small>
       <div class="d-none name"><code>example_script.Rmd</code></div>
@@ -124,10 +124,10 @@ document, or in documentation of <code><a href="../reference/get_nmfi.html">?get
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span>check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># create a temporary directory to store the output</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_plate.html">process_plate</a></span><span class="op">(</span><span class="va">plate</span>, output_dir <span class="op">=</span> <span class="va">example_dir</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; Fitting the models and predicting RAU for each analyte</span></span>
-<span><span class="co">#&gt; Adding the raw MFI values to the output dataframe</span></span>
-<span><span class="co">#&gt; Saving the computed RAU values to a CSV file located in: '/tmp/RtmpXz32uA/CovidOISExPONTENT_RAU.csv'</span></span></code></pre>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">#&gt; Fitting the models and predicting RAU for each analyte</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Adding the raw MFI values to the output dataframe</span></span>
+<span><span class="co">#&gt; Saving the computed RAU values to a CSV file located in: '/tmp/RtmpX2Br4I/CovidOISExPONTENT_RAU.csv'</span></span></code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;  [1] "Spike_6P"          "ME"                "HKU1_S"           </span></span>
 <span><span class="co">#&gt;  [4] "OC43_NP"           "OC43_S"            "HKU1_NP"          </span></span>
@@ -151,7 +151,7 @@ document, or in documentation of <code><a href="../reference/get_nmfi.html">?get
 <span><span class="co">#&gt; [58] "S2_raw"            "Spike_omicron_raw" "RBD_omicron_raw"</span></span></code></pre>
 <p>We can take a look at a slice of the produced dataframe (as not to
 overcrowd the article).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;                Spike_6P        ME     HKU1_S   OC43_NP     OC43_S</span></span>
 <span><span class="co">#&gt; CO-F-226-01-CF 20000.00  5768.628   829.2993 4289.2647  6871.6113</span></span>
@@ -171,7 +171,7 @@ quality control and normalisation of the data.</p>
 </h3>
 <p>After the plate is successfully loaded, we can look at some basic
 information about it.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">summary</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the plate with name 'CovidOISExPONTENT':</span></span>
 <span><span class="co">#&gt; Plate examination date: 2022-05-11 16:45:00</span></span>
@@ -182,7 +182,7 @@ information about it.</p>
 <span><span class="co">#&gt; Number of negative control samples: 0</span></span>
 <span><span class="co">#&gt; Number of test samples: 84</span></span>
 <span><span class="co">#&gt; Number of analytes: 30</span></span></code></pre>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">summary</span><span class="op">(</span>include_names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># more detailed summary</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the plate with name 'CovidOISExPONTENT':</span></span>
 <span><span class="co">#&gt; Plate examination date: 2022-05-11 16:45:00</span></span>
@@ -194,7 +194,7 @@ information about it.</p>
 <span><span class="co">#&gt; Number of negative control samples: 0</span></span>
 <span><span class="co">#&gt; Number of test samples: 84</span></span>
 <span><span class="co">#&gt; Number of analytes: 30</span></span></code></pre>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="va">sample_names</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;  [1] "B"              "1/50"           "1/100"          "1/200"         </span></span>
 <span><span class="co">#&gt;  [5] "1/400"          "1/800"          "1/1600"         "1/3200"        </span></span>
@@ -220,7 +220,7 @@ information about it.</p>
 <span><span class="co">#&gt; [85] "CO-F-260-02-GC" "CO-F-075-02-FM" "CO-F-139-01-BP" "CO-H-SD-021-PC"</span></span>
 <span><span class="co">#&gt; [89] "CO-H-SK-056-MN" "CO-F-027-02-SL" "CO-F-180-04-DC" "CO-F-027-01-SF"</span></span>
 <span><span class="co">#&gt; [93] "CO-F-156-01-GA" "CO-F-402-02-DV" "CO-H-SK-018-VC" "CO-F-045-01-SN"</span></span></code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="va">analyte_names</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;  [1] "Spike_6P"      "ME"            "HKU1_S"        "OC43_NP"      </span></span>
 <span><span class="co">#&gt;  [5] "OC43_S"        "HKU1_NP"       "X229E_NP"      "Mumps_NP"     </span></span>
@@ -232,7 +232,7 @@ information about it.</p>
 <span><span class="co">#&gt; [29] "Spike_omicron" "RBD_omicron"</span></span></code></pre>
 <p>The summary can also be accessed using the built-in generic method
 <code>summary</code>.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">plate</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the plate with name 'CovidOISExPONTENT':</span></span>
 <span><span class="co">#&gt; Plate examination date: 2022-05-11 16:45:00</span></span>
@@ -250,16 +250,16 @@ information about it.</p>
 <p>The package can plot the RAU along the MFI values, allowing manual
 inspection of the standard curve. This method raises a warning in case
 the MFI values were not adjusted using the blank samples.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"OC43_S"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-6-1.png" width="70%"></p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plate</span><span class="op">$</span><span class="fu">blank_adjustment</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Plate with 96 samples and 30 analytes</span></span></code></pre>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">plate</span><span class="op">$</span><span class="va">blank_adjusted</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1] TRUE</span></span></code></pre>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"OC43_S"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-6-2.png" width="70%"></p>
 <p>We can also plot the standard curve for different analytes and data
@@ -268,10 +268,10 @@ using the command <code>plate$analyte_names</code>.</p>
 <p>By default, all the operations are performed on the
 <code>Median</code> value of the samples; this option can be selected
 from the <code>data_type</code> parameter of the function.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"RBD_wuhan"</span>, data_type <span class="op">=</span> <span class="st">"Mean"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-7-1.png" width="70%"></p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"RBD_wuhan"</span>, data_type <span class="op">=</span> <span class="st">"Avg Net MFI"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-7-2.png" width="70%"></p>
 <p>This plot may be used to assess the standard curve’s quality and
@@ -280,10 +280,10 @@ plotted the standard curve for the analyte, <code>ME</code>, we could
 notice that the <code>Median</code> value of the sample with RAU of
 <code>39.06</code> is abnormally large, which may indicate a problem
 with the data.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"ME"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-8-1.png" width="70%"></p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte.html">plot_standard_curve_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"ME"</span>, log_scale <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-8-2.png" width="70%"></p>
 <p>The plotting function has more options, such as selecting which axis
@@ -296,10 +296,10 @@ values of standard curve samples for a given analyte along the boxplot
 of the MFI values of the test samples.</p>
 <p>It helps identify the outlier samples and check if the test samples
 are within the range of the standard curve samples.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_mfi_for_analyte.html">plot_mfi_for_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"OC43_S"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-9-1.png" width="70%"></p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_mfi_for_analyte.html">plot_mfi_for_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"Spike_6P"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-9-2.png" width="70%"></p>
 <p>For the <code>Spike_6P</code> analyte, the MFI values don’t fall
@@ -381,7 +381,7 @@ to the <code>predict</code> function. By default
 the log10 function. To create a model for a specific analyte, we use the
 <code>create_standard_curve_model_analyte</code> function, which fits
 and returns the model for the analyte.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_standard_curve_model_analyte.html">create_standard_curve_model_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"OC43_S"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model</span></span></code></pre></div>
@@ -400,19 +400,19 @@ predict the RAU values of the samples based on the MFI values. The
 output above shows the most critical parameters of the fitted model.</p>
 <p>The predicted values may be used to plot the standard curve, which
 can be compared to the sample values.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte_with_model.html">plot_standard_curve_analyte_with_model</a></span><span class="op">(</span><span class="va">plate</span>, <span class="va">model</span>, log_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-11-1.png" width="70%"></p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte_with_model.html">plot_standard_curve_analyte_with_model</a></span><span class="op">(</span><span class="va">plate</span>, <span class="va">model</span>, log_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span><span class="op">)</span>, plot_asymptote <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-11-2.png" width="70%"></p>
 <p>Apart from the plotting, the package can predict the values of all
 the samples on the plate.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mfi_values</span> <span class="op">&lt;-</span> <span class="va">plate</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">Median</span><span class="op">$</span><span class="va">OC43_S</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mfi_values</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1]   43.0 4193.0 1982.0 1308.0  681.0  365.5</span></span></code></pre>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predicted_rau</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">mfi_values</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">predicted_rau</span><span class="op">)</span></span></code></pre></div>
@@ -432,11 +432,11 @@ illustrate that we can look at prediction plots. The
 parameters and passes them to a <code>predict</code> method so we can
 visually see the effect of the <code>over_max_extrapolation</code>
 parameter.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_standard_curve_model_analyte.html">create_standard_curve_model_analyte</a></span><span class="op">(</span><span class="va">plate</span>, analyte_name <span class="op">=</span> <span class="st">"Spike_6P"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_standard_curve_analyte_with_model.html">plot_standard_curve_analyte_with_model</a></span><span class="op">(</span><span class="va">plate</span>, <span class="va">model</span>, log_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-13-1.png" width="70%"></p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_standard_curve_analyte_with_model.html">plot_standard_curve_analyte_with_model</a></span><span class="op">(</span><span class="va">plate</span>, <span class="va">model</span>, log_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span><span class="op">)</span>, over_max_extrapolation <span class="op">=</span> <span class="fl">100000</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example_script_files/figure-html/unnamed-chunk-14-1.png" width="70%"></p>
 </div>
@@ -458,7 +458,7 @@ function that also saves the output into the CSV file by setting the
 <code>process_plate</code> function. By default the output will be saved
 as a file with the same name as the plate name but with the
 <code>_nMFI</code> suffix.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nmfi_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nmfi.html">get_nmfi</a></span><span class="op">(</span><span class="va">plate</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># process plate with nMFI normalisation</span></span>
@@ -466,8 +466,8 @@ as a file with the same name as the plate name but with the
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_plate.html">process_plate</a></span><span class="op">(</span><span class="va">plate</span>, output_dir <span class="op">=</span> <span class="va">example_dir</span>, normalisation_type <span class="op">=</span> <span class="st">"nMFI"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Computing nMFI values for each analyte</span></span>
 <span><span class="co">#&gt; Adding the raw MFI values to the output dataframe</span></span>
-<span><span class="co">#&gt; Saving the computed nMFI values to a CSV file located in: '/tmp/RtmpXz32uA/CovidOISExPONTENT_nMFI.csv'</span></span></code></pre>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; Saving the computed nMFI values to a CSV file located in: '/tmp/RtmpX2Br4I/CovidOISExPONTENT_nMFI.csv'</span></span></code></pre>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;                Spike_6P       ME    HKU1_S   OC43_NP    OC43_S</span></span>
 <span><span class="co">#&gt; CO-F-226-01-CF 5.842408 1.988889 0.3821903 1.5449180 2.4537445</span></span>

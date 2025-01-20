@@ -29,7 +29,7 @@ The function returns a logical vector that can be used to subset the MFI values.
 
     <a class="navbar-brand me-2" href="../index.html">PvSTATEM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,8 +113,14 @@ with dilutions above this threshold should be checked for the high dose hook eff
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">plate_filepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CovidOISExPONTENT.csv"</span>, package <span class="op">=</span> <span class="st">"PvSTATEM"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># get the filepath of the csv dataset</span></span></span>
-<span class="r-in"><span><span class="va">layout_filepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CovidOISExPONTENT_layout.xlsx"</span>, package <span class="op">=</span> <span class="st">"PvSTATEM"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">plate_filepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata"</span>, <span class="st">"CovidOISExPONTENT.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"PvSTATEM"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="co"># get the filepath of the csv dataset</span></span></span>
+<span class="r-in"><span><span class="va">layout_filepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata"</span>, <span class="st">"CovidOISExPONTENT_layout.xlsx"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"PvSTATEM"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">plate</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_luminex_data.html">read_luminex_data</a></span><span class="op">(</span><span class="va">plate_filepath</span>, <span class="va">layout_filepath</span><span class="op">)</span> <span class="co"># read the data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reading Luminex data from: /home/runner/work/_temp/Library/PvSTATEM/extdata/CovidOISExPONTENT.csv</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> using format xPONENT</span>
@@ -128,6 +134,8 @@ with dilutions above this threshold should be checked for the high dose hook eff
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># here we create the model with the high dose hook effect handled</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_standard_curve_model_analyte.html">create_standard_curve_model_analyte</a></span><span class="op">(</span><span class="va">plate</span>, <span class="st">"RBD_omicron"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>High dose hook detected.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>         Removing samples with dilutions above the high dose threshold.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
