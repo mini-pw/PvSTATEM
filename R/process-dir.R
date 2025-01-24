@@ -131,12 +131,12 @@ get_output_dir <- function(
     input_file,
     input_dir,
     output_dir = NULL,
-    flatten_output = FALSE) {
+    flatten_output_dir = FALSE) {
   output_root <- ifelse(is.null(output_dir), input_dir, output_dir)
   if (!fs::dir_exists(output_root)) {
     stop("Output directory does not exist.")
   }
-  if (flatten_output) {
+  if (flatten_output_dir) {
     current_output_dir <- output_root
   } else {
     input_file_rel_path <- fs::path_rel(input_file, input_dir)
@@ -152,19 +152,24 @@ get_output_dir <- function(
 #'
 #' @description
 #' The output files will be created alongside their corresponding input files, preserving
-#' the directory structure of the input directory unless the `flatten_output` parameter is set to `TRUE`.
+#' the directory structure of the input directory unless the `flatten_output_dir` parameter is set to `TRUE`.
 #'
 #' @param input_dir (`character(1)`) The directory containing the input files. It may be nested.
 #' @param output_dir (`character(1)`) Optional overwrite directory where the output files should be saved. The default is `NULL`.
 #' By default, the output directory is the same as the input directory.
 #' @param recurse (`logical(1)`) If `TRUE`, the function will search for files recursively in the input directory. The default is `FALSE`.
-#' @param flatten_output (`logical(1)`) If `TRUE`, the output files will be saved in the output directory directly. The default is `FALSE`.
+#' @param flatten_output_dir (`logical(1)`) If `TRUE`, the output files will be saved in the output directory directly. The default is `FALSE`.
 #' @param format (`character(1)`) The format of the Luminex data. The default is `NULL`, and the format will have to
 #' be determined automatically based on the file name. Available options are `xPONENT` and `INTELLIFLEX`.
 #' @param layout_filepath (`character(1)`) The path to the layout file. The default is `NULL`, and the layout file will have to
 #' be determined automatically based on the file name.
 #' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("RAU", "nMFI")`.
 #' @param generate_reports (`logical(1)`) If `TRUE`, generate quality control reports for each file. The default is `FALSE`.
+#' @param merge_outputs (`logical(1)`) If `TRUE`, merge the outputs of all plates into a single CSV file for each normalisation type.
+#' The resulting file will be saved in the output directory with the name `merged_{normalisation_type}_{timestamp}.csv`.
+#' Example: `merged_nMFI_20250115_230735.csv`.
+#' @param column_collision_strategy (`character(1)`) A method for handling missing or additional columns when merging outputs.
+#' Possible options are `union` and `intersection`. The default is `intersection`.
 #' @param return_plates (`logical(1)`) If `TRUE`, return a list of processed plates. The default is `FALSE`.
 #' @param dry_run (`logical(1)`) If `TRUE`, the function will not process any files
 #' but will print the information about the files that would be processed. The default is `FALSE`.
@@ -192,11 +197,13 @@ process_dir <- function(
     input_dir,
     output_dir = NULL,
     recurse = FALSE,
-    flatten_output = FALSE,
+    flatten_output_dir = FALSE,
     layout_filepath = NULL,
     format = NULL,
     normalisation_types = c("RAU", "nMFI"),
     generate_reports = FALSE,
+    merge_outputs = FALSE,
+    column_collision_strategy = "intersection",
     return_plates = FALSE,
     dry_run = FALSE,
     verbose = TRUE,
@@ -255,7 +262,7 @@ process_dir <- function(
     cat("The following files will be processed:\n")
     for (i in seq_along(input_files)) {
       current_output_dir <- get_output_dir(input_files[i], input_dir,
-        output_dir = output_dir, flatten_output = flatten_output
+        output_dir = output_dir, flatten_output_dir = flatten_output_dir
       )
       cat(
         "\n",
@@ -269,33 +276,65 @@ process_dir <- function(
   }
 
   plates <- list()
-
   for (i in seq_along(input_files)) {
     current_output_dir <- get_output_dir(input_files[i], input_dir,
-      output_dir = output_dir, flatten_output = flatten_output
+      output_dir = output_dir, flatten_output_dir = flatten_output_dir
     )
     plate <- process_file(
       input_files[i],
       layout_filepath = ifelse(is.na(layouts[i]), NULL, layouts[i]),
       output_dir = current_output_dir,
       format = formats[i],
+      process_plate = !merge_outputs,
       normalisation_types = normalisation_types,
       generate_report = generate_reports,
       verbose = verbose,
       ...
     )
 
-    if (return_plates) {
-      plates[[plate$plate_name]] <- plate
+    plates[[plate$plate_name]] <- plate
+  }
+
+  plates <- sort_list_by(
+    plates,
+    value_f = function(p) p$plate_datetime,
+    decreasing = FALSE
+  )
+
+  file_ending <- format(now(), "%Y%m%d_%H%M%S")
+  if (merge_outputs) {
+    for (normalisation_type in normalisation_types) {
+      dataframes <- list()
+      for (plate in plates) {
+        output_df <- process_plate(plate,
+          normalisation_type = normalisation_type, write_output = FALSE,
+          include_raw_mfi = TRUE, adjust_blanks = TRUE, verbose = verbose
+        )
+        df_header_columns <- data.frame(
+          plate_name = plate$plate_name,
+          sample_name = rownames(output_df)
+        )
+        rownames(output_df) <- NULL
+        modifed_output_df <- cbind(df_header_columns, output_df)
+        dataframes[[plate$plate_name]] <- modifed_output_df
+      }
+
+      main_output_df <- merge_dataframes(
+        dataframes,
+        column_collision_strategy = column_collision_strategy,
+        fill_value = NA
+      )
+
+      file_name <- paste0(
+        "merged_", normalisation_type, "_", file_ending, ".csv"
+      )
+      output_path <- fs::path_join(c(output_dir, file_name))
+      write.csv(main_output_df, output_path, row.names = FALSE)
+      verbose_cat("Merged output saved to: ", output_path, "\n", verbose = verbose)
     }
   }
 
   if (return_plates) {
-    plates <- sort_list_by(
-      plates,
-      value_f = function(p) p$plate_datetime,
-      decreasing = FALSE
-    )
     return(plates)
   }
 }

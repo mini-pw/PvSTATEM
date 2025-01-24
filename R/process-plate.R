@@ -42,6 +42,9 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' However, if the passed filepath is an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
 #' If a file already exists under a specified filepath, the function will overwrite it.
 #'
+#' @param write_output (`logical(1)`) whether or not to write the output to a file
+#' specified by `filename` parameter. The default is `TRUE`.
+#'
 #' @param output_dir (`character(1)`) The directory where the output CSV file should be saved.
 #' Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
 #' If it equals to `NULL` the current working directory will be used. Default is 'normalised_data'.
@@ -92,6 +95,7 @@ process_plate <-
   function(plate,
            filename = NULL,
            output_dir = "normalised_data",
+           write_output = TRUE,
            normalisation_type = "RAU",
            data_type = "Median",
            include_raw_mfi = TRUE,
@@ -104,12 +108,15 @@ process_plate <-
     stopifnot(is_valid_normalisation_type(normalisation_type))
     stopifnot(is.character(data_type))
 
-
-    output_path <- validate_filepath_and_output_dir(filename, output_dir,
-      plate$plate_name, normalisation_type,
-      "csv",
-      verbose = verbose
-    )
+    if (write_output) {
+      output_path <- validate_filepath_and_output_dir(filename, output_dir,
+        plate$plate_name, normalisation_type,
+        "csv",
+        verbose = verbose
+      )
+    } else {
+      output_path <- NULL
+    }
 
 
     if (!plate$blank_adjusted && adjust_blanks) {
@@ -150,13 +157,14 @@ process_plate <-
       output_df <- cbind(output_df, raw_mfi)
     }
 
-    verbose_cat("Saving the computed ", normalisation_type, " values to a CSV file located in: '",
-      output_path,
-      "'\n",
-      verbose = verbose
-    )
-
-    write.csv(output_df, output_path)
+    if (write_output) {
+      verbose_cat("Saving the computed ", normalisation_type, " values to a CSV file located in: '",
+        output_path,
+        "'\n",
+        verbose = verbose
+      )
+      write.csv(output_df, output_path)
+    }
 
     return(output_df)
   }
