@@ -93,7 +93,7 @@ test_that("Test processing a directory with a single plate", {
   dir <- system.file("extdata", "multiplate_lite", package = "PvSTATEM", mustWork = TRUE) # get the filepath of the csv dataset
   output_dir <- tempdir(check = TRUE)
   plates <- process_dir(dir, return_plates = T, output_dir = output_dir)
-  expect_length(plates, 1)
+  expect_length(plates, 2)
 })
 
 test_that("Test processing a reallife directory with merge output", {

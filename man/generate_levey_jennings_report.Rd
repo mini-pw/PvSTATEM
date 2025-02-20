@@ -42,7 +42,7 @@ The report is generated using the \code{levey_jennings_report_template.Rmd} temp
 \examples{
 output_dir <- tempdir(check = TRUE)
 
-dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
+dir_with_luminex_files <- system.file("extdata", "multiplate_lite",
   package = "PvSTATEM", mustWork = TRUE
 )
 list_of_plates <- process_dir(dir_with_luminex_files,
