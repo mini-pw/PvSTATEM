@@ -1,7 +1,7 @@
 # PvSTATEM - an R package for automated analysis of serological data
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ZetrextJG/PvSTATEM/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/mini-pw/PvSTATEM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mini-pw/PvSTATEM/actions/workflows/R-CMD-check.yaml)
 ![Downloads](https://cranlogs.r-pkg.org/badges/PvSTATEM)
 [![codecov](https://codecov.io/gh/mini-pw/PvSTATEM/graph/badge.svg?token=11EVHXMHDO)](https://app.codecov.io/gh/mini-pw/PvSTATEM)
 <!-- badges: end -->
@@ -15,6 +15,10 @@ The package includes three main steps for preprocessing the data:
 1.  data reading and manipulation
 2.  quality control
 3.  data normalisation
+
+
+The graphical overview of the package can be seen in the image below:
+![overview](inst/img/overview.png)
 
 
 `PvSTATEM` package is developed within the project of the same name - [PvSTATEM](https://www.pvstatem.eu/), an international project aiming at malaria elimination and is financially supported by the HORIZON grant HORIZON-WIDERA-2022-ACCESS-07-01.
