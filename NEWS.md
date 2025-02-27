@@ -1,8 +1,12 @@
-SerolyzerR 0.2.2
+SerolyzeR 1.0.0
 ---------------------------------------------------------------
-* CRAN reupload due to nplr package problems
-* name change from PvSTATEM to SerolyzerR
-* docs update
+* package name changed from PvSTATEM to SerolyzerR
+
+
+PvSTATEM 0.2.1
+---------------------------------------------------------------
+* CRAN re-upload due to nplr package problems
+* docs updates
 * bug fixes
 
 
