@@ -62,12 +62,12 @@ which are produced by two different Luminex machines.
 }
 }
 \examples{
-plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM")
-layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "PvSTATEM")
+plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR")
+layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "SerolyzeR")
 plate <- read_luminex_data(plate_file, layout_file)
 
-plate_file <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "PvSTATEM")
-layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM")
+plate_file <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "SerolyzeR")
+layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
 # To suppress warnings and additional information use verbose = FALSE
 plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
 

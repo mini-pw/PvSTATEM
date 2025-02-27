@@ -32,12 +32,12 @@ Another way is to source the files using the `system.file` function. The functio
 ```{r}
 dataset_name <- "CovidOISExPONTENT.csv"
 
-dataset_filepath <- system.file("extdata", dataset_name, package = "PvSTATEM", mustWork = TRUE)
+dataset_filepath <- system.file("extdata", dataset_name, package = "SerolyzeR", mustWork = TRUE)
 ```
 The variable `dataset_filepath` now contains the path to the specified dataset on your computer. Since we know the filepath to the desired dataset, we can execute the `read_data` function to read the data. The function has the following syntax:
 
 ```{r}
-library(PvSTATEM)
+library(SerolyzeR)
 
 plate <- read_luminex_data(dataset_filepath)
 

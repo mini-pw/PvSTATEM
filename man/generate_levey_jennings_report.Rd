@@ -43,7 +43,7 @@ The report is generated using the \code{levey_jennings_report_template.Rmd} temp
 output_dir <- tempdir(check = TRUE)
 
 dir_with_luminex_files <- system.file("extdata", "multiplate_lite",
-  package = "PvSTATEM", mustWork = TRUE
+  package = "SerolyzeR", mustWork = TRUE
 )
 list_of_plates <- process_dir(dir_with_luminex_files,
   return_plates = TRUE, format = "xPONENT", output_dir = output_dir

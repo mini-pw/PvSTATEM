@@ -43,8 +43,8 @@ test_that("Test high dose hook detection and handling", {
 })
 
 test_that("Test high dose hook on a plate object", {
-  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
-  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzeR", mustWork = TRUE)
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
 
   plate$dilutions[c(2, 3)] <- plate$dilutions[c(3, 2)]

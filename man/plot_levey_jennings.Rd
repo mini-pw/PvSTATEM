@@ -44,7 +44,7 @@ in the laboratories across the world.
 output_dir <- tempdir(check = TRUE)
 
 dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
-  package = "PvSTATEM", mustWork = TRUE
+  package = "SerolyzeR", mustWork = TRUE
 )
 list_of_plates <- process_dir(dir_with_luminex_files,
   return_plates = TRUE, format = "xPONENT", output_dir = output_dir

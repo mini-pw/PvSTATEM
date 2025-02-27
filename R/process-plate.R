@@ -1,5 +1,5 @@
 is_valid_normalisation_type <- function(normalisation_type) {
-  normalisation_type %in% PvSTATEM.env$normalisation_types
+  normalisation_type %in% SerolyzeR.env$normalisation_types
 }
 
 #' @title
@@ -18,7 +18,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' 5. Save the computed RAU values to a CSV file.
 #'
 #' More info about the RAU normalisation can be found in
-#' `create_standard_curve_model_analyte` function documentation \link[PvSTATEM]{create_standard_curve_model_analyte} or in the Model reference \link[PvSTATEM]{Model}.
+#' `create_standard_curve_model_analyte` function documentation \link[SerolyzeR]{create_standard_curve_model_analyte} or in the Model reference \link[SerolyzeR]{Model}.
 #'
 #'
 #'
@@ -28,14 +28,14 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' 3. Aggregate computed nMFI values into a single data frame.
 #' 4. Save the computed nMFI values to a CSV file.
 #'
-#' More info about the nMFI normalisation can be found in `get_nmfi` function documentation \link[PvSTATEM]{get_nmfi}.
+#' More info about the nMFI normalisation can be found in `get_nmfi` function documentation \link[SerolyzeR]{get_nmfi}.
 #'
 #' @param plate (`Plate()`) a plate object
 #' @param filename (`character(1)`) The name of the output CSV file with normalised MFI values.
 #' If not provided or equals to `NULL`, the output filename will be based on the normalisation type
 #' and the plate name, precisely: `{plate_name}_{normalisation_type}.csv`.
 #' By default the `plate_name` is the filename of the input file that contains the plate data.
-#' For more details please refer to \link[PvSTATEM]{Plate}.
+#' For more details please refer to \link[SerolyzeR]{Plate}.
 #'
 #' If the passed filename does not contain `.csv` extension, the default extension `.csv` will be added.
 #' Filename can also be a path to a file, e.g. `path/to/file.csv`. In this case, the `output_dir` and `filename` will be joined together.
@@ -50,7 +50,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' If it equals to `NULL` the current working directory will be used. Default is 'normalised_data'.
 #'
 #' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
-#' \cr \code{c(`r toString(PvSTATEM.env$normalisation_types)`)}.
+#' \cr \code{c(`r toString(SerolyzeR.env$normalisation_types)`)}.
 #' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
 #' @param include_raw_mfi (`logical(1)`) include raw MFI values in the output. The default is `TRUE`.
 #' In case this option is `TRUE`, the output dataframe contains two columns for each analyte: one for the normalised values and one for the raw MFI values.
@@ -66,9 +66,9 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #'
 #' @examples
 #'
-#' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "PvSTATEM")
+#' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzeR")
 #' # a plate file with reduced number of analytes to speed up the computation
-#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM")
+#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
 #'
 #' plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
 #'

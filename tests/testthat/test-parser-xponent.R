@@ -168,12 +168,12 @@ test_that("Test repeating a parser", {
 ## Functionality tests
 
 test_that("Parse the random plate data", {
-  plate_file <- system.file("extdata", "random.csv", package = "PvSTATEM", mustWork = TRUE)
+  plate_file <- system.file("extdata", "random.csv", package = "SerolyzeR", mustWork = TRUE)
   expect_error(read_xponent_format(plate_file), NA)
 })
 
 test_that("Parse the random plate 2 data", {
-  plate_file <- system.file("extdata", "random2.csv", package = "PvSTATEM", mustWork = TRUE)
+  plate_file <- system.file("extdata", "random2.csv", package = "SerolyzeR", mustWork = TRUE)
   expect_error(read_xponent_format(plate_file), NA)
 })
 
@@ -197,7 +197,7 @@ file_parse_success <- function(file) {
 }
 
 test_that("Parse external plates", {
-  external_data_dir <- system.file("extdata", "external", package = "PvSTATEM", mustWork = TRUE)
+  external_data_dir <- system.file("extdata", "external", package = "SerolyzeR", mustWork = TRUE)
   for (file in list.files(external_data_dir, full.names = TRUE)) {
     expect_true(file_parse_success(file))
   }

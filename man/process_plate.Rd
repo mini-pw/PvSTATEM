@@ -25,7 +25,7 @@ process_plate(
 If not provided or equals to \code{NULL}, the output filename will be based on the normalisation type
 and the plate name, precisely: \verb{\{plate_name\}_\{normalisation_type\}.csv}.
 By default the \code{plate_name} is the filename of the input file that contains the plate data.
-For more details please refer to \link[PvSTATEM]{Plate}.
+For more details please refer to \link[SerolyzeR]{Plate}.
 
 If the passed filename does not contain \code{.csv} extension, the default extension \code{.csv} will be added.
 Filename can also be a path to a file, e.g. \code{path/to/file.csv}. In this case, the \code{output_dir} and \code{filename} will be joined together.
@@ -77,7 +77,7 @@ The behaviour of the function, in the case of RAU normalisation type, can be sum
 }
 
 More info about the RAU normalisation can be found in
-\code{create_standard_curve_model_analyte} function documentation \link[PvSTATEM]{create_standard_curve_model_analyte} or in the Model reference \link[PvSTATEM]{Model}.
+\code{create_standard_curve_model_analyte} function documentation \link[SerolyzeR]{create_standard_curve_model_analyte} or in the Model reference \link[SerolyzeR]{Model}.
 
 In case the normalisation type is \strong{nMFI}, the function will:
 \enumerate{
@@ -87,13 +87,13 @@ In case the normalisation type is \strong{nMFI}, the function will:
 \item Save the computed nMFI values to a CSV file.
 }
 
-More info about the nMFI normalisation can be found in \code{get_nmfi} function documentation \link[PvSTATEM]{get_nmfi}.
+More info about the nMFI normalisation can be found in \code{get_nmfi} function documentation \link[SerolyzeR]{get_nmfi}.
 }
 \examples{
 
-plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "PvSTATEM")
+plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzeR")
 # a plate file with reduced number of analytes to speed up the computation
-layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "PvSTATEM")
+layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
 
 plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
 
