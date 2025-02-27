@@ -2,7 +2,7 @@ library(testthat)
 
 test_that("Fully Parse CovidOISExPONTENT.csv plate data", {
   # Read plate
-  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE)
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", verbose = FALSE))
   # Check basic properties
   expect_equal(plate$plate_name, "CovidOISExPONTENT")
@@ -22,7 +22,7 @@ test_that("Fully Parse CovidOISExPONTENT.csv plate data", {
 
 test_that("Test error catching without the layout file", {
   # Read plate
-  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE)
 
   # sample names
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", verbose = FALSE, use_layout_sample_names = FALSE))
@@ -41,16 +41,16 @@ test_that("Test error catching without the layout file", {
 })
 
 test_that("Test reading with layout", {
-  path <- system.file("extdata", "random_no_standard_curve.csv", package = "PvSTATEM", mustWork = TRUE)
-  layout_path <- system.file("extdata", "random_layout_no_standard_curve.xlsx", package = "PvSTATEM", mustWork = TRUE)
+  path <- system.file("extdata", "random_no_standard_curve.csv", package = "SerolyzerR", mustWork = TRUE)
+  layout_path <- system.file("extdata", "random_layout_no_standard_curve.xlsx", package = "SerolyzerR", mustWork = TRUE)
 
   expect_error(read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
 })
 
 test_that("Fully Parse CovidOISExPONTENT_CO.csv plate data with layout", {
   # Read plate
-  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
-  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzerR", mustWork = TRUE)
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
   # Check basic properties
   expect_equal(plate$plate_name, "CovidOISExPONTENT")
@@ -73,8 +73,8 @@ test_that("Fully Parse CovidOISExPONTENT_CO.csv plate data with layout", {
 })
 
 test_that("Test parsing CovidOISExPONTENT_CO.csv with one function", {
-  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
-  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzerR", mustWork = TRUE)
   expect_no_error(
     capture.output(
       process_file(path, layout_path, verbose = FALSE)
@@ -83,14 +83,14 @@ test_that("Test parsing CovidOISExPONTENT_CO.csv with one function", {
 })
 
 test_that("Read a INTELLIFLEX mock file", {
-  path <- system.file("extdata", "random_intelliflex.csv", package = "PvSTATEM", mustWork = TRUE)
+  path <- system.file("extdata", "random_intelliflex.csv", package = "SerolyzerR", mustWork = TRUE)
   expect_no_error(output <- read_intelliflex_format(path, verbose = verbose))
   expect_no_error(postprocess_intelliflex(output, verbose = verbose))
 })
 
 test_that("Test xponent file with holes in the layout", {
-  path <- system.file("extdata", "CovidOISExPONTENT_CO_with_holes.csv", package = "PvSTATEM", mustWork = TRUE)
-  layout_path <- system.file("extdata", "CovidOISExPONTENT_CO_with_holes_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT_CO_with_holes.csv", package = "SerolyzerR", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_CO_with_holes_layout.xlsx", package = "SerolyzerR", mustWork = TRUE)
 
   plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE)
 
@@ -109,8 +109,8 @@ test_that("Test xponent file with holes in the layout", {
 })
 
 test_that("Test ignoring datatypes with missing rows", {
-  path <- system.file("extdata", "CovidOISExPONTENT_missing_rows.csv", package = "PvSTATEM", mustWork = TRUE)
-  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT_missing_rows.csv", package = "SerolyzerR", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzerR", mustWork = TRUE)
 
   expect_warning(
     plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE)

@@ -4,6 +4,7 @@
 .Ruserdata
 inst/doc
 PvSTATEM.Rproj
+SerolyzerR.Rproj
 *.DS_Store
 reports
 normalised_data

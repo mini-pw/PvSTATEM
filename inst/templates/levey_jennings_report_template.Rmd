@@ -132,6 +132,6 @@ for (i in seq_along(analyte_names)) {
 ### &nbsp;
 
 <hr />
-<p style="text-align: center;">Generated using the <a href="https://github.com/mini-pw/PvSTATEM">PvSTATEM </a> package </p>
+<p style="text-align: center;">Generated using the <a href="https://github.com/mini-pw/SerolyzerR">SerolyzerR </a> package </p>
 
 

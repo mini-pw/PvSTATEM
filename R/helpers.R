@@ -339,7 +339,7 @@ is_mba_format <- function(format, allow_nullable = FALSE) {
   if (is.null(format)) {
     return(allow_nullable)
   }
-  return(format %in% PvSTATEM.env$mba_formats)
+  return(format %in% SerolyzerR.env$mba_formats)
 }
 
 #' @title

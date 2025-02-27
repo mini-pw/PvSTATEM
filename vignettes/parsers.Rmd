@@ -26,17 +26,17 @@ xPONENT or INTELLIFLEX file using the `read_luminex_data` function and interacti
 Under the hood, the `read_luminex_data` function uses a specific function to read data from a given format 
 and later standardises this output to finally create a `Plate` object.
 
-This article will go deeper into the details of our data parsers, illustrate how the reading system works and show you how to use them even outside the PvSTATEM package.
+This article will go deeper into the details of our data parsers, illustrate how the reading system works and show you how to use them even outside the SerolyzerR package.
 
 # Basic data loading
 
 The simplest way of loading a file is to use the `read_luminex_data` function with default values.
 
 ```{r}
-library(PvSTATEM)
+library(SerolyzerR)
 
-plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "PvSTATEM", mustWork = TRUE)
-layout_filepath <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "PvSTATEM", mustWork = TRUE)
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE)
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzerR", mustWork = TRUE)
 plate <- read_luminex_data(plate_filepath, layout_filepath)
 summary(plate)
 # display a sample of the dataframe
@@ -56,7 +56,7 @@ data.frame(plate)[c(1, 2), c(1, 2)]
 
 For the complete list of parameters and their description, please refer to the `read_luminex_data` documentation.
 
-# PvSTATEM as an MBA data reader
+# SerolyzerR as an MBA data reader
 
 The `read_luminex_data` function enforces additional constraints on the raw MBA data, such as the sample
 names following a specific pattern to be correctly classified. If your data does not follow our standards but you still want to use our parsers, you can directly use the format-specific functions here:

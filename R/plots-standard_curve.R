@@ -18,10 +18,10 @@
 #'
 #' @examples
 #' path <- system.file("extdata", "CovidOISExPONTENT.csv",
-#'   package = "PvSTATEM", mustWork = TRUE
+#'   package = "SerolyzerR", mustWork = TRUE
 #' )
 #' layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx",
-#'   package = "PvSTATEM", mustWork = TRUE
+#'   package = "SerolyzerR", mustWork = TRUE
 #' )
 #' plate <- read_luminex_data(path, layout_filepath = layout_path, verbose = FALSE)
 #' plot_standard_curve_analyte(plate, "Spike_6P", plot_legend = FALSE, data_type = "Median")
@@ -164,10 +164,10 @@ plot_standard_curve_analyte <- function(plate,
 #
 #' @examples
 #' path <- system.file("extdata", "CovidOISExPONTENT.csv",
-#'   package = "PvSTATEM", mustWork = TRUE
+#'   package = "SerolyzerR", mustWork = TRUE
 #' )
 #' layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx",
-#'   package = "PvSTATEM", mustWork = TRUE
+#'   package = "SerolyzerR", mustWork = TRUE
 #' )
 #' plate <- read_luminex_data(path, layout_filepath = layout_path, verbose = FALSE)
 #' model <- create_standard_curve_model_analyte(plate, analyte_name = "Spike_B16172")
@@ -344,7 +344,7 @@ plot_standard_curve_thumbnail <- function(plate,
 #' output_dir <- tempdir(check = TRUE)
 #'
 #' dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
-#'   package = "PvSTATEM", mustWork = TRUE
+#'   package = "SerolyzerR", mustWork = TRUE
 #' )
 #' list_of_plates <- process_dir(dir_with_luminex_files,
 #'   return_plates = TRUE, format = "xPONENT", output_dir = output_dir
