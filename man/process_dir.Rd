@@ -68,7 +68,7 @@ the directory structure of the input directory unless the \code{flatten_output_d
 }
 \examples{
 # Select input directory to process
-dir <- system.file("extdata", "multiplate_lite", package = "SerolyzeR", mustWork = TRUE)
+dir <- system.file("extdata", "multiplate_lite", package = "SerolyzerR", mustWork = TRUE)
 
 # Select output directory
 output_dir <- tempdir(check = TRUE)

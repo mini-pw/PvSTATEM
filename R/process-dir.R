@@ -111,9 +111,9 @@ detect_mba_format <- function(filepath, format = NULL) {
   filename_splitted <- stringr::str_split(filename, "\\.")
   basename <- filename_splitted[[1]][1]
 
-  if (grepl(SerolyzeR.env$xponent_pattern, basename, ignore.case = TRUE)) {
+  if (grepl(SerolyzerR.env$xponent_pattern, basename, ignore.case = TRUE)) {
     return("xPONENT")
-  } else if (grepl(SerolyzeR.env$intelliflex_pattern, basename, ignore.case = TRUE)) {
+  } else if (grepl(SerolyzerR.env$intelliflex_pattern, basename, ignore.case = TRUE)) {
     return("INTELLIFLEX")
   } else {
     stop("The format of the file could not be detected.")
@@ -182,7 +182,7 @@ get_output_dir <- function(
 #'
 #' @examples
 #' # Select input directory to process
-#' dir <- system.file("extdata", "multiplate_lite", package = "SerolyzeR", mustWork = TRUE)
+#' dir <- system.file("extdata", "multiplate_lite", package = "SerolyzerR", mustWork = TRUE)
 #'
 #' # Select output directory
 #' output_dir <- tempdir(check = TRUE)
