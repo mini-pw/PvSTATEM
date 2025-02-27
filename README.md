@@ -18,7 +18,7 @@ The package includes three main steps for preprocessing the data:
 
 
 The graphical overview of the package can be seen in the image below:
-![overview](inst/img/overview.png)
+![overview](https://github.com/mini-pw/SerolyzeR/blob/feature-reaname-package/inst/img/overview.png)
 
 
 `SerolyzerR` package is developed within the project [PvSTATEM](https://www.pvstatem.eu/), an international project aiming at malaria elimination and is financially supported by the HORIZON grant HORIZON-WIDERA-2022-ACCESS-07-01.
