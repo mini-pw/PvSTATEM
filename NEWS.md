@@ -1,3 +1,10 @@
+PvSTATEM 0.2.2
+---------------------------------------------------------------
+* CRAN reupload due to nplr package problems
+* docs update
+* bug fixes
+
+
 PvSTATEM 0.2.1
 ---------------------------------------------------------------
 * updated the multiple plate report layout
