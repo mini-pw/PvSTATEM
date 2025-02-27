@@ -46,10 +46,10 @@ Plot standard curve samples of a plate of a given analyte.
 }
 \examples{
 path <- system.file("extdata", "CovidOISExPONTENT.csv",
-  package = "SerolyzerR", mustWork = TRUE
+  package = "SerolyzeR", mustWork = TRUE
 )
 layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx",
-  package = "SerolyzerR", mustWork = TRUE
+  package = "SerolyzeR", mustWork = TRUE
 )
 plate <- read_luminex_data(path, layout_filepath = layout_path, verbose = FALSE)
 plot_standard_curve_analyte(plate, "Spike_6P", plot_legend = FALSE, data_type = "Median")

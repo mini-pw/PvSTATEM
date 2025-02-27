@@ -34,7 +34,7 @@ get_test_list_of_plates <- function() {
 
 get_list_of_plates <- function() {
   dir <- system.file("extdata", "multiplate_reallife_reduced",
-    package = "SerolyzerR", mustWork = TRUE
+    package = "SerolyzeR", mustWork = TRUE
   )
 
   output_dir <- tempdir(check = TRUE)

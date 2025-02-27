@@ -23,8 +23,8 @@
 #' @examples
 #'
 #' # Select an input csv file for processing and corresponding layout file
-#' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzerR")
-#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzerR")
+#' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzeR")
+#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
 #'
 #' example_dir <- tempdir(check = TRUE) # a temporary directory
 #' # create and save dataframe with computed dilutions for all suported noramlization types

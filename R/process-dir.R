@@ -56,7 +56,7 @@ find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
 #' @keywords internal
 #'
 is_mba_data_file <- function(filepath, check_format = TRUE) {
-  format_pattern <- SerolyzerR.env$mba_pattern
+  format_pattern <- SerolyzeR.env$mba_pattern
   extension_pattern <- "\\.([xX][lL][sS][xX]|[cC][sS][vV])$"
   output_pattern <- "RAU|nMFI"
   layout_pattern <- "_layout"
@@ -111,9 +111,9 @@ detect_mba_format <- function(filepath, format = NULL) {
   filename_splitted <- stringr::str_split(filename, "\\.")
   basename <- filename_splitted[[1]][1]
 
-  if (grepl(SerolyzerR.env$xponent_pattern, basename, ignore.case = TRUE)) {
+  if (grepl(SerolyzeR.env$xponent_pattern, basename, ignore.case = TRUE)) {
     return("xPONENT")
-  } else if (grepl(SerolyzerR.env$intelliflex_pattern, basename, ignore.case = TRUE)) {
+  } else if (grepl(SerolyzeR.env$intelliflex_pattern, basename, ignore.case = TRUE)) {
     return("INTELLIFLEX")
   } else {
     stop("The format of the file could not be detected.")
@@ -182,7 +182,7 @@ get_output_dir <- function(
 #'
 #' @examples
 #' # Select input directory to process
-#' dir <- system.file("extdata", "multiplate_lite", package = "SerolyzerR", mustWork = TRUE)
+#' dir <- system.file("extdata", "multiplate_lite", package = "SerolyzeR", mustWork = TRUE)
 #'
 #' # Select output directory
 #' output_dir <- tempdir(check = TRUE)

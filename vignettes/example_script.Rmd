@@ -1,9 +1,9 @@
 ---
-title: "Basic SerolyzerR functionalities"
+title: "Basic SerolyzeR functionalities"
 author: "Tymoteusz Kwieciński"
 date: "`r Sys.Date()`"
 vignette: >
-  %\VignetteIndexEntry{Simple example of basic SerolyzerR package pre-release version functionalities}
+  %\VignetteIndexEntry{Simple example of basic SerolyzeR package pre-release version functionalities}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{ggplot2}
   %\VignetteDepends{nplr}
@@ -26,17 +26,17 @@ knitr::opts_chunk$set(
 
 ## Reading the plate object
 
-The basic functionality of the `SerolyzerR` package is reading raw MBA data.
+The basic functionality of the `SerolyzeR` package is reading raw MBA data.
 To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package.
 You might want to replace these variables with paths to your files on your local disk.
 Firstly, let us load the dataset as the `plate` object.
 
 ```{r}
-library(SerolyzerR)
+library(SerolyzeR)
 
-plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE) # get the filepath of the csv dataset
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR", mustWork = TRUE) # get the filepath of the csv dataset
 
-layout_filepath <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzerR", mustWork = TRUE)
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzeR", mustWork = TRUE)
 
 
 plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data

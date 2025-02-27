@@ -162,8 +162,8 @@ test_that("Test validate_filepath_and_output_dir function", {
 })
 
 test_that("Test path checking", {
-  plate1_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE) # get the filepath of the csv dataset
-  plate2_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "SerolyzerR", mustWork = TRUE) # get the filepath of the csv dataset
+  plate1_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR", mustWork = TRUE) # get the filepath of the csv dataset
+  plate2_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "SerolyzeR", mustWork = TRUE) # get the filepath of the csv dataset
   plate1_rel_filepath <- fs::path_rel(plate1_filepath, start = getwd())
 
   expect_true(check_path_equal(plate1_filepath, plate1_filepath))
@@ -174,7 +174,7 @@ test_that("Test path checking", {
 })
 
 test_that("Test mba format function", {
-  expect_true(is_mba_format(SerolyzerR.env$mba_formats[1]))
+  expect_true(is_mba_format(SerolyzeR.env$mba_formats[1]))
   expect_true(is_mba_format(NULL, allow_nullable = TRUE))
   expect_false(is_mba_format(NULL, allow_nullable = FALSE))
   expect_false(is_mba_format("invalid", allow_nullable = FALSE))

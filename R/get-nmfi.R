@@ -29,8 +29,8 @@
 #' @examples
 #'
 #' # read the plate
-#' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR")
-#' layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "SerolyzerR")
+#' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR")
+#' layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "SerolyzeR")
 #'
 #' plate <- read_luminex_data(plate_file, layout_file)
 #'

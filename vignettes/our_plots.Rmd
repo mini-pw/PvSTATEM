@@ -23,16 +23,16 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The `SerolyzerR` package provides a variety of plots that can be used to visualize the Luminex data. In this vignette, we will show how to use them. 
+The `SerolyzeR` package provides a variety of plots that can be used to visualize the Luminex data. In this vignette, we will show how to use them. 
 To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package. 
 Firstly, let us load the dataset as the `plate` object.
 
 ```{r}
-library(SerolyzerR)
+library(SerolyzeR)
 
-plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE) # get the filepath of the csv dataset
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR", mustWork = TRUE) # get the filepath of the csv dataset
 
-layout_filepath <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzerR", mustWork = TRUE)
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzeR", mustWork = TRUE)
 
 
 plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
@@ -153,7 +153,7 @@ In order to run this function, we need to provide the `list_of_plates` which is 
 
 ```{r}
 dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
-  package = "SerolyzerR", mustWork = TRUE
+  package = "SerolyzeR", mustWork = TRUE
 )
 list_of_plates <- process_dir(dir_with_luminex_files,
   return_plates = TRUE, format = "xPONENT"

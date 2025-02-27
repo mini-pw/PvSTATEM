@@ -37,11 +37,11 @@ The function returns a logical vector that can be used to subset the MFI values.
 \examples{
 plate_filepath <- system.file(
   "extdata", "CovidOISExPONTENT.csv",
-  package = "SerolyzerR", mustWork = TRUE
+  package = "SerolyzeR", mustWork = TRUE
 ) # get the filepath of the csv dataset
 layout_filepath <- system.file(
   "extdata", "CovidOISExPONTENT_layout.xlsx",
-  package = "SerolyzerR", mustWork = TRUE
+  package = "SerolyzeR", mustWork = TRUE
 )
 plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
 

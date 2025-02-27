@@ -10,7 +10,7 @@
 #' @param filename (`character(1)`) The name of the output HTML report file.
 #' If not provided or equals to `NULL`, the output filename will be based on the plate name, precisely: `{plate_name}_report.html`.
 #' By default the `plate_name` is the filename of the input file that contains the plate data.
-#' For more details please refer to \link[SerolyzerR]{Plate}.
+#' For more details please refer to \link[SerolyzeR]{Plate}.
 #'
 #' If the passed filename does not contain `.html` extension, the default extension `.html` will be added.
 #' Filename can also be a path to a file, e.g. `path/to/file.html`. In this case, the `output_dir` and `filename` will be joined together.
@@ -31,9 +31,9 @@
 #'
 #' @examples
 #'
-#' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzerR")
+#' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzeR")
 #' # a plate file with reduced number of analytes to speed up the computation
-#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzerR")
+#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
 #' note <- "This is a test report.\n**Author**: Jane Doe \n**Tester**: John Doe"
 #'
 #' plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
@@ -64,7 +64,7 @@ generate_plate_report <-
       system.file(
         "templates",
         "plate_report_template.Rmd",
-        package = "SerolyzerR",
+        package = "SerolyzeR",
         mustWork = TRUE
       )
 
@@ -130,7 +130,7 @@ generate_plate_report <-
 #' output_dir <- tempdir(check = TRUE)
 #'
 #' dir_with_luminex_files <- system.file("extdata", "multiplate_lite",
-#'   package = "SerolyzerR", mustWork = TRUE
+#'   package = "SerolyzeR", mustWork = TRUE
 #' )
 #' list_of_plates <- process_dir(dir_with_luminex_files,
 #'   return_plates = TRUE, format = "xPONENT", output_dir = output_dir
@@ -166,7 +166,7 @@ generate_levey_jennings_report <-
       system.file(
         "templates",
         "levey_jennings_report_template.Rmd",
-        package = "SerolyzerR",
+        package = "SerolyzeR",
         mustWork = TRUE
       )
 

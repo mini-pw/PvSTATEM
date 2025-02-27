@@ -22,7 +22,7 @@ generate_plate_report(
 \item{filename}{(\code{character(1)}) The name of the output HTML report file.
 If not provided or equals to \code{NULL}, the output filename will be based on the plate name, precisely: \verb{\{plate_name\}_report.html}.
 By default the \code{plate_name} is the filename of the input file that contains the plate data.
-For more details please refer to \link[SerolyzerR]{Plate}.
+For more details please refer to \link[SerolyzeR]{Plate}.
 
 If the passed filename does not contain \code{.html} extension, the default extension \code{.html} will be added.
 Filename can also be a path to a file, e.g. \code{path/to/file.html}. In this case, the \code{output_dir} and \code{filename} will be joined together.
@@ -48,9 +48,9 @@ The report is generated using the \code{plate_report_template.Rmd} template.
 }
 \examples{
 
-plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzerR")
+plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzeR")
 # a plate file with reduced number of analytes to speed up the computation
-layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzerR")
+layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
 note <- "This is a test report.\n**Author**: Jane Doe \n**Tester**: John Doe"
 
 plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)

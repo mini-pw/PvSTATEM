@@ -46,7 +46,7 @@ plot_plate <- function(colours, plot_numbers = FALSE, numbers = NULL, plot_title
   }
 
   # Load the background image
-  image_path <- system.file("img", "96_well_plate.png", package = "SerolyzerR", mustWork = TRUE)
+  image_path <- system.file("img", "96_well_plate.png", package = "SerolyzeR", mustWork = TRUE)
   plate_img <- readPNG(image_path)
 
   # values obtained using trial and error
@@ -128,10 +128,10 @@ plot_plate <- function(colours, plot_numbers = FALSE, numbers = NULL, plot_title
 #'
 #' @examples
 #' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
-#'   package = "SerolyzerR", mustWork = TRUE
+#'   package = "SerolyzeR", mustWork = TRUE
 #' )
 #' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-#'   package = "SerolyzerR", mustWork = TRUE
+#'   package = "SerolyzeR", mustWork = TRUE
 #' )
 #' plate <- read_luminex_data(plate_filepath, layout_filepath)
 #' plot_counts(
@@ -215,10 +215,10 @@ plot_counts <- function(plate, analyte_name, plot_counts = TRUE, plot_legend = F
 #'
 #' @examples
 #' plate_filepath <- system.file("extdata", "CovidOISExPONTENT_CO.csv",
-#'   package = "SerolyzerR", mustWork = TRUE
+#'   package = "SerolyzeR", mustWork = TRUE
 #' )
 #' layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx",
-#'   package = "SerolyzerR", mustWork = TRUE
+#'   package = "SerolyzeR", mustWork = TRUE
 #' )
 #' plate <- read_luminex_data(plate_filepath, layout_filepath)
 #' plot_layout(plate = plate, plot_legend = TRUE)

@@ -30,7 +30,7 @@ body:
           required: true
         - label: I used the GitHub search to find a similar question and didn't find it.
           required: true
-        - label: The bug is not resolved by updating to the latest stable version of SerolyzerR package.
+        - label: The bug is not resolved by updating to the latest stable version of SerolyzeR package.
           required: true
         - label: I included a link to the documentation page I am referring to (if applicable).
           required: true

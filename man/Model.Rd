@@ -27,11 +27,11 @@ After the model is fitted to the data, the RAU values can be predicted using the
 The RAU value is simply a predicted dilution value (using the standard curve) for a given MFI
 multiplied by 1,000 000 to have a more readable value.
 For more information about the differences between dilution, RAU and MFI values, please see the
-"Normalisation" section in the "Basic SerolyzerR functionalities" vignette.
+"Normalisation" section in the "Basic SerolyzeR functionalities" vignette.
 }
 \examples{
-plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR")
-layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "SerolyzerR")
+plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR")
+layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "SerolyzeR")
 plate <- read_luminex_data(plate_file, layout_filepath = layout_file)
 model <- create_standard_curve_model_analyte(plate, "S2", log_mfi = TRUE)
 print(model)

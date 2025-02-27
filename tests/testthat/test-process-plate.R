@@ -2,8 +2,8 @@ library(testthat)
 
 test_that("Test processing of a plate", {
   # Read plate
-  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE)
-  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzerR", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzeR", mustWork = TRUE)
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
 
   # Test processing of a plate
@@ -34,8 +34,8 @@ test_that("Test processing of a plate", {
 
 test_that("Processing plate with nMFI", {
   # Read plate
-  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE)
-  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzerR", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzeR", mustWork = TRUE)
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
 
   # Test processing of a plate
@@ -71,8 +71,8 @@ test_that("Processing plate with nMFI", {
 
 test_that("raw MFI in dataframe", {
   # Read plate
-  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR", mustWork = TRUE)
-  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzerR", mustWork = TRUE)
+  path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR", mustWork = TRUE)
+  layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzeR", mustWork = TRUE)
   expect_no_error(plate <- read_luminex_data(path, format = "xPONENT", layout_filepath = layout_path, verbose = FALSE))
 
   # Test processing of a plate, without raw MFI

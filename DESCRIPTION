@@ -1,8 +1,8 @@
-Package: SerolyzerR
+Package: SerolyzeR
 Type: Package
 Title: Reading, Quality Control and Preprocessing of MBA (Multiplex Bead Assay) Data 
 Description: Speeds up the process of loading raw data from MBA (Multiplex Bead Assay) examinations, performs quality control checks, and automatically normalises the data, preparing it for more advanced, downstream tasks. The main objective of the package is to create a simple environment for a user, who does not necessarily have experience with R language. The package is developed within the project 'PvSTATEM', which is an international project aiming for malaria elimination.
-BugReports: https://github.com/mini-pw/SerolyzerR/issues
+BugReports: https://github.com/mini-pw/SerolyzeR/issues
 Version: 1.0.0
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
@@ -43,4 +43,4 @@ Suggests:
 Config/testfhat/edition: 3
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 VignetteBuilder: knitr
-URL: https://github.com/mini-pw/SerolyzerR, https://mini-pw.github.io/SerolyzerR/
+URL: https://github.com/mini-pw/SerolyzeR, https://mini-pw.github.io/SerolyzeR/

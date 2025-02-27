@@ -22,12 +22,12 @@
 #' The RAU value is simply a predicted dilution value (using the standard curve) for a given MFI
 #' multiplied by 1,000 000 to have a more readable value.
 #' For more information about the differences between dilution, RAU and MFI values, please see the
-#' "Normalisation" section in the "Basic SerolyzerR functionalities" vignette.
+#' "Normalisation" section in the "Basic SerolyzeR functionalities" vignette.
 #'
 #'
 #' @examples
-#' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzerR")
-#' layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "SerolyzerR")
+#' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR")
+#' layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "SerolyzeR")
 #' plate <- read_luminex_data(plate_file, layout_filepath = layout_file)
 #' model <- create_standard_curve_model_analyte(plate, "S2", log_mfi = TRUE)
 #' print(model)
@@ -306,7 +306,7 @@ Model <- R6::R6Class(
 
 #' Predict the RAU values from the MFI values
 #' @description
-#' More details can be found here: \link[SerolyzerR]{Model}
+#' More details can be found here: \link[SerolyzeR]{Model}
 #'
 #' @param object (`Model()`)
 #'   Object of the Model class
@@ -336,7 +336,7 @@ predict.Model <- function(object, mfi, ...) {
 #'   If `TRUE`, the MFI range is calculated from all analytes; if `FALSE`, the MFI range is calculated only for the current analyte
 #'   Defaults to `FALSE`
 #' @param detect_high_dose_hook (`logical(1)`) If `TRUE`, the high dose hook effect is detected and handled.
-#' For more information, please see the \link[SerolyzerR]{handle_high_dose_hook} function documentation.
+#' For more information, please see the \link[SerolyzeR]{handle_high_dose_hook} function documentation.
 #' @param ... Additional arguments passed to the model
 #'
 #' Standard curve samples should not contain `na` values in mfi values nor in dilutions.
@@ -394,11 +394,11 @@ create_standard_curve_model_analyte <- function(plate, analyte_name,
 #' @examples
 #' plate_filepath <- system.file(
 #'   "extdata", "CovidOISExPONTENT.csv",
-#'   package = "SerolyzerR", mustWork = TRUE
+#'   package = "SerolyzeR", mustWork = TRUE
 #' ) # get the filepath of the csv dataset
 #' layout_filepath <- system.file(
 #'   "extdata", "CovidOISExPONTENT_layout.xlsx",
-#'   package = "SerolyzerR", mustWork = TRUE
+#'   package = "SerolyzeR", mustWork = TRUE
 #' )
 #' plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
 #'

@@ -16,9 +16,9 @@ body:
           required: true
         - label: I used the GitHub search to find a similar question and didn't find it.
           required: true
-        - label: I am sure that this is a bug in SerolyzerR package rather than my code.
+        - label: I am sure that this is a bug in SerolyzeR package rather than my code.
           required: true
-        - label: The bug is not resolved by updating to the latest stable version of SerolyzerR package.
+        - label: The bug is not resolved by updating to the latest stable version of SerolyzeR package.
           required: true
         - label: I included a link to the documentation page I am referring to (if applicable).
           required: true
@@ -31,7 +31,7 @@ body:
         The following code:
 
         ```R
-        requre(SerolyzerR)
+        requre(SerolyzeR)
         data <- read_luminex_data("data.csv")
         process_plate(data)
         ```

@@ -1,6 +1,6 @@
 SerolyzeR 1.0.0
 ---------------------------------------------------------------
-* package name changed from PvSTATEM to SerolyzerR
+* package name changed from PvSTATEM to SerolyzeR
 
 
 PvSTATEM 0.2.1

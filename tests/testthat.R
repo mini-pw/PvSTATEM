@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 require(testthat)
-require(SerolyzerR)
+require(SerolyzeR)
 
-test_check("SerolyzerR")
+test_check("SerolyzeR")
