@@ -20,5 +20,5 @@ Should be in the same scale as the MFI values used to fit the model}
 (\code{data.frame()})
 }
 \description{
-More details can be found here: \link[PvSTATEM]{Model}
+More details can be found here: \link[SerolyzerR]{Model}
 }

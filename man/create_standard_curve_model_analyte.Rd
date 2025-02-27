@@ -28,7 +28,7 @@ If \code{TRUE}, the MFI range is calculated from all analytes; if \code{FALSE}, 
 Defaults to \code{FALSE}}
 
 \item{detect_high_dose_hook}{(\code{logical(1)}) If \code{TRUE}, the high dose hook effect is detected and handled.
-For more information, please see the \link[PvSTATEM]{handle_high_dose_hook} function documentation.}
+For more information, please see the \link[SerolyzerR]{handle_high_dose_hook} function documentation.}
 
 \item{...}{Additional arguments passed to the model
 

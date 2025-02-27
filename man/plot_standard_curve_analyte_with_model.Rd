@@ -57,10 +57,10 @@ Function plots the values of standard curve samples and the fitted model.
 }
 \examples{
 path <- system.file("extdata", "CovidOISExPONTENT.csv",
-  package = "PvSTATEM", mustWork = TRUE
+  package = "SerolyzerR", mustWork = TRUE
 )
 layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx",
-  package = "PvSTATEM", mustWork = TRUE
+  package = "SerolyzerR", mustWork = TRUE
 )
 plate <- read_luminex_data(path, layout_filepath = layout_path, verbose = FALSE)
 model <- create_standard_curve_model_analyte(plate, analyte_name = "Spike_B16172")
