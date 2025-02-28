@@ -45,12 +45,22 @@ for (dilution in params$dilutions) {
     stop("The dilution", dilution, "is not present in plates ", paste(plate_where_dilution_is_missing, collapse = ", "))
   }
 }
-analyte_names <- params$list_of_plates[[1]]$analyte_names
+all_analyte_names <- c()
+
+intersection_analytes <- params$list_of_plates[[1]]$analyte_names
+
 for (plate in params$list_of_plates) {
-  if (!identical(plate$analyte_names, analyte_names)) {
-    warning("The plates do not contain the same analytes.")
-  }
+  all_analyte_names <- union(all_analyte_names, plate$analyte_names)
+  intersection_analytes <- intersect(intersection_analytes, plate$analyte_names)
 }
+
+if (length(intersection_analytes) == length(all_analyte_names)) {
+  warning("Not all plates contain the same analytes. The report will contain only the analytes that are present in all plates. Number of all analytes: ", length(all_analyte_names), ". Number of common analytes: ", length(intersection_analytes))
+}
+
+analyte_names <- intersection_analytes
+
+
 if (!is.null(params$additional_notes) && !is(params$additional_notes, "character")) {
   stop("The `additional_notes` must be a character value.")
 }
