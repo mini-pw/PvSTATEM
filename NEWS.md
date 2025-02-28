@@ -1,16 +1,16 @@
-SerolyzeR 1.0.0
+Version 1.0.0
 ---------------------------------------------------------------
 * package name changed from PvSTATEM to SerolyzeR
 
 
-PvSTATEM 0.2.2
+Version 0.2.2
 ---------------------------------------------------------------
 * CRAN re-upload due to nplr package problems
 * docs updates
 * bug fixes
 
 
-PvSTATEM 0.2.1
+Version 0.2.1
 ---------------------------------------------------------------
 * updated the multiple plate report layout
 * merged output files of `process_dir`
@@ -19,32 +19,32 @@ PvSTATEM 0.2.1
 * bug fixes
 
 
-PvSTATEM 0.2.0
+Version 0.2.0
 ---------------------------------------------------------------
 * added processing of multiple plates
 * added stacked plot, levey-jennings plot and multiple plate report
 * fixed the search option in the documentation
 
 
-PvSTATEM 0.1.3
+Version 0.1.3
 ---------------------------------------------------------------
 * fixed an issue with writing into the home user's directory
 * fixed an issue with reading plate files containing empty wells in the middle of the layout
 * added a badge displaying coverage status 
   
 
-PvSTATEM 0.1.2
+Version 0.1.2
 ---------------------------------------------------------------
 * uploaded missing vignettes that were removed in the previous release
 
 
-PvSTATEM 0.1.1
+Version 0.1.1
 ---------------------------------------------------------------
 * released the package to CRAN
 * fixed minor formatting issues
 
 
-PvSTATEM 0.1.0
+Version 0.1.0
 ---------------------------------------------------------------
 * enhanced and unified file saving for generate_plate_report and process_plate
 * reduced HTML report size and improved its structure
@@ -55,7 +55,7 @@ PvSTATEM 0.1.0
 * limited the amount of data frame presented in the vignettes
 
 
-PvSTATEM 0.0.5
+Version 0.0.5
 ---------------------------------------------------------------
 * added function `generate_plate_report` generating the html report
 * added nMFI normalisation type
@@ -64,14 +64,14 @@ PvSTATEM 0.0.5
 * simple censoring of the extrapolation
 
 
-PvSTATEM 0.0.4
+Version 0.0.4
 ---------------------------------------------------------------
 * met the CRAN policy
 * fixed the issue templates
 * added the plate object view options
 
 
-PvSTATEM 0.0.3
+Version 0.0.3
 ---------------------------------------------------------------
 * refactored the whole package structure to simplify the usage
 * added a new, much faster parser for the xPONENT and INTELLIFLEX files
@@ -81,7 +81,7 @@ PvSTATEM 0.0.3
 * error fixes
 
 
-PvSTATEM 0.0.2
+Version 0.0.2
 ---------------------------------------------------------------
 * added new datasets to the package
 * sample standard curve plotting
@@ -89,6 +89,6 @@ PvSTATEM 0.0.2
 * tests with coverage calculation
 
 
-PvSTATEM 0.0.1
+Version 0.0.1
 ---------------------------------------------------------------
 * initial package structure with simple reading functionality
