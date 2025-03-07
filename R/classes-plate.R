@@ -455,6 +455,12 @@ Plate <- R6::R6Class(
         blanks_df <- df[blanks_filter, , drop = FALSE]
         clamp_value <- as.numeric(apply(blanks_df, 2, method))
 
+        # perform a sanity check if the clamp value is higher than the min of the remaining samples
+        if (any(pmin(df[!blanks_filter, ]) < clamp_value)) {
+          warning("The blank value is lower than the minimum value of the remaining samples, verify if your data is correctly read.")
+        }
+
+
         for (col in seq_len(ncol(df))) {
           df[(!blanks_filter), col] <- clamp(df[(!blanks_filter), col], lower = clamp_value[col])
         }
