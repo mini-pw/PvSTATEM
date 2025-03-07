@@ -66,33 +66,33 @@ test_that("Test obtaining an output directory", {
 test_that("Test processing a mock directory", {
   dir <- system.file("extdata", "multiplate_mock", package = "SerolyzeR", mustWork = TRUE) # get the filepath of the csv dataset
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = T, flatten_output_dir = T)
+    process_dir(dir, dry_run = TRUE, recurse = TRUE, flatten_output_dir = TRUE)
   ))
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = F, flatten_output_dir = T)
+    process_dir(dir, dry_run = TRUE, recurse = FALSE, flatten_output_dir = TRUE)
   ))
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = T, flatten_output_dir = F)
+    process_dir(dir, dry_run = TRUE, recurse = TRUE, flatten_output_dir = FALSE)
   ))
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = T, flatten_output_dir = F, output_dir = tempdir(check = TRUE))
+    process_dir(dir, dry_run = TRUE, recurse = TRUE, flatten_output_dir = FALSE, output_dir = tempdir(check = TRUE))
   ))
 
   dir <- tempdir(check = TRUE)
 
   # Clean up the tmp directory
-  unlink(dir, recursive = T)
+  unlink(dir, recursive = TRUE)
   dir.create(dir)
 
   expect_no_error(capture.output(
-    process_dir(dir, dry_run = T, recurse = F, output_dir = dir)
+    process_dir(dir, dry_run = TRUE, recurse = FALSE, output_dir = dir)
   ))
 })
 
 test_that("Test processing a directory with a single plate", {
   dir <- system.file("extdata", "multiplate_lite", package = "SerolyzeR", mustWork = TRUE) # get the filepath of the csv dataset
   output_dir <- tempdir(check = TRUE)
-  plates <- process_dir(dir, return_plates = T, output_dir = output_dir)
+  plates <- process_dir(dir, return_plates = TRUE, output_dir = output_dir)
   expect_length(plates, 2)
 })
 
@@ -101,10 +101,10 @@ test_that("Test processing a reallife directory with merge output", {
   output_dir <- tempdir(check = TRUE)
 
   # Clean up the tmp directory
-  unlink(output_dir, recursive = T)
+  unlink(output_dir, recursive = TRUE)
   dir.create(output_dir)
 
-  plates <- process_dir(dir, return_plates = T, output_dir = output_dir, merge_outputs = T)
+  plates <- process_dir(dir, return_plates = TRUE, output_dir = output_dir, merge_outputs = TRUE)
   expect_length(plates, 3)
   expect_true(
     length(fs::dir_ls(output_dir, type = "file", glob = "*merged*")) >= 2
