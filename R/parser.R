@@ -145,6 +145,7 @@ postprocess_xponent <- function(xponent_output, verbose = TRUE) {
 
 
 valid_formats <- c("xPONENT", "INTELLIFLEX")
+valid_plate_order <- c("layout", "plate")
 
 #' Read Luminex Data
 #'
@@ -172,6 +173,9 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #' @param default_data_type The default data type to use if none is specified
 #' @param sample_types a vector of sample types to use instead of the extracted ones
 #' @param dilutions a vector of dilutions to use instead of the extracted ones
+#' @param plate_order Value indicating how the samples should be ordered on the plate.
+#' The posssible options are: `layout` or `plate`. Default is `layout`. If `plate` is selected, the samples will be ordered as in the plate input file.
+#' If `layout` is selected, the samples will be ordered as in the layout file - in an increasing or
 #' @param verbose Whether to print additional information and warnings. `TRUE` by default
 #'
 #' @return Plate file containing the Luminex data
@@ -198,10 +202,17 @@ read_luminex_data <- function(plate_filepath,
                               default_data_type = "Median",
                               sample_types = NULL,
                               dilutions = NULL,
+                              plate_order = "layout",
                               verbose = TRUE) {
   if (!(format %in% valid_formats)) {
     stop("Invalid format: ", format, ". Select from: ", paste(valid_formats, collapse = ", "))
   }
+
+  if (!(plate_order %in% valid_plate_order)) {
+    stop("Invalid plate order: ", plate_order, ". Select from: ", paste(valid_plate_order, collapse = ", "))
+  }
+
+
 
   verbose_cat("Reading Luminex data from: ", plate_filepath, "\nusing format ", format, "\n", verbose = verbose)
 
@@ -258,8 +269,13 @@ read_luminex_data <- function(plate_filepath,
 
   plate_builder$set_dilutions(use_layout_dilutions, dilutions)
 
+  if (plate_order == "layout") {
+    reorder_plate_by_layout <- TRUE
+  } else if (plate_order == "plate") {
+    reorder_plate_by_layout <- FALSE
+  }
 
-  plate <- plate_builder$build(validate = TRUE)
+  plate <- plate_builder$build(validate = TRUE, reorder = reorder_plate_by_layout)
 
   verbose_cat(color_codes$green_start, "\nNew plate object has been created with name: ",
     plate$plate_name, "!\n", color_codes$green_end, "\n",
