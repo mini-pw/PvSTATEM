@@ -131,12 +131,32 @@ Model <- R6::R6Class(
           )
         )
       }
-      if (!(all(mfi > 0) & mfi_min >= 0)) {
+      if (any(mfi < 0)) {
         stop(
           paste0(
             "Not all of the standard curve MFI values are positive for the analyte '",
             analyte,
-            "'"
+            "'. Ensure that there are no issues with the data"
+          )
+        )
+      }
+
+      if (any(is.na(mfi))) {
+        stop(
+          paste0(
+            "Some of the standard curve MFI values are NA for the analyte '",
+            analyte,
+            "'."
+          )
+        )
+      }
+
+      if (!is.null(mfi_min) && mfi_min < 0) {
+        stop(
+          paste0(
+            "The minimum MFI value used for scaling MFI values to the range [0, 1] for the analyte '",
+            analyte,
+            "' is negative."
           )
         )
       }
