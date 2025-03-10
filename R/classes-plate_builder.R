@@ -521,7 +521,8 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #'
 #' If `sample_names` or `sample_names_from_layout` equals to `STANDARD CURVE`,
 #' `SC`, `S`, contains substring `1/\d+` and has prefix ` `, `S_`, `S `,
-#' `S` or `CP3`, then SampleType equals to `STANDARD CURVE`
+#' `S` or `CP3`, then SampleType equals to `STANDARD CURVE`. For instance, sample with a name
+#' `S_1/2` or `S 1/2` will be classified as `STANDARD CURVE`.
 #'
 #' If `sample_names` or `sample_names_from_layout` equals to `NEGATIVE CONTROL`, `N`,
 #' or contains substring `NEG`, then SampleType equals to `NEGATIVE CONTROL`

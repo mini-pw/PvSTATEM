@@ -172,6 +172,10 @@ Plate <- R6::R6Class(
     #'  The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
     #'  Sample types are ordered in the same way as the `sample_names` vector.
     #'
+    #'  If the Plate object is initialised using the default methods ( \code{\link=read_luminex_data]{read_luminex_data}}
+    #'  or any of the processing methods: \code{\link=process_dir]{process_dir}}, \code{\link=process_file]{process_file}} and \code{\link=process_plate]{process_plate}})
+    #'  the sample types are detected based on the sample names according to the rules described in \code{\link[=translate_sample_names_to_sample_types]{translate_sample_names_to_sample_types}}.
+    #'
     #'
     #' @param dilutions (`character()`)\cr
     #'  A list containing names of the samples as keys and string representing dilutions as values.
