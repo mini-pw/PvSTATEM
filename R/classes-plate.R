@@ -149,7 +149,8 @@ Plate <- R6::R6Class(
     #'  of the file from which the plate was read.
     #'
     #' @param sample_names (`character()`)\cr
-    #'  Names of the samples that were examined on the plate.
+    #'  Names of the samples that were examined on the plate. Sample names are by default ordered by location in the plate, using the row-major order.
+    #'  The first sample is the one in upper-left corner, then follows the ones in the first row, then the second row, and so on.
     #'
     #' @param analyte_names (`character()`)\cr
     #'  Names of the analytes that were examined on the plate.
@@ -164,17 +165,21 @@ Plate <- R6::R6Class(
     #'
     #' @param sample_locations (`character()`)\cr
     #'  Locations of the samples on the plate.
+    #'  Sample locations are ordered in the same way as samples in the input CSV file.
     #'
     #' @param sample_types (`character()`)\cr
     #'  Types of the samples that were examined on the plate.
     #'  The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
+    #'  Sample types are ordered in the same way as the `sample_names` vector.
+    #'
     #'
     #' @param dilutions (`character()`)\cr
     #'  A list containing names of the samples as keys and string representing dilutions as values.
-    #'  The dilutions are represented as strings.
+    #'  The dilutions are represented as strings. The dilutions are ordered in the same way as the `sample_names` vector
     #'
     #' @param dilution_values (`numeric()`)\cr
     #'  A list containing names of the samples as keys and numeric values representing dilutions as values.
+    #'  The dilution values are ordered in the same way as the `sample_names` vector
     #'
     #' @param default_data_type (`character(1)`)\cr
     #'  The default data type that will be returned by the `get_data` method.
@@ -184,6 +189,7 @@ Plate <- R6::R6Class(
     #'  A list containing dataframes with the data for each sample and analyte.
     #'  The possible data types - the keys of the list are \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
     #'  In each dataframe, the rows represent samples and the columns represent analytes.
+    #'  Rows of each dataframe are ordered in the same way as the `sample_names` vector.
     #'
     #' @param batch_info (`list()`)\cr
     #'  A list containing additional, technical information about the batch.
@@ -455,9 +461,10 @@ Plate <- R6::R6Class(
         blanks_df <- df[blanks_filter, , drop = FALSE]
         clamp_value <- as.numeric(apply(blanks_df, 2, method))
 
+        count_higher <- sum(df[!blanks_filter, ] > clamp_value, na.rm = TRUE)
         # perform a sanity check if the clamp value is higher than the min of the remaining samples
-        if (any(pmin(df[!blanks_filter, ]) < clamp_value)) {
-          warning("The blank value is lower than the minimum value of the remaining samples, verify if your data is correctly read.")
+        if (count_higher < ncol(df) * nrow(df) / 2) {
+          warning("The blank value is higher than value of half of the samples and analytes, verify if your data is correctly read.")
         }
 
 
