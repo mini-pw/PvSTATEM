@@ -11,7 +11,6 @@ process_plate(
   write_output = TRUE,
   normalisation_type = "RAU",
   data_type = "Median",
-  include_raw_mfi = TRUE,
   adjust_blanks = FALSE,
   verbose = TRUE,
   reference_dilution = 1/400,
@@ -40,13 +39,9 @@ If it equals to \code{NULL} the current working directory will be used. Default 
 specified by \code{filename} parameter. The default is \code{TRUE}.}
 
 \item{normalisation_type}{(\code{character(1)}) type of normalisation to use. Available options are:
-\cr \code{c(RAU, nMFI)}.}
+\cr \code{c(MFI, RAU, nMFI)}.}
 
 \item{data_type}{(\code{character(1)}) type of data to use for the computation. Median is the default}
-
-\item{include_raw_mfi}{(\code{logical(1)}) include raw MFI values in the output. The default is \code{TRUE}.
-In case this option is \code{TRUE}, the output dataframe contains two columns for each analyte: one for the normalised values and one for the raw MFI values.
-The normalised columns are named as \code{AnalyteName} and \code{AnalyteName_raw}, respectively.}
 
 \item{adjust_blanks}{(\code{logical(1)}) adjust blanks before computing RAU values. The default is \code{FALSE}}
 

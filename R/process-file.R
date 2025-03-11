@@ -17,7 +17,6 @@
 #' @param process_plate (`logical(1)`) If `TRUE`, process the plate. The default is `TRUE`.
 #' If the value is set to `FALSE` the function will only read the plate file and return the plate object.
 #' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("RAU", "nMFI")`.
-#' @param include_raw_mfi (`logical(1)`) If `TRUE`, include the raw MFI values in the normalised data. The default is `TRUE`.
 #' @param adjust_blanks (`logical(1)`) If `TRUE`, adjust the blank values. The default is `FALSE`.#'
 #' @param verbose (`logical(1)`) Print additional information. The default is `TRUE`.
 #' @param ... Additional arguments to for the `read_luminex_data` function.
@@ -45,8 +44,7 @@ process_file <- function(
     format = "xPONENT",
     generate_report = FALSE,
     process_plate = TRUE,
-    normalisation_types = c("RAU", "nMFI"),
-    include_raw_mfi = TRUE,
+    normalisation_types = c("MFI", "RAU", "nMFI"),
     adjust_blanks = FALSE,
     verbose = TRUE,
     ...) {
@@ -64,7 +62,7 @@ process_file <- function(
       process_plate(
         plate,
         normalisation_type = normalisation_type, output_dir = output_dir,
-        include_raw_mfi = include_raw_mfi, adjust_blanks = adjust_blanks, verbose = verbose
+        adjust_blanks = adjust_blanks, verbose = verbose
       )
     }
   }

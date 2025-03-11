@@ -52,9 +52,6 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
 #' \cr \code{c(`r toString(SerolyzeR.env$normalisation_types)`)}.
 #' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
-#' @param include_raw_mfi (`logical(1)`) include raw MFI values in the output. The default is `TRUE`.
-#' In case this option is `TRUE`, the output dataframe contains two columns for each analyte: one for the normalised values and one for the raw MFI values.
-#' The normalised columns are named as `AnalyteName` and `AnalyteName_raw`, respectively.
 #' @param adjust_blanks (`logical(1)`) adjust blanks before computing RAU values. The default is `FALSE`
 #' @param verbose (`logical(1)`) print additional information. The default is `TRUE`
 #' @param reference_dilution (`numeric(1)`) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
@@ -98,7 +95,6 @@ process_plate <-
            write_output = TRUE,
            normalisation_type = "RAU",
            data_type = "Median",
-           include_raw_mfi = TRUE,
            adjust_blanks = FALSE,
            verbose = TRUE,
            reference_dilution = 1 / 400,
@@ -122,40 +118,39 @@ process_plate <-
     if (!plate$blank_adjusted && adjust_blanks) {
       plate <- plate$blank_adjustment(in_place = FALSE)
     }
-    if (normalisation_type == "nMFI") {
+
+    test_sample_names <- plate$sample_names[plate$sample_types == "TEST"]
+    if (normalisation_type == "MFI") {
+      verbose_cat("Extracting the raw MFI to the output dataframe\n")
+      output_df <- plate$get_data(
+        "ALL", "TEST",
+        data_type = data_type
+      )
+    } else if (normalisation_type == "nMFI") {
       verbose_cat("Computing nMFI values for each analyte\n", verbose = verbose)
-      output_df <-
-        get_nmfi(plate, reference_dilution = reference_dilution, data_type = data_type)
+      output_df <- get_nmfi(
+        plate,
+        reference_dilution = reference_dilution, data_type = data_type
+      )
     } else if (normalisation_type == "RAU") {
       # RAU normalisation
-
-      test_sample_names <-
-        plate$sample_names[plate$sample_types == "TEST"]
+      verbose_cat("Fitting the models and predicting RAU for each analyte\n", verbose = verbose)
       output_list <- list()
-      verbose_cat("Fitting the models and predicting RAU for each analyte\n",
-        verbose = verbose
-      )
-
       for (analyte in plate$analyte_names) {
-        model <-
-          create_standard_curve_model_analyte(plate, analyte, data_type = data_type, ...)
-        test_samples_mfi <-
-          plate$get_data(analyte, "TEST", data_type = data_type)
+        model <- create_standard_curve_model_analyte(
+          plate, analyte,
+          data_type = data_type, ...
+        )
+        test_samples_mfi <- plate$get_data(
+          analyte, "TEST",
+          data_type = data_type
+        )
         test_sample_estimates <- predict(model, test_samples_mfi)
         output_list[[analyte]] <- test_sample_estimates[, "RAU"]
       }
-
       output_df <- data.frame(output_list)
-      rownames(output_df) <- test_sample_names
     }
-
-    if (include_raw_mfi) {
-      verbose_cat("Adding the raw MFI values to the output dataframe\n")
-      raw_mfi <- plate$data[[data_type]][plate$sample_types == "TEST", ]
-      colnames(raw_mfi) <- paste0(colnames(raw_mfi), "_raw")
-
-      output_df <- cbind(output_df, raw_mfi)
-    }
+    rownames(output_df) <- test_sample_names
 
     if (write_output) {
       verbose_cat("Saving the computed ", normalisation_type, " values to a CSV file located in: '",

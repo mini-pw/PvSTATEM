@@ -200,7 +200,7 @@ process_dir <- function(
     flatten_output_dir = FALSE,
     layout_filepath = NULL,
     format = NULL,
-    normalisation_types = c("RAU", "nMFI"),
+    normalisation_types = c("MFI", "RAU", "nMFI"),
     generate_reports = FALSE,
     merge_outputs = FALSE,
     column_collision_strategy = "intersection",
@@ -308,7 +308,7 @@ process_dir <- function(
       for (plate in plates) {
         output_df <- process_plate(plate,
           normalisation_type = normalisation_type, write_output = FALSE,
-          include_raw_mfi = TRUE, adjust_blanks = TRUE, verbose = verbose
+          adjust_blanks = TRUE, verbose = verbose
         )
         df_header_columns <- data.frame(
           plate_name = plate$plate_name,

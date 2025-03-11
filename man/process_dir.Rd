@@ -11,7 +11,7 @@ process_dir(
   flatten_output_dir = FALSE,
   layout_filepath = NULL,
   format = NULL,
-  normalisation_types = c("RAU", "nMFI"),
+  normalisation_types = c("MFI", "RAU", "nMFI"),
   generate_reports = FALSE,
   merge_outputs = FALSE,
   column_collision_strategy = "intersection",

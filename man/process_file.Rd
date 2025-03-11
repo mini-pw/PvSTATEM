@@ -11,8 +11,7 @@ process_file(
   format = "xPONENT",
   generate_report = FALSE,
   process_plate = TRUE,
-  normalisation_types = c("RAU", "nMFI"),
-  include_raw_mfi = TRUE,
+  normalisation_types = c("MFI", "RAU", "nMFI"),
   adjust_blanks = FALSE,
   verbose = TRUE,
   ...
@@ -33,8 +32,6 @@ process_file(
 If the value is set to \code{FALSE} the function will only read the plate file and return the plate object.}
 
 \item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("RAU", "nMFI")}.}
-
-\item{include_raw_mfi}{(\code{logical(1)}) If \code{TRUE}, include the raw MFI values in the normalised data. The default is \code{TRUE}.}
 
 \item{adjust_blanks}{(\code{logical(1)}) If \code{TRUE}, adjust the blank values. The default is \code{FALSE}.#'}
 
