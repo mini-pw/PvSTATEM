@@ -308,7 +308,7 @@ process_dir <- function(
       for (plate in plates) {
         output_df <- process_plate(plate,
           normalisation_type = normalisation_type, write_output = FALSE,
-          adjust_blanks = TRUE, verbose = verbose
+          blank_adjustment = TRUE, verbose = verbose
         )
         df_header_columns <- data.frame(
           plate_name = plate$plate_name,

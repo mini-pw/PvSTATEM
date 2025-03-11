@@ -11,7 +11,7 @@ process_plate(
   write_output = TRUE,
   normalisation_type = "RAU",
   data_type = "Median",
-  adjust_blanks = FALSE,
+  blank_adjustment = FALSE,
   verbose = TRUE,
   reference_dilution = 1/400,
   ...
@@ -43,7 +43,7 @@ specified by \code{filename} parameter. The default is \code{TRUE}.}
 
 \item{data_type}{(\code{character(1)}) type of data to use for the computation. Median is the default}
 
-\item{adjust_blanks}{(\code{logical(1)}) adjust blanks before computing RAU values. The default is \code{FALSE}}
+\item{blank_adjustment}{(\code{logical(1)}) perform blank adjustment on the plate before computing normalised values. The default is \code{FALSE}}
 
 \item{verbose}{(\code{logical(1)}) print additional information. The default is \code{TRUE}}
 
@@ -65,7 +65,7 @@ Additionally the \code{normalisation_type} can be set to \code{MFI} resulting in
 
 The behaviour of the function, in the case of RAU normalisation type, can be summarised as follows:
 \enumerate{
-\item Adjust blanks if \code{adjust_blanks} is set to \code{TRUE}.
+\item Blank adjust the plate if \code{blank_adjustment} is set to \code{TRUE}.
 \item Fit a model to each analyte using standard curve samples.
 \item Compute RAU values for each analyte using the corresponding model.
 \item Aggregate computed RAU values into a single data frame.
@@ -77,7 +77,7 @@ More info about the RAU normalisation can be found in
 
 In case the normalisation type being \strong{nMFI}, the function will:
 \enumerate{
-\item Adjust blanks if \code{adjust_blanks} is set to \code{TRUE}.
+\item Blank adjust the plate if \code{blank_adjustment} is set to \code{TRUE}.
 \item Compute nMFI values for each analyte using the target dilution.
 \item Aggregate computed nMFI values into a single data frame.
 \item Save the computed nMFI values to a CSV file.
@@ -87,12 +87,12 @@ More info about the nMFI normalisation can be found in \code{get_nmfi} function 
 
 In case of normalisation type "MFI", the function will:
 \enumerate{
-\item Adjust blanks if \code{adjust_blanks} is set to \code{TRUE}.
+\item Blank adjust the plate if \code{blank_adjustment} is set to \code{TRUE}.
 \item Save the blank adjusted MFI values to a CSV file.
 }
 
 If the plate is already blank adjusted when calling the method,
-the parameter \code{adjust_blanks} has not effect.
+the parameter \code{blank_adjustment} has no effect.
 }
 \examples{
 
@@ -106,10 +106,10 @@ example_dir <- tempdir(check = TRUE) # a temporary directory
 # create and save dataframe with computed dilutions
 process_plate(plate, output_dir = example_dir)
 
-# process plate without adjusting blanks and save the output to a file with a custom name
+# process plate without blank adjustment and save the output to a file with a custom name
 process_plate(plate,
-  filename = "plate_without_blanks_adjusted.csv",
-  output_dir = example_dir, adjust_blanks = FALSE
+  filename = "plate_no_blank_adjustment.csv",
+  output_dir = example_dir, blank_adjustment = FALSE
 )
 
 

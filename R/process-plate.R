@@ -11,7 +11,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' **RAU** is the default normalisation type.
 #'
 #' The behaviour of the function, in the case of RAU normalisation type, can be summarised as follows:
-#' 1. Adjust blanks if `adjust_blanks` is set to `TRUE`.
+#' 1. Blank adjust the plate if `blank_adjustment` is set to `TRUE`.
 #' 2. Fit a model to each analyte using standard curve samples.
 #' 3. Compute RAU values for each analyte using the corresponding model.
 #' 4. Aggregate computed RAU values into a single data frame.
@@ -22,7 +22,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #'
 #'
 #' In case the normalisation type being **nMFI**, the function will:
-#' 1. Adjust blanks if `adjust_blanks` is set to `TRUE`.
+#' 1. Blank adjust the plate if `blank_adjustment` is set to `TRUE`.
 #' 2. Compute nMFI values for each analyte using the target dilution.
 #' 3. Aggregate computed nMFI values into a single data frame.
 #' 4. Save the computed nMFI values to a CSV file.
@@ -31,12 +31,12 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #'
 #'
 #' In case of normalisation type "MFI", the function will:
-#' 1. Adjust blanks if `adjust_blanks` is set to `TRUE`.
+#' 1. Blank adjust the plate if `blank_adjustment` is set to `TRUE`.
 #' 2. Save the blank adjusted MFI values to a CSV file.
 #'
 #'
 #' If the plate is already blank adjusted when calling the method,
-#' the parameter `adjust_blanks` has not effect.
+#' the parameter `blank_adjustment` has no effect.
 #'
 #'
 #' @param plate (`Plate()`) a plate object
@@ -61,7 +61,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
 #' \cr \code{c(`r toString(SerolyzeR.env$normalisation_types)`)}.
 #' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
-#' @param adjust_blanks (`logical(1)`) adjust blanks before computing RAU values. The default is `FALSE`
+#' @param blank_adjustment (`logical(1)`) perform blank adjustment on the plate before computing normalised values. The default is `FALSE`
 #' @param verbose (`logical(1)`) print additional information. The default is `TRUE`
 #' @param reference_dilution (`numeric(1)`) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
 #' Default is `1/400`.
@@ -82,10 +82,10 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' # create and save dataframe with computed dilutions
 #' process_plate(plate, output_dir = example_dir)
 #'
-#' # process plate without adjusting blanks and save the output to a file with a custom name
+#' # process plate without blank adjustment and save the output to a file with a custom name
 #' process_plate(plate,
-#'   filename = "plate_without_blanks_adjusted.csv",
-#'   output_dir = example_dir, adjust_blanks = FALSE
+#'   filename = "plate_no_blank_adjustment.csv",
+#'   output_dir = example_dir, blank_adjustment = FALSE
 #' )
 #'
 #'
@@ -104,7 +104,7 @@ process_plate <-
            write_output = TRUE,
            normalisation_type = "RAU",
            data_type = "Median",
-           adjust_blanks = FALSE,
+           blank_adjustment = FALSE,
            verbose = TRUE,
            reference_dilution = 1 / 400,
            ...) {
@@ -124,7 +124,7 @@ process_plate <-
     }
 
 
-    if (!plate$blank_adjusted && adjust_blanks) {
+    if ((!plate$blank_adjusted) && blank_adjustment) {
       plate <- plate$blank_adjustment(in_place = FALSE)
     }
 

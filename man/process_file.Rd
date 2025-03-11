@@ -12,7 +12,7 @@ process_file(
   generate_report = FALSE,
   process_plate = TRUE,
   normalisation_types = c("MFI", "RAU", "nMFI"),
-  adjust_blanks = FALSE,
+  blank_adjustment = FALSE,
   verbose = TRUE,
   ...
 )
@@ -33,7 +33,7 @@ If the value is set to \code{FALSE} the function will only read the plate file a
 
 \item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("MFI", "RAU", "nMFI")}.}
 
-\item{adjust_blanks}{(\code{logical(1)}) If \code{TRUE}, adjust the blank values. The default is \code{FALSE}.#'}
+\item{blank_adjustment}{(\code{logical(1)}) If \code{TRUE}, adjust the blank values. The default is \code{FALSE}.#'}
 
 \item{verbose}{(\code{logical(1)}) Print additional information. The default is \code{TRUE}.}
 
