@@ -52,3 +52,74 @@ test_that("Test high dose hook on a plate object", {
 
   expect_warning(model <- create_standard_curve_model_analyte(plate, "S2"))
 })
+
+
+test_that("Validation checks", {
+  # Incompatible lengths
+  expect_error(
+    Model$new(
+      analyte = "Spike_6P_IPP",
+      dilutions = c(0.1),
+      mfi = c(100, 50)
+    )
+  )
+
+  # dilutions outside the interval [0,1]
+  expect_error(
+    Model$new(
+      analyte = "Spike_6P_IPP",
+      dilutions = c(-0.1, 1.1),
+      mfi = c(100, 50)
+    )
+  )
+
+
+  # negative mfi below zero
+  expect_error(
+    Model$new(
+      analyte = "Spike_6P_IPP",
+      dilutions = c(0.1, 0.9),
+      mfi = c(-5, -4)
+    )
+  )
+
+  # NA in MFI
+  expect_error(
+    Model$new(
+      analyte = "Spike_6P_IPP",
+      dilutions = c(0.1, 0.9),
+      mfi = c(4, NA)
+    )
+  )
+
+
+
+  # negative mfi below zero
+  expect_error(
+    Model$new(
+      analyte = "Spike_6P_IPP",
+      dilutions = c(0.1, 0.9),
+      mfi = c(10, 20),
+      mfi_min = -15
+    )
+  )
+
+
+  # incorrect types
+  expect_error(
+    Model$new(
+      analyte = "Spike_6P_IPP",
+      dilutions = c(0.1, 0.9),
+      mfi = c(-5, -4)
+    )
+  )
+
+  # only one MFI value
+  expect_error(
+    Model$new(
+      analyte = "Spike_6P_IPP",
+      dilutions = c(0.1, 0.9),
+      mfi = c(10, 10)
+    )
+  )
+})
