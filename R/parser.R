@@ -203,10 +203,6 @@ read_luminex_data <- function(plate_filepath,
     stop("Invalid format: ", format, ". Select from: ", paste(valid_formats, collapse = ", "))
   }
 
-  if (!(plate_order %in% valid_plate_order)) {
-    stop("Invalid plate order: ", plate_order, ". Select from: ", paste(valid_plate_order, collapse = ", "))
-  }
-
 
 
   verbose_cat("Reading Luminex data from: ", plate_filepath, "\nusing format ", format, "\n", verbose = verbose)
