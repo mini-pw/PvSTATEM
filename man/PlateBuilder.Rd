@@ -277,9 +277,19 @@ Set the layout matrix for the plate. This function performs basic validation
 \subsection{Method \code{build()}}{
 Create a Plate object from the PlateBuilder object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$build(validate = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PlateBuilder$build(validate = TRUE, reorder = TRUE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{validate}}{logical value indicating whether to validate the fields}
+
+\item{\code{reorder}}{logical value indicating whether to reorder the data according to the locations on the plate.
+If \code{FALSE}, the samples will be ordered in the same manner as in the CSV plate file.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PlateBuilder-clone"></a>}}

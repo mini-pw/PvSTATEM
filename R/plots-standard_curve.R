@@ -385,6 +385,10 @@ plot_standard_curve_stacked <- function(list_of_plates,
   if (!is.null(legend_type) && !legend_type %in% c("date", "plate_name")) {
     stop("legend_type should be either 'date' or 'plate_name' or NULL")
   }
+  
+  # preserve the old options
+  old <- options()
+  on.exit(options(old))
 
   # preserve the old options
   old <- options()

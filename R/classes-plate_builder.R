@@ -99,7 +99,7 @@ PlateBuilder <- R6::R6Class(
         all_locations <- get_location_matrix(nrow = 8, ncol = 12, as_vector = TRUE)
 
         dilutions <-
-          dilutions[all_locations %in% self$sample_locations]
+          dilutions[match(self$sample_locations, all_locations)]
 
         if (length(dilutions) != length(self$sample_names)) {
           stop(
@@ -160,7 +160,7 @@ PlateBuilder <- R6::R6Class(
         all_locations <- get_location_matrix(nrow = 8, ncol = 12, as_vector = TRUE)
         # select only the relevant samples that are mentioned in the layout file
         cleaned_layout_names <-
-          layout_names[all_locations %in% self$sample_locations]
+          layout_names[match(self$sample_locations, all_locations)]
 
         sample_types <-
           translate_sample_names_to_sample_types(self$sample_names, cleaned_layout_names)
@@ -176,6 +176,15 @@ PlateBuilder <- R6::R6Class(
 
       if (!"STANDARD CURVE" %in% sample_types) {
         stop("No standard curve samples found in the plate")
+      }
+
+      if (!"BLANK" %in% sample_types) {
+        warning("No blank/background control samples found in the plate")
+      }
+
+
+      if (!"TEST" %in% sample_types) {
+        warning("No test samples found in the plate")
       }
 
       self$sample_types <- sample_types
@@ -315,10 +324,19 @@ PlateBuilder <- R6::R6Class(
 
     #' @description
     #' Create a Plate object from the PlateBuilder object
-    build = function(validate = TRUE) {
+    #' @param validate logical value indicating whether to validate the fields
+    #'
+    #' @param reorder logical value indicating whether to reorder the data according to the locations on the plate.
+    #' If `FALSE`, the samples will be ordered in the same manner as in the CSV plate file.
+    build = function(validate = TRUE, reorder = TRUE) {
       if (validate) {
         private$validate()
       }
+
+      if (reorder) {
+        private$reorder()
+      }
+
 
       plate <- Plate$new(
         plate_name = self$plate_name,
@@ -378,6 +396,19 @@ PlateBuilder <- R6::R6Class(
         append(errors, "Analyte names are empty")
       }
       # BUG:: Issue #164 - Unhandled errors
+    },
+    reorder = function() {
+      # reordering the data according to the locations
+      all_locations <- get_location_matrix(nrow = 8, ncol = 12, as_vector = TRUE)
+      reverse_order <- order(match(self$sample_locations, all_locations))
+
+      self$sample_names <- self$sample_names[reverse_order]
+      self$sample_types <- self$sample_types[reverse_order]
+      self$dilutions <- self$dilutions[reverse_order]
+      self$dilution_values <- self$dilution_values[reverse_order]
+      for (data_type_name in names(self$data)) {
+        self$data[[data_type_name]] <- self$data[[data_type_name]][reverse_order, ]
+      }
     }
   )
 )
@@ -399,7 +430,7 @@ extract_sample_names_from_layout <-
 
     stopifnot(length(layout_names) == length(all_locations))
 
-    sample_names <- layout_names[all_locations %in% locations]
+    sample_names <- layout_names[match(locations, all_locations)]
     sample_names
   }
 
@@ -490,7 +521,8 @@ convert_dilutions_to_numeric <- function(dilutions) {
 #'
 #' If `sample_names` or `sample_names_from_layout` equals to `STANDARD CURVE`,
 #' `SC`, `S`, contains substring `1/\d+` and has prefix ` `, `S_`, `S `,
-#' `S` or `CP3`, then SampleType equals to `STANDARD CURVE`
+#' `S` or `CP3`, then SampleType equals to `STANDARD CURVE`. For instance, sample with a name
+#' `S_1/2` or `S 1/2` will be classified as `STANDARD CURVE`.
 #'
 #' If `sample_names` or `sample_names_from_layout` equals to `NEGATIVE CONTROL`, `N`,
 #' or contains substring `NEG`, then SampleType equals to `NEGATIVE CONTROL`
