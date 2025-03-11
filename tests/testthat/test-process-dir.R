@@ -77,9 +77,13 @@ test_that("Test processing a mock directory", {
   expect_no_error(capture.output(
     process_dir(dir, dry_run = T, recurse = T, flatten_output_dir = F, output_dir = tempdir(check = TRUE))
   ))
+  # Test with relative path
+  rel_path <- fs::path_rel(dir, getwd())
+  expect_no_error(capture.output(
+    process_dir(rel_path, dry_run = T, recurse = T, flatten_output_dir = F, output_dir = tempdir(check = TRUE))
+  ))
 
   dir <- tempdir(check = TRUE)
-
   # Clean up the tmp directory
   unlink(dir, recursive = T)
   dir.create(dir)
