@@ -31,7 +31,7 @@ process_file(
 \item{process_plate}{(\code{logical(1)}) If \code{TRUE}, process the plate. The default is \code{TRUE}.
 If the value is set to \code{FALSE} the function will only read the plate file and return the plate object.}
 
-\item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("RAU", "nMFI")}.}
+\item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("MFI", "RAU", "nMFI")}.}
 
 \item{adjust_blanks}{(\code{logical(1)}) If \code{TRUE}, adjust the blank values. The default is \code{FALSE}.#'}
 
@@ -54,6 +54,7 @@ layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", packag
 
 example_dir <- tempdir(check = TRUE) # a temporary directory
 # create and save dataframe with computed dilutions for all suported noramlization types
+# that inclused the raw MFI values as well
 process_file(plate_file, layout_file, output_dir = example_dir)
 
 example_dir2 <- tempdir(check = TRUE) # a temporary directory

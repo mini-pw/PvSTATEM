@@ -7,11 +7,11 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #'
 #' @description
 #' Depending on the `normalisation_type` argument, the function will compute the RAU or nMFI values for each analyte in the plate.
+#' Additionally the `normalisation_type` can be set to `MFI` resulting in a dataframe of the raw (blank adjusted) MFI values.
 #' **RAU** is the default normalisation type.
 #'
-#'
 #' The behaviour of the function, in the case of RAU normalisation type, can be summarised as follows:
-#' 1. Adjust blanks if not already done.
+#' 1. Adjust blanks if `adjust_blanks` is set to `TRUE`.
 #' 2. Fit a model to each analyte using standard curve samples.
 #' 3. Compute RAU values for each analyte using the corresponding model.
 #' 4. Aggregate computed RAU values into a single data frame.
@@ -21,14 +21,23 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' `create_standard_curve_model_analyte` function documentation \link[SerolyzeR]{create_standard_curve_model_analyte} or in the Model reference \link[SerolyzeR]{Model}.
 #'
 #'
-#'
-#' In case the normalisation type is **nMFI**, the function will:
-#' 1. Adjust blanks if not already done.
+#' In case the normalisation type being **nMFI**, the function will:
+#' 1. Adjust blanks if `adjust_blanks` is set to `TRUE`.
 #' 2. Compute nMFI values for each analyte using the target dilution.
 #' 3. Aggregate computed nMFI values into a single data frame.
 #' 4. Save the computed nMFI values to a CSV file.
 #'
 #' More info about the nMFI normalisation can be found in `get_nmfi` function documentation \link[SerolyzeR]{get_nmfi}.
+#'
+#'
+#' In case of normalisation type "MFI", the function will:
+#' 1. Adjust blanks if `adjust_blanks` is set to `TRUE`.
+#' 2. Save the blank adjusted MFI values to a CSV file.
+#'
+#'
+#' If the plate is already blank adjusted when calling the method,
+#' the parameter `adjust_blanks` has not effect.
+#'
 #'
 #' @param plate (`Plate()`) a plate object
 #' @param filename (`character(1)`) The name of the output CSV file with normalised MFI values.

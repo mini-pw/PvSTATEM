@@ -16,7 +16,7 @@
 #' @param generate_report (`logical(1)`) If `TRUE`, generate a quality control report. The default is `FALSE`.
 #' @param process_plate (`logical(1)`) If `TRUE`, process the plate. The default is `TRUE`.
 #' If the value is set to `FALSE` the function will only read the plate file and return the plate object.
-#' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("RAU", "nMFI")`.
+#' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("MFI", "RAU", "nMFI")`.
 #' @param adjust_blanks (`logical(1)`) If `TRUE`, adjust the blank values. The default is `FALSE`.#'
 #' @param verbose (`logical(1)`) Print additional information. The default is `TRUE`.
 #' @param ... Additional arguments to for the `read_luminex_data` function.
@@ -29,6 +29,7 @@
 #'
 #' example_dir <- tempdir(check = TRUE) # a temporary directory
 #' # create and save dataframe with computed dilutions for all suported noramlization types
+#' # that inclused the raw MFI values as well
 #' process_file(plate_file, layout_file, output_dir = example_dir)
 #'
 #' example_dir2 <- tempdir(check = TRUE) # a temporary directory

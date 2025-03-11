@@ -60,11 +60,12 @@ a data frame with normalised values
 }
 \description{
 Depending on the \code{normalisation_type} argument, the function will compute the RAU or nMFI values for each analyte in the plate.
+Additionally the \code{normalisation_type} can be set to \code{MFI} resulting in a dataframe of the raw (blank adjusted) MFI values.
 \strong{RAU} is the default normalisation type.
 
 The behaviour of the function, in the case of RAU normalisation type, can be summarised as follows:
 \enumerate{
-\item Adjust blanks if not already done.
+\item Adjust blanks if \code{adjust_blanks} is set to \code{TRUE}.
 \item Fit a model to each analyte using standard curve samples.
 \item Compute RAU values for each analyte using the corresponding model.
 \item Aggregate computed RAU values into a single data frame.
@@ -74,15 +75,24 @@ The behaviour of the function, in the case of RAU normalisation type, can be sum
 More info about the RAU normalisation can be found in
 \code{create_standard_curve_model_analyte} function documentation \link[SerolyzeR]{create_standard_curve_model_analyte} or in the Model reference \link[SerolyzeR]{Model}.
 
-In case the normalisation type is \strong{nMFI}, the function will:
+In case the normalisation type being \strong{nMFI}, the function will:
 \enumerate{
-\item Adjust blanks if not already done.
+\item Adjust blanks if \code{adjust_blanks} is set to \code{TRUE}.
 \item Compute nMFI values for each analyte using the target dilution.
 \item Aggregate computed nMFI values into a single data frame.
 \item Save the computed nMFI values to a CSV file.
 }
 
 More info about the nMFI normalisation can be found in \code{get_nmfi} function documentation \link[SerolyzeR]{get_nmfi}.
+
+In case of normalisation type "MFI", the function will:
+\enumerate{
+\item Adjust blanks if \code{adjust_blanks} is set to \code{TRUE}.
+\item Save the blank adjusted MFI values to a CSV file.
+}
+
+If the plate is already blank adjusted when calling the method,
+the parameter \code{adjust_blanks} has not effect.
 }
 \examples{
 
