@@ -3,7 +3,7 @@ title: "Basic SerolyzeR functionalities"
 author: "Tymoteusz Kwieciński"
 date: "`r Sys.Date()`"
 vignette: >
-  %\VignetteIndexEntry{Simple example of basic SerolyzeR package pre-release version functionalities}
+  %\VignetteIndexEntry{Basic SerolyzeR functionalities}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{ggplot2}
   %\VignetteDepends{nplr}
