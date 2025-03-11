@@ -110,7 +110,7 @@ Model <- R6::R6Class(
                           mfi_min = NULL,
                           mfi_max = NULL) {
       stopifnot(is.character(analyte) &&
-                  !is.null(analyte) && nchar(analyte) > 0)
+        !is.null(analyte) && nchar(analyte) > 0)
 
       if (length(dilutions) != length(mfi)) {
         stop(
@@ -162,7 +162,7 @@ Model <- R6::R6Class(
       }
 
       stopifnot(is.logical(log_dilution) &&
-                  is.logical(log_mfi) && is.logical(scale_mfi))
+        is.logical(log_mfi) && is.logical(scale_mfi))
       if (length(unique(mfi)) == 1) {
         stop(
           paste0(
@@ -244,7 +244,8 @@ Model <- R6::R6Class(
       top_asymptote_transformed <-
         private$mfi_transform(self$top_asymptote - eps)
       rau_at_top_asymptote <- nplr::getEstimates(self$model,
-                                                 targets = top_asymptote_transformed)[1, "x"]
+        targets = top_asymptote_transformed
+      )[1, "x"]
       if (rau_threshold >= rau_at_top_asymptote) {
         warning(
           "Extrapolation above the top asymptote is not allowed.
@@ -254,8 +255,9 @@ Model <- R6::R6Class(
       }
       # Handle mfi outside asymptotes
       mfi <- clamp(mfi,
-                   lower = self$bottom_asymptote + eps,
-                   upper = self$top_asymptote - eps)
+        lower = self$bottom_asymptote + eps,
+        upper = self$top_asymptote - eps
+      )
       mfi <- private$mfi_transform(mfi)
       # Example columns: y, x,
 
@@ -393,7 +395,7 @@ Model <- R6::R6Class(
         mfi <- mfi * (self$mfi_max - self$mfi_min) + self$mfi_min
       }
       if (self$log_mfi) {
-        mfi <- 10 ^ mfi
+        mfi <- 10^mfi
       }
       mfi
     }
@@ -460,17 +462,20 @@ create_standard_curve_model_analyte <- function(plate,
     ifelse(source_mfi_range_from_all_analytes, "ALL", analyte_name)
   mfi_min <-
     min(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type),
-        na.rm = TRUE)
+      na.rm = TRUE
+    )
   mfi_max <-
     max(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type),
-        na.rm = TRUE)
+      na.rm = TRUE
+    )
 
   Model$new(analyte_name,
-            dilutions_numeric,
-            mfi,
-            mfi_min = mfi_min,
-            mfi_max = mfi_max,
-            ...)
+    dilutions_numeric,
+    mfi,
+    mfi_min = mfi_min,
+    mfi_max = mfi_max,
+    ...
+  )
 }
 
 
