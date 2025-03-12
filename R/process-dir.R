@@ -163,7 +163,7 @@ get_output_dir <- function(
 #' be determined automatically based on the file name. Available options are `xPONENT` and `INTELLIFLEX`.
 #' @param layout_filepath (`character(1)`) The path to the layout file. The default is `NULL`, and the layout file will have to
 #' be determined automatically based on the file name.
-#' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("RAU", "nMFI")`.
+#' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("MFI", "RAU", "nMFI")`.
 #' @param generate_reports (`logical(1)`) If `TRUE`, generate quality control reports for each file. The default is `FALSE`.
 #' @param merge_outputs (`logical(1)`) If `TRUE`, merge the outputs of all plates into a single CSV file for each normalisation type.
 #' The resulting file will be saved in the output directory with the name `merged_{normalisation_type}_{timestamp}.csv`.
@@ -200,7 +200,7 @@ process_dir <- function(
     flatten_output_dir = FALSE,
     layout_filepath = NULL,
     format = NULL,
-    normalisation_types = c("RAU", "nMFI"),
+    normalisation_types = c("MFI", "RAU", "nMFI"),
     generate_reports = FALSE,
     merge_outputs = FALSE,
     column_collision_strategy = "intersection",
@@ -309,7 +309,7 @@ process_dir <- function(
       for (plate in plates) {
         output_df <- process_plate(plate,
           normalisation_type = normalisation_type, write_output = FALSE,
-          include_raw_mfi = TRUE, adjust_blanks = TRUE, verbose = verbose
+          blank_adjustment = TRUE, verbose = verbose
         )
         df_header_columns <- data.frame(
           plate_name = plate$plate_name,

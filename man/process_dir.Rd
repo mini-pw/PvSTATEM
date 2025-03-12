@@ -11,7 +11,7 @@ process_dir(
   flatten_output_dir = FALSE,
   layout_filepath = NULL,
   format = NULL,
-  normalisation_types = c("RAU", "nMFI"),
+  normalisation_types = c("MFI", "RAU", "nMFI"),
   generate_reports = FALSE,
   merge_outputs = FALSE,
   column_collision_strategy = "intersection",
@@ -37,7 +37,7 @@ be determined automatically based on the file name.}
 \item{format}{(\code{character(1)}) The format of the Luminex data. The default is \code{NULL}, and the format will have to
 be determined automatically based on the file name. Available options are \code{xPONENT} and \code{INTELLIFLEX}.}
 
-\item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("RAU", "nMFI")}.}
+\item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("MFI", "RAU", "nMFI")}.}
 
 \item{generate_reports}{(\code{logical(1)}) If \code{TRUE}, generate quality control reports for each file. The default is \code{FALSE}.}
 
