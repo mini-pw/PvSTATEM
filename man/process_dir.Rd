@@ -2,7 +2,7 @@
 % Please edit documentation in R/process-dir.R
 \name{process_dir}
 \alias{process_dir}
-\title{Process a dir of files to generate normalised data and reports}
+\title{Process a Directory of Luminex Data Files}
 \usage{
 process_dir(
   input_dir,
@@ -22,58 +22,125 @@ process_dir(
 )
 }
 \arguments{
-\item{input_dir}{(\code{character(1)}) The directory containing the input files. It may be nested.}
+\item{input_dir}{(\code{character(1)}) Path to the directory containing plate files. Can contain subdirectories if \code{recurse = TRUE}.}
 
-\item{output_dir}{(\code{character(1)}) Optional overwrite directory where the output files should be saved. The default is \code{NULL}.
-By default, the output directory is the same as the input directory.}
+\item{output_dir}{(\code{character(1)}, optional) Path to the directory where output files will be saved. Defaults to \code{NULL} (same as input directory).}
 
-\item{recurse}{(\code{logical(1)}) If \code{TRUE}, the function will search for files recursively in the input directory. The default is \code{FALSE}.}
+\item{recurse}{(\code{logical(1)}, default = \code{FALSE})
+\itemize{
+\item If \code{TRUE}, searches for plate files in subdirectories as well.
+}}
 
-\item{flatten_output_dir}{(\code{logical(1)}) If \code{TRUE}, the output files will be saved in the output directory directly. The default is \code{FALSE}.}
+\item{flatten_output_dir}{(\code{logical(1)}, default = \code{FALSE})
+\itemize{
+\item If \code{TRUE}, saves output files directly in \code{output_dir}, ignoring the input directory structure.
+}}
 
-\item{layout_filepath}{(\code{character(1)}) The path to the layout file. The default is \code{NULL}, and the layout file will have to
-be determined automatically based on the file name.}
+\item{layout_filepath}{(\code{character(1)}, optional) Path to a layout file. If \code{NULL}, the function attempts to detect it automatically.}
 
-\item{format}{(\code{character(1)}) The format of the Luminex data. The default is \code{NULL}, and the format will have to
-be determined automatically based on the file name. Available options are \code{xPONENT} and \code{INTELLIFLEX}.}
+\item{format}{(\code{character(1)}, optional) Luminex data format. If \code{NULL}, it is automatically detected. Options: \code{'xPONENT'}, \code{'INTELLIFLEX'}.}
 
-\item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("MFI", "RAU", "nMFI")}.}
+\item{normalisation_types}{(\code{character()}, default = \code{c("MFI", "RAU", "nMFI")})
+\itemize{
+\item The normalisation types to apply. Supported values: \code{"MFI"}, \code{"RAU"}, \code{"nMFI"}.
+}}
 
-\item{generate_reports}{(\code{logical(1)}) If \code{TRUE}, generate quality control reports for each file. The default is \code{FALSE}.}
+\item{generate_reports}{(\code{logical(1)}, default = \code{FALSE})
+\itemize{
+\item If \code{TRUE}, generates quality control reports for each processed plate file.
+}}
 
-\item{merge_outputs}{(\code{logical(1)}) If \code{TRUE}, merge the outputs of all plates into a single CSV file for each normalisation type.
-The resulting file will be saved in the output directory with the name \verb{merged_\{normalisation_type\}_\{timestamp\}.csv}.
-Example: \code{merged_nMFI_20250115_230735.csv}.}
+\item{merge_outputs}{(\code{logical(1)}, default = \code{FALSE})
+\itemize{
+\item If \code{TRUE}, merges all normalised data into a single CSV file per normalisation type.
+\item The merged file is named \verb{merged_\{normalisation_type\}_\{timestamp\}.csv}.
+}}
 
-\item{column_collision_strategy}{(\code{character(1)}) A method for handling missing or additional columns when merging outputs.
-Possible options are \code{union} and \code{intersection}. The default is \code{intersection}.}
+\item{column_collision_strategy}{(\code{character(1)}, default = \code{'intersection'})
+\itemize{
+\item Determines how to handle missing or extra columns when merging outputs.
+\item Options: \code{'union'} (include all columns), \code{'intersection'} (include only common columns).
+}}
 
-\item{return_plates}{(\code{logical(1)}) If \code{TRUE}, return a list of processed plates. The default is \code{FALSE}.}
+\item{return_plates}{(\code{logical(1)}, default = \code{FALSE})
+\itemize{
+\item If \code{TRUE}, returns a list of processed plates sorted by experiment date.
+}}
 
-\item{dry_run}{(\code{logical(1)}) If \code{TRUE}, the function will not process any files
-but will print the information about the files that would be processed. The default is \code{FALSE}.}
+\item{dry_run}{(\code{logical(1)}, default = \code{FALSE})
+\itemize{
+\item If \code{TRUE}, prints file details without processing them.
+}}
 
-\item{verbose}{(\code{logical(1)}) Print additional information. The default is \code{TRUE}.}
+\item{verbose}{(\code{logical(1)}, default = \code{TRUE})
+\itemize{
+\item If \code{TRUE}, prints detailed processing information.
+}}
 
-\item{...}{Additional arguments to for the \code{process_file} function.}
+\item{...}{Additional arguments passed to \code{\link[=process_file]{process_file()}}.}
 }
 \value{
-If the \code{return_plates} parameter is set to \code{TRUE} the function returns a list of plates
-sorted by the \code{plate_datetime} (The time of the experiment noted in the csv file) in increasing order (oldest plates first).
-If the \code{return_plates} parameters is set to \code{FALSE} the function returns \code{NULL}.
+If \code{return_plates = TRUE}, returns a sorted list of \code{\link{Plate}} objects. Otherwise, returns \code{NULL}.
 }
 \description{
-The output files will be created alongside their corresponding input files, preserving
-the directory structure of the input directory unless the \code{flatten_output_dir} parameter is set to \code{TRUE}.
+This function processes all Luminex plate files within a specified directory.
+Each plate file is processed using \code{\link[=process_file]{process_file()}}, and the resulting normalised data is saved.
+Optionally, quality control reports can be generated, and results from multiple plates can be merged into a single file.
+\subsection{Workflow}{
+\enumerate{
+\item Identify all Luminex plate files in the \code{input_dir}, applying recursive search if \code{recurse = TRUE}.
+\item Detect the format of each file based on the \code{format} parameter or the filename.
+\item Locate the corresponding layout file using the filename or use the common layout passed with the \code{layout_filepath} parameter.
+\item Determine the appropriate output directory using \code{\link[=get_output_dir]{get_output_dir()}}.
+\item Process each plate file using \code{\link[=process_file]{process_file()}}.
+\item If \code{merge_outputs = TRUE}, merge normalised data from multiple plates into a single CSV file.
+}
+}
+
+\subsection{Naming Conventions for Input Files}{
+\itemize{
+\item \strong{If \code{format} is specified:}
+\itemize{
+\item Each plate file should be named as \verb{\{plate_name\}.csv}.
+\item The corresponding layout file should be named as \verb{\{plate_name\}_layout.csv} or \verb{\{plate_name\}_layout.xlsx}.
+\item Alternatively, if \code{layout_filepath} is provided, it serves as a unified layout file for all plates.
+}
+\item \strong{If \code{format} is not specified (automatic detection):}
+\itemize{
+\item Each plate file should be named as \verb{\{plate_name\}_\{format\}.csv}, where \code{{format}} is either \code{xPONENT} or \code{INTELLIFLEX}.
+\item The corresponding layout file should be named using the same convention as above.
+}
+}
+}
+
+\subsection{Output File Structure}{
+\itemize{
+\item The \code{output_dir} parameter specifies where the processed files are saved.
+\item If \code{output_dir} is \code{NULL}, output files are saved in the same directory as the input files.
+\item By default, the output directory structure follows the input directory, unless \code{flatten_output_dir = TRUE}, which saves all outputs directly into \code{output_dir}.
+\item Output filenames follow the convention used in \code{\link[=process_file]{process_file()}}.
+\itemize{
+\item For a plate named \code{{plate_name}}, the normalised output files are named as:
+\itemize{
+\item \verb{\{plate_name\}_RAU.csv} for RAU normalisation.
+\item \verb{\{plate_name\}_nMFI.csv} for nMFI normalisation.
+\item \verb{\{plate_name\}_MFI.csv} for MFI normalisation.
+\item If \code{generate_reports = TRUE}, a quality control report is saved as \verb{\{plate_name\}_report.pdf}.
+}
+\item If \code{merge_outputs = TRUE}, merged normalised files are named as:
+\itemize{
+\item \verb{merged_RAU_\{timestamp\}.csv}
+\item \verb{merged_nMFI_\{timestamp\}.csv}
+\item \verb{merged_MFI_\{timestamp\}.csv}
+}
+}
+}
+}
 }
 \examples{
-# Select input directory to process
-dir <- system.file("extdata", "multiplate_lite", package = "SerolyzeR", mustWork = TRUE)
-
-# Select output directory
+# Process all plate files in a directory
+input_dir <- system.file("extdata", "multiplate_lite", package = "SerolyzeR", mustWork = TRUE)
 output_dir <- tempdir(check = TRUE)
-
-# Process input directory and return plates
-plates <- process_dir(dir, return_plates = TRUE, output_dir = output_dir)
+plates <- process_dir(input_dir, return_plates = TRUE, output_dir = output_dir)
 
 }

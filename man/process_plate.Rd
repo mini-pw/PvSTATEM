@@ -2,7 +2,7 @@
 % Please edit documentation in R/process-plate.R
 \name{process_plate}
 \alias{process_plate}
-\title{Process a plate and save output values to a CSV}
+\title{Process a Plate and Save Normalised Output to CSV}
 \usage{
 process_plate(
   plate,
@@ -18,105 +18,108 @@ process_plate(
 )
 }
 \arguments{
-\item{plate}{(\code{Plate()}) a plate object}
+\item{plate}{(\code{Plate}) A plate object containing fluorescence intensity data.}
 
-\item{filename}{(\code{character(1)}) The name of the output CSV file with normalised MFI values.
-If not provided or equals to \code{NULL}, the output filename will be based on the normalisation type
-and the plate name, precisely: \verb{\{plate_name\}_\{normalisation_type\}.csv}.
-By default the \code{plate_name} is the filename of the input file that contains the plate data.
-For more details please refer to \link[SerolyzeR]{Plate}.
+\item{filename}{(\code{character(1)}, optional) Output CSV filename. Defaults to \verb{\{plate_name\}_\{normalisation_type\}.csv}.
+\itemize{
+\item If omitted (\code{NULL}), the filename is auto-generated.
+\item If the filename lacks \code{.csv}, the extension is automatically added.
+\item If \code{output_dir} is specified, it is combined with \code{filename} unless \code{filename} is an absolute path.
+\item If a file already exists at the path, it will be overwritten.
+}}
 
-If the passed filename does not contain \code{.csv} extension, the default extension \code{.csv} will be added.
-Filename can also be a path to a file, e.g. \code{path/to/file.csv}. In this case, the \code{output_dir} and \code{filename} will be joined together.
-However, if the passed filepath is an absolute path and the \code{output_dir} parameter is also provided, the \code{output_dir} parameter will be ignored.
-If a file already exists under a specified filepath, the function will overwrite it.}
+\item{output_dir}{(\code{character(1)}, default = \code{'normalised_data'}) Directory for saving the output file.
+\itemize{
+\item If the directory does not exist, it will be created.
+\item If \code{NULL}, the current working directory is used.
+}}
 
-\item{output_dir}{(\code{character(1)}) The directory where the output CSV file should be saved.
-Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
-If it equals to \code{NULL} the current working directory will be used. Default is 'normalised_data'.}
+\item{write_output}{(\code{logical(1)}, default = \code{TRUE}) Whether to save the output to a CSV file.}
 
-\item{write_output}{(\code{logical(1)}) whether or not to write the output to a file
-specified by \code{filename} parameter. The default is \code{TRUE}.}
+\item{normalisation_type}{(\code{character(1)}, default = \code{'RAU'}) The normalisation method to apply.
+\itemize{
+\item Allowed values: \code{c(MFI, RAU, nMFI)}.
+}}
 
-\item{normalisation_type}{(\code{character(1)}) type of normalisation to use. Available options are:
-\cr \code{c(MFI, RAU, nMFI)}.}
+\item{data_type}{(\code{character(1)}, default = \code{'Median'}) The data type to use for calculations.}
 
-\item{data_type}{(\code{character(1)}) type of data to use for the computation. Median is the default}
+\item{blank_adjustment}{(\code{logical(1)}, default = \code{FALSE}) Whether to perform blank adjustment before computing values.}
 
-\item{blank_adjustment}{(\code{logical(1)}) perform blank adjustment on the plate before computing normalised values. The default is \code{FALSE}}
+\item{verbose}{(\code{logical(1)}, default = \code{TRUE}) Whether to print additional information during execution.}
 
-\item{verbose}{(\code{logical(1)}) print additional information. The default is \code{TRUE}}
+\item{reference_dilution}{(\code{numeric(1)} or \code{character(1)}, default = \code{1/400})
+\itemize{
+\item The target dilution used as a reference for nMFI normalisation.
+\item Ignored for RAU normalisation.
+\item Can be numeric (e.g., \code{0.0025}) or a string (\code{'1/400'}).
+}}
 
-\item{reference_dilution}{(\code{numeric(1)}) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
-Default is \code{1/400}.
-It should refer to a dilution of a standard curve sample in the given plate object.
-This parameter could be either a numeric value or a string.
-In case it is a character string, it should have the format \verb{1/d+}, where \verb{d+} is any positive integer.}
-
-\item{...}{Additional arguments to be passed to the fit model function (\code{create_standard_curve_model_analyte})}
+\item{...}{Additional arguments passed to the model fitting function (\code{create_standard_curve_model_analyte}).}
 }
 \value{
-a data frame with normalised values
+A data frame containing the computed normalised values.
 }
 \description{
-Depending on the \code{normalisation_type} argument, the function will compute the RAU or nMFI values for each analyte in the plate.
-Additionally the \code{normalisation_type} can be set to \code{MFI} resulting in a dataframe of the raw (blank adjusted) MFI values.
-\strong{RAU} is the default normalisation type.
-
-The behaviour of the function, in the case of RAU normalisation type, can be summarised as follows:
-\enumerate{
-\item Blank adjust the plate if \code{blank_adjustment} is set to \code{TRUE}.
-\item Fit a model to each analyte using standard curve samples.
-\item Compute RAU values for each analyte using the corresponding model.
-\item Aggregate computed RAU values into a single data frame.
-\item Save the computed RAU values to a CSV file.
+This function processes a plate and computes normalised values based on the specified \code{normalisation_type}.
+The function supports three types of normalisation:
+\itemize{
+\item \strong{RAU} (Relative Antibody Units) - Default normalisation type.
+\item \strong{nMFI} (Normalised Median Fluorescence Intensity).
+\item \strong{MFI} (Median Fluorescence Intensity, blank-adjusted raw MFI values).
 }
 
-More info about the RAU normalisation can be found in
-\code{create_standard_curve_model_analyte} function documentation \link[SerolyzeR]{create_standard_curve_model_analyte} or in the Model reference \link[SerolyzeR]{Model}.
-
-In case the normalisation type being \strong{nMFI}, the function will:
-\enumerate{
-\item Blank adjust the plate if \code{blank_adjustment} is set to \code{TRUE}.
-\item Compute nMFI values for each analyte using the target dilution.
-\item Aggregate computed nMFI values into a single data frame.
-\item Save the computed nMFI values to a CSV file.
+Depending on the chosen normalisation type, the function:
+\itemize{
+\item Adjusts for blanks (if \code{blank_adjustment = TRUE}).
+\item Computes the relevant normalised values for each analyte in the plate.
+\item Aggregates computed values into a single data frame.
+\item Optionally writes the results to a CSV file.
 }
 
-More info about the nMFI normalisation can be found in \code{get_nmfi} function documentation \link[SerolyzeR]{get_nmfi}.
-
-In case of normalisation type "MFI", the function will:
+\strong{RAU Normalisation Workflow:}
 \enumerate{
-\item Blank adjust the plate if \code{blank_adjustment} is set to \code{TRUE}.
-\item Save the blank adjusted MFI values to a CSV file.
+\item Blank adjustment (if enabled).
+\item Fit standard curve models for each analyte.
+\item Compute RAU values based on the fitted models.
+\item Aggregate RAU values into a data frame.
+\item Save the results to a CSV file.
 }
 
-If the plate is already blank adjusted when calling the method,
-the parameter \code{blank_adjustment} has no effect.
+\strong{nMFI Normalisation Workflow:}
+\enumerate{
+\item Blank adjustment (if enabled).
+\item Compute nMFI values using the target dilution.
+\item Aggregate nMFI values into a data frame.
+\item Save the results to a CSV file.
+}
+
+\strong{MFI Normalisation Workflow:}
+\enumerate{
+\item Blank adjustment (if enabled).
+\item Save the adjusted MFI values to a CSV file.
+}
+
+If the plate is already blank-adjusted, setting \code{blank_adjustment = TRUE} has no effect.
+
+More details on the normalisation methods can be found in:
+\itemize{
+\item RAU: \link[SerolyzeR]{create_standard_curve_model_analyte}.
+\item nMFI: \link[SerolyzeR]{get_nmfi}.
+}
 }
 \examples{
-
 plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzeR")
-# a plate file with reduced number of analytes to speed up the computation
 layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
-
 plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
+example_dir <- tempdir(check = TRUE)
 
-example_dir <- tempdir(check = TRUE) # a temporary directory
-# create and save dataframe with computed dilutions
+# Process plate with default settings (RAU normalisation)
 process_plate(plate, output_dir = example_dir)
 
-# process plate without blank adjustment and save the output to a file with a custom name
-process_plate(plate,
-  filename = "plate_no_blank_adjustment.csv",
-  output_dir = example_dir, blank_adjustment = FALSE
-)
+# Process plate without blank adjustment, custom filename
+process_plate(plate, filename = "plate_no_blank_adjustment.csv", output_dir = example_dir, blank_adjustment = FALSE)
 
-
-# nMFI normalisation
-process_plate(plate,
-  output_dir = example_dir,
-  normalisation_type = "nMFI", reference_dilution = 1 / 400
-)
+# Process plate with nMFI normalisation
+process_plate(plate, output_dir = example_dir, normalisation_type = "nMFI", reference_dilution = 1 / 400)
 
 }
