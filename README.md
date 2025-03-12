@@ -24,6 +24,8 @@ The graphical overview of the package can be seen in the image below:
 `SerolyzeR` package is developed within the project [PvSTATEM](https://www.pvstatem.eu/), an international project aiming at malaria elimination and is financially supported by the HORIZON grant HORIZON-WIDERA-2022-ACCESS-07-01.
 
 
+Previously, this package was named `PvSTATEM`, but it has been rebranded to `SerolyzeR` to better reflect its purpose and scope.
+
 ## Installation
 
 The easiest way to install the package is using the CRAN repository:
