@@ -53,6 +53,7 @@ process_file <- function(
     stop("Plate filepath is required.")
   }
   stopifnot(fs::file_exists(plate_filepath))
+  plate_filepath <- fs::path_abs(plate_filepath)
 
   plate <- read_luminex_data(plate_filepath, layout_filepath, format = format)
 

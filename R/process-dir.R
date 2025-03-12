@@ -212,6 +212,7 @@ process_dir <- function(
   stopifnot(is.null(output_dir) || fs::dir_exists(output_dir))
   stopifnot(is.null(layout_filepath) || fs::file_exists(layout_filepath))
   stopifnot(is_mba_format(format, allow_nullable = TRUE))
+  input_dir <- fs::path_abs(input_dir)
 
   input_files <- c()
   for (input_file in fs::dir_ls(input_dir, recurse = recurse)) {
