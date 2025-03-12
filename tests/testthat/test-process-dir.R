@@ -7,7 +7,7 @@ test_that("Test finding layout file", {
 
   output <- find_layout_file(plate_filepath)
   expect_true(check_path_equal(output, layout_filepath))
-  expect_error(find_layout_file(random_plate_filepath))
+  expect_warning(find_layout_file(random_plate_filepath))
 })
 
 test_that("Test checking for mba file", {

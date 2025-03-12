@@ -40,6 +40,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' - RAU: \link[SerolyzeR]{create_standard_curve_model_analyte}.
 #' - nMFI: \link[SerolyzeR]{get_nmfi}.
 #'
+#'
 #' @param plate (`Plate`) A plate object containing fluorescence intensity data.
 #' @param filename (`character(1)`, optional) Output CSV filename. Defaults to `{plate_name}_{normalisation_type}.csv`.
 #'   - If omitted (`NULL`), the filename is auto-generated.

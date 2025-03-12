@@ -8,8 +8,13 @@
 #'
 find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
   if (!is.null(layout_filepath)) {
-    stopifnot(fs::file_exists(layout_filepath))
-    return(layout_filepath)
+    if (fs::file_exists(layout_filepath)) {
+      return(layout_filepath)
+    }
+
+    stop(
+      paste0("The specified common layout file ", layout_filepath, " does not exist.")
+    )
   }
 
   stopifnot(fs::is_absolute_path(plate_filepath))
@@ -26,9 +31,10 @@ find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
   )
   possible_files <- list.files(file_dir, pattern = layout_file_glob)
   if (length(possible_files) == 0) {
-    stop(
-      paste0("Layout file for a file ", plate_filepath, " could not be found.")
+    warning(
+      paste0("Layout file for a file ", plate_filepath, " could not be found. Won't use the layout file for the given plate.")
     )
+    return(NULL)
   }
 
   possible_layout_filename <- possible_files[1]
@@ -36,9 +42,10 @@ find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
   if (fs::file_exists(possible_layout_path)) {
     return(possible_layout_path)
   } else {
-    stop(
-      paste0("Layout file for a file ", plate_filepath, " could not be found.")
+    warning(
+      paste0("Layout file for a file ", plate_filepath, " could not be found. Won't use the layout file for the given plate.")
     )
+    return(NULL)
   }
 }
 
@@ -156,8 +163,8 @@ get_output_dir <- function(
 #'
 #' ## Workflow
 #' 1. Identify all Luminex plate files in the `input_dir`, applying recursive search if `recurse = TRUE`.
-#' 2. Detect the format of each file using [detect_mba_format()].
-#' 3. Locate the corresponding layout file using [find_layout_file()].
+#' 2. Detect the format of each file based on the `format` parameter or the filename.
+#' 3. Locate the corresponding layout file using the filename or use the common layout passed with the `layout_filepath` parameter.
 #' 4. Determine the appropriate output directory using [get_output_dir()].
 #' 5. Process each plate file using [process_file()].
 #' 6. If `merge_outputs = TRUE`, merge normalised data from multiple plates into a single CSV file.
