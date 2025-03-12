@@ -1,101 +1,83 @@
 is_valid_normalisation_type <- function(normalisation_type) {
   normalisation_type %in% SerolyzeR.env$normalisation_types
 }
-
 #' @title
-#' Process a plate and save output values to a CSV
+#' Process a Plate and Save Normalised Output to CSV
 #'
 #' @description
-#' Depending on the `normalisation_type` argument, the function will compute the RAU or nMFI values for each analyte in the plate.
-#' Additionally the `normalisation_type` can be set to `MFI` resulting in a dataframe of the raw (blank adjusted) MFI values.
-#' **RAU** is the default normalisation type.
+#' This function processes a plate and computes normalised values based on the specified `normalisation_type`.
+#' The function supports three types of normalisation:
+#' - **RAU** (Relative Antibody Units) - Default normalisation type.
+#' - **nMFI** (Normalised Median Fluorescence Intensity).
+#' - **MFI** (Median Fluorescence Intensity, blank-adjusted raw MFI values).
 #'
-#' The behaviour of the function, in the case of RAU normalisation type, can be summarised as follows:
-#' 1. Blank adjust the plate if `blank_adjustment` is set to `TRUE`.
-#' 2. Fit a model to each analyte using standard curve samples.
-#' 3. Compute RAU values for each analyte using the corresponding model.
-#' 4. Aggregate computed RAU values into a single data frame.
-#' 5. Save the computed RAU values to a CSV file.
+#' Depending on the chosen normalisation type, the function:
+#' - Adjusts for blanks (if `blank_adjustment = TRUE`).
+#' - Computes the relevant normalised values for each analyte in the plate.
+#' - Aggregates computed values into a single data frame.
+#' - Optionally writes the results to a CSV file.
 #'
-#' More info about the RAU normalisation can be found in
-#' `create_standard_curve_model_analyte` function documentation \link[SerolyzeR]{create_standard_curve_model_analyte} or in the Model reference \link[SerolyzeR]{Model}.
+#' **RAU Normalisation Workflow:**
+#' 1. Blank adjustment (if enabled).
+#' 2. Fit standard curve models for each analyte.
+#' 3. Compute RAU values based on the fitted models.
+#' 4. Aggregate RAU values into a data frame.
+#' 5. Save the results to a CSV file.
 #'
+#' **nMFI Normalisation Workflow:**
+#' 1. Blank adjustment (if enabled).
+#' 2. Compute nMFI values using the target dilution.
+#' 3. Aggregate nMFI values into a data frame.
+#' 4. Save the results to a CSV file.
 #'
-#' In case the normalisation type being **nMFI**, the function will:
-#' 1. Blank adjust the plate if `blank_adjustment` is set to `TRUE`.
-#' 2. Compute nMFI values for each analyte using the target dilution.
-#' 3. Aggregate computed nMFI values into a single data frame.
-#' 4. Save the computed nMFI values to a CSV file.
+#' **MFI Normalisation Workflow:**
+#' 1. Blank adjustment (if enabled).
+#' 2. Save the adjusted MFI values to a CSV file.
 #'
-#' More info about the nMFI normalisation can be found in `get_nmfi` function documentation \link[SerolyzeR]{get_nmfi}.
+#' If the plate is already blank-adjusted, setting `blank_adjustment = TRUE` has no effect.
 #'
+#' More details on the normalisation methods can be found in:
+#' - RAU: \link[SerolyzeR]{create_standard_curve_model_analyte}.
+#' - nMFI: \link[SerolyzeR]{get_nmfi}.
 #'
-#' In case of normalisation type "MFI", the function will:
-#' 1. Blank adjust the plate if `blank_adjustment` is set to `TRUE`.
-#' 2. Save the blank adjusted MFI values to a CSV file.
+#' @param plate (`Plate`) A plate object containing fluorescence intensity data.
+#' @param filename (`character(1)`, optional) Output CSV filename. Defaults to `{plate_name}_{normalisation_type}.csv`.
+#'   - If omitted (`NULL`), the filename is auto-generated.
+#'   - If the filename lacks `.csv`, the extension is automatically added.
+#'   - If `output_dir` is specified, it is combined with `filename` unless `filename` is an absolute path.
+#'   - If a file already exists at the path, it will be overwritten.
+#' @param write_output (`logical(1)`, default = `TRUE`) Whether to save the output to a CSV file.
+#' @param output_dir (`character(1)`, default = `'normalised_data'`) Directory for saving the output file.
+#'   - If the directory does not exist, it will be created.
+#'   - If `NULL`, the current working directory is used.
+#' @param normalisation_type (`character(1)`, default = `'RAU'`) The normalisation method to apply.
+#'   - Allowed values: \code{c(`r toString(SerolyzeR.env$normalisation_types)`)}.
+#' @param data_type (`character(1)`, default = `'Median'`) The data type to use for calculations.
+#' @param blank_adjustment (`logical(1)`, default = `FALSE`) Whether to perform blank adjustment before computing values.
+#' @param verbose (`logical(1)`, default = `TRUE`) Whether to print additional information during execution.
+#' @param reference_dilution (`numeric(1)` or `character(1)`, default = `1/400`)
+#'   - The target dilution used as a reference for nMFI normalisation.
+#'   - Ignored for RAU normalisation.
+#'   - Can be numeric (e.g., `0.0025`) or a string (`'1/400'`).
+#' @param ... Additional arguments passed to the model fitting function (`create_standard_curve_model_analyte`).
 #'
-#'
-#' If the plate is already blank adjusted when calling the method,
-#' the parameter `blank_adjustment` has no effect.
-#'
-#'
-#' @param plate (`Plate()`) a plate object
-#' @param filename (`character(1)`) The name of the output CSV file with normalised MFI values.
-#' If not provided or equals to `NULL`, the output filename will be based on the normalisation type
-#' and the plate name, precisely: `{plate_name}_{normalisation_type}.csv`.
-#' By default the `plate_name` is the filename of the input file that contains the plate data.
-#' For more details please refer to \link[SerolyzeR]{Plate}.
-#'
-#' If the passed filename does not contain `.csv` extension, the default extension `.csv` will be added.
-#' Filename can also be a path to a file, e.g. `path/to/file.csv`. In this case, the `output_dir` and `filename` will be joined together.
-#' However, if the passed filepath is an absolute path and the `output_dir` parameter is also provided, the `output_dir` parameter will be ignored.
-#' If a file already exists under a specified filepath, the function will overwrite it.
-#'
-#' @param write_output (`logical(1)`) whether or not to write the output to a file
-#' specified by `filename` parameter. The default is `TRUE`.
-#'
-#' @param output_dir (`character(1)`) The directory where the output CSV file should be saved.
-#' Please note that any directory path provided will create all necessary directories (including parent directories) if they do not exist.
-#' If it equals to `NULL` the current working directory will be used. Default is 'normalised_data'.
-#'
-#' @param normalisation_type (`character(1)`) type of normalisation to use. Available options are:
-#' \cr \code{c(`r toString(SerolyzeR.env$normalisation_types)`)}.
-#' @param data_type (`character(1)`) type of data to use for the computation. Median is the default
-#' @param blank_adjustment (`logical(1)`) perform blank adjustment on the plate before computing normalised values. The default is `FALSE`
-#' @param verbose (`logical(1)`) print additional information. The default is `TRUE`
-#' @param reference_dilution (`numeric(1)`) target dilution to use as reference for the nMFI normalisation. Ignored in case of RAU normalisation.
-#' Default is `1/400`.
-#' It should refer to a dilution of a standard curve sample in the given plate object.
-#' This parameter could be either a numeric value or a string.
-#' In case it is a character string, it should have the format `1/d+`, where `d+` is any positive integer.
-#' @param ... Additional arguments to be passed to the fit model function (`create_standard_curve_model_analyte`)
+#' @return A data frame containing the computed normalised values.
 #'
 #' @examples
-#'
 #' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzeR")
-#' # a plate file with reduced number of analytes to speed up the computation
 #' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
-#'
 #' plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
+#' example_dir <- tempdir(check = TRUE)
 #'
-#' example_dir <- tempdir(check = TRUE) # a temporary directory
-#' # create and save dataframe with computed dilutions
+#' # Process plate with default settings (RAU normalisation)
 #' process_plate(plate, output_dir = example_dir)
 #'
-#' # process plate without blank adjustment and save the output to a file with a custom name
-#' process_plate(plate,
-#'   filename = "plate_no_blank_adjustment.csv",
-#'   output_dir = example_dir, blank_adjustment = FALSE
-#' )
+#' # Process plate without blank adjustment, custom filename
+#' process_plate(plate, filename = "plate_no_blank_adjustment.csv", output_dir = example_dir, blank_adjustment = FALSE)
 #'
+#' # Process plate with nMFI normalisation
+#' process_plate(plate, output_dir = example_dir, normalisation_type = "nMFI", reference_dilution = 1 / 400)
 #'
-#' # nMFI normalisation
-#' process_plate(plate,
-#'   output_dir = example_dir,
-#'   normalisation_type = "nMFI", reference_dilution = 1 / 400
-#' )
-#'
-#' @return a data frame with normalised values
 #' @export
 process_plate <-
   function(plate,
