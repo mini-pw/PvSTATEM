@@ -1,0 +1,104 @@
+---
+title: "Multiplate SerolyzeR functionalities"
+author: "Tymoteusz Kwieciński"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Multiplate SerolyzeR functionalities}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{ggplot2}
+  %\VignetteDepends{nplr}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  dpi = 50,
+  out.width = "70%"
+)
+```
+
+# Introduction
+
+In this tutorial we are going to cover all the possible options of reading and writing data from multiple plates implemented in `SerolyzeR` package.
+
+This tutorial will not be focused on a detailed analysis of the package functionalities that are designed to analyse a single plate at a time, as this is already covered in the vignette("Basic SerolyzeR functionalities").
+
+## Reading the data
+
+Firstly, we need to locate our dataset.
+The `SerolyzeR` package has a preloaded dataset, which can be found with a command given below:
+
+```{r}
+base_dir <- system.file("extdata", "multiplate_tutorial", package = "SerolyzeR", mustWork = TRUE) # get the filepath of the directory containing all the files
+
+list.files(base_dir) # list all the files
+```
+
+As you can see, this directory contains multiple files - both raw output from the multiplex machine and the layout files, that help to identify the samples on the plate.
+Each of the plate files, e.g.
+`P1_SEROPED_PBT_62PLEX_PLATE1_03312023_RUN001.csv` contains its corresponding layout file, for instance `P1_SEROPED_PBT_62PLEX_PLATE1_03312023_RUN001_layout.xlsx` .
+
+We will explain in detail how the directory should be structured in order to read the data properly in the section below.
+Let us first read the directory.
+
+## Reading a whole directory
+
+To read the directory as above, we need to import the library `SerolyzeR` and run a single command `process_dir`. This function reads all the files in the directory and processes them.
+
+Now, we will discuss how this method works and describe its most important parameters. 
+By default, it saves all the outputs into the input directory, this can be changed with the `output_dir` parameter.
+We also specify the format of the input files, which is `xPONENT` in this case.
+
+One of the most useful features of the `process_dir` function is that it enables us to do all the preprocessing steps in one go. By setting `merge_outputs` parameter to `TRUE`, the method will output a single file with all the data from all the plates. This is very useful when we want to analyse the data from multiple plates at once.
+
+```{r}
+
+library(SerolyzeR)
+
+output_dir = tempdir() # create a temporary directory to store the output data
+
+process_dir(base_dir, format = "xPONENT", output_dir = output_dir, merge_outputs = TRUE)
+
+```
+Remember, if you want to read all your files properly, you need to follow the naming convention of the files. The layout file should have the same name as the plate file, with the added suffix `_layout`. The detailed description of the convention, along with the list of all the possible arguments can be found in the documentation of the function, which can be accessed with `?process_dir` command.
+
+Now, let us investigate the merged output of the `process_dir` function, which contains the data for all the samples and analytes, by default for each of the output types: 
+- MFI (mean fluorescence intensity) - the raw input MFI values, with optional blank adjustment only
+- nMFI (normalised mean fluorescence intensity) - the normalised values, with optional blank adjustment and normalisation to the reference sample
+- RAU (relative antibody units) - the normalised values, with optional blank adjustment transformed to the relative antibody units
+
+
+For detailed description of the normalised out for a single plate, we refer the reader to the vignette("Basic SerolyzeR functionalities"). For the detailed description of the reports, we refer the reader to the vignette("SerolyzeR HTML reports").
+
+
+Let us investigate the output directory and the files that were created.
+
+```{r}
+list.files(output_dir)
+
+```
+Since, we have selected the `merge_outputs` parameter to be `TRUE`, we should see 3 files in the output directory: `merged_MFI_{current_timestamp}.csv`, `merged_nMFI_{current_timestamp}.csv` and `merged_RAU_{current_timestamp}.csv`. 
+
+```{r}
+merged_RAU_filepath <- list.files(output_dir, pattern = "RAU", full.names = TRUE) # get the exact path to the RAU file
+
+
+RAU_data <- read.csv(merged_RAU_filepath) # read the RAU data
+```
+
+This file is a standard CSV dataframe. Its rows correspond to the samples and the columns to the analytes. The first column is the plate name from the sample originates, the second one is the sample name. The remaining columns contain the analytes. 
+
+```{r}
+RAU_data[1:5, 1:5]
+
+```
+
+
+
