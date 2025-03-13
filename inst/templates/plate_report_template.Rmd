@@ -210,8 +210,10 @@ for (i in seq_along(params$plate$analyte_names)) {
   }
 
   # Warning for bad coverage of the standard curve
-  number_of_test_samples <- 71
-  number_of_high_test_sample <- 34
+  max_mfi_for_standard_curve <- max(mfi)
+  test_samples <- params$plate$get_data(params$plate$analyte_names[i], "TEST")
+  number_of_test_samples <- length(test_samples)
+  number_of_high_test_sample <- sum(test_samples > max_mfi_for_standard_curve)
   fraction <- round(number_of_high_test_sample / number_of_test_samples * 100)
 
   if (fraction >= 25) {
