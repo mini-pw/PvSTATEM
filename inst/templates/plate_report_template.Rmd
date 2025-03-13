@@ -196,6 +196,19 @@ cat('</div>')
 for (i in seq_along(params$plate$analyte_names)) {
   cat(paste0("#### ", params$plate$analyte_names[i], "\n"))
 
+  # Warnings for given analyte
+  mfi <- params$plate$get_data(params$plate$analyte_names[i], "STANDARD CURVE")
+  dilutions_numeric <- params$plate$get_dilution_values("STANDARD CURVE")
+  warning <- tryCatch(handle_high_dose_hook(mfi, dilutions_numeric),
+                      error = function(e) e,
+                      warning = function(w) w)
+
+  if (inherits(warning, "warning")) {
+    cat("<div class='alert alert-info' role='alert'>")
+    cat("The high dose hook was detected for analyte: ", params$plate$analyte_names[i])
+    cat("</div>")
+  }
+
   # Plot counts
   print(plot_counts(params$plate, params$plate$analyte_names[i], lower_threshold = params$counts_lower_threshold, higher_threshold = params$counts_higher_threshold))
 
