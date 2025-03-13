@@ -12,7 +12,7 @@ is_line_blank <- function(line) {
   if (is.na(line)) {
     return(TRUE)
   }
-  stringr::str_detect(line, "^[;,\"]*$")
+  stringr::str_detect(line, "^[\\s;,\"]*$")
 }
 
 vectorize_csv_line <- function(line, separator) {
