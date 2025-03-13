@@ -210,14 +210,19 @@ for (i in seq_along(params$plate$analyte_names)) {
   }
 
   # Warning for bad coverage of the standard curve
-  bool_value <- TRUE
-  total_samples <- 71
-  number <- 7
-  fraction <- round(number / total_samples * 100)
+  number_of_test_samples <- 71
+  number_of_high_test_sample <- 34
+  fraction <- round(number_of_high_test_sample / number_of_test_samples * 100)
 
-  if (bool_value) {
-    cat("<div class='alert alert-info' role='alert'>")
-    cat(paste0("Warning: ", number, "/", total_samples, " (", fraction, "%) of samples have MFI values greater than the maximum value on the standard curve. For data analysis, consider using nMFI values instead of RAU."))
+  if (fraction >= 25) {
+    cat("<div class='alert alert-warning' role='alert'>")
+    cat(paste0("Warning: ",
+               number_of_high_test_sample,
+               "/",
+               number_of_test_samples,
+               " (",
+               fraction,
+               "%) of samples have MFI values greater than the maximum value on the standard curve. For data analysis, consider using nMFI values instead of RAU."))
     cat("</div>")
   }
 
