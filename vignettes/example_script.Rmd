@@ -26,10 +26,12 @@ knitr::opts_chunk$set(
 
 ## Reading the plate object
 
+
 The basic functionality of the `SerolyzeR` package is reading raw MBA data.
 To present the package's functionalities, we use a sample dataset from the Covid OISE study, which is pre-loaded into the package.
-You might want to replace these variables with paths to your files on your local disk.
-Firstly, let us load the dataset as the `plate` object.
+You might want to replace these variables with paths to your files on your local disk, to test the package on your data. 
+
+Firstly, let us load the dataset as the [`Plate`] object.
 
 ```{r}
 library(SerolyzeR)
@@ -44,13 +46,24 @@ plate <- read_luminex_data(plate_filepath, layout_filepath) # read the data
 plate
 ```
 
+The [`Plate`] is an object which encapsulates all the information about the plate, such as the sample names, analyte names, and the MFI values. For more details about the object, check the documentation by executing the command `?Plate`.
+
+The `read_luminex_data` function used above, reads the data from the CSV plate file and the layout file and outputs the [`Plate`] object. This method allows also for more advanced options, such as overriding the information from the files, or setting the data reading options, e.g. the Luminex file format (`xPONENT` or `INTELLIFLEX`) or the file separators and data encoding. For more details about the function, we encourage you to explore the documentation by executing the command `?read_luminex_data`.
+
+
 ## Processing the whole plate
 
-Once we have loaded the plate object, we may process it using the function `process_plate`.
-This function fits a model to each analyte using the standard curve samples. It computes RAU values for each analyte using the corresponding model.
-The computed RAU values are then saved to a CSV file in a specified folder, with a specified name, which by default is based on the plate name and the normalisation type - this function also allows normalisation for nMFI values, more details about this method may be found in the `nMFI` section of this document, or in documentation of `?get_nmfi` function.    
+Once we have loaded the plate object, we may process it using the function [`process_plate`].
+This function fits a model to each analyte using the standard curve samples. By default, it computes RAU values for each analyte using the corresponding model.
+The computed RAU values are then saved to a CSV file in a specified folder with the parameter `output_dir` in a file with specified name `filename `, which by default is based on the plate name and the normalisation type - this function also allows normalisation for nMFI values, more details about this method may be found in the `nMFI` section of this document, or in documentation of `?get_nmfi` function.  
+
+This function fits a model to each analyte using the standard curve samples. By default, it computes Relative Antibody Units (RAU) for each analyte based on the fitted model. The computed RAU values are saved to a CSV file in a directory specified by the `output_dir` parameter. The output file is named according to the `filename` parameter. If no filename is provided, the function automatically generates one based on the plate name and the selected normalisation type. 
+
+Additionally, this function supports normalisation for normalised Median Fluorescence Intensity (nMFI) values. More details on this normalisation approach can be found in the `nMFI` section of this document or in the documentation of [`get_nmfi()`].
 
 To get more information about the function, check `?process_plate`. 
+
+Below, we execute the function on the plate object and save the output to a temporary directory.
 
 ```{r}
 example_dir <- tempdir(check = TRUE) # create a temporary directory to store the output
@@ -62,6 +75,21 @@ We can take a look at a slice of the produced dataframe (as not to overcrowd the
 ```{r}
 df[1:5, 1:5]
 ```
+To automate the processing the plates, we can also use [`process_file`] and [`process_dir`] methods. The former processes a single file, while the latter processes all the files in a directory.
+
+
+[`process_file`] parses the plate file and saves the normalised output files to the specified directory. An example execution of the function is shown below.
+
+
+```{r}
+
+process_file(plate_filepath, layout_filepath, output_dir = example_dir, generate_report = TRUE)
+```
+
+It saves `RAU` and `nMFI` values to the `output_dir`, working similarly to the [`process_plate`] function. Additionally it has an option to produce a single plate report, which can be enabled with `generate_report = TRUE` parameter. The report is saved in the same directory as the output files, with the name based on the plate name. For more detailed description of the reports, we refer to the vignette vignette("SerolyzeR HTML reports").
+
+[`process_dir`] processes all the files in the specified directory. The description of this method can be found in the separate vignette vignette("Multiplate SerolyzeR functionalities").
+
 
 ## Quality control and normalisation details
 
@@ -76,8 +104,8 @@ plate$summary()
 
 plate$summary(include_names = TRUE) # more detailed summary
 
-plate$sample_names
-plate$analyte_names
+plate$sample_names[1:5] # print some of the sample names
+plate$analyte_names[1:4] # print some of the analyte names
 ```
 
 The summary can also be accessed using the built-in generic method `summary`.
@@ -89,15 +117,8 @@ summary(plate)
 ### Quality control
 
 The package can plot the RAU along the MFI values, allowing manual inspection of the standard curve.
-This method raises a warning in case the MFI values were not adjusted using the blank samples.
 
 ```{r}
-plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
-
-plate$blank_adjustment()
-
-print(plate$blank_adjusted)
-
 plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
 ```
 
@@ -135,6 +156,17 @@ plot_mfi_for_analyte(plate, analyte_name = "Spike_6P")
 
 For the `Spike_6P` analyte, the MFI values don't fall within the range of the standard curve samples, which could be problematic for the model.
 The test RAU values will be extrapolated (up to a point) from the standard curve, which may lead to incorrect results.
+
+
+The package allows also a straightforward way to adjust the MFI values using the background samples. To do so, we can use the `plate$blank_adjustment` method, as below:
+
+```{r}
+plate$blank_adjusted # verify if the data is already adjusted
+```
+
+```{r}
+plate$blank_adjustment()
+```
 
 ### Normalisation
 
