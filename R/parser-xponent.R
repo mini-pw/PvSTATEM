@@ -12,7 +12,7 @@ is_line_blank <- function(line) {
   if (is.na(line)) {
     return(TRUE)
   }
-  stringr::str_detect(line, "^[;,\"]*$")
+  stringr::str_detect(line, "^[\\s;,\"]*$")
 }
 
 vectorize_csv_line <- function(line, separator) {
@@ -508,16 +508,12 @@ crc32_parser <- function(separator) {
 #' @param separator Separator for the CSV values
 #' @param verbose Whether to print the progress. Default is `TRUE`
 #'
+#' @import stringi
 #' @import stringr
-#' @import readr
 #'
 #' @export
 read_xponent_format <- function(path, exact_parse = FALSE, encoding = "utf-8", separator = ",", verbose = TRUE) {
-  lines <- readr::read_lines(
-    path,
-    locale = readr::locale(encoding = encoding),
-  )
-
+  lines <- stringi::stri_read_lines(path, encoding = encoding)
   names(lines) <- rep(NA, length(lines))
 
   sep <- separator # alias

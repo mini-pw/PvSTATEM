@@ -209,7 +209,11 @@ read_luminex_data <- function(plate_filepath,
 
   parser_output <- switch(format,
     "xPONENT" = {
-      output <- read_xponent_format(plate_filepath, verbose = verbose)
+      output <- read_xponent_format(
+        plate_filepath,
+        verbose = verbose,
+        separator = plate_file_separator,
+      )
       postprocess_xponent(output, verbose = verbose)
     },
     "INTELLIFLEX" = {
