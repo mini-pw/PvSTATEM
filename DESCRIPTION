@@ -22,7 +22,6 @@ Imports:
     ggplot2,
     nplr,
     R6,
-    readr,
     readxl,
     stringi,
     stringr,
