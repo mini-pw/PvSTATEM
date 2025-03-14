@@ -117,9 +117,11 @@ example_dir <- tempdir(check = TRUE)
 process_plate(plate, output_dir = example_dir)
 
 # Process plate without blank adjustment, custom filename
-process_plate(plate, filename = "plate_no_blank_adjustment.csv", output_dir = example_dir, blank_adjustment = FALSE)
+process_plate(plate, filename = "plate_no_blank_adjustment.csv",
+              output_dir = example_dir, blank_adjustment = FALSE)
 
 # Process plate with nMFI normalisation
-process_plate(plate, output_dir = example_dir, normalisation_type = "nMFI", reference_dilution = 1 / 400)
+process_plate(plate, output_dir = example_dir, normalisation_type = "nMFI",
+              reference_dilution = 1 / 400)
 
 }
