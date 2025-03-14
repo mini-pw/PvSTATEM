@@ -86,7 +86,7 @@ To automate the processing the plates, we can also use [`process_file`] and [`pr
 process_file(plate_filepath, layout_filepath, output_dir = example_dir, generate_report = TRUE)
 ```
 
-It saves `RAU` and `nMFI` values to the `output_dir`, working similarly to the [`process_plate`] function. Additionally it has an option to produce a single plate report, which can be enabled with `generate_report = TRUE` parameter. The report is saved in the same directory as the output files, with the name based on the plate name. For more detailed description of the reports, we refer to the vignette vignette("SerolyzeR HTML reports").
+It saves `RAU` and `nMFI` values to the `output_dir`, working similarly to the [`process_plate`] function. Additionally it has an option to produce a single plate report, which can be enabled with `generate_report = TRUE` parameter. The report is saved in the same directory as the output files, with the name based on the plate name. For more detailed description of the reports, we refer to the vignette \code{vignette("SerolyzeR HTML reports", package="SerolyzeR")}.
 
 [`process_dir`] processes all the files in the specified directory. The description of this method can be found in the separate vignette vignette("Multiplate SerolyzeR functionalities").
 
