@@ -105,10 +105,10 @@ Optionally, quality control reports can be generated, and results from multiple 
 \item The corresponding layout file should be named as \verb{\{plate_name\}_layout.csv} or \verb{\{plate_name\}_layout.xlsx}.
 \item Alternatively, if \code{layout_filepath} is provided, it serves as a unified layout file for all plates.
 }
-\item \strong{If \code{format} is not specified (automatic detection):}
+\item \strong{If \code{format} equals \code{NULL} (automatic detection):}
 \itemize{
 \item Each plate file should be named as \verb{\{plate_name\}_\{format\}.csv}, where \code{{format}} is either \code{xPONENT} or \code{INTELLIFLEX}.
-\item The corresponding layout file should be named using the same convention as above.
+\item The corresponding layout file should be named using the same convention as above, i.i. \verb{\{plate_name\}_\{format\}_layout.csv} or \verb{\{plate_name\}_\{format\}_layout.xlsx}.
 }
 }
 }

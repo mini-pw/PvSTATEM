@@ -175,9 +175,9 @@ get_output_dir <- function(
 #'   - The corresponding layout file should be named as `{plate_name}_layout.csv` or `{plate_name}_layout.xlsx`.
 #'   - Alternatively, if `layout_filepath` is provided, it serves as a unified layout file for all plates.
 #'
-#' - **If `format` is not specified (automatic detection):**
+#' - **If `format` equals `NULL` (automatic detection):**
 #'   - Each plate file should be named as `{plate_name}_{format}.csv`, where `{format}` is either `xPONENT` or `INTELLIFLEX`.
-#'   - The corresponding layout file should be named using the same convention as above.
+#'   - The corresponding layout file should be named using the same convention as above, i.i. `{plate_name}_{format}_layout.csv` or `{plate_name}_{format}_layout.xlsx`.
 #'
 #' ## Output File Structure
 #' - The `output_dir` parameter specifies where the processed files are saved.

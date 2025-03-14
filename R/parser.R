@@ -146,45 +146,68 @@ postprocess_xponent <- function(xponent_output, verbose = TRUE) {
 
 valid_formats <- c("xPONENT", "INTELLIFLEX")
 
+#' @title
 #' Read Luminex Data
 #'
 #' @description
-#' Reads a file containing Luminex data and returns a Plate object.
-#' If provided, can also read a layout file, which usually contains
-#' information about the sample names, sample types or its dilutions.
+#' Reads a Luminex plate file and returns a [`Plate`] object containing the extracted data.
+#' Optionally, a layout file can be provided to specify the arrangement of samples on the plate.
 #'
-#' The function is capable of reading data in two different formats:
-#' - xPONENT
-#' - INTELLIFLEX
-#' which are produced by two different Luminex machines.
+#' The function supports two Luminex data formats:
+#' - **xPONENT**: Used by older Luminex machines.
+#' - **INTELLIFLEX**: Used by newer Luminex devices.
+#'
+#' ## Workflow
+#' 1. Validate input parameters, ensuring the specified format is supported.
+#' 2. Read the plate file using the appropriate parser:
+#'    - xPONENT files are read using [read_xponent_format()].
+#'    - INTELLIFLEX files are read using [read_intelliflex_format()].
+#' 3. Post-process the extracted data:
+#'    - Validate required data columns (`Median`, `Count`).
+#'    - Extract sample locations and analyte names.
+#'    - Parse the date and time of the experiment.
+#'
+#' ## File Structure
+#' - **Plate File (`plate_filepath`)**: A CSV file containing Luminex fluorescence intensity data.
+#' - **Layout File (`layout_filepath`)** (optional): An Excel or CSV file containing the plate layout.
+#'   - The layout file should contain a table with **8 rows and 12 columns**, where each cell corresponds to a well location.
+#'   - The values in the table represent the sample names for each well.
 #'
 #'
-#' @param plate_filepath Path to the Luminex plate file
-#' @param layout_filepath Path to the Luminex layout file
-#' @param format The format of the Luminex data. Select from: xPONENT, INTELLIFLEX
-#' @param plate_file_separator The separator used in the plate file
-#' @param plate_file_encoding The encoding used in the plate file
-#' @param use_layout_sample_names Whether to use names from the layout file in extracting sample names.
-#' @param use_layout_types Whether to use names from the layout file in extracting sample types.
-#' Works only when layout file is provided
-#' @param use_layout_dilutions Whether to use dilutions from the layout file in extracting dilutions.
-#' Works only when layout file is provided
-#' @param default_data_type The default data type to use if none is specified
-#' @param sample_types a vector of sample types to use instead of the extracted ones
-#' @param dilutions a vector of dilutions to use instead of the extracted ones
-#' @param verbose Whether to print additional information and warnings. `TRUE` by default
 #'
-#' @return Plate file containing the Luminex data
+#' @param plate_filepath (`character(1)`) Path to the Luminex plate file.
+#' @param layout_filepath (`character(1)`, optional) Path to the Luminex layout file.
+#' @param format (`character(1)`, default = `'xPONENT'`)
+#'   - The format of the Luminex data file.
+#'   - Supported formats: `'xPONENT'`, `'INTELLIFLEX'`.
+#' @param plate_file_separator (`character(1)`, default = `','`)
+#'   - The delimiter used in the plate file (CSV format).
+#' @param plate_file_encoding (`character(1)`, default = `'UTF-8'`)
+#'   - The encoding used for reading the plate file.
+#' @param use_layout_sample_names (`logical(1)`, default = `TRUE`)
+#'   - Whether to use sample names from the layout file.
+#' @param use_layout_types (`logical(1)`, default = `TRUE`)
+#'   - Whether to use sample types from the layout file (requires a layout file).
+#' @param use_layout_dilutions (`logical(1)`, default = `TRUE`)
+#'   - Whether to use dilution values from the layout file (requires a layout file).
+#' @param default_data_type (`character(1)`, default = `'Median'`)
+#'   - The default data type used if none is explicitly provided.
+#' @param sample_types (`character()`, optional) A vector of sample types to override extracted values.
+#' @param dilutions (`numeric()`, optional) A vector of dilutions to override extracted values.
+#' @param verbose (`logical(1)`, default = `TRUE`)
+#'   - Whether to print additional information and warnings.
+#'
+#' @return A [`Plate`] object containing the parsed Luminex data.
 #'
 #' @examples
+#' # Read a Luminex plate file with an associated layout file
 #' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR")
 #' layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "SerolyzeR")
 #' plate <- read_luminex_data(plate_file, layout_file)
 #'
+#' # Read a Luminex plate file without a layout file
 #' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "SerolyzeR")
-#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
-#' # To suppress warnings and additional information use verbose = FALSE
-#' plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
+#' plate <- read_luminex_data(plate_file, verbose = FALSE)
 #'
 #' @export
 read_luminex_data <- function(plate_filepath,
