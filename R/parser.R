@@ -62,8 +62,8 @@ parse_xponent_locations <- function(xponent_locations) {
 handle_datetime <- function(datetime_str, file_format = "xPONENT") {
   if (file_format == "xPONENT") {
     possible_orders <- c(
-      "mdY IM p", "mdY HM", "mdY IMS p", "mdY HMS",
-      "Ymd IM p", "Ymd HM", "Ymd IMS p", "Ymd HMS",
+      "Ymd HM", "mdY IM p", "mdY HM", "mdY IMS p", 
+      "mdY HMS", "Ymd IM p", "Ymd IMS p", "Ymd HMS",
       "dmY IM p", "dmY HM", "dmY IMS p", "dmY HMS"
     )
   } else if (file_format == "INTELLIFLEX") {
