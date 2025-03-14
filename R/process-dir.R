@@ -246,9 +246,15 @@ process_dir <- function(
     dry_run = FALSE,
     verbose = TRUE,
     ...) {
-  stopifnot(fs::dir_exists(input_dir))
-  stopifnot(is.null(output_dir) || fs::dir_exists(output_dir))
-  stopifnot(is.null(layout_filepath) || fs::file_exists(layout_filepath))
+  if (!fs::dir_exists(input_dir)){
+    stop("Input directory does not exist.")
+  }
+  if (!is.null(output_dir) && !fs::dir_exists(output_dir)) {
+    stop("Output directory is specified, but does not exist.")
+  }
+  if (!is.null(layout_filepath) && !fs::file_exists(layout_filepath)) {
+    stop("Layout file is specified, but does not exist.")
+  }
   stopifnot(is_mba_format(format, allow_nullable = TRUE))
   input_dir <- fs::path_abs(input_dir)
 

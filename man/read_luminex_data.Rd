@@ -32,12 +32,12 @@ read_luminex_data(
 
 \item{plate_file_separator}{(\code{character(1)}, default = \code{','})
 \itemize{
-\item The delimiter used in the plate file (CSV format).
+\item The delimiter used in the plate file (CSV format). Used only for the xPONENT format.
 }}
 
 \item{plate_file_encoding}{(\code{character(1)}, default = \code{'UTF-8'})
 \itemize{
-\item The encoding used for reading the plate file.
+\item The encoding used for reading the plate file. Used only for the xPONENT format.
 }}
 
 \item{use_layout_sample_names}{(\code{logical(1)}, default = \code{TRUE})
