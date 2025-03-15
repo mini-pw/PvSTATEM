@@ -8,8 +8,13 @@
 #'
 find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
   if (!is.null(layout_filepath)) {
-    stopifnot(fs::file_exists(layout_filepath))
-    return(layout_filepath)
+    if (fs::file_exists(layout_filepath)) {
+      return(layout_filepath)
+    }
+
+    stop(
+      paste0("The specified common layout file ", layout_filepath, " does not exist.")
+    )
   }
 
   stopifnot(fs::is_absolute_path(plate_filepath))
@@ -26,9 +31,10 @@ find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
   )
   possible_files <- list.files(file_dir, pattern = layout_file_glob)
   if (length(possible_files) == 0) {
-    stop(
-      paste0("Layout file for a file ", plate_filepath, " could not be found.")
+    warning(
+      paste0("Layout file for a file ", plate_filepath, " could not be found. Won't use the layout file for the given plate.")
     )
+    return(NULL)
   }
 
   possible_layout_filename <- possible_files[1]
@@ -36,9 +42,10 @@ find_layout_file <- function(plate_filepath, layout_filepath = NULL) {
   if (fs::file_exists(possible_layout_path)) {
     return(possible_layout_path)
   } else {
-    stop(
-      paste0("Layout file for a file ", plate_filepath, " could not be found.")
+    warning(
+      paste0("Layout file for a file ", plate_filepath, " could not be found. Won't use the layout file for the given plate.")
     )
+    return(NULL)
   }
 }
 
@@ -146,49 +153,80 @@ get_output_dir <- function(
   }
   return(fs::path(current_output_dir))
 }
-
 #' @title
-#' Process a dir of files to generate normalised data and reports
+#' Process a Directory of Luminex Data Files
 #'
 #' @description
-#' The output files will be created alongside their corresponding input files, preserving
-#' the directory structure of the input directory unless the `flatten_output_dir` parameter is set to `TRUE`.
+#' This function processes all Luminex plate files within a specified directory.
+#' Each plate file is processed using [process_file()], and the resulting normalised data is saved.
+#' Optionally, quality control reports can be generated, and results from multiple plates can be merged into a single file.
 #'
-#' @param input_dir (`character(1)`) The directory containing the input files. It may be nested.
-#' @param output_dir (`character(1)`) Optional overwrite directory where the output files should be saved. The default is `NULL`.
-#' By default, the output directory is the same as the input directory.
-#' @param recurse (`logical(1)`) If `TRUE`, the function will search for files recursively in the input directory. The default is `FALSE`.
-#' @param flatten_output_dir (`logical(1)`) If `TRUE`, the output files will be saved in the output directory directly. The default is `FALSE`.
-#' @param format (`character(1)`) The format of the Luminex data. The default is `NULL`, and the format will have to
-#' be determined automatically based on the file name. Available options are `xPONENT` and `INTELLIFLEX`.
-#' @param layout_filepath (`character(1)`) The path to the layout file. The default is `NULL`, and the layout file will have to
-#' be determined automatically based on the file name.
-#' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("MFI", "RAU", "nMFI")`.
-#' @param generate_reports (`logical(1)`) If `TRUE`, generate quality control reports for each file. The default is `FALSE`.
-#' @param merge_outputs (`logical(1)`) If `TRUE`, merge the outputs of all plates into a single CSV file for each normalisation type.
-#' The resulting file will be saved in the output directory with the name `merged_{normalisation_type}_{timestamp}.csv`.
-#' Example: `merged_nMFI_20250115_230735.csv`.
-#' @param column_collision_strategy (`character(1)`) A method for handling missing or additional columns when merging outputs.
-#' Possible options are `union` and `intersection`. The default is `intersection`.
-#' @param return_plates (`logical(1)`) If `TRUE`, return a list of processed plates. The default is `FALSE`.
-#' @param dry_run (`logical(1)`) If `TRUE`, the function will not process any files
-#' but will print the information about the files that would be processed. The default is `FALSE`.
-#' @param verbose (`logical(1)`) Print additional information. The default is `TRUE`.
-#' @param ... Additional arguments to for the `process_file` function.
+#' ## Workflow
+#' 1. Identify all Luminex plate files in the `input_dir`, applying recursive search if `recurse = TRUE`.
+#' 2. Detect the format of each file based on the `format` parameter or the filename.
+#' 3. Locate the corresponding layout file using the filename or use the common layout passed with the `layout_filepath` parameter.
+#' 4. Determine the appropriate output directory using [get_output_dir()].
+#' 5. Process each plate file using [process_file()].
+#' 6. If `merge_outputs = TRUE`, merge normalised data from multiple plates into a single CSV file.
 #'
-#' @return If the `return_plates` parameter is set to `TRUE` the function returns a list of plates
-#' sorted by the `plate_datetime` (The time of the experiment noted in the csv file) in increasing order (oldest plates first).
-#' If the `return_plates` parameters is set to `FALSE` the function returns `NULL`.
+#' ## Naming Conventions for Input Files
+#' - **If `format` is specified:**
+#'   - Each plate file should be named as `{plate_name}.csv`.
+#'   - The corresponding layout file should be named as `{plate_name}_layout.csv` or `{plate_name}_layout.xlsx`.
+#'   - Alternatively, if `layout_filepath` is provided, it serves as a unified layout file for all plates.
+#'
+#' - **If `format` equals `NULL` (automatic detection):**
+#'   - Each plate file should be named as `{plate_name}_{format}.csv`, where `{format}` is either `xPONENT` or `INTELLIFLEX`.
+#'   - The corresponding layout file should be named using the same convention as above, i.i. `{plate_name}_{format}_layout.csv` or `{plate_name}_{format}_layout.xlsx`.
+#'
+#' ## Output File Structure
+#' - The `output_dir` parameter specifies where the processed files are saved.
+#' - If `output_dir` is `NULL`, output files are saved in the same directory as the input files.
+#' - By default, the output directory structure follows the input directory, unless `flatten_output_dir = TRUE`, which saves all outputs directly into `output_dir`.
+#' - Output filenames follow the convention used in [process_file()].
+#'   - For a plate named `{plate_name}`, the normalised output files are named as:
+#'     - `{plate_name}_RAU.csv` for RAU normalisation.
+#'     - `{plate_name}_nMFI.csv` for nMFI normalisation.
+#'     - `{plate_name}_MFI.csv` for MFI normalisation.
+#'     - If `generate_reports = TRUE`, a quality control report is saved as `{plate_name}_report.pdf`.
+#'   - If `merge_outputs = TRUE`, merged normalised files are named as:
+#'     - `merged_RAU_{timestamp}.csv`
+#'     - `merged_nMFI_{timestamp}.csv`
+#'     - `merged_MFI_{timestamp}.csv`
+#'
+#' @param input_dir (`character(1)`) Path to the directory containing plate files. Can contain subdirectories if `recurse = TRUE`.
+#' @param output_dir (`character(1)`, optional) Path to the directory where output files will be saved. Defaults to `NULL` (same as input directory).
+#' @param recurse (`logical(1)`, default = `FALSE`)
+#'   - If `TRUE`, searches for plate files in subdirectories as well.
+#' @param flatten_output_dir (`logical(1)`, default = `FALSE`)
+#'   - If `TRUE`, saves output files directly in `output_dir`, ignoring the input directory structure.
+#' @param format (`character(1)`, optional) Luminex data format. If `NULL`, it is automatically detected. Options: `'xPONENT'`, `'INTELLIFLEX'`.
+#' @param layout_filepath (`character(1)`, optional) Path to a layout file. If `NULL`, the function attempts to detect it automatically.
+#' @param normalisation_types (`character()`, default = `c("MFI", "RAU", "nMFI")`)
+#'   - The normalisation types to apply. Supported values: `"MFI"`, `"RAU"`, `"nMFI"`.
+#' @param generate_reports (`logical(1)`, default = `FALSE`)
+#'   - If `TRUE`, generates quality control reports for each processed plate file.
+#' @param merge_outputs (`logical(1)`, default = `FALSE`)
+#'   - If `TRUE`, merges all normalised data into a single CSV file per normalisation type.
+#'   - The merged file is named `merged_{normalisation_type}_{timestamp}.csv`.
+#' @param column_collision_strategy (`character(1)`, default = `'intersection'`)
+#'   - Determines how to handle missing or extra columns when merging outputs.
+#'   - Options: `'union'` (include all columns), `'intersection'` (include only common columns).
+#' @param return_plates (`logical(1)`, default = `FALSE`)
+#'   - If `TRUE`, returns a list of processed plates sorted by experiment date.
+#' @param dry_run (`logical(1)`, default = `FALSE`)
+#'   - If `TRUE`, prints file details without processing them.
+#' @param verbose (`logical(1)`, default = `TRUE`)
+#'   - If `TRUE`, prints detailed processing information.
+#' @param ... Additional arguments passed to [process_file()].
+#'
+#' @return If `return_plates = TRUE`, returns a sorted list of [`Plate`] objects. Otherwise, returns `NULL`.
 #'
 #' @examples
-#' # Select input directory to process
-#' dir <- system.file("extdata", "multiplate_lite", package = "SerolyzeR", mustWork = TRUE)
-#'
-#' # Select output directory
+#' # Process all plate files in a directory
+#' input_dir <- system.file("extdata", "multiplate_lite", package = "SerolyzeR", mustWork = TRUE)
 #' output_dir <- tempdir(check = TRUE)
-#'
-#' # Process input directory and return plates
-#' plates <- process_dir(dir, return_plates = TRUE, output_dir = output_dir)
+#' plates <- process_dir(input_dir, return_plates = TRUE, output_dir = output_dir)
 #'
 #' @import fs
 #'
@@ -208,9 +246,15 @@ process_dir <- function(
     dry_run = FALSE,
     verbose = TRUE,
     ...) {
-  stopifnot(fs::dir_exists(input_dir))
-  stopifnot(is.null(output_dir) || fs::dir_exists(output_dir))
-  stopifnot(is.null(layout_filepath) || fs::file_exists(layout_filepath))
+  if (!fs::dir_exists(input_dir)){
+    stop("Input directory does not exist.")
+  }
+  if (!is.null(output_dir) && !fs::dir_exists(output_dir)) {
+    stop("Output directory is specified, but does not exist.")
+  }
+  if (!is.null(layout_filepath) && !fs::file_exists(layout_filepath)) {
+    stop("Layout file is specified, but does not exist.")
+  }
   stopifnot(is_mba_format(format, allow_nullable = TRUE))
   input_dir <- fs::path_abs(input_dir)
 

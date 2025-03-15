@@ -2,11 +2,15 @@
 % Please edit documentation in R/classes-plate.R
 \name{Plate}
 \alias{Plate}
-\title{Plate object}
+\title{Plate Object}
 \description{
-A class to represent the luminex plate. It contains information about
-the samples and analytes that were examined on the plate as well as
-some additional metadata and batch info
+The \code{Plate} object represents a Luminex assay plate and stores data related to
+its samples, analytes, metadata, and batch information. This object is typically
+created by functions such as \code{\link[=read_luminex_data]{read_luminex_data()}}, \code{\link[=process_file]{process_file()}}, or \code{\link[=process_dir]{process_dir()}}.
+
+It provides methods for accessing and manipulating data, including retrieving
+specific analyte measurements, filtering by sample type, and performing
+blank adjustments.
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

@@ -48,12 +48,17 @@ is_valid_data_type <- function(data_type) {
 }
 
 
-#' @title Plate object
+#' @title
+#' Plate Object
 #'
 #' @description
-#' A class to represent the luminex plate. It contains information about
-#' the samples and analytes that were examined on the plate as well as
-#' some additional metadata and batch info
+#' The `Plate` object represents a Luminex assay plate and stores data related to
+#' its samples, analytes, metadata, and batch information. This object is typically
+#' created by functions such as [read_luminex_data()], [process_file()], or [process_dir()].
+#'
+#' It provides methods for accessing and manipulating data, including retrieving
+#' specific analyte measurements, filtering by sample type, and performing
+#' blank adjustments.
 #'
 #' @importFrom R6 R6Class
 #'
@@ -96,6 +101,9 @@ Plate <- R6::R6Class(
     #' Types of the samples that were examined on the plate.
     #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
     #' This vector is in the same order as the `sample_names` vector.
+    #' If the [`Plate`] object is read using [`read_luminex_data`], then the sample types
+    #' are usually detected based on the sample names according to the rules
+    #' described in [`translate_sample_names_to_sample_types`].
     sample_types = NULL,
     #'
     #' @field dilutions (`character()`)\cr

@@ -17,3 +17,13 @@ test_that("Test handle_datetime with seen date formats", {
     as.POSIXct("2024-10-07 12:00:00", tz = "")
   )
 })
+
+test_that("Test parser validation", {
+  # Default xPONENT datetime format MM/DD/YYYY HH:MM AM/PM
+  expect_error(read_luminex_data("non-existent-data.csv", "wrong"))
+
+  expect_error(read_luminex_data("non-existent-data.csv", "xPONENT"))
+
+  expect_error(read_luminex_data("non-existent-data.csv", "INTELLIFLEX"))
+})
+

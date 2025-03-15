@@ -7,7 +7,14 @@ test_that("Test finding layout file", {
 
   output <- find_layout_file(plate_filepath)
   expect_true(check_path_equal(output, layout_filepath))
-  expect_error(find_layout_file(random_plate_filepath))
+
+  output <- find_layout_file(plate_filepath, layout_filepath)
+  expect_true(check_path_equal(output, layout_filepath))
+
+  expect_warning(find_layout_file(random_plate_filepath))
+
+  expect_error(find_layout_file("non_existing_file.csv"))
+  expect_error(find_layout_file("non_existing_file.csv", "incorrect_layout.xlsx"))
 })
 
 test_that("Test checking for mba file", {
@@ -60,6 +67,10 @@ test_that("Test obtaining an output directory", {
     output_dir = specified_output_dir,
     flatten_output_dir = TRUE
   ), specified_output_dir)
+
+  expect_error(get_output_dir(plate_filepath, "no_dir", "bad_dir"))
+
+  expect_error(process_dir(input_dir, output = "non-existing"))
 })
 
 
@@ -80,8 +91,9 @@ test_that("Test processing a mock directory", {
   # Test with relative path
   rel_path <- fs::path_rel(dir, getwd())
   expect_no_error(capture.output(
-    process_dir(rel_path, dry_run = T, recurse = T, flatten_output_dir = F, output_dir = tempdir(check = TRUE))
+    process_dir(rel_path, dry_run = TRUE, recurse = TRUE, flatten_output_dir = FALSE, output_dir = tempdir(check = TRUE))
   ))
+
 
   dir <- tempdir(check = TRUE)
   # Clean up the tmp directory
@@ -98,6 +110,12 @@ test_that("Test processing a directory with a single plate", {
   output_dir <- tempdir(check = TRUE)
   plates <- process_dir(dir, return_plates = TRUE, output_dir = output_dir)
   expect_length(plates, 2)
+
+  layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR", mustWork = TRUE)
+
+  expect_no_error(capture.output(
+    process_dir(dir, output_dir = output_dir, dry_run = TRUE, format = "xPONENT", layout_filepath = layout_filepath)
+  ))
 })
 
 test_that("Test processing a reallife directory with merge output", {
@@ -113,4 +131,16 @@ test_that("Test processing a reallife directory with merge output", {
   expect_true(
     length(fs::dir_ls(output_dir, type = "file", glob = "*merged*")) >= 2
   ) # The gte is used to account for the possibility of the file being created in the previous test
+})
+
+test_that("Test validation checks", {
+  dir <- system.file("extdata", "multiplate_mock", package = "SerolyzeR", mustWork = TRUE) # get the filepath of the csv dataset
+  expect_error(process_dir(dir, format = "random_format"))
+
+  # Test with a non-existing directory
+  expect_error(process_dir("non_existing_dir", format = "xPONENT"))
+
+  # Test with a non-existing layout file
+  expect_error(process_dir(dir, format = "xPONENT", layout_file = "non_existing_layout.xlsx"))
+
 })

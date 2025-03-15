@@ -146,45 +146,73 @@ postprocess_xponent <- function(xponent_output, verbose = TRUE) {
 
 valid_formats <- c("xPONENT", "INTELLIFLEX")
 
+#' @title
 #' Read Luminex Data
 #'
 #' @description
-#' Reads a file containing Luminex data and returns a Plate object.
-#' If provided, can also read a layout file, which usually contains
-#' information about the sample names, sample types or its dilutions.
+#' Reads a Luminex plate file and returns a [`Plate`] object containing the extracted data.
+#' Optionally, a layout file can be provided to specify the arrangement of samples on the plate.
 #'
-#' The function is capable of reading data in two different formats:
-#' - xPONENT
-#' - INTELLIFLEX
-#' which are produced by two different Luminex machines.
+#' The function supports two Luminex data formats:
+#' - **xPONENT**: Used by older Luminex machines.
+#' - **INTELLIFLEX**: Used by newer Luminex devices.
+#'
+#' ## Workflow
+#' 1. Validate input parameters, ensuring the specified format is supported.
+#' 2. Read the plate file using the appropriate parser:
+#'    - xPONENT files are read using [read_xponent_format()].
+#'    - INTELLIFLEX files are read using [read_intelliflex_format()].
+#' 3. Post-process the extracted data:
+#'    - Validate required data columns (`Median`, `Count`).
+#'    - Extract sample locations and analyte names.
+#'    - Parse the date and time of the experiment.
+#'
+#' ## File Structure
+#' - **Plate File (`plate_filepath`)**: A CSV file containing Luminex fluorescence intensity data.
+#' - **Layout File (`layout_filepath`)** (optional): An Excel or CSV file containing the plate layout.
+#'   - The layout file should contain a table with **8 rows and 12 columns**, where each cell corresponds to a well location.
+#'   - The values in the table represent the sample names for each well.
+#'
+#' ## Sample types detection
+#'
+#' The [`read_luminex_data`] method automatically detects the sample types based on the sample names, unless provided the `sample_types` parameter.
+#' The sample types are detected used the [`translate_sample_names_to_sample_types`] method.
+#' In the documentation of this method, which can be accessed with command `?translate_sample_names_to_sample_types`, you can find the detailed description of the sample types detection.
 #'
 #'
-#' @param plate_filepath Path to the Luminex plate file
-#' @param layout_filepath Path to the Luminex layout file
-#' @param format The format of the Luminex data. Select from: xPONENT, INTELLIFLEX
-#' @param plate_file_separator The separator used in the plate file
-#' @param plate_file_encoding The encoding used in the plate file
-#' @param use_layout_sample_names Whether to use names from the layout file in extracting sample names.
-#' @param use_layout_types Whether to use names from the layout file in extracting sample types.
-#' Works only when layout file is provided
-#' @param use_layout_dilutions Whether to use dilutions from the layout file in extracting dilutions.
-#' Works only when layout file is provided
-#' @param default_data_type The default data type to use if none is specified
-#' @param sample_types a vector of sample types to use instead of the extracted ones
-#' @param dilutions a vector of dilutions to use instead of the extracted ones
-#' @param verbose Whether to print additional information and warnings. `TRUE` by default
+#' @param plate_filepath (`character(1)`) Path to the Luminex plate file.
+#' @param layout_filepath (`character(1)`, optional) Path to the Luminex layout file.
+#' @param format (`character(1)`, default = `'xPONENT'`)
+#'   - The format of the Luminex data file.
+#'   - Supported formats: `'xPONENT'`, `'INTELLIFLEX'`.
+#' @param plate_file_separator (`character(1)`, default = `','`)
+#'   - The delimiter used in the plate file (CSV format). Used only for the xPONENT format.
+#' @param plate_file_encoding (`character(1)`, default = `'UTF-8'`)
+#'   - The encoding used for reading the plate file. Used only for the xPONENT format.
+#' @param use_layout_sample_names (`logical(1)`, default = `TRUE`)
+#'   - Whether to use sample names from the layout file.
+#' @param use_layout_types (`logical(1)`, default = `TRUE`)
+#'   - Whether to use sample types from the layout file (requires a layout file).
+#' @param use_layout_dilutions (`logical(1)`, default = `TRUE`)
+#'   - Whether to use dilution values from the layout file (requires a layout file).
+#' @param default_data_type (`character(1)`, default = `'Median'`)
+#'   - The default data type used if none is explicitly provided.
+#' @param sample_types (`character()`, optional) A vector of sample types to override extracted values.
+#' @param dilutions (`numeric()`, optional) A vector of dilutions to override extracted values.
+#' @param verbose (`logical(1)`, default = `TRUE`)
+#'   - Whether to print additional information and warnings.
 #'
-#' @return Plate file containing the Luminex data
+#' @return A [`Plate`] object containing the parsed Luminex data.
 #'
 #' @examples
+#' # Read a Luminex plate file with an associated layout file
 #' plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR")
 #' layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "SerolyzeR")
 #' plate <- read_luminex_data(plate_file, layout_file)
 #'
+#' # Read a Luminex plate file without a layout file
 #' plate_file <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "SerolyzeR")
-#' layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
-#' # To suppress warnings and additional information use verbose = FALSE
-#' plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
+#' plate <- read_luminex_data(plate_file, verbose = FALSE)
 #'
 #' @export
 read_luminex_data <- function(plate_filepath,
@@ -203,20 +231,31 @@ read_luminex_data <- function(plate_filepath,
     stop("Invalid format: ", format, ". Select from: ", paste(valid_formats, collapse = ", "))
   }
 
-
-
   verbose_cat("Reading Luminex data from: ", plate_filepath, "\nusing format ", format, "\n", verbose = verbose)
+  tryCatch({
+    parser_output <- switch(format,
+      "xPONENT" = {
+        output <- read_xponent_format(
+          plate_filepath,
+          verbose = verbose,
+          separator = plate_file_separator,
+          encoding = plate_file_encoding
+        )
+        postprocess_xponent(output, verbose = verbose)
+      },
+      "INTELLIFLEX" = {
+        output <- read_intelliflex_format(plate_filepath, verbose = verbose)
+        postprocess_intelliflex(output, verbose = verbose)
+      }
+    )
+  }, error = function(e) {
+    error_messsage <- paste("Error reading Luminex plate file from: ", plate_filepath, " using the ", format, " format.\n")
 
-  parser_output <- switch(format,
-    "xPONENT" = {
-      output <- read_xponent_format(plate_filepath, verbose = verbose)
-      postprocess_xponent(output, verbose = verbose)
-    },
-    "INTELLIFLEX" = {
-      output <- read_intelliflex_format(plate_filepath, verbose = verbose)
-      postprocess_intelliflex(output, verbose = verbose)
-    }
-  )
+    stop("Error reading Luminex plate file from: ", plate_filepath, " using the ", format, " format.\n",
+         ifelse(format == "xPONENT", paste0("Check if the separator and encoding are correct. Currently using separator: '", plate_file_separator, "' and the '", plate_file_encoding, "' encoding.\n"), ""),
+         "\n", e$message)
+  })
+
 
   plate_builder <- PlateBuilder$new(
     batch_name = parser_output$batch_name,
