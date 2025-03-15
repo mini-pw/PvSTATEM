@@ -12,7 +12,7 @@ test_that("Test finding layout file", {
   expect_true(check_path_equal(output, layout_filepath))
 
   expect_warning(find_layout_file(random_plate_filepath))
-  
+
   expect_error(find_layout_file("non_existing_file.csv"))
   expect_error(find_layout_file("non_existing_file.csv", "incorrect_layout.xlsx"))
 })
@@ -68,7 +68,7 @@ test_that("Test obtaining an output directory", {
     flatten_output_dir = TRUE
   ), specified_output_dir)
 
-  expect_error(plate_filepath, "no_dir", "bad_dir")
+  expect_error(get_output_dir(plate_filepath, "no_dir", "bad_dir"))
 })
 
 
