@@ -8,6 +8,8 @@ test_that("Test finding layout file", {
   output <- find_layout_file(plate_filepath)
   expect_true(check_path_equal(output, layout_filepath))
   expect_warning(find_layout_file(random_plate_filepath))
+
+  expect_error(find_layout_file("non_existing_file.csv"))
 })
 
 test_that("Test checking for mba file", {
@@ -113,4 +115,16 @@ test_that("Test processing a reallife directory with merge output", {
   expect_true(
     length(fs::dir_ls(output_dir, type = "file", glob = "*merged*")) >= 2
   ) # The gte is used to account for the possibility of the file being created in the previous test
+})
+
+test_that("Test validation checks", {
+  dir <- system.file("extdata", "multiplate_mock", package = "SerolyzeR", mustWork = TRUE) # get the filepath of the csv dataset
+  expect_error(process_dir(dir, format = "random_format"))
+
+  # Test with a non-existing directory
+  expect_error(process_dir("non_existing_dir", format = "xPONENT"))
+
+  # Test with a non-existing layout file
+  expect_error(process_dir(dir, format = "xPONENT", layout_file = "non_existing_layout.xlsx"))
+
 })
