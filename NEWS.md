@@ -1,3 +1,12 @@
+Version 1.1.0
+---------------------------------------------------------------
+* added vignette on multiplate functionalities
+* added more verbose error and warning messages
+* added warnings in HTML report
+* added option to select a custom separator in xPONENT format
+* bug fixes
+
+
 Version 1.0.0
 ---------------------------------------------------------------
 * package name changed from PvSTATEM to SerolyzeR

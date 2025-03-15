@@ -21,6 +21,7 @@ get_test_plate <- function() {
     analyte_names = c("Spike_6P_IPP"),
     dilutions = dilutions,
     dilution_values = dilution_values,
+    default_data_type = "Median",
     data = list(Median = data.frame(Spike_6P_IPP = values), Count = data.frame(Spike_6P_IPP = values)),
     plate_datetime = plate_datetime
   )

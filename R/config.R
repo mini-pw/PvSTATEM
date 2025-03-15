@@ -13,7 +13,7 @@ SerolyzeR.env$mba_pattern <- paste(
 )
 
 # Normalisation types
-SerolyzeR.env$normalisation_types <- c("RAU", "nMFI")
+SerolyzeR.env$normalisation_types <- c("MFI", "RAU", "nMFI")
 
 # String patterns for declared normalisation types
 SerolyzeR.env$normalisation_pattern <- paste0(

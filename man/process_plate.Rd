@@ -11,8 +11,7 @@ process_plate(
   write_output = TRUE,
   normalisation_type = "RAU",
   data_type = "Median",
-  include_raw_mfi = TRUE,
-  adjust_blanks = FALSE,
+  blank_adjustment = FALSE,
   verbose = TRUE,
   reference_dilution = 1/400,
   ...
@@ -40,15 +39,11 @@ If it equals to \code{NULL} the current working directory will be used. Default 
 specified by \code{filename} parameter. The default is \code{TRUE}.}
 
 \item{normalisation_type}{(\code{character(1)}) type of normalisation to use. Available options are:
-\cr \code{c(RAU, nMFI)}.}
+\cr \code{c(MFI, RAU, nMFI)}.}
 
 \item{data_type}{(\code{character(1)}) type of data to use for the computation. Median is the default}
 
-\item{include_raw_mfi}{(\code{logical(1)}) include raw MFI values in the output. The default is \code{TRUE}.
-In case this option is \code{TRUE}, the output dataframe contains two columns for each analyte: one for the normalised values and one for the raw MFI values.
-The normalised columns are named as \code{AnalyteName} and \code{AnalyteName_raw}, respectively.}
-
-\item{adjust_blanks}{(\code{logical(1)}) adjust blanks before computing RAU values. The default is \code{FALSE}}
+\item{blank_adjustment}{(\code{logical(1)}) perform blank adjustment on the plate before computing normalised values. The default is \code{FALSE}}
 
 \item{verbose}{(\code{logical(1)}) print additional information. The default is \code{TRUE}}
 
@@ -65,11 +60,12 @@ a data frame with normalised values
 }
 \description{
 Depending on the \code{normalisation_type} argument, the function will compute the RAU or nMFI values for each analyte in the plate.
+Additionally the \code{normalisation_type} can be set to \code{MFI} resulting in a dataframe of the raw (blank adjusted) MFI values.
 \strong{RAU} is the default normalisation type.
 
 The behaviour of the function, in the case of RAU normalisation type, can be summarised as follows:
 \enumerate{
-\item Adjust blanks if not already done.
+\item Blank adjust the plate if \code{blank_adjustment} is set to \code{TRUE}.
 \item Fit a model to each analyte using standard curve samples.
 \item Compute RAU values for each analyte using the corresponding model.
 \item Aggregate computed RAU values into a single data frame.
@@ -79,15 +75,24 @@ The behaviour of the function, in the case of RAU normalisation type, can be sum
 More info about the RAU normalisation can be found in
 \code{create_standard_curve_model_analyte} function documentation \link[SerolyzeR]{create_standard_curve_model_analyte} or in the Model reference \link[SerolyzeR]{Model}.
 
-In case the normalisation type is \strong{nMFI}, the function will:
+In case the normalisation type being \strong{nMFI}, the function will:
 \enumerate{
-\item Adjust blanks if not already done.
+\item Blank adjust the plate if \code{blank_adjustment} is set to \code{TRUE}.
 \item Compute nMFI values for each analyte using the target dilution.
 \item Aggregate computed nMFI values into a single data frame.
 \item Save the computed nMFI values to a CSV file.
 }
 
 More info about the nMFI normalisation can be found in \code{get_nmfi} function documentation \link[SerolyzeR]{get_nmfi}.
+
+In case of normalisation type "MFI", the function will:
+\enumerate{
+\item Blank adjust the plate if \code{blank_adjustment} is set to \code{TRUE}.
+\item Save the blank adjusted MFI values to a CSV file.
+}
+
+If the plate is already blank adjusted when calling the method,
+the parameter \code{blank_adjustment} has no effect.
 }
 \examples{
 
@@ -101,10 +106,10 @@ example_dir <- tempdir(check = TRUE) # a temporary directory
 # create and save dataframe with computed dilutions
 process_plate(plate, output_dir = example_dir)
 
-# process plate without adjusting blanks and save the output to a file with a custom name
+# process plate without blank adjustment and save the output to a file with a custom name
 process_plate(plate,
-  filename = "plate_without_blanks_adjusted.csv",
-  output_dir = example_dir, adjust_blanks = FALSE
+  filename = "plate_no_blank_adjustment.csv",
+  output_dir = example_dir, blank_adjustment = FALSE
 )
 
 

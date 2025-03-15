@@ -16,7 +16,8 @@
 #' @param generate_report (`logical(1)`) If `TRUE`, generate a quality control report. The default is `FALSE`.
 #' @param process_plate (`logical(1)`) If `TRUE`, process the plate. The default is `TRUE`.
 #' If the value is set to `FALSE` the function will only read the plate file and return the plate object.
-#' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("RAU", "nMFI")`.
+#' @param normalisation_types (`character()`) A vector of normalisation types to use. The default is `c("MFI", "RAU", "nMFI")`.
+#' @param blank_adjustment (`logical(1)`) If `TRUE`, adjust the blank values. The default is `FALSE`.#'
 #' @param verbose (`logical(1)`) Print additional information. The default is `TRUE`.
 #' @param ... Additional arguments to for the `read_luminex_data` function.
 #'
@@ -28,6 +29,7 @@
 #'
 #' example_dir <- tempdir(check = TRUE) # a temporary directory
 #' # create and save dataframe with computed dilutions for all suported noramlization types
+#' # that inclused the raw MFI values as well
 #' process_file(plate_file, layout_file, output_dir = example_dir)
 #'
 #' example_dir2 <- tempdir(check = TRUE) # a temporary directory
@@ -43,13 +45,15 @@ process_file <- function(
     format = "xPONENT",
     generate_report = FALSE,
     process_plate = TRUE,
-    normalisation_types = c("RAU", "nMFI"),
+    normalisation_types = c("MFI", "RAU", "nMFI"),
+    blank_adjustment = FALSE,
     verbose = TRUE,
     ...) {
   if (is.null(plate_filepath)) {
     stop("Plate filepath is required.")
   }
   stopifnot(fs::file_exists(plate_filepath))
+  plate_filepath <- fs::path_abs(plate_filepath)
 
   plate <- read_luminex_data(plate_filepath, layout_filepath, format = format)
 
@@ -60,7 +64,7 @@ process_file <- function(
       process_plate(
         plate,
         normalisation_type = normalisation_type, output_dir = output_dir,
-        include_raw_mfi = TRUE, adjust_blanks = TRUE, verbose = verbose
+        blank_adjustment = blank_adjustment, verbose = verbose
       )
     }
   }

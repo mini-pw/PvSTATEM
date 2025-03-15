@@ -20,6 +20,11 @@ test_that("Test processing of a plate", {
     process_plate(plate, output_dir = tmp_dir, filename = "output.csv")
   )
 
+  # Test outputing MFI vaules to CSV file through the process_plate function
+  expect_no_error(
+    process_plate(plate, output_dir = tmp_dir, filename = "output.csv", normalisation_type = "MFI")
+  )
+
 
   # Test additional parameters
   expect_error(
@@ -69,7 +74,7 @@ test_that("Processing plate with nMFI", {
 })
 
 
-test_that("raw MFI in dataframe", {
+test_that("Test rows and columns in the output dataframes", {
   # Read plate
   path <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR", mustWork = TRUE)
   layout_path <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzeR", mustWork = TRUE)
@@ -79,17 +84,11 @@ test_that("raw MFI in dataframe", {
   tmp_dir <- tempdir(check = TRUE)
   test_output_path <- file.path(tmp_dir, "output.csv")
   expect_no_error(
-    output_df <- process_plate(plate, output_dir = tmp_dir, filename = "output.csv", normalisation_type = "nMFI", include_raw_mfi = FALSE)
+    output_df <- process_plate(plate, output_dir = tmp_dir, filename = "output.csv", normalisation_type = "nMFI")
   )
   stopifnot(all(colnames(output_df) == plate$analyte_names))
+  stopifnot(all(rownames(output_df) == plate$sample_names[plate$sample_types == "TEST"]))
 
   file.remove(test_output_path)
-
-  # Test processing of a plate, with raw MFI
-  expect_no_error(
-    output_df <- process_plate(plate, output_dir = tmp_dir, filename = "output.csv", normalisation_type = "nMFI", include_raw_mfi = TRUE)
-  )
-  stopifnot(all(colnames(output_df) == c(plate$analyte_names, paste0(plate$analyte_names, "_raw"))))
-
   unlink(tmp_dir, recursive = TRUE)
 })

@@ -35,7 +35,8 @@ then SampleType equals to \code{BLANK}
 
 If \code{sample_names} or \code{sample_names_from_layout} equals to \verb{STANDARD CURVE},
 \code{SC}, \code{S}, contains substring \verb{1/\\d+} and has prefix \verb{ }, \code{S_}, \code{S },
-\code{S} or \code{CP3}, then SampleType equals to \verb{STANDARD CURVE}
+\code{S} or \code{CP3}, then SampleType equals to \verb{STANDARD CURVE}. For instance, sample with a name
+\code{S_1/2} or \verb{S 1/2} will be classified as \verb{STANDARD CURVE}.
 
 If \code{sample_names} or \code{sample_names_from_layout} equals to \verb{NEGATIVE CONTROL}, \code{N},
 or contains substring \code{NEG}, then SampleType equals to \verb{NEGATIVE CONTROL}

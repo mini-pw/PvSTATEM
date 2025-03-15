@@ -62,8 +62,8 @@ parse_xponent_locations <- function(xponent_locations) {
 handle_datetime <- function(datetime_str, file_format = "xPONENT") {
   if (file_format == "xPONENT") {
     possible_orders <- c(
-      "mdY IM p", "mdY HM", "mdY IMS p", "mdY HMS",
-      "Ymd IM p", "Ymd HM", "Ymd IMS p", "Ymd HMS",
+      "Ymd HM", "mdY IM p", "mdY HM", "mdY IMS p",
+      "mdY HMS", "Ymd IM p", "Ymd IMS p", "Ymd HMS",
       "dmY IM p", "dmY HM", "dmY IMS p", "dmY HMS"
     )
   } else if (file_format == "INTELLIFLEX") {
@@ -203,6 +203,8 @@ read_luminex_data <- function(plate_filepath,
     stop("Invalid format: ", format, ". Select from: ", paste(valid_formats, collapse = ", "))
   }
 
+
+
   verbose_cat("Reading Luminex data from: ", plate_filepath, "\nusing format ", format, "\n", verbose = verbose)
 
   parser_output <- switch(format,
@@ -258,8 +260,7 @@ read_luminex_data <- function(plate_filepath,
 
   plate_builder$set_dilutions(use_layout_dilutions, dilutions)
 
-
-  plate <- plate_builder$build(validate = TRUE)
+  plate <- plate_builder$build(validate = TRUE, reorder = TRUE)
 
   verbose_cat(color_codes$green_start, "\nNew plate object has been created with name: ",
     plate$plate_name, "!\n", color_codes$green_end, "\n",

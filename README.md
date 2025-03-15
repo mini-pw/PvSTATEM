@@ -18,10 +18,13 @@ The package includes three main steps for preprocessing the data:
 
 
 The graphical overview of the package can be seen in the image below:
-![overview](https://github.com/mini-pw/SerolyzeR/blob/main/inst/img/overview.png)
+
+<img src="https://github.com/mini-pw/SerolyzeR/blob/main/inst/img/overview.png?raw=true" alt="overview" />
 
 `SerolyzeR` package is developed within the project [PvSTATEM](https://www.pvstatem.eu/), an international project aiming at malaria elimination and is financially supported by the HORIZON grant HORIZON-WIDERA-2022-ACCESS-07-01.
 
+
+Previously, this package was named `PvSTATEM`, but it has been rebranded to `SerolyzeR` to better reflect its purpose and scope.
 
 ## Installation
 

@@ -38,7 +38,6 @@
 Model <- R6::R6Class(
   "Model",
   public = list(
-
     #' @field analyte (`character(1)`)\cr
     #' Name of the analyte for which the model was fitted
     analyte = NULL,
@@ -100,11 +99,80 @@ Model <- R6::R6Class(
     #'   Enables to set the maximum MFI value used for scaling MFI values to the range \[0, 1\].
     #'   Use values before any transformations (e.g., before the `log10` transformation)
     #'
-    initialize = function(analyte, dilutions, mfi, npars = 5, verbose = TRUE, log_dilution = TRUE, log_mfi = TRUE, scale_mfi = TRUE, mfi_min = NULL, mfi_max = NULL) {
-      stopifnot(is.character(analyte) && !is.null(analyte) && nchar(analyte) > 0)
-      stopifnot(length(dilutions) == length(mfi))
-      stopifnot(all((dilutions > 0) & (dilutions < 1)))
-      stopifnot(all(mfi > 0) & mfi_min >= 0)
+    initialize = function(analyte,
+                          dilutions,
+                          mfi,
+                          npars = 5,
+                          verbose = TRUE,
+                          log_dilution = TRUE,
+                          log_mfi = TRUE,
+                          scale_mfi = TRUE,
+                          mfi_min = NULL,
+                          mfi_max = NULL) {
+      stopifnot(is.character(analyte) &&
+        !is.null(analyte) && nchar(analyte) > 0)
+
+      if (length(dilutions) != length(mfi)) {
+        stop(
+          paste0(
+            "Length of dilution values and standard curve MFIs differ for the analyte '",
+            analyte,
+            "'. Verify your data and ensure that all the standard curve samples are read properly."
+          )
+        )
+      }
+      if (!all((dilutions > 0) & (dilutions < 1))) {
+        print(dilutions)
+        stop(
+          paste0(
+            "Not all of the dilution values for the analyte '",
+            analyte,
+            "' are in the interval (0,1)."
+          )
+        )
+      }
+      if (any(mfi < 0)) {
+        stop(
+          paste0(
+            "Not all of the standard curve MFI values are positive for the analyte '",
+            analyte,
+            "'. Ensure that there are no issues with the data"
+          )
+        )
+      }
+
+      if (any(is.na(mfi))) {
+        stop(
+          paste0(
+            "Some of the standard curve MFI values are NA for the analyte '",
+            analyte,
+            "'."
+          )
+        )
+      }
+
+      if (!is.null(mfi_min) && mfi_min < 0) {
+        stop(
+          paste0(
+            "The minimum MFI value used for scaling MFI values to the range [0, 1] for the analyte '",
+            analyte,
+            "' is negative."
+          )
+        )
+      }
+
+      stopifnot(is.logical(log_dilution) &&
+        is.logical(log_mfi) && is.logical(scale_mfi))
+      if (length(unique(mfi)) == 1) {
+        stop(
+          paste0(
+            "All the standard curve MFI values for '",
+            analyte,
+            "' are equal to ", mfi[1],
+            ". Ensure that there are no issues with the data."
+          )
+        )
+      }
 
       self$analyte <- analyte
       self$dilutions <- dilutions
@@ -123,7 +191,11 @@ Model <- R6::R6Class(
       number_of_samples <- length(dilutions)
       if (number_of_samples < 5) {
         verbose_cat(
-          "(", color_codes$red_start, "WARNING", color_codes$red_end, ")\n",
+          "(",
+          color_codes$red_start,
+          "WARNING",
+          color_codes$red_end,
+          ")\n",
           "Using less than five samples to fit the logistic model. For now, using the basic nplr method to fit the logistic model - should be modified in the future",
           verbose = verbose
         )
@@ -160,13 +232,17 @@ Model <- R6::R6Class(
     #' - `RAU` - the Relative Antibody Units (RAU) value
     #' - `MFI` - the predicted MFI value
     #'
-    predict = function(mfi, over_max_extrapolation = 0, eps = 1e-6) {
+    predict = function(mfi,
+                       over_max_extrapolation = 0,
+                       eps = 1e-6) {
       private$assert_model_fitted()
       original_mfi <- mfi
       # Extrapolation maximum
-      max_sc_rau <- max(dilution_to_rau(self$dilutions), na.rm = TRUE)
+      max_sc_rau <-
+        max(dilution_to_rau(self$dilutions), na.rm = TRUE)
       rau_threshold <- max_sc_rau + over_max_extrapolation
-      top_asymptote_transformed <- private$mfi_transform(self$top_asymptote - eps)
+      top_asymptote_transformed <-
+        private$mfi_transform(self$top_asymptote - eps)
       rau_at_top_asymptote <- nplr::getEstimates(self$model,
         targets = top_asymptote_transformed
       )[1, "x"]
@@ -196,7 +272,8 @@ Model <- R6::R6Class(
       # Convert to RAU
       df[, "x"] <- dilution_to_rau(df[, "x"])
       # Censor values or extrapolate
-      df[, "x"] <- ifelse(df[, "x"] > rau_threshold, rau_threshold, df[, "x"])
+      df[, "x"] <-
+        ifelse(df[, "x"] > rau_threshold, rau_threshold, df[, "x"])
       # Rename columns before returning
       colnames(df) <- sub("x", "RAU", colnames(df))
       colnames(df) <- sub("y", "MFI", colnames(df))
@@ -213,10 +290,13 @@ Model <- R6::R6Class(
       private$assert_model_fitted()
       upper_bound <- nplr::getPar(self$model)$params$top
       upper_bound <- (upper_bound + 1) / 2
-      lower_bound <- private$mfi_transform(10) # Scaled MFI for MFI = 10
+      lower_bound <-
+        private$mfi_transform(10) # Scaled MFI for MFI = 10
 
-      uniform_targets <- seq(lower_bound, upper_bound, length.out = 100)
-      df <- nplr::getEstimates(self$model, targets = uniform_targets, B = 0)
+      uniform_targets <-
+        seq(lower_bound, upper_bound, length.out = 100)
+      df <-
+        nplr::getEstimates(self$model, targets = uniform_targets, B = 0)
       df[, "y"] <- private$mfi_reverse_transform(df[, "y"])
       cols <- grepl("^x", colnames(df))
       df[, cols] <- dilution_to_rau(df[, cols])
@@ -231,15 +311,33 @@ Model <- R6::R6Class(
     #' such as the number of parameters or samples used
     print = function() {
       cat(
-        "Instance of the Model class fitted for analyte '", self$analyte, "': \n",
-        "- fitted with", nplr::getPar(self$model)$npar, "parameters\n",
-        "- using", length(nplr::getX(self$model)), "samples\n",
-        "- using log residuals (mfi): ", self$log_mfi, "\n",
-        "- using log dilution: ", self$log_dilution, "\n",
-        "- top asymptote:", self$top_asymptote, "\n",
-        "- bottom asymptote:", self$bottom_asymptote, "\n",
-        "- goodness of fit:", nplr::getGoodness(self$model)$gof, "\n",
-        "- weighted goodness of fit:", nplr::getGoodness(self$model)$wgof, "\n"
+        "Instance of the Model class fitted for analyte '",
+        self$analyte,
+        "': \n",
+        "- fitted with",
+        nplr::getPar(self$model)$npar,
+        "parameters\n",
+        "- using",
+        length(nplr::getX(self$model)),
+        "samples\n",
+        "- using log residuals (mfi): ",
+        self$log_mfi,
+        "\n",
+        "- using log dilution: ",
+        self$log_dilution,
+        "\n",
+        "- top asymptote:",
+        self$top_asymptote,
+        "\n",
+        "- bottom asymptote:",
+        self$bottom_asymptote,
+        "\n",
+        "- goodness of fit:",
+        nplr::getGoodness(self$model)$gof,
+        "\n",
+        "- weighted goodness of fit:",
+        nplr::getGoodness(self$model)$wgof,
+        "\n"
       )
     }
   ),
@@ -344,12 +442,14 @@ predict.Model <- function(object, mfi, ...) {
 #' @return (`Model()`) Standard Curve model
 #'
 #' @export
-create_standard_curve_model_analyte <- function(plate, analyte_name,
+create_standard_curve_model_analyte <- function(plate,
+                                                analyte_name,
                                                 data_type = "Median",
                                                 source_mfi_range_from_all_analytes = FALSE,
                                                 detect_high_dose_hook = TRUE,
                                                 ...) {
-  mfi <- plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type)
+  mfi <-
+    plate$get_data(analyte_name, "STANDARD CURVE", data_type = data_type)
   dilutions_numeric <- plate$get_dilution_values("STANDARD CURVE")
 
   if (detect_high_dose_hook) {
@@ -358,11 +458,24 @@ create_standard_curve_model_analyte <- function(plate, analyte_name,
     dilutions_numeric <- dilutions_numeric[sample_selector]
   }
 
-  mfi_source <- ifelse(source_mfi_range_from_all_analytes, "ALL", analyte_name)
-  mfi_min <- min(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
-  mfi_max <- max(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type), na.rm = TRUE)
+  mfi_source <-
+    ifelse(source_mfi_range_from_all_analytes, "ALL", analyte_name)
+  mfi_min <-
+    min(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type),
+      na.rm = TRUE
+    )
+  mfi_max <-
+    max(plate$get_data(mfi_source, "STANDARD CURVE", data_type = data_type),
+      na.rm = TRUE
+    )
 
-  Model$new(analyte_name, dilutions_numeric, mfi, mfi_min = mfi_min, mfi_max = mfi_max, ...)
+  Model$new(analyte_name,
+    dilutions_numeric,
+    mfi,
+    mfi_min = mfi_min,
+    mfi_max = mfi_max,
+    ...
+  )
 }
 
 
@@ -409,28 +522,30 @@ create_standard_curve_model_analyte <- function(plate, analyte_name,
 #' model <- create_standard_curve_model_analyte(plate, "RBD_omicron")
 #'
 #' @return sample selector (`logical()`)
-handle_high_dose_hook <- function(mfi, dilutions, high_dose_threshold = 1 / 200) {
-  total_samples <- length(mfi)
-  correct_order <- order(dilutions, decreasing = TRUE)
-  high_dose_hook_samples <- dilutions[correct_order] >= high_dose_threshold
-  mfi <- mfi[correct_order]
-  if (!is.decreasing(mfi[high_dose_hook_samples])) {
-    # High dose hook detected
-    if ((total_samples - length(mfi[high_dose_hook_samples])) < 4) {
-      warning(
-        "High dose hook detected but the number of samples
+handle_high_dose_hook <-
+  function(mfi, dilutions, high_dose_threshold = 1 / 200) {
+    total_samples <- length(mfi)
+    correct_order <- order(dilutions, decreasing = TRUE)
+    high_dose_hook_samples <-
+      dilutions[correct_order] >= high_dose_threshold
+    mfi <- mfi[correct_order]
+    if (!is.decreasing(mfi[high_dose_hook_samples])) {
+      # High dose hook detected
+      if ((total_samples - length(mfi[high_dose_hook_samples])) < 4) {
+        warning(
+          "High dose hook detected but the number of samples
         below the high dose threshold is lower than 4.
         The samples will not be removed from the analysis."
-      )
-      return(rep(TRUE, total_samples))
-    } else {
-      warning(
-        "High dose hook detected.
+        )
+        return(rep(TRUE, total_samples))
+      } else {
+        warning(
+          "High dose hook detected.
         Removing samples with dilutions above the high dose threshold."
-      )
-      return((!high_dose_hook_samples)[order(correct_order)]) # Return the initial order
+        )
+        return((!high_dose_hook_samples)[order(correct_order)]) # Return the initial order
+      }
+    } else {
+      return(rep(TRUE, total_samples))
     }
-  } else {
-    return(rep(TRUE, total_samples))
   }
-}

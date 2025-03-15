@@ -50,6 +50,9 @@ plot_standard_curve_analyte <- function(plate,
   if (!(analyte_name %in% plate$analyte_names)) {
     stop(analyte_name, " not found in the plate object")
   }
+  # preserve the old options
+  old <- options()
+  on.exit(options(old))
 
   plot_name <- paste0("Sample values of standard curve for analyte: ", analyte_name)
   plot_data <- data.frame(
@@ -382,6 +385,14 @@ plot_standard_curve_stacked <- function(list_of_plates,
   if (!is.null(legend_type) && !legend_type %in% c("date", "plate_name")) {
     stop("legend_type should be either 'date' or 'plate_name' or NULL")
   }
+
+  # preserve the old options
+  old <- options()
+  on.exit(options(old))
+
+  # preserve the old options
+  old <- options()
+  on.exit(options(old))
 
   plot_name <- paste0("Standard curves of: ", analyte_name)
 
