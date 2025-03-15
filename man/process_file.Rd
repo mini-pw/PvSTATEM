@@ -2,63 +2,87 @@
 % Please edit documentation in R/process-file.R
 \name{process_file}
 \alias{process_file}
-\title{Process a file to generate normalised data and reports}
+\title{Process a File to Generate Normalised Data and Reports}
 \usage{
 process_file(
   plate_filepath,
   layout_filepath,
-  output_dir = "normalised_data",
+  output_dir = "output_data",
   format = "xPONENT",
-  generate_report = FALSE,
   process_plate = TRUE,
-  normalisation_types = c("MFI", "RAU", "nMFI"),
+  output_types = c("MFI", "RAU", "nMFI"),
   blank_adjustment = FALSE,
   verbose = TRUE,
   ...
 )
 }
 \arguments{
-\item{plate_filepath}{(\code{character(1)}) The path to the plate file.}
+\item{plate_filepath}{(\code{character(1)}) Path to the Luminex plate file.}
 
-\item{layout_filepath}{(\code{character(1)}) The path to the layout file.}
+\item{layout_filepath}{(\code{character(1)}) Path to the corresponding layout file.}
 
-\item{output_dir}{(\code{character(1)}) The directory where the output files should be saved. The default is \code{"normalised_data"}.}
+\item{output_dir}{(\code{character(1)}, default = \code{'output_data'})
+\itemize{
+\item Directory where the output files will be saved.
+\item If it does not exist, it will be created.
+}}
 
-\item{format}{(\code{character(1)}) The format of the Luminex data. The default is \code{"xPONENT"}. Available options are \code{"xPONENT"} and \code{"INTELLIFLEX"}.}
+\item{format}{(\code{character(1)}, default = \code{'xPONENT'})
+\itemize{
+\item Format of the Luminex data.
+\item Available options: \code{'xPONENT'}, \code{'INTELLIFLEX'}.
+}}
 
-\item{generate_report}{(\code{logical(1)}) If \code{TRUE}, generate a quality control report. The default is \code{FALSE}.}
+\item{process_plate}{(\code{logical(1)}, default = \code{TRUE})
+\itemize{
+\item If \code{TRUE}, processes the plate data using \code{\link[=process_plate]{process_plate()}}.
+\item If \code{FALSE}, only reads the plate file and returns the plate object without processing.
+}}
 
-\item{process_plate}{(\code{logical(1)}) If \code{TRUE}, process the plate. The default is \code{TRUE}.
-If the value is set to \code{FALSE} the function will only read the plate file and return the plate object.}
+\item{output_types}{(\code{character()}, default = \code{c("MFI", "RAU", "nMFI")})
+\itemize{
+\item List of output types to generate
+\item Supported values: \code{c("MFI", "RAU", "nMFI", "report")}.
+}}
 
-\item{normalisation_types}{(\code{character()}) A vector of normalisation types to use. The default is \code{c("MFI", "RAU", "nMFI")}.}
+\item{blank_adjustment}{(\code{logical(1)}, default = \code{FALSE})
+\itemize{
+\item If \code{TRUE}, performs blank adjustment before processing.
+}}
 
-\item{blank_adjustment}{(\code{logical(1)}) If \code{TRUE}, adjust the blank values. The default is \code{FALSE}.#'}
+\item{verbose}{(\code{logical(1)}, default = \code{TRUE})
+\itemize{
+\item If \code{TRUE}, prints additional information during execution.
+}}
 
-\item{verbose}{(\code{logical(1)}) Print additional information. The default is \code{TRUE}.}
-
-\item{...}{Additional arguments to for the \code{read_luminex_data} function.}
+\item{...}{Additional arguments passed to \code{\link[=read_luminex_data]{read_luminex_data()}} and \code{\link[=generate_plate_report]{generate_plate_report()}}.}
+}
+\value{
+A \code{\link{Plate}} object containing the processed data.
 }
 \description{
-Perform \code{process_plate} and \code{generate_plate_report} for a given plate file.
-In more detail, this function reads the plate file and calls the \code{process_plate}
-on the processed plate objects across all the normalisation types, including the raw MFI values.
-If the user has specified the \code{generate_report} flag, it will also call the \code{generate_plate_report} function
-generating the quality control report.
+This function reads a Luminex plate file by calling \code{\link[=read_luminex_data]{read_luminex_data()}} and then processes it by calling \code{\link[=process_plate]{process_plate()}}. It optionally generates also a quality control report using \code{\link[=generate_plate_report]{generate_plate_report()}}.
+It reads the specified plate file, processes the plate object using all specified output types (including raw MFI values and quality control report), and saves the results.
+\subsection{Workflow}{
+\enumerate{
+\item Read the plate file and layout file.
+\item Process the plate data to generate a specific output types (\code{nMFI}, \code{RAU}), a simple output (\code{MFI}), or a report (\code{report}).
+\item Save the processed data to CSV files in the specified \code{output_dir}. The files are named as \verb{\{plate_name\}_\{output_type\}.csv}.
+\item Optionally, generate a quality control report. The report is saved as an HTML file in the \code{output_dir}, under the name \verb{\{plate_name\}_report.html}.
+}
+}
 }
 \examples{
-
-# Select an input csv file for processing and corresponding layout file
+# Example 1: Process a plate file with default settings (all normalisation types)
 plate_file <- system.file("extdata", "CovidOISExPONTENT_CO_reduced.csv", package = "SerolyzeR")
 layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
-
-example_dir <- tempdir(check = TRUE) # a temporary directory
-# create and save dataframe with computed dilutions for all suported noramlization types
-# that inclused the raw MFI values as well
+example_dir <- tempdir(check = TRUE)
 process_file(plate_file, layout_file, output_dir = example_dir)
 
-example_dir2 <- tempdir(check = TRUE) # a temporary directory
-# process the plate for a specific normalization type
-process_file(plate_file, layout_file, output_dir = example_dir2, normalisation_types = c("RAU"))
+# Example 2: Process the plate for only RAU normalisation
+process_file(plate_file, layout_file, output_dir = example_dir, output_types = c("RAU"))
+
+# Example 3: Process the plate and generate a quality control report
+process_file(plate_file, layout_file, output_dir = example_dir, output_types = c("report"))
 
 }

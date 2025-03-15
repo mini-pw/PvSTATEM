@@ -20,55 +20,110 @@ read_luminex_data(
 )
 }
 \arguments{
-\item{plate_filepath}{Path to the Luminex plate file}
+\item{plate_filepath}{(\code{character(1)}) Path to the Luminex plate file.}
 
-\item{layout_filepath}{Path to the Luminex layout file}
+\item{layout_filepath}{(\code{character(1)}, optional) Path to the Luminex layout file.}
 
-\item{format}{The format of the Luminex data. Select from: xPONENT, INTELLIFLEX}
+\item{format}{(\code{character(1)}, default = \code{'xPONENT'})
+\itemize{
+\item The format of the Luminex data file.
+\item Supported formats: \code{'xPONENT'}, \code{'INTELLIFLEX'}.
+}}
 
-\item{plate_file_separator}{The separator used in the plate file}
+\item{plate_file_separator}{(\code{character(1)}, default = \code{','})
+\itemize{
+\item The delimiter used in the plate file (CSV format). Used only for the xPONENT format.
+}}
 
-\item{plate_file_encoding}{The encoding used in the plate file}
+\item{plate_file_encoding}{(\code{character(1)}, default = \code{'UTF-8'})
+\itemize{
+\item The encoding used for reading the plate file. Used only for the xPONENT format.
+}}
 
-\item{use_layout_sample_names}{Whether to use names from the layout file in extracting sample names.}
+\item{use_layout_sample_names}{(\code{logical(1)}, default = \code{TRUE})
+\itemize{
+\item Whether to use sample names from the layout file.
+}}
 
-\item{use_layout_types}{Whether to use names from the layout file in extracting sample types.
-Works only when layout file is provided}
+\item{use_layout_types}{(\code{logical(1)}, default = \code{TRUE})
+\itemize{
+\item Whether to use sample types from the layout file (requires a layout file).
+}}
 
-\item{use_layout_dilutions}{Whether to use dilutions from the layout file in extracting dilutions.
-Works only when layout file is provided}
+\item{use_layout_dilutions}{(\code{logical(1)}, default = \code{TRUE})
+\itemize{
+\item Whether to use dilution values from the layout file (requires a layout file).
+}}
 
-\item{default_data_type}{The default data type to use if none is specified}
+\item{default_data_type}{(\code{character(1)}, default = \code{'Median'})
+\itemize{
+\item The default data type used if none is explicitly provided.
+}}
 
-\item{sample_types}{a vector of sample types to use instead of the extracted ones}
+\item{sample_types}{(\code{character()}, optional) A vector of sample types to override extracted values.}
 
-\item{dilutions}{a vector of dilutions to use instead of the extracted ones}
+\item{dilutions}{(\code{numeric()}, optional) A vector of dilutions to override extracted values.}
 
-\item{verbose}{Whether to print additional information and warnings. \code{TRUE} by default}
+\item{verbose}{(\code{logical(1)}, default = \code{TRUE})
+\itemize{
+\item Whether to print additional information and warnings.
+}}
 }
 \value{
-Plate file containing the Luminex data
+A \code{\link{Plate}} object containing the parsed Luminex data.
 }
 \description{
-Reads a file containing Luminex data and returns a Plate object.
-If provided, can also read a layout file, which usually contains
-information about the sample names, sample types or its dilutions.
+Reads a Luminex plate file and returns a \code{\link{Plate}} object containing the extracted data.
+Optionally, a layout file can be provided to specify the arrangement of samples on the plate.
 
-The function is capable of reading data in two different formats:
+The function supports two Luminex data formats:
 \itemize{
-\item xPONENT
-\item INTELLIFLEX
-which are produced by two different Luminex machines.
+\item \strong{xPONENT}: Used by older Luminex machines.
+\item \strong{INTELLIFLEX}: Used by newer Luminex devices.
+}
+\subsection{Workflow}{
+\enumerate{
+\item Validate input parameters, ensuring the specified format is supported.
+\item Read the plate file using the appropriate parser:
+\itemize{
+\item xPONENT files are read using \code{\link[=read_xponent_format]{read_xponent_format()}}.
+\item INTELLIFLEX files are read using \code{\link[=read_intelliflex_format]{read_intelliflex_format()}}.
+}
+\item Post-process the extracted data:
+\itemize{
+\item Validate required data columns (\code{Median}, \code{Count}).
+\item Extract sample locations and analyte names.
+\item Parse the date and time of the experiment.
+}
+}
+}
+
+\subsection{File Structure}{
+\itemize{
+\item \strong{Plate File (\code{plate_filepath})}: A CSV file containing Luminex fluorescence intensity data.
+\item \strong{Layout File (\code{layout_filepath})} (optional): An Excel or CSV file containing the plate layout.
+\itemize{
+\item The layout file should contain a table with \strong{8 rows and 12 columns}, where each cell corresponds to a well location.
+\item The values in the table represent the sample names for each well.
+}
+}
+}
+
+\subsection{Sample types detection}{
+
+The \code{\link{read_luminex_data}} method automatically detects the sample types based on the sample names, unless provided the \code{sample_types} parameter.
+The sample types are detected used the \code{\link{translate_sample_names_to_sample_types}} method.
+In the documentation of this method, which can be accessed with command \code{?translate_sample_names_to_sample_types}, you can find the detailed description of the sample types detection.
 }
 }
 \examples{
+# Read a Luminex plate file with an associated layout file
 plate_file <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR")
 layout_file <- system.file("extdata", "CovidOISExPONTENT_layout.csv", package = "SerolyzeR")
 plate <- read_luminex_data(plate_file, layout_file)
 
+# Read a Luminex plate file without a layout file
 plate_file <- system.file("extdata", "CovidOISExPONTENT_CO.csv", package = "SerolyzeR")
-layout_file <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR")
-# To suppress warnings and additional information use verbose = FALSE
-plate <- read_luminex_data(plate_file, layout_file, verbose = FALSE)
+plate <- read_luminex_data(plate_file, verbose = FALSE)
 
 }

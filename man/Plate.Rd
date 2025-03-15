@@ -2,11 +2,15 @@
 % Please edit documentation in R/classes-plate.R
 \name{Plate}
 \alias{Plate}
-\title{Plate object}
+\title{Plate Object}
 \description{
-A class to represent the luminex plate. It contains information about
-the samples and analytes that were examined on the plate as well as
-some additional metadata and batch info
+The \code{Plate} object represents a Luminex assay plate and stores data related to
+its samples, analytes, metadata, and batch information. This object is typically
+created by functions such as \code{\link[=read_luminex_data]{read_luminex_data()}}, \code{\link[=process_file]{process_file()}}, or \code{\link[=process_dir]{process_dir()}}.
+
+It provides methods for accessing and manipulating data, including retrieving
+specific analyte measurements, filtering by sample type, and performing
+blank adjustments.
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -34,7 +38,10 @@ as the \code{sample_names} vector.}
 \item{\code{sample_types}}{(\code{character()})\cr
 Types of the samples that were examined on the plate.
 The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.
-This vector is in the same order as the \code{sample_names} vector.}
+This vector is in the same order as the \code{sample_names} vector.
+If the \code{\link{Plate}} object is read using \code{\link{read_luminex_data}}, then the sample types
+are usually detected based on the sample names according to the rules
+described in \code{\link{translate_sample_names_to_sample_types}}.}
 
 \item{\code{dilutions}}{(\code{character()})\cr
 A list containing names of the samples as keys and string representing dilutions as values.
