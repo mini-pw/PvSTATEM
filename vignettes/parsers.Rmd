@@ -1,0 +1,79 @@
+---
+title: "Raw data parsers"
+author: "Jakub Grzywaczewski"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Raw data parsers}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+# Introduction
+
+Our package primarily aims to read, perform quality control, and normalise raw MBA data. 
+The entire package is made to be as user-friendly as possible, so in most of your code, you will read the data from 
+xPONENT or INTELLIFLEX file using the `read_luminex_data` function and interacting with the created `Plate` object.
+
+Under the hood, the `read_luminex_data` function uses a specific function to read data from a given format 
+and later standardises this output to finally create a `Plate` object.
+
+This article will go deeper into the details of our data parsers, illustrate how the reading system works and show you how to use them even outside the SerolyzeR package.
+
+# Basic data loading
+
+The simplest way of loading a file is to use the `read_luminex_data` function with default values.
+
+```{r}
+library(SerolyzeR)
+
+plate_filepath <- system.file("extdata", "CovidOISExPONTENT.csv", package = "SerolyzeR", mustWork = TRUE)
+layout_filepath <- system.file("extdata", "CovidOISExPONTENT_layout.xlsx", package = "SerolyzeR", mustWork = TRUE)
+plate <- read_luminex_data(plate_filepath, layout_filepath)
+summary(plate)
+# display a sample of the dataframe
+data.frame(plate)[c(1, 2), c(1, 2)]
+```
+
+The function has many parameters that can be used to customise the reading process.
+
+For example, we can change the data type we want to find in the file. By default, the datatype we are looking for is the Median MFI value. This default value can be changed, e.g. for the Mean value, as illustrated below. In this way, we provide more flexibility to the user.
+
+```{r}
+plate <- read_luminex_data(plate_filepath, layout_filepath, default_data_type = "Mean")
+summary(plate)
+# display a sample of the dataframe
+data.frame(plate)[c(1, 2), c(1, 2)]
+```
+
+For the complete list of parameters and their description, please refer to the `read_luminex_data` documentation.
+
+# SerolyzeR as an MBA data reader
+
+The `read_luminex_data` function enforces additional constraints on the raw MBA data, such as the sample
+names following a specific pattern to be correctly classified. If your data does not follow our standards but you still want to use our parsers, you can directly use the format-specific functions here:
+- `read_xponent_format`
+- `read_intelliflex_format`
+
+For example, let us read the xPONENT file above using the `read_xponent_format`.
+
+```{r}
+output <- read_xponent_format(plate_filepath)
+typeof(output)
+names(output)
+output[["ProgramMetadata"]]
+names(output[["Results"]])
+# sample of the data
+output[["Results"]][["Median"]][c(1, 2), c(1, 2, 3)]
+```
+
+We can see now that the output of that function is a nested list containing the information parsed from the file.
+As the structure of the output may be different across the formats, this is not the recommended way to read the data, but the package is open enough to allow you to do so.

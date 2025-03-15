@@ -7,5 +7,3 @@
 .pre-commit-config.yaml
 ^pkgdown$
 ^docs$
-^doc$
-^Meta$

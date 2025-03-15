@@ -1,0 +1,87 @@
+---
+title: "Our datasets"
+author: "Tymoteusz Kwieciński"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Our datasets}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+# Introduction
+
+Our package's main purpose is to read, perform quality control, and normalise raw MBA data. Unfortunately, different devices and labs have different data formats. We gathered a few datasets on which our package could be tested. This document describes the datasets and their sources.
+
+The majority of our datasets, available for the public, are stored in the `extdata` folder of the package. The remaining private and the more significant number of publicly available datasets are stored in the `OneDrive` folder, which is accessible to the package developers.
+
+## How to access the files
+
+The simple way of accessing the files is to download them from our GitHub repository. 
+
+Another way is to source the files using the `system.file` function. The function returns the path to the file, which can be used to read the data. The function has the following syntax:
+
+```{r}
+dataset_name <- "CovidOISExPONTENT.csv"
+
+dataset_filepath <- system.file("extdata", dataset_name, package = "SerolyzeR", mustWork = TRUE)
+```
+The variable `dataset_filepath` now contains the path to the specified dataset on your computer. Since we know the filepath to the desired dataset, we can execute the `read_data` function to read the data. The function has the following syntax:
+
+```{r}
+library(SerolyzeR)
+
+plate <- read_luminex_data(dataset_filepath)
+
+plate
+```
+
+## Description of the datasets
+
+Our datasets are divided into three main categories: 
+
+- **artificial** - the ones created by us to test the package functionalities 
+- **public** - the publicly available datasets produced in the scope of the PvSTATEM project or by the laboratories participating in the project. 
+- **external** - the ones gathered from the public domain, external sources, independent from the PvSTATEM project
+
+
+### Artificial datasets
+
+To perform simple unit tests and validate the most basic reading functionalities of the package, we created a few artificial datasets. The datasets are stored in the package's  `extdata` folder. The datasets are:
+
+-  `random.csv` - a simple dataset with random values used to test the basic functionalities of the package
+-  `random2.csv` - another simple dataset with random values used to test the basic functionalities of the package. This file has a corresponding, artificial layout - `random_layout.csv`
+-  `random_broken_colB.csv` - this dataset has a broken column, which should be detected by the package and reported as a warning
+
+### Public datasets
+
+The datasets from this category are the most important for package development since the package's primary purpose is to simplify the preprocessing of the data in the scope of the PvSTATEM project.
+
+Most of them are stored in the package's `OneDrive` folder. The datasets available in the `extdata` folder are two files coming from the Covid oise examination: 
+
+- `CovidOISExPONTENT.csv`, which is a `IG4DC2~1.csv` plate from examination `IgG_CovidOise4_30plex`. It contains the corresponding layout file `CovidOISExPONTENT_layout.xlsx`
+- `CovidOISExPONTENT_CO.csv`, which is a `IGG_CO~1.csv` plate from examination `IgG_CovidOise2_30plex` and corresponding layout file 
+
+Most of the examples and vignettes in the package are based on these datasets.
+
+### External datasets
+
+We gathered a few datasets from the public domain to check the package functionalities of the data from different sources. The datasets are also stored in the package `OneDrive` folder and in the subfolder `external` of the `extdata` directory. The datasets are:
+
+-   `Chul_IgG3_1.csv` - GitHub repo RTSS_Kisumu_Schisto [source](https://github.com/IDEELResearch/RTSS_Kisumu_Schisto/tree/main/data/raw/luminex)
+
+-   `Chul_TotalIgG_2.csv` - GitHub repo RTSS_Kisumu_Schisto [source](https://github.com/IDEELResearch/RTSS_Kisumu_Schisto/tree/main/data/raw/luminex)
+
+-   `pone.0187901.s001.csv` - data shipped with drLumi package [source](https://doi.org/10.1371/journal.pone.0187901)
+
+-   `New_Batch_6_20160309_174224.csv` - dataset included in the paper *A single-nucleotide-polymorphism-based genotyping assay for simultaneous detection of different carbendazim-resistant genotypes in the Fusarium graminearum species complex*, H. Zhang et. al. 
+
+-   `New_Batch_14_20140513_082522.csv` - dataset included in the paper *A single-nucleotide-polymorphism-based genotyping assay for simultaneous detection of different carbendazim-resistant genotypes in the Fusarium graminearum species complex*, H. Zhang et. al. 
