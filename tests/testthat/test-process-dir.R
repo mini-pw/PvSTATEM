@@ -69,6 +69,8 @@ test_that("Test obtaining an output directory", {
   ), specified_output_dir)
 
   expect_error(get_output_dir(plate_filepath, "no_dir", "bad_dir"))
+
+  expect_error(process_dir(input_dir, output = "non-existing"))
 })
 
 
@@ -89,8 +91,9 @@ test_that("Test processing a mock directory", {
   # Test with relative path
   rel_path <- fs::path_rel(dir, getwd())
   expect_no_error(capture.output(
-    process_dir(rel_path, dry_run = T, recurse = T, flatten_output_dir = F, output_dir = tempdir(check = TRUE))
+    process_dir(rel_path, dry_run = TRUE, recurse = TRUE, flatten_output_dir = FALSE, output_dir = tempdir(check = TRUE))
   ))
+
 
   dir <- tempdir(check = TRUE)
   # Clean up the tmp directory
@@ -107,6 +110,12 @@ test_that("Test processing a directory with a single plate", {
   output_dir <- tempdir(check = TRUE)
   plates <- process_dir(dir, return_plates = TRUE, output_dir = output_dir)
   expect_length(plates, 2)
+
+  layout_filepath <- system.file("extdata", "CovidOISExPONTENT_CO_layout.xlsx", package = "SerolyzeR", mustWork = TRUE)
+
+  expect_no_error(capture.output(
+    process_dir(dir, output_dir = output_dir, dry_run = TRUE, format = "xPONENT", layout_filepath = layout_filepath)
+  ))
 })
 
 test_that("Test processing a reallife directory with merge output", {
