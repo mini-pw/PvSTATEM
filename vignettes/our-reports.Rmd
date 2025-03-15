@@ -74,6 +74,16 @@ Default report has 4 main sections:
 
 <img src="img/report_analyte_details.png" alt="Image description" width="600px" style="border: 1px solid black;" />
 
+## Warnings 
+
+The plate report displays warnings in a nice visual manner. For now, two types of warnings are supported:
+- `high dose hook warning` - that informs the user that there is a high dose hook for a given analyte
+- `bad coverage warning` - it shows if more than 25% of the test samples have an MFI value above the highest standard curve point
+
+The warnings are displayed in the `detailed information about analytes` section. 
+
+<img src="img/report_warnings.png" alt="Image description" width="600px" style="border: 1px solid black;" />
+
 ## Additional parameters
 
 The user can customize the report by setting additional parameters. 
