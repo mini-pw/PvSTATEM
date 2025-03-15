@@ -152,13 +152,13 @@ This function plots all standard curves on the same plot for a given analyte, wh
 In order to run this function, we need to provide the `list_of_plates` which is a list of plate objects and the analyte name as the arguments.
 
 ```{r}
-dir_with_luminex_files <- system.file("extdata", "multiplate_reallife_reduced",
+dir_with_luminex_files <- system.file("extdata", "multiplate_tutorial",
   package = "SerolyzeR", mustWork = TRUE
 )
 list_of_plates <- process_dir(dir_with_luminex_files,
   return_plates = TRUE, format = "xPONENT"
 )
-plot_standard_curve_stacked(list_of_plates, "ME")
+plot_standard_curve_stacked(list_of_plates, "Adenovirus.T3")
 ```
 
 While we can pass to this function parameters found in other standard curve plots, like `log_scale`, `decreasing_rau_order`, `data_type` there is one additional parameter that we want to focus on.
@@ -169,7 +169,7 @@ When the `monochromatic` parameter is set to `FALSE`, there is more variety in t
 Each plate is more distinct from the others, which can be helpful when looking for outliers.
 
 ```{r}
-plot_standard_curve_stacked(list_of_plates, "ME", monochromatic = FALSE)
+plot_standard_curve_stacked(list_of_plates, "Adenovirus.T3", monochromatic = FALSE)
 ```
 
 There is one more useful parameter in this function mainly `legend_type'. By default it is set to `NULL` which means that the legend type
@@ -185,8 +185,7 @@ The `list_of_plates` can be obtained by the `process_dir` function, which reads 
 from the directory, it is recommended way or creating list of plates.
 
 ```{r}
-list_of_plates <- rep(list_of_plates, 10) # since we have only 3 plates i will repeat them 10 times to show the plot
-plot_levey_jennings(list_of_plates, "ME", dilution = "1/100", sd_lines = c(1, 2, 3))
+plot_levey_jennings(list_of_plates, "Adenovirus.T3", dilution = "1/100", sd_lines = c(1, 2, 3))
 ```
 
 The plot above shows the Levey-Jennings plot for the analyte "ME" with the samples with `dilution` "1/100". 
