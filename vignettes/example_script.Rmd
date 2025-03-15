@@ -50,8 +50,6 @@ The [`Plate`] is an object which encapsulates all the information about the plat
 
 The `read_luminex_data` function used above, reads the data from the CSV plate file and the layout file and outputs the [`Plate`] object. This method allows also for more advanced options, such as overriding the information from the files, or setting the data reading options, e.g. the Luminex file format (`xPONENT` or `INTELLIFLEX`) or the file separators and data encoding. For more details about the function, we encourage you to explore the documentation by executing the command `?read_luminex_data`.
 
-It also detects automatically the sample types, using an internal method [`translate_sample_names_to_sample_types`]. The method uses the sample names, sourced either from the layout file or the CSV plate file, to determine the sample types. The types of samples are then stored in the `sample_types` field of the plate object. The sample types are used to distinguish between the standard curve samples, control samples and the test samples. The documentation of this function contains more details about the sample types detection.
-
 
 ## Processing the whole plate
 
@@ -61,7 +59,9 @@ The computed RAU values are then saved to a CSV file in a specified folder with 
 
 This function fits a model to each analyte using the standard curve samples. By default, it computes Relative Antibody Units (RAU) for each analyte based on the fitted model. The computed RAU values are saved to a CSV file in a directory specified by the `output_dir` parameter. The output file is named according to the `filename` parameter. If no filename is provided, the function automatically generates one based on the plate name and the selected normalisation type. 
 
-Additionally, this function supports normalisation for normalised Median Fluorescence Intensity (nMFI) values. More details on this normalisation approach can be found in the `nMFI` section of this document or in the documentation of [`get_nmfi()`].
+Additionally, this function supports outputs for normalised Median Fluorescence Intensity (nMFI) values. More details on this normalisation approach can be found in the `nMFI` section of this document or in the documentation of [`get_nmfi()`].
+
+It is possible to generate a simple dataframe with the structured MFI values, by specifying the `output_type` parameter to `MFI`.
 
 To get more information about the function, check `?process_plate`. 
 
@@ -85,10 +85,10 @@ To automate the processing the plates, we can also use [`process_file`] and [`pr
 
 ```{r}
 
-process_file(plate_filepath, layout_filepath, output_dir = example_dir, output_types = c("RAU", "nMFI", "MFI", "report"))
+process_file(plate_filepath, layout_filepath, output_dir = example_dir, generate_report = TRUE)
 ```
 
-It saves `RAU`, `nMFI` and `MFI` values to the `output_dir`, working similarly to the [`process_plate`] function. Additionally it has an option to produce a single plate report, which can be enabled by adding `report` to parameter `output_types`, as above. The report is saved in the same directory as the output files, with the name based on the plate name. For more detailed description of the reports, we refer to the vignette \code{vignette("SerolyzeR HTML reports", package="SerolyzeR")}.
+It saves `RAU` and `nMFI` values to the `output_dir`, working similarly to the [`process_plate`] function. Additionally it has an option to produce a single plate report, which can be enabled with `generate_report = TRUE` parameter. The report is saved in the same directory as the output files, with the name based on the plate name. For more detailed description of the reports, we refer to the vignette \code{vignette("SerolyzeR HTML reports", package="SerolyzeR")}.
 
 [`process_dir`] processes all the files in the specified directory. The description of this method can be found in the separate vignette vignette("Multiplate SerolyzeR functionalities").
 
@@ -263,14 +263,14 @@ plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), over_
 ### nMFI
 In some cases, the RAU values cannot be reliably calculated. This may happen when the MFI values of test samples are way higher than those of the standard curve samples. In that case, to avoid extrapolation but to be still able to compare the samples across the plates, we introduced a new unit called nMFI (Normalized MFI). The nMFI is calculated as the MFI value of the test sample divided by the MFI value of the standard curve sample with the selected dilution value.
 
-nMFI values of the samples can be calculated in two ways - using the `get_nmfi` function or with the `process_plate` function that also saves the output into the CSV file by setting the `normalisation_type` parameter to `nMFI` in the `process_plate` function. By default the output will be saved as a file with the same name as the plate name but with the `_nMFI` suffix. 
+nMFI values of the samples can be calculated in two ways - using the `get_nmfi` function or with the `process_plate` function that also saves the output into the CSV file by setting the `output_type` parameter to `nMFI` in the `process_plate` function. By default the output will be saved as a file with the same name as the plate name but with the `_nMFI` suffix. 
 
 ```{r}
 nmfi_values <- get_nmfi(plate)
 
 # process plate with nMFI normalisation
 
-df <- process_plate(plate, output_dir = example_dir, normalisation_type = "nMFI")
+df <- process_plate(plate, output_dir = example_dir, output_type = "nMFI")
 df[1:5, 1:5]
 ```
 

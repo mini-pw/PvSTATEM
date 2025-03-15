@@ -349,8 +349,11 @@ process_dir <- function(
   file_ending <- format(now(), "%Y%m%d_%H%M%S")
 
   if (generate_multiplate_report) {
-    generate_levey_jennings_report(plates, output_dir = output_dir, verbose = verbose, filename = paste0("multiplate_report_", file_ending, ".html"), ...)
-    verbose_cat("Multiplate report saved to: ", multiplate_report_path, "\n", verbose = verbose)
+    file_name <- paste0("multiplate_report_", file_ending, ".html")
+    generate_levey_jennings_report(plates, output_dir = output_dir, verbose = verbose, filename = file_name, ...)
+    output_path <- fs::path_join(c(output_dir, file_name))
+
+    verbose_cat("Multiplate report saved to: ", output_path, "\n", verbose = verbose)
   }
 
   if (merge_outputs) {

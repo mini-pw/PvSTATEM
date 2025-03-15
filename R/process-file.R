@@ -3,8 +3,7 @@
 #'
 #' @description
 #' This function reads a Luminex plate file by calling [read_luminex_data()] and then processes it by calling [process_plate()]. It optionally generates also a quality control report using [generate_plate_report()].
-#' It reads the specified plate file, processes the plate object using all specified normalisation types (including raw MFI values), and saves the results.
-#' If `generate_report = TRUE`, a quality control report is also generated.
+#' It reads the specified plate file, processes the plate object using all specified output types (including raw MFI values and quality control report), and saves the results.
 #'
 #' ## Workflow
 #' 1. Read the plate file and layout file.
@@ -20,8 +19,6 @@
 #' @param format (`character(1)`, default = `'xPONENT'`)
 #'   - Format of the Luminex data.
 #'   - Available options: `'xPONENT'`, `'INTELLIFLEX'`.
-#' @param generate_report (`logical(1)`, default = `FALSE`)
-#'   - If `TRUE`, generates a quality control report using [generate_plate_report()].
 #' @param process_plate (`logical(1)`, default = `TRUE`)
 #'   - If `TRUE`, processes the plate data using [process_plate()].
 #'   - If `FALSE`, only reads the plate file and returns the plate object without processing.
@@ -47,7 +44,7 @@
 #' process_file(plate_file, layout_file, output_dir = example_dir, output_types = c("RAU"))
 #'
 #' # Example 3: Process the plate and generate a quality control report
-#' process_file(plate_file, layout_file, output_dir = example_dir, generate_report = TRUE)
+#' process_file(plate_file, layout_file, output_dir = example_dir, output_types = c("report"))
 #'
 #' @importFrom fs file_exists
 #'
