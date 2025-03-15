@@ -7,9 +7,14 @@ test_that("Test finding layout file", {
 
   output <- find_layout_file(plate_filepath)
   expect_true(check_path_equal(output, layout_filepath))
-  expect_warning(find_layout_file(random_plate_filepath))
 
+  output <- find_layout_file(plate_filepath, layout_filepath)
+  expect_true(check_path_equal(output, layout_filepath))
+
+  expect_warning(find_layout_file(random_plate_filepath))
+  
   expect_error(find_layout_file("non_existing_file.csv"))
+  expect_error(find_layout_file("non_existing_file.csv", "incorrect_layout.xlsx"))
 })
 
 test_that("Test checking for mba file", {
@@ -62,6 +67,8 @@ test_that("Test obtaining an output directory", {
     output_dir = specified_output_dir,
     flatten_output_dir = TRUE
   ), specified_output_dir)
+
+  expect_error(plate_filepath, "no_dir", "bad_dir")
 })
 
 
