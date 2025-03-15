@@ -173,6 +173,11 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #'   - The layout file should contain a table with **8 rows and 12 columns**, where each cell corresponds to a well location.
 #'   - The values in the table represent the sample names for each well.
 #'
+#' ## Sample types detection
+#'
+#' The [`read_luminex_data`] method automatically detects the sample types based on the sample names, unless provided the `sample_types` parameter.
+#' The sample types are detected used the [`translate_sample_names_to_sample_types`] method.
+#' In the documentation of this method, which can be accessed with command `?translate_sample_names_to_sample_types`, you can find the detailed description of the sample types detection.
 #'
 #'
 #' @param plate_filepath (`character(1)`) Path to the Luminex plate file.
@@ -225,8 +230,6 @@ read_luminex_data <- function(plate_filepath,
   if (!(format %in% valid_formats)) {
     stop("Invalid format: ", format, ". Select from: ", paste(valid_formats, collapse = ", "))
   }
-
-
 
   verbose_cat("Reading Luminex data from: ", plate_filepath, "\nusing format ", format, "\n", verbose = verbose)
   tryCatch({

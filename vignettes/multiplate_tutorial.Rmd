@@ -77,7 +77,9 @@ Now, let us investigate the merged output of the `process_dir` function, which c
 - RAU (relative antibody units) - the normalised values, with optional blank adjustment transformed to the relative antibody units
 
 
-For detailed description of the normalised output for a single plate, we refer the reader to the \code{vignette("Basic SerolyzeR functionalities", package="SerolyzeR")}. For the detailed description of the reports, we refer the reader to the \code{vignette("SerolyzeR HTML reports", package="SerolyzeR")}. Here, we will just denote that `process_dir` function also allows for automatic generation of both multiplate and singleplate reports, which can be enabled by setting `generate_reports` parameter to `TRUE`.
+For detailed description of the normalised output for a single plate, we refer the reader to the \code{vignette("Basic SerolyzeR functionalities", package="SerolyzeR")}. For the detailed description of the reports, we refer the reader to the \code{vignette("SerolyzeR HTML reports", package="SerolyzeR")}. If you are interested in specific plots genrerated by our package, for quality control of both single and multiple plates, we refer you to the vignette \code{vignette("SerolyzeR plots")}. 
+
+In this tutorial, we will just denote that `process_dir` function also allows for automatic generation of both multiplate and singleplate reports, which can be enabled by setting `generate_reports` parameter to `TRUE`.
 
 
 Let us investigate the output directory and the files that were created.
@@ -98,7 +100,7 @@ RAU_data <- read.csv(merged_RAU_filepath)
 This file is a standard CSV dataframe. Its rows correspond to the samples and the columns to the analytes. The first column is the plate name from the sample originates, the second one is the sample name. The remaining columns contain the analytes. 
 
 ```{r}
-#RAU_data[1:5, 1:5]
+RAU_data[1:5, 1:5]
 
 ```
 

@@ -101,6 +101,9 @@ Plate <- R6::R6Class(
     #' Types of the samples that were examined on the plate.
     #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
     #' This vector is in the same order as the `sample_names` vector.
+    #' If the [`Plate`] object is read using [`read_luminex_data`], then the sample types
+    #' are usually detected based on the sample names according to the rules
+    #' described in [`translate_sample_names_to_sample_types`].
     sample_types = NULL,
     #'
     #' @field dilutions (`character()`)\cr
