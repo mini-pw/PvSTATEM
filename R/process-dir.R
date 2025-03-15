@@ -187,8 +187,9 @@ get_output_dir <- function(
 #'   - For a plate named `{plate_name}`, the normalised output files are named as:
 #'     - `{plate_name}_RAU.csv` for RAU normalisation.
 #'     - `{plate_name}_nMFI.csv` for nMFI normalisation.
-#'     - `{plate_name}_MFI.csv` for MFI normalisation.
-#'     - If `generate_reports = TRUE`, a quality control report is saved as `{plate_name}_report.pdf`.
+#'     - `{plate_name}_MFI.csv` for simple MFI output
+#'     - `{plate_name}_report.html` for the single plate quality control report.
+#'   - If `generate_multiplate_report = TRUE`, a multiplate quality control report is saved as `multiplate_report_{timestamp}.html`.
 #'   - If `merge_outputs = TRUE`, merged normalised files are named as:
 #'     - `merged_RAU_{timestamp}.csv`
 #'     - `merged_nMFI_{timestamp}.csv`
@@ -202,12 +203,12 @@ get_output_dir <- function(
 #'   - If `TRUE`, saves output files directly in `output_dir`, ignoring the input directory structure.
 #' @param format (`character(1)`, optional) Luminex data format. If `NULL`, it is automatically detected. Options: `'xPONENT'`, `'INTELLIFLEX'`.
 #' @param layout_filepath (`character(1)`, optional) Path to a layout file. If `NULL`, the function attempts to detect it automatically.
-#' @param normalisation_types (`character()`, default = `c("MFI", "RAU", "nMFI")`)
-#'   - The normalisation types to apply. Supported values: `"MFI"`, `"RAU"`, `"nMFI"`.
-#' @param generate_reports (`logical(1)`, default = `FALSE`)
-#'   - If `TRUE`, generates quality control reports for each processed plate file.
+#' @param output_types (`character()`, default = `c("MFI", "RAU", "nMFI")`)
+#'   - The output types to generate, as in [`process_file`] function. Supported values: `"MFI"`, `"RAU"`, `"nMFI"` and `report`.
+#' @param generate_multiplate_report (`logical(1)`, default = `FALSE`)
+#'   - If `TRUE`, generates multiplate quality control report for whole directory.
 #' @param merge_outputs (`logical(1)`, default = `FALSE`)
-#'   - If `TRUE`, merges all normalised data into a single CSV file per normalisation type.
+#'   - If `TRUE`, merges all normalised data into a single CSV file per data output type (`RAU`, `nMFI`, `MFI`).
 #'   - The merged file is named `merged_{normalisation_type}_{timestamp}.csv`.
 #' @param column_collision_strategy (`character(1)`, default = `'intersection'`)
 #'   - Determines how to handle missing or extra columns when merging outputs.
@@ -238,8 +239,8 @@ process_dir <- function(
     flatten_output_dir = FALSE,
     layout_filepath = NULL,
     format = NULL,
-    normalisation_types = c("MFI", "RAU", "nMFI"),
-    generate_reports = FALSE,
+    output_types = c("MFI", "RAU", "nMFI"),
+    generate_multiplate_report = FALSE,
     merge_outputs = FALSE,
     column_collision_strategy = "intersection",
     return_plates = FALSE,
@@ -331,8 +332,7 @@ process_dir <- function(
       output_dir = current_output_dir,
       format = formats[i],
       process_plate = !merge_outputs,
-      normalisation_types = normalisation_types,
-      generate_report = generate_reports,
+      output_types = output_types,
       verbose = verbose,
       ...
     )
@@ -347,12 +347,18 @@ process_dir <- function(
   )
 
   file_ending <- format(now(), "%Y%m%d_%H%M%S")
+
+  if (generate_multiplate_report) {
+    generate_levey_jennings_report(plates, output_dir = output_dir, verbose = verbose, filename = paste0("multiplate_report_", file_ending, ".html"), ...)
+    verbose_cat("Multiplate report saved to: ", multiplate_report_path, "\n", verbose = verbose)
+  }
+
   if (merge_outputs) {
-    for (normalisation_type in normalisation_types) {
+    for (output_type in output_types[(output_types != "report")]) {
       dataframes <- list()
       for (plate in plates) {
         output_df <- process_plate(plate,
-          normalisation_type = normalisation_type, write_output = FALSE,
+          output_type = output_type, write_output = FALSE,
           blank_adjustment = TRUE, verbose = verbose
         )
         df_header_columns <- data.frame(
@@ -371,7 +377,7 @@ process_dir <- function(
       )
 
       file_name <- paste0(
-        "merged_", normalisation_type, "_", file_ending, ".csv"
+        "merged_", output_type, "_", file_ending, ".csv"
       )
       output_path <- fs::path_join(c(output_dir, file_name))
       write.csv(main_output_df, output_path, row.names = FALSE)

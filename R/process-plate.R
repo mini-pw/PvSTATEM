@@ -8,8 +8,8 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' This function processes a plate and computes normalised values based on the specified `normalisation_type`.
 #' The function supports three types of normalisation:
 #' - **RAU** (Relative Antibody Units) - Default normalisation type.
-#' - **nMFI** (Normalised Median Fluorescence Intensity).
-#' - **MFI** (Median Fluorescence Intensity, blank-adjusted raw MFI values).
+#' - **nMFI** (Normalised Median Fluorescence Intensity) - simple normalisation to a reference dilution.
+#' - **MFI** (Median Fluorescence Intensity) - raw MFI values structured into a dataframe.
 #'
 #' Depending on the chosen normalisation type, the function:
 #' - Adjusts for blanks (if `blank_adjustment = TRUE`).
@@ -30,7 +30,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' 3. Aggregate nMFI values into a data frame.
 #' 4. Save the results to a CSV file.
 #'
-#' **MFI Normalisation Workflow:**
+#' **MFI Workflow:**
 #' 1. Blank adjustment (if enabled).
 #' 2. Save the adjusted MFI values to a CSV file.
 #'
@@ -51,7 +51,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #' @param output_dir (`character(1)`, default = `'normalised_data'`) Directory for saving the output file.
 #'   - If the directory does not exist, it will be created.
 #'   - If `NULL`, the current working directory is used.
-#' @param normalisation_type (`character(1)`, default = `'RAU'`) The normalisation method to apply.
+#' @param output_type (`character(1)`, default = `'RAU'`) The output method to apply.
 #'   - Allowed values: \code{c(`r toString(SerolyzeR.env$normalisation_types)`)}.
 #' @param data_type (`character(1)`, default = `'Median'`) The data type to use for calculations.
 #' @param blank_adjustment (`logical(1)`, default = `FALSE`) Whether to perform blank adjustment before computing values.
@@ -78,7 +78,7 @@ is_valid_normalisation_type <- function(normalisation_type) {
 #'               output_dir = example_dir, blank_adjustment = FALSE)
 #'
 #' # Process plate with nMFI normalisation
-#' process_plate(plate, output_dir = example_dir, normalisation_type = "nMFI",
+#' process_plate(plate, output_dir = example_dir, output_type = "nMFI",
 #'               reference_dilution = 1 / 400)
 #'
 #' @export
@@ -87,7 +87,7 @@ process_plate <-
            filename = NULL,
            output_dir = "normalised_data",
            write_output = TRUE,
-           normalisation_type = "RAU",
+           output_type = "RAU",
            data_type = "Median",
            blank_adjustment = FALSE,
            verbose = TRUE,
@@ -95,12 +95,12 @@ process_plate <-
            ...) {
     stopifnot(inherits(plate, "Plate"))
 
-    stopifnot(is_valid_normalisation_type(normalisation_type))
+    stopifnot(is_valid_normalisation_type(output_type))
     stopifnot(is.character(data_type))
 
     if (write_output) {
       output_path <- validate_filepath_and_output_dir(filename, output_dir,
-        plate$plate_name, normalisation_type,
+        plate$plate_name, output_type,
         "csv",
         verbose = verbose
       )
@@ -114,19 +114,19 @@ process_plate <-
     }
 
     test_sample_names <- plate$sample_names[plate$sample_types == "TEST"]
-    if (normalisation_type == "MFI") {
+    if (output_type == "MFI") {
       verbose_cat("Extracting the raw MFI to the output dataframe\n")
       output_df <- plate$get_data(
         "ALL", "TEST",
         data_type = data_type
       )
-    } else if (normalisation_type == "nMFI") {
+    } else if (output_type == "nMFI") {
       verbose_cat("Computing nMFI values for each analyte\n", verbose = verbose)
       output_df <- get_nmfi(
         plate,
         reference_dilution = reference_dilution, data_type = data_type
       )
-    } else if (normalisation_type == "RAU") {
+    } else if (output_type == "RAU") {
       # RAU normalisation
       verbose_cat("Fitting the models and predicting RAU for each analyte\n", verbose = verbose)
       output_list <- list()
@@ -147,7 +147,7 @@ process_plate <-
     rownames(output_df) <- test_sample_names
 
     if (write_output) {
-      verbose_cat("Saving the computed ", normalisation_type, " values to a CSV file located in: '",
+      verbose_cat("Saving the computed ", output_type, " values to a CSV file located in: '",
         output_path,
         "'\n",
         verbose = verbose
