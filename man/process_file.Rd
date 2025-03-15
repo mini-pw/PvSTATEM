@@ -56,19 +56,13 @@ process_file(
 }}
 
 \item{...}{Additional arguments passed to \code{\link[=read_luminex_data]{read_luminex_data()}} and \code{\link[=generate_plate_report]{generate_plate_report()}}.}
-
-\item{generate_report}{(\code{logical(1)}, default = \code{FALSE})
-\itemize{
-\item If \code{TRUE}, generates a quality control report using \code{\link[=generate_plate_report]{generate_plate_report()}}.
-}}
 }
 \value{
 A \code{\link{Plate}} object containing the processed data.
 }
 \description{
 This function reads a Luminex plate file by calling \code{\link[=read_luminex_data]{read_luminex_data()}} and then processes it by calling \code{\link[=process_plate]{process_plate()}}. It optionally generates also a quality control report using \code{\link[=generate_plate_report]{generate_plate_report()}}.
-It reads the specified plate file, processes the plate object using all specified normalisation types (including raw MFI values), and saves the results.
-If \code{generate_report = TRUE}, a quality control report is also generated.
+It reads the specified plate file, processes the plate object using all specified output types (including raw MFI values and quality control report), and saves the results.
 \subsection{Workflow}{
 \enumerate{
 \item Read the plate file and layout file.
@@ -89,6 +83,6 @@ process_file(plate_file, layout_file, output_dir = example_dir)
 process_file(plate_file, layout_file, output_dir = example_dir, output_types = c("RAU"))
 
 # Example 3: Process the plate and generate a quality control report
-process_file(plate_file, layout_file, output_dir = example_dir, generate_report = TRUE)
+process_file(plate_file, layout_file, output_dir = example_dir, output_types = c("report"))
 
 }
