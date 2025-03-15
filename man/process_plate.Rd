@@ -9,7 +9,7 @@ process_plate(
   filename = NULL,
   output_dir = "normalised_data",
   write_output = TRUE,
-  normalisation_type = "RAU",
+  output_type = "RAU",
   data_type = "Median",
   blank_adjustment = FALSE,
   verbose = TRUE,
@@ -36,7 +36,7 @@ process_plate(
 
 \item{write_output}{(\code{logical(1)}, default = \code{TRUE}) Whether to save the output to a CSV file.}
 
-\item{normalisation_type}{(\code{character(1)}, default = \code{'RAU'}) The normalisation method to apply.
+\item{output_type}{(\code{character(1)}, default = \code{'RAU'}) The output method to apply.
 \itemize{
 \item Allowed values: \code{c(MFI, RAU, nMFI)}.
 }}
@@ -64,8 +64,8 @@ This function processes a plate and computes normalised values based on the spec
 The function supports three types of normalisation:
 \itemize{
 \item \strong{RAU} (Relative Antibody Units) - Default normalisation type.
-\item \strong{nMFI} (Normalised Median Fluorescence Intensity).
-\item \strong{MFI} (Median Fluorescence Intensity, blank-adjusted raw MFI values).
+\item \strong{nMFI} (Normalised Median Fluorescence Intensity) - simple normalisation to a reference dilution.
+\item \strong{MFI} (Median Fluorescence Intensity) - raw MFI values structured into a dataframe.
 }
 
 Depending on the chosen normalisation type, the function:
@@ -93,7 +93,7 @@ Depending on the chosen normalisation type, the function:
 \item Save the results to a CSV file.
 }
 
-\strong{MFI Normalisation Workflow:}
+\strong{MFI Workflow:}
 \enumerate{
 \item Blank adjustment (if enabled).
 \item Save the adjusted MFI values to a CSV file.
@@ -121,7 +121,7 @@ process_plate(plate, filename = "plate_no_blank_adjustment.csv",
               output_dir = example_dir, blank_adjustment = FALSE)
 
 # Process plate with nMFI normalisation
-process_plate(plate, output_dir = example_dir, normalisation_type = "nMFI",
+process_plate(plate, output_dir = example_dir, output_type = "nMFI",
               reference_dilution = 1 / 400)
 
 }

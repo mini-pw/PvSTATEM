@@ -108,6 +108,13 @@ The function supports two Luminex data formats:
 }
 }
 }
+
+\subsection{Sample types detection}{
+
+The \code{\link{read_luminex_data}} method automatically detects the sample types based on the sample names, unless provided the \code{sample_types} parameter.
+The sample types are detected used the \code{\link{translate_sample_names_to_sample_types}} method.
+In the documentation of this method, which can be accessed with command \code{?translate_sample_names_to_sample_types}, you can find the detailed description of the sample types detection.
+}
 }
 \examples{
 # Read a Luminex plate file with an associated layout file

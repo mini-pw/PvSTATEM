@@ -11,8 +11,8 @@ process_dir(
   flatten_output_dir = FALSE,
   layout_filepath = NULL,
   format = NULL,
-  normalisation_types = c("MFI", "RAU", "nMFI"),
-  generate_reports = FALSE,
+  output_types = c("MFI", "RAU", "nMFI"),
+  generate_multiplate_report = FALSE,
   merge_outputs = FALSE,
   column_collision_strategy = "intersection",
   return_plates = FALSE,
@@ -40,19 +40,19 @@ process_dir(
 
 \item{format}{(\code{character(1)}, optional) Luminex data format. If \code{NULL}, it is automatically detected. Options: \code{'xPONENT'}, \code{'INTELLIFLEX'}.}
 
-\item{normalisation_types}{(\code{character()}, default = \code{c("MFI", "RAU", "nMFI")})
+\item{output_types}{(\code{character()}, default = \code{c("MFI", "RAU", "nMFI")})
 \itemize{
-\item The normalisation types to apply. Supported values: \code{"MFI"}, \code{"RAU"}, \code{"nMFI"}.
+\item The output types to generate, as in \code{\link{process_file}} function. Supported values: \code{"MFI"}, \code{"RAU"}, \code{"nMFI"} and \code{report}.
 }}
 
-\item{generate_reports}{(\code{logical(1)}, default = \code{FALSE})
+\item{generate_multiplate_report}{(\code{logical(1)}, default = \code{FALSE})
 \itemize{
-\item If \code{TRUE}, generates quality control reports for each processed plate file.
+\item If \code{TRUE}, generates multiplate quality control report for whole directory.
 }}
 
 \item{merge_outputs}{(\code{logical(1)}, default = \code{FALSE})
 \itemize{
-\item If \code{TRUE}, merges all normalised data into a single CSV file per normalisation type.
+\item If \code{TRUE}, merges all normalised data into a single CSV file per data output type (\code{RAU}, \code{nMFI}, \code{MFI}).
 \item The merged file is named \verb{merged_\{normalisation_type\}_\{timestamp\}.csv}.
 }}
 
@@ -124,9 +124,10 @@ Optionally, quality control reports can be generated, and results from multiple 
 \itemize{
 \item \verb{\{plate_name\}_RAU.csv} for RAU normalisation.
 \item \verb{\{plate_name\}_nMFI.csv} for nMFI normalisation.
-\item \verb{\{plate_name\}_MFI.csv} for MFI normalisation.
-\item If \code{generate_reports = TRUE}, a quality control report is saved as \verb{\{plate_name\}_report.pdf}.
+\item \verb{\{plate_name\}_MFI.csv} for simple MFI output
+\item \verb{\{plate_name\}_report.html} for the single plate quality control report.
 }
+\item If \code{generate_multiplate_report = TRUE}, a multiplate quality control report is saved as \verb{multiplate_report_\{timestamp\}.html}.
 \item If \code{merge_outputs = TRUE}, merged normalised files are named as:
 \itemize{
 \item \verb{merged_RAU_\{timestamp\}.csv}

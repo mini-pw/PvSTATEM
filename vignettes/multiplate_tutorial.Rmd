@@ -50,7 +50,14 @@ Let us first read the directory.
 
 ## Reading a whole directory
 
-To read the directory as above, we need to import the library `SerolyzeR` and run a single command `process_dir`. This function reads all the files in the directory and processes them.
+To read the directory as above, we need to import the library `SerolyzeR` and run a single command `process_dir`. This function reads all the files in the directory and processes them. It has an option to generate 4 basic kind of outputs (similarly to the `process_file` function). It is:
+- MFI (mean fluorescence intensity) - the raw input MFI values, with optional blank adjustment only
+- nMFI (normalised mean fluorescence intensity) - the normalised values, with optional blank adjustment and normalisation to the reference sample
+- RAU (relative antibody units) - the normalised values, with optional blank adjustment transformed to the relative antibody units
+- report - a quality control report generated with [`generate_plate_report`] function
+
+These output types can be selected with the `output_types` parameter, which is a vector of all outputs to be generated. By default this parameter equals to `c("RAU", "nMFI", "MFI")`.
+
 
 Now, we will discuss how this method works and describe its most important parameters. 
 By default, it saves all the outputs into the input directory, this can be changed with the `output_dir` parameter. In this tutorial, we will set the output directory to a temporary directory, which can be created with the `tempdir()` function.
@@ -66,15 +73,12 @@ output_dir = file.path(tempdir(), "multiplate-tutorial") # create a temporary di
 R.utils::mkdirs(output_dir)
 
 
-plates <- process_dir(base_dir, format = "xPONENT", output_dir = output_dir, merge_outputs = TRUE, return_plates = TRUE)
+plates <- process_dir(base_dir, format = "xPONENT", output_types = c("RAU", "nMFI", "MFI"), output_dir = output_dir, merge_outputs = TRUE, return_plates = TRUE)
 
 ```
 Remember, if you want to read all your files properly, you need to follow the naming convention of the files. The layout file should have the same name as the plate file, with the added suffix `_layout`. The detailed description of the convention, along with the list of all the possible arguments can be found in the documentation of the function, which can be accessed with `?process_dir` command.
 
-Now, let us investigate the merged output of the `process_dir` function, which contains the data for all the samples and analytes, by default for each of the output types: 
-- MFI (mean fluorescence intensity) - the raw input MFI values, with optional blank adjustment only
-- nMFI (normalised mean fluorescence intensity) - the normalised values, with optional blank adjustment and normalisation to the reference sample
-- RAU (relative antibody units) - the normalised values, with optional blank adjustment transformed to the relative antibody units
+Now, let us investigate the merged output of the `process_dir` function, which contains the data for all the samples and analytes, for each data type: MFI, nMFI and RAU.
 
 
 For detailed description of the normalised output for a single plate, we refer the reader to the \code{vignette("Basic SerolyzeR functionalities", package="SerolyzeR")}. For the detailed description of the reports, we refer the reader to the \code{vignette("SerolyzeR HTML reports", package="SerolyzeR")}. If you are interested in specific plots genrerated by our package, for quality control of both single and multiple plates, we refer you to the vignette \code{vignette("SerolyzeR plots")}. 

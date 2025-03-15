@@ -38,7 +38,10 @@ as the \code{sample_names} vector.}
 \item{\code{sample_types}}{(\code{character()})\cr
 Types of the samples that were examined on the plate.
 The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.
-This vector is in the same order as the \code{sample_names} vector.}
+This vector is in the same order as the \code{sample_names} vector.
+If the \code{\link{Plate}} object is read using \code{\link{read_luminex_data}}, then the sample types
+are usually detected based on the sample names according to the rules
+described in \code{\link{translate_sample_names_to_sample_types}}.}
 
 \item{\code{dilutions}}{(\code{character()})\cr
 A list containing names of the samples as keys and string representing dilutions as values.
